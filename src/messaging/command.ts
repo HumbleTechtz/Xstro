@@ -2,7 +2,7 @@ import Message from './Messages/Message.ts';
 import { commands } from './plugins.ts';
 import { log } from '../utils/index.ts';
 
-export async function execCmd(message: Message) {
+export async function runCommand(message: Message) {
  if (!message.data.text) return;
 
  for (const cmd of commands) {
@@ -15,8 +15,14 @@ export async function execCmd(message: Message) {
   if (!handler || !match) continue;
 
   if (message.mode && !message.sudo) continue;
-  if (cmd.fromMe && !message.sudo) continue;
-  if (cmd.isGroup && !message.isGroup) continue;
+  if (cmd.fromMe && !message.sudo) {
+   await message.send('_This command is for Sudo Only!_');
+   continue;
+  }
+  if (cmd.isGroup && !message.isGroup) {
+   await message.send('_This command is for Groups Only!_');
+   continue;
+  }
 
   try {
    await message.react('⏳');

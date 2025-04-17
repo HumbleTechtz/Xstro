@@ -1,4 +1,4 @@
-import ConnectionUpdate from './connection.ts';
+import ConnectionUpdate from './Services/connect.ts';
 import MakeGroupCache from './Services/g-cache.ts';
 import MessageUpsert from './Services/m-upsert.ts';
 import type { WASocket } from 'baileys';

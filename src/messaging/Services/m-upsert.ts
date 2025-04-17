@@ -2,8 +2,8 @@ import Message from '../Messages/Message.ts';
 import { log } from '../../utils/index.ts';
 import { messageDb } from '../../models/index.ts';
 import { serialize } from '../serialize.ts';
+import { runCommand } from '../command.ts';
 import type { BaileysEventMap, WASocket } from 'baileys';
-import { execCmd } from '../command.ts';
 
 export default class MessageUpsert {
  private client: WASocket;
@@ -26,7 +26,7 @@ export default class MessageUpsert {
       message,
      }),
 
-     await execCmd(cmdInstance),
+     await runCommand(cmdInstance),
     ]);
    } catch (error) {
     log.error(`Task error: ${error}`);

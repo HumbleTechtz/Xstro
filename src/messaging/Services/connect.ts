@@ -1,9 +1,9 @@
 import pm2 from 'pm2';
 import { DisconnectReason } from 'baileys';
 import { Boom } from '@hapi/boom';
-import config from '../../config.ts';
-import { log, parseJid } from '../utils/index.ts';
-import { setSudo } from '../models/index.ts';
+import config from '../../../config.ts';
+import { log, parseJid } from '../../utils/index.ts';
+import { setSudo } from '../../models/index.ts';
 import type { BaileysEventMap, WASocket } from 'baileys';
 
 export default class Connection {
