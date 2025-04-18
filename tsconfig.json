@@ -21,7 +21,8 @@
     "strict": true,
     "skipLibCheck": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true
+    "noUncheckedIndexedAccess": true,
+    "removeComments": true
   },
   "include": ["src/**/*.ts","src/**/*.mts", "src/**/*.js", "src/**/*.json", "bot.ts"],
 }
