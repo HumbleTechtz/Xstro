@@ -34,6 +34,7 @@
     "file-type": "20.4.1",
     "got": "^14.4.7",
     "https-proxy-agent": "^7.0.6",
+    "link-preview-js": "^3.0.14",
     "pm2": "^6.0.5",
     "typescript": "^5.8.3"
   },

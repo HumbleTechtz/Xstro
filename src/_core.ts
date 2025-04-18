@@ -17,6 +17,8 @@ export const initConnection = async () => {
    logger: log,
    browser: Browsers.windows('Chrome'),
    emitOwnEvents: true,
+   generateHighQualityLinkPreview: true,
+   linkPreviewImageThumbnailWidth: 1920,
    getMessage,
    cachedGroupMetadata,
   });

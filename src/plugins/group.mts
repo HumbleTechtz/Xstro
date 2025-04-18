@@ -120,3 +120,32 @@ Command({
   return await message.send(`_@${user.split('@')[0]} is no longer an admin_`);
  },
 });
+
+Command({
+ name: 'newgc',
+ fromMe: true,
+ isGroup: false,
+ desc: 'Create a new Group',
+ type: 'group',
+ function: async (message, match) => {
+  if (!match) return message.send('_Provide a group name!_');
+  // Created Group
+  const gc = await message.client.groupCreate(match, [message.owner]);
+  // Extracted Invitation code
+  const invite = await message.client.groupInviteCode(gc.id);
+  // Merged with this URL
+  const url = `https://chat.whatsapp.com/${invite}`;
+  
+  return await message.send(url, {
+   contextInfo: {
+    isForwarded: true,
+    externalAdReply: {
+     title: match,
+     body: `Click here to join ${match}`,
+     sourceUrl: url,
+     showAdAttribution: true,
+    },
+   },
+  });
+ },
+});
