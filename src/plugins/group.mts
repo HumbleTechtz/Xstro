@@ -135,7 +135,7 @@ Command({
   const invite = await message.client.groupInviteCode(gc.id);
   // Merged with this URL
   const url = `https://chat.whatsapp.com/${invite}`;
-  
+
   return await message.send(url, {
    contextInfo: {
     isForwarded: true,
