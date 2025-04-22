@@ -3,85 +3,92 @@ import config from '../../config.ts';
 import database from '../models/_db.ts';
 import { fetchJson, log, authstate } from './index.ts';
 
-const sessionId = database.define(
- 'sessionId',
- {
-  session: { type: 'STRING', allowNull: true, primaryKey: true },
- },
- { freezeTableName: true },
-);
+export class SessionManager {
+ private sessionId = database.define(
+  'sessionId',
+  {
+   session: { type: 'STRING', allowNull: true, primaryKey: true },
+  },
+  { freezeTableName: true },
+ );
 
-const isSessionSame = async (session: string): Promise<boolean> => {
- const currentSession = (await sessionId.findByPk(session)) as {
-  session: string;
- };
- if (!currentSession) return false;
+ constructor() {
+  this.init();
+ }
 
- if (currentSession) {
+ private async init(): Promise<unknown> {
+  if (!config.SESSION) throw new Error('No session Id found!');
+  if (await this.isSessionSame(config.SESSION))
+   return console.info('Session Loaded!');
+  const data = await this.fetchSession();
+  if (!data) throw new Error('Session no longer exists on server!');
+  const decrypted = await this.decryptSession(data);
+  return await this.transferToDb(decrypted);
+ }
+
+ private async isSessionSame(session: string): Promise<boolean> {
+  const currentSession = (await this.sessionId.findByPk(session)) as {
+   session: string;
+  };
+  if (!currentSession) return false;
+
   JSON.parse(JSON.stringify(currentSession));
-  if (currentSession.session === session) return true;
+  return currentSession.session === session;
  }
- return false;
-};
 
-const fetchSession = async () => {
- try {
-  const encryption = await fetchJson(
-   `https://session.koyeb.app/session?session=${config.SESSION}`,
-  );
-  const session = JSON.parse(encryption);
-  const cipher = JSON.parse(session.data);
-  return cipher as { key: string; iv: string; data: string };
- } catch (error) {
-  log.error(error);
+ private async fetchSession(): Promise<{
+  key: string;
+  iv: string;
+  data: string;
+ }> {
+  try {
+   const encryption = await fetchJson(
+    `https://session.koyeb.app/session?session=${config.SESSION}`,
+   );
+   const session = JSON.parse(encryption);
+   const cipher = JSON.parse(session.data);
+   return cipher as { key: string; iv: string; data: string };
+  } catch (error) {
+   log.error(error);
+   throw error;
+  }
  }
-};
 
-const decryptSession = async (data: {
- key: string;
- iv: string;
- data: string;
-}) => {
- const algorithm = 'aes-256-cbc';
- const key = Buffer.from(data.key, 'hex');
- const iv = Buffer.from(data.iv, 'hex');
- const decipher = createDecipheriv(algorithm, key, iv);
- let decrypted = decipher.update(data.data, 'hex', 'utf8');
- decrypted += decipher.final('utf8');
- const res: {
+ private async decryptSession(data: {
+  key: string;
+  iv: string;
+  data: string;
+ }): Promise<{
   creds: { [key: string]: any };
   syncKeys: { [key: string]: string };
- } = JSON.parse(decrypted);
- return res;
-};
-
-const transferToDb = async (data: {
- creds: { [key: string]: any };
- syncKeys: { [key: string]: string };
-}) => {
- const creds = Object.keys(data)[0];
- const AppStateSyncKeyDataNames = Object.keys(data.syncKeys).map((appKeys) =>
-  appKeys.replace('.json', ''),
- );
- const AppStateSyncKeyDataValues = Object.values(data.syncKeys);
- const names = [creds, ...AppStateSyncKeyDataNames];
- const values = [data.creds, ...AppStateSyncKeyDataValues];
- const merged = Object.fromEntries(
-  names.map((key, index) => [key, values[index]]),
- );
-
- for (const [name, dataValue] of Object.entries(merged)) {
-  await authstate.create({ name, data: dataValue });
+ }> {
+  const algorithm = 'aes-256-cbc';
+  const key = Buffer.from(data.key, 'hex');
+  const iv = Buffer.from(data.iv, 'hex');
+  const decipher = createDecipheriv(algorithm, key, iv);
+  let decrypted = decipher.update(data.data, 'hex', 'utf8');
+  decrypted += decipher.final('utf8');
+  return JSON.parse(decrypted);
  }
- return await sessionId.create({ session: config.SESSION });
-};
 
-export async function initSession(): Promise<unknown> {
- if (!config.SESSION) throw new Error('No session Id found!');
- if (await isSessionSame(config.SESSION))
-  return console.info('Session Loaded!');
- const data = await fetchSession();
- if (!data) throw new Error('Session no longer exists on server!');
- const decrypted = await decryptSession(data);
- return await transferToDb(decrypted);
+ private async transferToDb(data: {
+  creds: { [key: string]: any };
+  syncKeys: { [key: string]: string };
+ }): Promise<unknown> {
+  const creds = Object.keys(data)[0];
+  const AppStateSyncKeyDataNames = Object.keys(data.syncKeys).map((appKeys) =>
+   appKeys.replace('.json', ''),
+  );
+  const AppStateSyncKeyDataValues = Object.values(data.syncKeys);
+  const names = [creds, ...AppStateSyncKeyDataNames];
+  const values = [data.creds, ...AppStateSyncKeyDataValues];
+  const merged = Object.fromEntries(
+   names.map((key, index) => [key, values[index]]),
+  );
+
+  for (const [name, dataValue] of Object.entries(merged)) {
+   await authstate.create({ name, data: dataValue });
+  }
+  return await this.sessionId.create({ session: config.SESSION });
+ }
 }

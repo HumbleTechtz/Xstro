@@ -1,17 +1,9 @@
 {
   "name": "xstro",
-  "version": "9.0.0",
+  "version": "10.0.0",
   "description": "Simple WA bot.",
   "type": "module",
-  "main": "./dist/bot.js",
-  "scripts": {
-    "start": "pm2 start ./dist/bot.js --name xstro --attach",
-    "dev": "ts-node --esm bot.ts",
-    "test": "tsc && node --loader jiti ./dist/bot.js",
-    "build": "tsc",
-    "stop": "pm2 stop xstro",
-    "lint": "yarn run eslint . --fix"
-  },
+  "main": "./dist/app.js",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -40,6 +32,13 @@
   },
   "engines": {
     "node": ">=23"
+  },
+  "scripts": {
+    "start": "pm2 start ./dist/app.js --name xstro --attach --force",
+    "stop": "pm2 stop xstro",
+    "dev": "tsc && node ./dist/app.js",
+    "build": "tsc",
+    "lint": "yarn run eslint . --fix"
   },
   "packageManager": "yarn@1.22.22"
 }
