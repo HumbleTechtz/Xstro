@@ -19,7 +19,7 @@ export class SessionManager {
  private async init(): Promise<unknown> {
   if (!config.SESSION) throw new Error('No session Id found!');
   if (await this.isSessionSame(config.SESSION))
-   return console.info('Session Loaded!');
+   return log.info('Session Loaded!');
   const data = await this.fetchSession();
   if (!data) throw new Error('Session no longer exists on server!');
   const decrypted = await this.decryptSession(data);

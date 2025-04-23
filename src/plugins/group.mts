@@ -149,3 +149,31 @@ Command({
   });
  },
 });
+
+Command({
+ name: 'tag',
+ fromMe: false,
+ isGroup: true,
+ desc: 'Mention an entire Group',
+ type: 'group',
+ function: async (message, match) => {
+  if (!(await message.isAdmin())) return message.send('_For Admins only!_');
+  if (!(await message.isBotAdmin()))
+   return message.send('_I to be an need admin!_');
+  const { participants } = await message.client.groupMetadata(message.jid);
+  if (!participants?.length) return message.send('No participants');
+  return message.client.relayMessage(
+   message.jid,
+   {
+    extendedTextMessage: {
+     text: `@${message.jid} ${match ?? ''}`,
+     contextInfo: {
+      mentionedJid: participants.filter((p) => p.id).map((p) => p.id),
+      groupMentions: [{ groupJid: message.jid, groupSubject: 'everyone' }],
+     },
+    },
+   },
+   {},
+  );
+ },
+});

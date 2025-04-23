@@ -34,17 +34,6 @@ export default class Connection {
   if (this.client.user?.id) {
    await setSudo(parseJid(this.client?.user?.id));
   }
-  const cmdsList = commands.filter((cmd) => cmd.on && cmd.dontAddCommandList);
-
-  if (this.client?.user?.id) {
-   await this.client.sendMessage(this.client.user.id, {
-    text: `\`\`\`
-    Bot is connected
-    Owner: ${this.client.user.name ?? 'Unknown'}
-    Commands: ${cmdsList.length}
-    \`\`\``.trim(),
-   });
-  }
  }
  private async handleClose(
   lastDisconnect?: BaileysEventMap['connection.update']['lastDisconnect'],
@@ -67,8 +56,13 @@ export default class Connection {
  }
  private async handleOpen() {
   log.info('Connection Successful');
-  if (this.client.user?.id) {
-   await this.client.sendMessage(this.client.user.id, { text: 'Hello World' });
+  const cmdsList = commands.filter((cmd) => cmd.dontAddCommandList);
+
+  if (this.client?.user?.id) {
+   await this.client.sendMessage(this.client.user.id, {
+    text:
+     `\`\`\`Bot is connected\nOwner: ${this.client.user.name ?? 'Unknown'}\nCommands: ${cmdsList.length}\`\`\``.trim(),
+   });
   }
  }
 }
