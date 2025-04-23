@@ -56,7 +56,7 @@ export default class Connection {
  }
  private async handleOpen() {
   log.info('Connection Successful');
-  const cmdsList = commands.filter((cmd) => cmd.dontAddCommandList);
+  const cmdsList = commands.filter((cmd) => !cmd.dontAddCommandList);
 
   if (this.client?.user?.id) {
    await this.client.sendMessage(this.client.user.id, {
