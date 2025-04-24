@@ -1,6 +1,6 @@
 {
   "name": "xstro",
-  "version": "10.0.0",
+  "version": "11.0.0",
   "description": "Simple WA bot.",
   "type": "module",
   "main": "./dist/app.js",
@@ -33,6 +33,7 @@
     "node": ">=23"
   },
   "scripts": {
+    "start": "node main",
     "dev": "tsc && node ./dist/app.js",
     "build": "tsc",
     "lint": "yarn run eslint . --fix"

@@ -19,7 +19,6 @@ export default class MessageUpsert {
   for (const message of this.upserts.messages) {
    try {
     const msg = await serialize(this.client, structuredClone(message));
-    console.log(msg.prefix);
     const cmdInstance = new Message(msg, this.client);
     if (msg && msg?.key?.id) {
      await store.create({
