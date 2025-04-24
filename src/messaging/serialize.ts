@@ -1,5 +1,5 @@
 import { isJidGroup, normalizeMessageContent } from 'baileys';
-import { getSettings, getSudo } from '../models/index.ts';
+import { getSettings } from '../models/index.ts';
 import {
  getMessageContent,
  getQuotedContent,
@@ -13,7 +13,10 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
   message: normalizeMessageContent(WAMessage?.message),
  };
  const { key, message, broadcast, ...messages } = normalizedMessages;
- const { prefix, mode } = await getSettings();
+ const { prefix, mode, sudo, banned, disablecmd, disablegc, disabledm } =
+  await getSettings();
+ const jid = key.remoteJid ?? '';
+ const isGroup = isJidGroup(key.remoteJid!);
  const owner = parseJid(client?.user?.id);
  const sender =
   isJidGroup(key.remoteJid!) || broadcast
@@ -22,30 +25,34 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
      ? owner
      : key.remoteJid;
 
- const msgContent = getMessageContent(message);
- const quotedM = getQuotedContent(message, key, owner);
+ const content = getMessageContent(message);
+ const quoted = getQuotedContent(message, key, owner);
 
  return {
   key,
-  jid: key.remoteJid ?? '',
-  isGroup: isJidGroup(key.remoteJid!),
+  jid,
+  isGroup,
   owner,
   prefix,
   sender,
   mode,
-  sudo: (await getSudo())?.includes(sender ?? '') || sender === owner,
-  ...msgContent,
+  banned,
+  disablecmd,
+  disablegc,
+  disabledm,
+  sudo: sudo.includes(parseJid(sender)) ? true : sender === owner,
+  ...content,
   ...messages,
-  quoted: quotedM ? { ...quotedM } : undefined,
+  quoted: quoted ? { ...quoted } : undefined,
   user: function (match?: string): string | undefined {
    if (this.isGroup) {
-    if (quotedM && quotedM.sender) return quotedM.sender;
+    if (quoted && quoted.sender) return quoted.sender;
     if (!match) return undefined;
-    return Array.isArray(match) ? parseJid(match[0]) : parseJid(match);
+    return parseJid(match);
    } else {
-    if (quotedM && quotedM.sender) return quotedM.sender;
+    if (quoted && quoted.sender) return quoted.sender;
     if (!match) return undefined;
-    return Array.isArray(match) ? parseJid(match[0]) : parseJid(match);
+    return parseJid(match);
    }
   },
  };

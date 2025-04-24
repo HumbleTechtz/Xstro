@@ -1,9 +1,7 @@
-import pm2 from 'pm2';
 import { Boom } from '@hapi/boom';
 import { DisconnectReason } from 'baileys';
-import config from '../../../config.ts';
 import { commands } from '../plugins.ts';
-import { setSudo } from '../../models/index.ts';
+import { getSettings, setSettings } from '../../models/index.ts';
 import { log, parseJid } from '../../utils/index.ts';
 import type { BaileysEventMap, WASocket } from 'baileys';
 
@@ -32,7 +30,13 @@ export default class Connection {
  private async handleConnecting() {
   log.info('Connecting to WhatsApp...');
   if (this.client.user?.id) {
-   await setSudo(parseJid(this.client?.user?.id));
+   const sudo = (await getSettings()).sudo ?? [];
+   await setSettings(
+    'sudo',
+    Array.from(
+     new Set([parseJid(this.client?.user?.id), ...(sudo as string[])]),
+    ),
+   );
   }
  }
  private async handleClose(
@@ -45,13 +49,6 @@ export default class Connection {
    this.client.ev.flush(true);
    await this.client.ws.close();
    process.exit(1);
-  } else {
-   pm2.restart(config.PROCESS_NAME, async (error: Error) => {
-    if (error) {
-     log.error('Rebooting using process exitor');
-     process.exit();
-    }
-   });
   }
  }
  private async handleOpen() {

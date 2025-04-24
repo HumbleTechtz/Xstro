@@ -31,9 +31,9 @@ export default class Base {
   this.sender = data.sender;
   this.isGroup = data.isGroup;
   this.sudo = data.sudo;
-  this.mode = data.mode;
+  this.mode = data.mode as boolean;
   this.user = data.user;
-  this.prefix = data.prefix;
+  this.prefix = data.prefix as string[];
  }
 
  async edit(text: string, jid: string, key: WAMessageKey) {

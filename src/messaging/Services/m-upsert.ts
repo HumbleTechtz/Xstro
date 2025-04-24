@@ -1,6 +1,6 @@
 import Message from '../Messages/Message.ts';
 import { log } from '../../utils/index.ts';
-import { messageDb } from '../../models/index.ts';
+import { store } from '../../models/index.ts';
 import { serialize } from '../serialize.ts';
 import { commands } from '../plugins.ts';
 import type { BaileysEventMap, WASocket } from 'baileys';
@@ -19,15 +19,15 @@ export default class MessageUpsert {
   for (const message of this.upserts.messages) {
    try {
     const msg = await serialize(this.client, structuredClone(message));
+    console.log(msg.prefix);
     const cmdInstance = new Message(msg, this.client);
-    await Promise.all([
-     await messageDb.create({
-      id: message?.key?.id ?? null,
-      message,
-     }),
-
-     await this.runCommand(cmdInstance),
-    ]);
+    if (msg && msg?.key?.id) {
+     await store.create({
+      id: msg.key.id,
+      message: JSON.stringify(msg),
+     });
+    }
+    await Promise.all([await this.runCommand(cmdInstance)]);
    } catch (error) {
     log.error(`Task error: ${error}`);
    }
@@ -38,9 +38,8 @@ export default class MessageUpsert {
   if (!message.data.text) return;
 
   for (const cmd of commands) {
-   const handler = message.data.prefix.find((p: string) =>
-    message.data.text?.startsWith(p),
-   );
+   const prefix = message.data.prefix as string[];
+   const handler = prefix.find((p: string) => message.data.text?.startsWith(p));
    const match = message.data.text
     .slice(handler?.length || 0)
     .match(cmd.name as string);

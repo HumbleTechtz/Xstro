@@ -16,7 +16,7 @@ Command({
   await execPromise('git fetch');
 
   const { stdout: logOutput } = await execPromise(
-   'git log master..origin/master --pretty=format:%s',
+   'git log master..origin/master',
   );
   const commits = logOutput.split('\n').filter(Boolean);
 

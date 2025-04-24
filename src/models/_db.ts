@@ -1,12 +1,7 @@
 import Database from '@astrox11/sqlite';
 import config from '../../config.ts';
 
-const database = new Database(config.DATABASE, {
- open: true,
- enableForeignKeyConstraints: true,
- readOnly: false,
- verbose: config.DEV_MODE,
-});
+const database = new Database(config.DATABASE);
 
 process.on('exit', () => {
  database.close();

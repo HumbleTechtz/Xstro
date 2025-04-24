@@ -1,27 +1,53 @@
-import database from './_db.ts';
-import type { SettingsMap } from '../types/index.ts';
+import database from '../models/_db.ts';
+import { DataType } from '@astrox11/sqlite';
+import type { BotSettings } from '../types/index.ts';
 
-export const configDB = database.define('config', {
- prefix: { type: 'STRING', allowNull: false, defaultValue: '.' },
- mode: { type: 'INTEGER', allowNull: false, defaultValue: 1 },
-});
+export const config = database.define(
+ 'config',
+ {
+  settings: { type: DataType.STRING, primaryKey: true },
+  value: { type: DataType.STRING },
+ },
+ { timestamps: false },
+);
 
-async function init() {
- return await configDB.create({
-  prefix: '.',
-  mode: 1,
- });
-}
-init();
+export const getSettings = async () => {
+ if (!(await config.count())) {
+  await config.bulkCreate([
+   { settings: 'prefix', value: JSON.stringify(['.']) },
+   { settings: 'sudo', value: JSON.stringify(['']) },
+   { settings: 'banned', value: JSON.stringify(['']) },
+   { settings: 'disablecmd', value: JSON.stringify(['']) },
+   { settings: 'mode', value: JSON.stringify(1) },
+   { settings: 'disabledm', value: JSON.stringify(0) },
+   { settings: 'disablegc', value: JSON.stringify(0) },
+  ]);
+ }
+ const raw = await config.findAll();
+ const data = JSON.parse(JSON.stringify(raw));
+ const vars = data.reduce((acc: any, curr: any) => {
+  acc[curr.settings] = JSON.parse(curr.value);
+  return acc;
+ }, {}) as BotSettings;
 
-export async function getSettings(): Promise<SettingsMap> {
- const msg = (await configDB.findAll()) as SettingsMap[];
- const config = JSON.parse(JSON.stringify(msg));
- const mappedSettings = config.map((setting: SettingsMap) => ({
-  prefix: Array.isArray(setting.prefix)
-   ? setting.prefix
-   : Array.from(setting.prefix),
-  mode: Boolean(setting.mode),
- }));
- return mappedSettings[0] as SettingsMap;
-}
+ return { ...vars };
+};
+
+export const setSettings = async (
+ settingName: keyof BotSettings,
+ value: string | string[] | boolean,
+) => {
+ const stringValue = Array.isArray(value)
+  ? JSON.stringify(value)
+  : String(value);
+ const existing = await config.findOne({ where: { settings: settingName } });
+
+ if (existing) {
+  await config.update(
+   { value: stringValue },
+   { where: { settings: settingName } },
+  );
+ } else {
+  await config.create({ settings: settingName, value: stringValue });
+ }
+};

@@ -47,9 +47,17 @@ export function formatBytes(bytes: number): string {
  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))}${sizes[i]}`;
 }
 
-export function parseJid(num?: string | number): string {
+export function parseJid(num?: unknown): string {
  if (!num) return ``;
  let strNum = typeof num === 'string' ? num : num.toString();
  strNum = strNum.replace(/:\d+/, '').replace(/\D/g, '');
  return jidNormalizedUser(`${strNum}@s.whatsapp.net`);
+}
+
+export function parseBoolean(stringStatement: string): boolean {
+ stringStatement = stringStatement.toLowerCase().trim();
+ if (stringStatement === 'false') {
+  return false;
+ }
+ return true;
 }

@@ -7,23 +7,24 @@ import {
  type SignalDataTypeMap,
  type AuthenticationCreds,
 } from 'baileys';
+import { DataType } from '@astrox11/sqlite';
 
 export const authstate = database.define(
  'auth',
  {
-  name: { type: 'STRING', allowNull: true, primaryKey: true },
-  data: { type: 'STRING', allowNull: true },
+  name: { type: DataType.STRING, allowNull: true, primaryKey: true },
+  data: { type: DataType.JSON, allowNull: true },
  },
- { freezeTableName: true },
+ { timestamps: false },
 );
 
 export const useSqliteAuthStore = async () => {
  const writeData = async (name: string, data: unknown): Promise<void> => {
   const existing = await authstate.findOne({ where: { name } });
   if (existing) {
-   await authstate.update({ data: data }, { where: { name } });
+   await authstate.update({ data: JSON.stringify(data) }, { where: { name } });
   } else {
-   await authstate.create({ name, data: data });
+   await authstate.create({ name, data: JSON.stringify(data) });
   }
  };
 

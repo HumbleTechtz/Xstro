@@ -14,16 +14,13 @@ Command({
    return message.send('_Requires admin and bot admin privileges_');
   }
 
-  // Parse the user to be added
   const user = message.user(match);
   if (!user) return message.send('_Provide a number_');
 
-  // Important checks
   if (!(await message.client.onWhatsApp(user))) {
    return message.send('_This number is invaild!_');
   }
 
-  // To add the user to a group
   await message.client.groupParticipantsUpdate(message.jid, [user], 'add');
   return await message.send(
    `_@${user.split('@')[0]} has been added to the  Group_`,
@@ -40,11 +37,11 @@ Command({
  function: async (message, match) => {
   const isAdmin = await message.isAdmin();
   const isBotAdmin = await message.isBotAdmin();
-  // Ensure the bot and the sender is an admin
+
   if (!isAdmin && !isBotAdmin) {
    return message.send('_Requires admin and bot admin privileges_');
   }
-  // The user to be kicked
+
   const user = message.user(match);
   if (!user) return message.send('_Provide a number_');
 
@@ -62,23 +59,19 @@ Command({
  function: async (message, match) => {
   const isAdmin = await message.isAdmin();
   const isBotAdmin = await message.isBotAdmin();
-  // Ensure the bot and the sender is an admin
+
   if (!isAdmin && !isBotAdmin) {
    return message.send('_Requires admin and bot admin privileges_');
   }
-  // The user to be made an Admin
+
   const user = message.user(match);
   if (!user) return message.send('_Provide a number_');
 
-  // Make some checks to aviod repromoting a participant that's already an administrator
   const groupData = await message.client.groupMetadata(message.jid);
-
-  // This returns an array of the Group admins
   const admins = groupData.participants
    .filter((v) => v.admin !== null)
    .map((v) => v.id);
 
-  // Then we check to see if the user we want to promote exists in this admin array
   if (admins.includes(user)) {
    return await message.send(`_@${user.split('@')[0]} was already an admin_`);
   }
@@ -97,21 +90,19 @@ Command({
  function: async (message, match) => {
   const isAdmin = await message.isAdmin();
   const isBotAdmin = await message.isBotAdmin();
-  // Ensure the bot and the sender is an admin
+
   if (!isAdmin || !isBotAdmin) {
    return message.send('_Requires admin and bot admin privileges_');
   }
-  // The user to be demoted
+
   const user = message.user(match);
   if (!user) return message.send('_Provide a number_');
 
-  // Check if the user is an admin before demoting
   const groupData = await message.client.groupMetadata(message.jid);
   const admins = groupData.participants
    .filter((v) => v.admin !== null)
    .map((v) => v.id);
 
-  // Check if the user is not an admin
   if (!admins.includes(user)) {
    return await message.send(`_@${user.split('@')[0]} is not an admin_`);
   }
@@ -129,11 +120,9 @@ Command({
  type: 'group',
  function: async (message, match) => {
   if (!match) return message.send('_Provide a group name!_');
-  // Created Group
+
   const gc = await message.client.groupCreate(match, [message.owner]);
-  // Extracted Invitation code
   const invite = await message.client.groupInviteCode(gc.id);
-  // Merged with this URL
   const url = `https://chat.whatsapp.com/${invite}`;
 
   return await message.send(url, {
@@ -160,8 +149,10 @@ Command({
   if (!(await message.isAdmin())) return message.send('_For Admins only!_');
   if (!(await message.isBotAdmin()))
    return message.send('_I to be an need admin!_');
+
   const { participants } = await message.client.groupMetadata(message.jid);
   if (!participants?.length) return message.send('No participants');
+
   return message.client.relayMessage(
    message.jid,
    {

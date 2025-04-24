@@ -1,28 +1,21 @@
-import {
- type WAMessage,
- type WAMessageContent,
- type WAMessageKey,
- WAProto,
-} from 'baileys';
 import database from './_db.ts';
+import { WAProto } from 'baileys';
+import { DataType } from '@astrox11/sqlite';
+import type { WAMessage, WAMessageContent, WAMessageKey } from 'baileys';
 
-export const messageDb = database.define(
- 'messages',
- {
-  id: { type: 'STRING', allowNull: false, primaryKey: true, unique: false },
-  message: { type: 'STRING', allowNull: true },
- },
- { freezeTableName: true },
-);
+export const store = database.define('messages', {
+ id: { type: DataType.STRING },
+ message: { type: DataType.JSON, allowNull: true },
+});
 
 export async function getMessage(
  key: WAMessageKey,
 ): Promise<WAMessageContent | undefined> {
  if (!key.id) return undefined;
 
- const message = (await messageDb.findOne({
+ const message = await store.findOne({
   where: { id: key.id },
- })) as WAMessage;
+ });
  if (!message || !message.message) return undefined;
 
  const parsed: WAMessage = JSON.parse(message.message as string);
@@ -32,10 +25,10 @@ export async function getMessage(
 export async function getLastMessagesFromChat(
  jid: string,
 ): Promise<WAMessage[] | undefined> {
- const store = (await messageDb.findAll({})) as Array<{ message: string }>;
- if (!store || store.length === 0) return undefined;
+ const msgs = (await store.findAll()) as Array<{ message: string }>;
+ if (!msgs || msgs.length === 0) return undefined;
 
- const messages: WAMessage[] = store
+ const messages: WAMessage[] = msgs
   .map((msg: { message: string }) => JSON.parse(msg.message) as WAMessage)
   .filter((parsed: WAMessage) => parsed.key?.remoteJid === jid);
 
