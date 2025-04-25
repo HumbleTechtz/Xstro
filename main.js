@@ -1,6 +1,6 @@
 import { availableParallelism } from 'node:os';
 import { promisify } from 'node:util';
-import { exec as execCallback } from 'node:child_process';
+import { exec as execCallback, spawn } from 'node:child_process';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import readline from 'node:readline';
@@ -122,13 +122,13 @@ async function startApp() {
     print(`\n${colors.bright}Running build process...`, 'blue');
     console.log();
     
-    const { stdout, stderr } = await exec('yarn build');
+    const { stdout, stderr } = await exec('yarn lint && yarn build');
     
     if (stdout) print(`${stdout}\n`, 'green');
     if (stderr) print(`${stderr}\n`, 'red');
     
     const versionCheck = await checkNodeVersion();
-    const modulesCheck = await checkNodeModules();
+     await checkNodeModules();
     
     if (!versionCheck) {
       print('Continuing despite version mismatch (warning only)...\n', 'red');
@@ -152,17 +152,25 @@ async function startApp() {
     
     const originalExit = process.exit;
     process.exit = (code) => {
-      print(`${colors.bright}Application requested exit with code ${code}. Restarting...\n`, 'blue');
-      
-      import('./dist/src/app.js')
-        .catch(err => {
-          print(`${colors.bright}Failed to restart application: ${err.message}\n`, 'red');
-          originalExit(1);
-        });
+      if (code === 'end') {
+        print(`${colors.bright}Received process.end(). Terminating...\n`, 'red');
+        originalExit(0);
+      } else if (typeof code === 'number') {
+        print(`${colors.bright}Application requested exit with code ${code}. Restarting...\n`, 'blue');
+        startChildProcess();
+      } else {
+        print(`${colors.bright}Invalid exit code ${code}. Terminating to prevent errors...\n`, 'red');
+        originalExit(1);
+      }
     };
     
     process.on('SIGTERM', () => {
       print(`${colors.bright}Received SIGTERM. Shutting down...\n`, 'red');
+      originalExit(0);
+    });
+    
+    process.on('SIGINT', () => {
+      print(`${colors.bright}Received SIGINT. Shutting down...\n`, 'red');
       originalExit(0);
     });
     
@@ -173,14 +181,43 @@ async function startApp() {
       print(`${colors.bright}Adjusted to ${coresToUse} cores. CPU load: ${Math.round(cpuUsage * 100)}%\n`, 'blue');
     }, 30000);
     
-    try {
-      const appPath = './dist/src/app.js';
-      print(`${colors.bright}Loading application from ${appPath}\n`, 'blue');
-      await import(appPath);
-    } catch (err) {
-      print(`${colors.bright}Failed to start application: ${err.message}\n`, 'red');
-      process.exit(1);
+    function startChildProcess() {
+      const appPath = path.resolve('./dist/src/app.js');
+      print(`${colors.bright}Starting application from ${appPath}\n`, 'blue');
+      
+      const child = spawn('node', ['--experimental-sqlite', '--no-warnings', appPath], {
+        stdio: ['inherit', 'pipe', 'pipe'],
+        env: { ...process.env, SHUTDOWN_CODE: 'end' }
+      });
+      
+      child.stdout.on('data', (data) => {
+        print(`${data}`, 'green');
+      });
+      
+      child.stderr.on('data', (data) => {
+        print(`${data}`, 'red');
+      });
+      
+      child.on('exit', (code, signal) => {
+        if (code === null && signal === 'SIGTERM' || signal === 'SIGINT') {
+          print(`${colors.bright}Child process terminated by signal ${signal}. Shutting down...\n`, 'red');
+          originalExit(0);
+        } else if (code === 0 && process.env.SHUTDOWN_CODE === 'end') {
+          print(`${colors.bright}Child process terminated with shutdown code 'end'. Shutting down...\n`, 'red');
+          originalExit(0);
+        } else {
+          print(`${colors.bright}Child process exited with code ${code}. Restarting...\n`, 'blue');
+          startChildProcess();
+        }
+      });
+      
+      child.on('error', (err) => {
+        print(`${colors.bright}Failed to start child process: ${err.message}\n`, 'red');
+        originalExit(1);
+      });
     }
+    
+    startChildProcess();
     
   } catch (err) {
     print(`${colors.bright}Build failed: ${err.message}\n`, 'red');

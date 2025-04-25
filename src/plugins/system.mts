@@ -25,3 +25,15 @@ Command({
   return await message.send(`\`\`\`${formatRuntime(process.uptime())}\`\`\``);
  },
 });
+
+Command({
+ name: 'restart',
+ fromMe: true,
+ isGroup: false,
+ desc: 'Restart the process',
+ type: 'system',
+ function: async (message) => {
+  await message.send('_Restarting..._');
+  process.exit();
+ },
+});
