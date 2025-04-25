@@ -13,6 +13,7 @@ export default class Connection {
   this.events = events;
   this.handleConnectionUpdate();
  }
+
  public async handleConnectionUpdate() {
   const { connection, lastDisconnect } = this.events;
   switch (connection) {
@@ -27,6 +28,7 @@ export default class Connection {
     break;
   }
  }
+
  private async handleConnecting() {
   log.info('Connecting to WhatsApp...');
   if (this.client.user?.id) {
@@ -39,6 +41,7 @@ export default class Connection {
    );
   }
  }
+
  private async handleClose(
   lastDisconnect?: BaileysEventMap['connection.update']['lastDisconnect'],
  ) {
@@ -51,6 +54,7 @@ export default class Connection {
    process.exit(1);
   }
  }
+
  private async handleOpen() {
   log.info('Connection Successful');
   const cmdsList = commands.filter((cmd) => !cmd.dontAddCommandList);

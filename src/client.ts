@@ -27,7 +27,6 @@ export class WhatsAppClient {
     creds: state.creds,
     keys: makeCacheableSignalKeyStore(state.keys, log),
    },
-   printQRInTerminal: config.DEV_MODE,
    agent: config.PROXY_URI ? connectProxy(config.PROXY_URI) : undefined,
    logger: log,
    browser: Browsers.windows('Chrome'),

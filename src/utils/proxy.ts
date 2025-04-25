@@ -27,5 +27,6 @@ export function connectProxy(
   return new HttpsProxyAgent(proxyUri);
  } catch (error) {
   log.error(error);
+  return undefined;
  }
 }

@@ -1,7 +1,7 @@
-import type { Serialize } from '../../types/index.ts';
-import type { WASocket, WAMessageKey, WAMessage } from 'baileys';
 import { downloadMediaMessage } from 'baileys';
 import { isMediaMessage } from '../../utils/index.ts';
+import type { Serialize } from '../../types/index.ts';
+import type { WASocket, WAMessageKey, WAMessage, WAContextInfo } from 'baileys';
 
 export default class Base {
  public client: WASocket;
@@ -36,11 +36,11 @@ export default class Base {
   this.prefix = data.prefix as string[];
  }
 
- async edit(text: string, jid: string, key: WAMessageKey) {
-  return await this.client.sendMessage(jid, { text, edit: key });
+ async edit(text: string, key: WAMessageKey) {
+  return await this.client.sendMessage(this.jid, { text, edit: key });
  }
 
- async delete(jid: string, key: WAMessageKey) {
+ async delete(key: WAMessageKey) {
   const isRestrictedGroup = this.isGroup && !(await this.isBotAdmin());
   const isPrivateNotMe = !this.isGroup && !this.fromMe;
 
@@ -53,24 +53,24 @@ export default class Base {
       timestamp: Date.now(),
      },
     },
-    jid,
+    this.jid,
    );
   }
-  return await this.client.sendMessage(jid, { delete: key });
+  return await this.client.sendMessage(this.jid, { delete: key });
  }
 
  async downloadM(message: WAMessage) {
   return await downloadMediaMessage(message, 'buffer', {});
  }
 
- async isAdmin() {
+ async isAdmin(user: string) {
   const metadata = await this.client.groupMetadata(this.jid);
   const allAdmins = metadata.participants
    .filter((v) => v.admin !== null)
    .map((v) => v.id);
   return !Array.isArray(allAdmins)
-   ? Array.from(allAdmins)
-   : allAdmins.includes(this.sender ?? '');
+   ? Array.from(allAdmins).includes(user)
+   : allAdmins.includes(user);
  }
 
  async isBotAdmin() {
@@ -79,20 +79,20 @@ export default class Base {
    .filter((v) => v.admin !== null)
    .map((v) => v.id);
   return !Array.isArray(allAdmins)
-   ? Array.from(allAdmins)
+   ? Array.from(allAdmins).includes(this.owner)
    : allAdmins.includes(this.owner);
  }
 
- async forward(jid: string) {
-  if (this.data.message) {
-   return await this.client.sendMessage(jid, {
-    forward: { key: this.key, message: this.data.message },
-    contextInfo: { isForwarded: false, forwardingScore: 0 },
-   });
-  }
+ async forward(jid: string, message: WAMessage, options?: WAContextInfo) {
+  return await this.client.sendMessage(jid, {
+   forward: message,
+   contextInfo: { ...options },
+  });
  }
 
- async react(emoji: string, jid: string, key: WAMessageKey) {
-  return await this.client.sendMessage(jid, { react: { text: emoji, key } });
+ async react(emoji: string, key: WAMessageKey) {
+  return await this.client.sendMessage(this.jid, {
+   react: { text: emoji, key },
+  });
  }
 }

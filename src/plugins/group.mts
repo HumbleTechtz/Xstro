@@ -24,6 +24,7 @@ Command({
   await message.client.groupParticipantsUpdate(message.jid, [user], 'add');
   return await message.send(
    `_@${user.split('@')[0]} has been added to the  Group_`,
+   { mentions: [user] },
   );
  },
 });
@@ -46,7 +47,9 @@ Command({
   if (!user) return message.send('_Provide a number_');
 
   await message.client.groupParticipantsUpdate(message.jid, [user], 'remove');
-  return await message.send(`_@${user.split('@')[0]} kicked from Group_`);
+  return await message.send(`_@${user.split('@')[0]} kicked from Group_`, {
+   mentions: [user],
+  });
  },
 });
 
@@ -73,11 +76,15 @@ Command({
    .map((v) => v.id);
 
   if (admins.includes(user)) {
-   return await message.send(`_@${user.split('@')[0]} was already an admin_`);
+   return await message.send(`_@${user.split('@')[0]} was already an admin_`, {
+    mentions: [user],
+   });
   }
 
   await message.client.groupParticipantsUpdate(message.jid, [user], 'promote');
-  return await message.send(`_@${user.split('@')[0]} is now an admin_`);
+  return await message.send(`_@${user.split('@')[0]} is now an admin_`, {
+   mentions: [user],
+  });
  },
 });
 
@@ -104,11 +111,15 @@ Command({
    .map((v) => v.id);
 
   if (!admins.includes(user)) {
-   return await message.send(`_@${user.split('@')[0]} is not an admin_`);
+   return await message.send(`_@${user.split('@')[0]} is not an admin_`, {
+    mentions: [user],
+   });
   }
 
   await message.client.groupParticipantsUpdate(message.jid, [user], 'demote');
-  return await message.send(`_@${user.split('@')[0]} is no longer an admin_`);
+  return await message.send(`_@${user.split('@')[0]} is no longer an admin_`, {
+   mentions: [user],
+  });
  },
 });
 

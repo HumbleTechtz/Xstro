@@ -34,9 +34,7 @@
   },
   "scripts": {
     "start": "node main",
-    "dev": "tsc && node ./dist/app.js",
-    "build": "tsc",
-    "lint": "yarn run eslint . --fix"
+    "dev": "tsc && node ./dist/app.js"
   },
   "packageManager": "yarn@1.22.22"
 }

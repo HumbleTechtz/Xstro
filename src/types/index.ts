@@ -102,7 +102,6 @@ export interface AppConfig {
  SESSION_DIR: string;
  DATABASE: string;
  PROXY_URI: string;
- DEV_MODE: boolean;
  LOGGER: string;
  PROCESS_NAME: string;
 }

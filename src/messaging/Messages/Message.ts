@@ -10,6 +10,7 @@ export default class Message extends Base {
  constructor(data: Serialize, client: WASocket) {
   super(data, client);
   this.quoted = data.quoted ? new ReplyMessage(data, this.client) : undefined;
+  this.user = data.user;
  }
 
  async send(
@@ -26,11 +27,11 @@ export default class Message extends Base {
  }
 
  async edit(text: string) {
-  return await super.edit(text, this.jid, this.key);
+  return await super.edit(text, this.key);
  }
 
  async delete() {
-  return await super.delete(this.jid, this.key);
+  return await super.delete(this.key);
  }
 
  async downloadM() {
@@ -38,7 +39,7 @@ export default class Message extends Base {
  }
 
  async isAdmin() {
-  return await super.isAdmin();
+  return await super.isAdmin(this.sender ?? '');
  }
 
  async isBotAdmin() {
@@ -46,10 +47,10 @@ export default class Message extends Base {
  }
 
  async forward(jid: string) {
-  return await super.forward(jid);
+  return await super.forward(jid, this?.data);
  }
 
  async react(emoji: string) {
-  return await super.react(emoji, this.jid, this.key);
+  return await super.react(emoji, this.key);
  }
 }

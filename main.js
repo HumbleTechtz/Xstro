@@ -122,7 +122,7 @@ async function startApp() {
     print(`\n${colors.bright}Running build process...`, 'blue');
     console.log();
     
-    const { stdout, stderr } = await exec('yarn lint && yarn build');
+    const { stdout, stderr } = await exec('yarn run eslint . --fix && yarn tsc');
     
     if (stdout) print(`${stdout}\n`, 'green');
     if (stderr) print(`${stderr}\n`, 'red');
