@@ -4,7 +4,7 @@
     "module": "NodeNext",
     "moduleDetection": "force",
     "moduleResolution": "nodenext",
-    "rootDir": "./src",
+    "rootDir": ".",
     "outDir": "dist",
     "noImplicitThis": true,
     "resolveJsonModule": true,

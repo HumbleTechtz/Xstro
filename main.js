@@ -21,31 +21,43 @@ const print = (message, color = 'reset') => {
   process.stdout.write(`${colors[color]}${message}${colors.reset}`);
 };
 
-async function showLoader(message, duration = 3000) {
+async function showLoader(message, tasks) {
   const frames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
   let i = 0;
-  let progress = 0;
-  const interval = Math.floor(duration / 100);
-  
-  return new Promise(resolve => {
-    const timer = setInterval(() => {
+  let completedTasks = 0;
+  const totalTasks = tasks.length;
+
+  return new Promise((resolve, reject) => {
+    const updateProgress = () => {
       readline.clearLine(process.stdout, 0);
       readline.cursorTo(process.stdout, 0);
-      
-      progress = Math.min(100, progress + 1);
+      const progress = Math.round((completedTasks / totalTasks) * 100);
       const frame = frames[i = ++i % frames.length];
-      
-      const progressBar = '█'.repeat(Math.floor(progress / 2)) + 
-                          '░'.repeat(50 - Math.floor(progress / 2));
-      
-      print(`${colors.blue}${frame} ${message} ${colors.bright}[${progressBar}] ${progress}%`, 'blue');
-      
-      if (progress >= 100) {
-        clearInterval(timer);
-        console.log();
-        resolve();
+      const progressBar = '█'.repeat(progress / 4) + '░'.repeat(25 - progress / 4);
+      print(`${colors.blue}${frame} ${message} [${progressBar}] ${progress}%`, 'blue');
+    };
+
+    (async () => {
+      for (const task of tasks) {
+        try {
+          const { stdout, stderr } = await task.fn();
+          if (stdout && task.showOutput) print(`${stdout}\n`, 'green');
+          if (stderr && task.showOutput) print(`${stderr}\n`, 'red');
+          completedTasks++;
+          updateProgress();
+        } catch (err) {
+          clearInterval(animation);
+          print(`\n${colors.red}Build failed: ${err.message}\n`, 'red');
+          reject(err);
+          return;
+        }
       }
-    }, interval);
+      clearInterval(animation);
+      console.log();
+      resolve();
+    })();
+
+    const animation = setInterval(updateProgress, 100);
   });
 }
 
@@ -117,24 +129,27 @@ async function checkNodeVersion() {
 
 async function startApp() {
   try {
-    await showLoader('Building application', 3000);
-    
-    print(`\n${colors.bright}Running build process...`, 'blue');
-    console.log();
-    
-    const { stdout, stderr } = await exec('yarn run eslint . --fix && yarn tsc');
-    
-    if (stdout) print(`${stdout}\n`, 'green');
-    if (stderr) print(`${stderr}\n`, 'red');
+    const buildTasks = [
+      { 
+        name: 'Linting', 
+        fn: () => exec('yarn run eslint . --fix'),
+        showOutput: false
+      },
+      { 
+        name: 'Transpiling', 
+        fn: () => exec('yarn tsc'),
+        showOutput: false
+      }
+    ];
+
+    await showLoader('Building', buildTasks);
     
     const versionCheck = await checkNodeVersion();
-     await checkNodeModules();
+    await checkNodeModules();
     
     if (!versionCheck) {
       print('Continuing despite version mismatch (warning only)...\n', 'red');
     }
-    
-    await showLoader('Starting application', 2000);
     
     print(`\n${colors.bright}Process started. PID: ${process.pid}`, 'green');
     console.log();
