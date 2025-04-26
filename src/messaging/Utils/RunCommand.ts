@@ -3,6 +3,7 @@ import { log } from '../../utils/index.ts';
 import { commands } from '../plugins.ts';
 import { CONDITIONS } from '../../enum/index.ts';
 import type { Commands } from '../../types/index.ts';
+import { getStickerCmd } from '../../models/sticker.ts';
 
 export default class RunCommand {
  private message: Message;
@@ -40,7 +41,33 @@ export default class RunCommand {
  }
 
  private async runSticker(): Promise<void> {
-  // to do : sticker command
+  const stickerMessage = this.message.data.message?.stickerMessage;
+  const lottieStickerMessage = this.message.data.message?.lottieStickerMessage;
+
+  const fileSha256 =
+   stickerMessage?.fileSha256 ??
+   lottieStickerMessage?.message?.stickerMessage?.fileSha256;
+
+  const filesha256 = fileSha256
+   ? Buffer.from(new Uint8Array(fileSha256)).toString('base64')
+   : undefined;
+
+  const sticker = await getStickerCmd(filesha256 ?? '');
+
+  if (sticker) {
+   for (const cmd of commands) {
+    const match = sticker.cmdname.match(cmd.name as string);
+
+    if (!match) continue;
+    if (!this.checkBeforeCommandExecution(cmd)) continue;
+
+    try {
+     await cmd.function(this.message, match[2] ?? '');
+    } catch (err) {
+     log.error(err);
+    }
+   }
+  }
  }
 
  private checkBeforeCommandExecution(cmd: Commands): boolean {

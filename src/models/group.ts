@@ -26,10 +26,12 @@ export async function preserveGroupMetaData(
  data: GroupMetadata,
 ): Promise<GroupMetadata> {
  const metadata = JSON.stringify(data);
+
  if (!(await Metadata.count())) {
-  Metadata.create({ jid, data: metadata });
+  await Metadata.create({ jid, data: metadata });
  } else {
-  Metadata.upsert({ jid, data: metadata }, { where: { jid, data } });
+  await Metadata.upsert({ jid, data: metadata }, { where: { jid } });
  }
+
  return data;
 }

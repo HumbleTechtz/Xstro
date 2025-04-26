@@ -28,7 +28,10 @@ export default class ReplyMessage extends Base {
   this.image = Boolean(data?.quoted?.message?.imageMessage);
   this.video = Boolean(data?.quoted?.message?.videoMessage);
   this.audio = Boolean(data?.quoted?.message?.audioMessage);
-  this.sticker = Boolean(data?.quoted?.message?.stickerMessage);
+  this.sticker = Boolean(
+   data?.quoted?.message?.stickerMessage ??
+    data.quoted?.message?.lottieStickerMessage,
+  );
   this.viewOnce = data?.quoted?.viewOnce;
  }
 
