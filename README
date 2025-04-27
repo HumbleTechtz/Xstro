@@ -1,0 +1,61 @@
+____  ___          __                 
+\   \/  /  _______/  |________  ____  
+ \     /  /  ___/\   __\_  __ \/  _ \ 
+ /     \  \___ \  |  |  |  | \(  <_> )
+/___/\  \/____  > |__|  |__|   \____/ 
+      \_/     \/                      
+
+Xstro is a simple open source whatsapp third party automation system that uses Baileys Web API to interact seemlessly via web socket.
+ For information on Baileys, see :
+
+https://github.com/WhiskeySockets/Baileys
+
+Baileys is a WebSockets-based TypeScript library for interacting with the WhatsApp Web API.
+
+Get Straight to the point:
+
+https://xstro-web.vercel.app
+
+Installation: 
+
+If you are using windows ensure the following are installed:
+
+Git - https://git-scm.com/downloads/win
+Node.js:
+powershell -c "irm https://community.chocolatey.org/install.ps1|iex"
+choco install nodejs-lts --version="23"
+node -v # Should print "v23.11.0".
+npm -v # Should print "10.9.2".
+
+You can use other methods to install Node.js 23x.
+
+Please Note that Xstro supports Node.js 23 and above, this is because it uses the built-in node sqlite module.
+I have abstracted it to an ORM, for more Information on the ORM, see:
+
+https://github.com/AstroX11/sqlite
+
+Session Management:
+
+Xstro uses a custom session and authentication storage via sqlite:
+
+You must create your own session instance and customize it to your needs, session management can be found here:
+
+https://github.com/AstroX11/session
+
+If you want it to show on a website, you can use the following repository as a base to get started: 
+
+https://github.com/AstroX11/xstroweb
+
+Deployment:
+
+Here are the list of platforms we current support:
+
+| Platform | Supported |
+------------------------
+| Heroku   | Yes       |
+| Koyeb    | Yes       |
+| Render   | Yes       |
+| Panel    | NULL      |
+| VPS      | Yes       |
+| Local PC | Yes       |
+------------------------
