@@ -1,7 +1,7 @@
+import { pathToFileURL, fileURLToPath } from 'node:url';
+import { join, extname, dirname } from 'node:path';
+import { readdir } from 'node:fs/promises';
 import { log } from '../utils/index.ts';
-import { pathToFileURL, fileURLToPath } from 'url';
-import { join, extname, dirname } from 'path';
-import { readdir } from 'fs/promises';
 import type { Commands } from '../types/bot.ts';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -18,7 +18,6 @@ export function Command({
  type,
  dontAddCommandList,
 }: Commands): number {
- log.info('Command Loaded:', name?.toString());
  return commands.push({
   name: new RegExp(`^\\s*(${name})(?:\\s+([\\s\\S]+))?$`, 'i'),
   function: func,

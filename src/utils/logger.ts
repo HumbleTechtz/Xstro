@@ -11,9 +11,7 @@ const LEVELS = Object.freeze({
  fatal: 60,
 });
 
-const currentLevel = LEVELS[(config.LOGGER as keyof typeof LEVELS) || 'info'];
-
-const baseSpinner = ora({ discardStdin: false }); // shared base for proper formatting
+const currentLevel = LEVELS[(config.LOGGER as keyof typeof LEVELS) ?? 'info'];
 
 const logger = (level: keyof typeof LEVELS, data: unknown, msg?: unknown) => {
  if (LEVELS[level] < currentLevel) return;
@@ -27,14 +25,14 @@ const logger = (level: keyof typeof LEVELS, data: unknown, msg?: unknown) => {
     ? { ...data }
     : { msg: data };
 
- const text = JSON.stringify(entry, null, 2); // prettified
+ const text = JSON.stringify(entry);
 
  if (level === 'error' || level === 'fatal') {
-  ora().fail(`[${level.toUpperCase()}] ${text}`);
+  ora().fail(text);
  } else if (level === 'warn') {
-  ora().warn(`[WARN] ${text}`);
+  ora().warn(text);
  } else {
-  ora().succeed(`[${level.toUpperCase()}] ${text}`);
+  ora().succeed(text);
  }
 };
 
@@ -51,13 +49,14 @@ export const log: ILogger = {
  child: (obj: Record<string, unknown>) => {
   const childLog =
    (level: keyof typeof LEVELS) => (data: unknown, msg?: string) => {
-    const mergedData = {
-     ...obj,
-     ...(typeof data === 'object' && data !== null ? data : {}),
-    };
-    const message =
-     typeof data === 'object' && data !== null ? msg : String(data);
-    logger(level, mergedData, message);
+    logger(
+     level,
+     {
+      ...obj,
+      ...(typeof data === 'object' && data !== null ? data : {}),
+     },
+     typeof data === 'object' && data !== null ? msg : String(data),
+    );
    };
 
   return {

@@ -12,7 +12,7 @@ Command({
  type: 'utilities',
  dontAddCommandList: true,
  function: async (message) => {
-  let menu = `╭─── ${process.env.BOT_INFO?.split(';')[0] ?? `χѕтяσ м∂`} ────
+  let menu = `\`\`\`╭─── χѕтяσ м∂ ────
 │ User: ${message.pushName?.trim() ?? `Unknown`}
 │ Owner: αѕтяσχ11
 │ Mode: ${message.mode ? 'Private' : 'Public'}
@@ -23,7 +23,7 @@ Command({
 │ Date: ${new Date().toLocaleDateString('en-US')}
 │ Time: ${new Date().toLocaleTimeString('en-US', { timeZone: process.env.TZ })}
 │ Node: ${process.version}
-╰─────────────`.trim();
+╰─────────────\`\`\``.trim();
   const filteredCommands = commands.filter((cmd) => !cmd.dontAddCommandList);
 
   const groupedCommands: Record<Commands['type'], string[]> =

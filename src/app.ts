@@ -2,7 +2,6 @@ import WhatsAppClient from './messaging/client.ts';
 import { syncPlugins } from './messaging/plugins.ts';
 import { SessionManager } from './utils/migrate.ts';
 import { log } from './utils/logger.ts';
-import { delay } from 'baileys';
 import { parseModules } from './utils/constants.ts';
 
 export default class App {
@@ -15,7 +14,6 @@ export default class App {
    await parseModules();
    await syncPlugins('../plugins', ['.ts']);
    new SessionManager();
-   await delay(1000);
    new WhatsAppClient();
   } catch (error) {
    log.error(error);
