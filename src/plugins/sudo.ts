@@ -16,7 +16,9 @@ Command({
   }
   const users = Array.from(new Set([user, ...isSudo.sudo]));
   await setSettings('sudo', users);
-  return await msg.send(`_@${user.split('@')[0]} is now sudo_`);
+  return await msg.send(`_@${user.split('@')[0]} is now sudo_`, {
+   mentions: [user],
+  });
  },
 });
 
@@ -38,7 +40,9 @@ Command({
 
   const updated = settings.sudo.filter((u) => u !== user);
   await setSettings('sudo', updated);
-  return msg.send(`_@${user.split('@')[0]} removed from sudo_`);
+  return msg.send(`_@${user.split('@')[0]} removed from sudo_`, {
+   mentions: [user],
+  });
  },
 });
 
