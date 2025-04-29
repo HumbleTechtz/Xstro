@@ -1,4 +1,4 @@
-import { DataType } from '@astrox11/sqlite';
+import { DataType } from '../sql/index.ts';
 import database from './_db.ts';
 import type { GroupMetadata } from 'baileys';
 
@@ -17,8 +17,13 @@ export async function cachedGroupMetadata(
  const metadata = (await Metadata.findOne({ where: { jid } })) as {
   data: string;
  };
- if (!metadata) return undefined;
- return JSON.parse(metadata.data) as GroupMetadata;
+
+ if (!metadata) {
+  return undefined;
+ }
+
+ const parsedData = JSON.parse(metadata.data) as GroupMetadata;
+ return parsedData;
 }
 
 export async function preserveGroupMetaData(
@@ -27,7 +32,9 @@ export async function preserveGroupMetaData(
 ): Promise<GroupMetadata> {
  const metadata = JSON.stringify(data);
 
- if (!(await Metadata.count())) {
+ const count = await Metadata.count();
+
+ if (count === 0) {
   await Metadata.create({ jid, data: metadata });
  } else {
   await Metadata.upsert({ jid, data: metadata }, { where: { jid } });

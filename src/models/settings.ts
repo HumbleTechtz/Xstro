@@ -1,6 +1,6 @@
 import database from '../models/_db.ts';
-import { DataType } from '@astrox11/sqlite';
-import type { BotSettings } from '../types/index.ts';
+import { DataType } from '../sql/index.ts';
+import type { BotSettings } from '../types/bot.ts';
 
 export const config = database.define(
  'config',
@@ -12,8 +12,9 @@ export const config = database.define(
 );
 
 export const getSettings = async () => {
- if (!(await config.count())) {
-  await config.bulkCreate([
+ const count = await config.count();
+ if (!count) {
+  const defaults = [
    { settings: 'prefix', value: JSON.stringify(['.']) },
    { settings: 'sudo', value: JSON.stringify(['']) },
    { settings: 'banned', value: JSON.stringify(['']) },
@@ -21,8 +22,10 @@ export const getSettings = async () => {
    { settings: 'mode', value: JSON.stringify(1) },
    { settings: 'disabledm', value: JSON.stringify(0) },
    { settings: 'disablegc', value: JSON.stringify(0) },
-  ]);
+  ];
+  await config.bulkCreate(defaults);
  }
+
  const raw = await config.findAll();
  const data = JSON.parse(JSON.stringify(raw));
  const vars = data.reduce((acc: any, curr: any) => {
@@ -33,21 +36,15 @@ export const getSettings = async () => {
  return { ...vars };
 };
 
-export const setSettings = async (
- settingName: keyof BotSettings,
- value: string | string[] | boolean,
-) => {
- const stringValue = Array.isArray(value)
-  ? JSON.stringify(value)
-  : String(value);
- const existing = await config.findOne({ where: { settings: settingName } });
+export const setSettings = async (settingName: string, value: any) => {
+ const db = await config.findOne({ where: { settings: settingName } });
 
- if (existing) {
-  await config.update(
-   { value: stringValue },
+ if (db) {
+  return await config.update(
+   { value: value },
    { where: { settings: settingName } },
   );
- } else {
-  await config.create({ settings: settingName, value: stringValue });
  }
+
+ return null;
 };

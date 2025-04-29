@@ -1,4 +1,4 @@
-import Database from '@astrox11/sqlite';
+import { Database } from '../sql/index.ts';
 import config from '../../config.ts';
 
 const database = new Database(config.DATABASE);

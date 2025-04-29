@@ -2,7 +2,7 @@ import { log } from '../utils/index.ts';
 import { pathToFileURL, fileURLToPath } from 'url';
 import { join, extname, dirname } from 'path';
 import { readdir } from 'fs/promises';
-import type { Commands } from '../types/index.ts';
+import type { Commands } from '../types/bot.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

@@ -2,6 +2,7 @@ import { WhatsAppClient } from './client.ts';
 import { syncPlugins } from './messaging/plugins.ts';
 import { SessionManager } from './utils/migrate.ts';
 import { log } from './utils/logger.ts';
+import { delay } from 'baileys';
 
 export default class App {
  constructor() {
@@ -12,6 +13,7 @@ export default class App {
   try {
    await syncPlugins('../plugins', ['.mjs', '.mts']);
    new SessionManager();
+   await delay(1000);
    new WhatsAppClient();
   } catch (error) {
    log.error(error);

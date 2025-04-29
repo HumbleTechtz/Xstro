@@ -1,5 +1,5 @@
 import { Command, commands } from '../messaging/plugins.ts';
-import type { Commands } from '../types/index.ts';
+import type { Commands } from '../types/bot.ts';
 
 Command({
  name: 'menu',

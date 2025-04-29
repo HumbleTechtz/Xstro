@@ -13,10 +13,10 @@ export default class MakeEvents {
  ) {
   this.Socket = clientSocket;
   this.saveCreds = saveCreds;
-  this.manageProcesses();
+  this.hooks();
  }
 
- async manageProcesses() {
+ async hooks() {
   return this.Socket.ev.process(async (events) => {
    if (events['creds.update']) {
     await this.saveCreds();

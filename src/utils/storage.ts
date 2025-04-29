@@ -1,15 +1,14 @@
-import { log } from '../utils/index.ts';
-import database from '../models/_db.ts';
 import {
- WAProto,
+ AuthenticationCreds,
  BufferJSON,
  initAuthCreds,
+ WAProto,
  type SignalDataTypeMap,
- type AuthenticationCreds,
 } from 'baileys';
-import { DataType } from '@astrox11/sqlite';
+import database from '../models/_db.ts';
+import { DataType } from '../types/sql.ts';
 
-export const authstate = database.define(
+export const auth = database.define(
  'auth',
  {
   name: { type: DataType.STRING, allowNull: true, primaryKey: true },
@@ -18,34 +17,28 @@ export const authstate = database.define(
  { timestamps: false },
 );
 
-export const useSqliteAuthStore = async () => {
- const writeData = async (name: string, data: unknown): Promise<void> => {
-  const existing = await authstate.findOne({ where: { name } });
-  if (existing) {
-   await authstate.update({ data: JSON.stringify(data) }, { where: { name } });
-  } else {
-   await authstate.create({ name, data: JSON.stringify(data) });
-  }
+export async function useSqliteAuthState() {
+ const writeData = async (data: any, name: string) => {
+  return await auth.upsert({ name, data: JSON.parse(JSON.stringify(data)) });
  };
 
  const readData = async (name: string) => {
-  try {
-   const entry = (await authstate.findOne({ where: { name } })) as {
-    data: string;
-   };
-   return entry?.data ? JSON.parse(entry.data, BufferJSON.reviver) : null;
-  } catch (error) {
-   log.error(error);
-   return null;
-  }
+  const exists = (await auth.findOne({ where: { name } })) as {
+   name: string;
+   data: string;
+  };
+  return exists
+   ? JSON.parse(
+      typeof exists?.data === 'object'
+       ? JSON.stringify(exists.data)
+       : exists.data,
+      BufferJSON.reviver,
+     )
+   : undefined;
  };
 
- const removeData = async (name: string): Promise<void> => {
-  try {
-   await authstate.destroy({ where: { name } });
-  } catch (error) {
-   log.error(error);
-  }
+ const removeData = async (name: string) => {
+  return await auth.destroy({ where: { name } });
  };
 
  const creds: AuthenticationCreds =
@@ -55,37 +48,34 @@ export const useSqliteAuthStore = async () => {
   state: {
    creds,
    keys: {
-    get: async <T extends keyof SignalDataTypeMap>(
-     type: T,
-     ids: string[],
-    ): Promise<{ [id: string]: SignalDataTypeMap[T] }> => {
-     const data: { [id: string]: SignalDataTypeMap[T] } = {};
+    get: async <T extends keyof SignalDataTypeMap>(type: T, ids: string[]) => {
+     const data: { [id: string]: SignalDataTypeMap[T] } = {} as any;
      await Promise.all(
       ids.map(async (id) => {
        let value = await readData(`${type}-${id}`);
        if (type === 'app-state-sync-key' && value) {
         value = WAProto.Message.AppStateSyncKeyData.fromObject(value);
        }
-       data[id] = value;
+       data[id] = value as SignalDataTypeMap[T];
       }),
      );
      return data;
     },
     set: async (data: { [category: string]: { [id: string]: any } }) => {
-     const tasks: Promise<void>[] = [];
-     for (const category in data) {
-      for (const id in data[category]) {
-       const value = data[category][id];
-       const name = `${category}-${id}`;
-       tasks.push(value ? writeData(name, value) : removeData(name));
-      }
-     }
+     const tasks = Object.entries(data).flatMap(([category, ids]) =>
+      Object.entries(ids).map(([id, value]) =>
+       (value
+        ? writeData(value, `${category}-${id}`)
+        : removeData(`${category}-${id}`)
+       ).then(() => {}),
+      ),
+     );
      await Promise.all(tasks);
     },
    },
   },
   saveCreds: async () => {
-   await writeData('creds', creds);
+   return (await writeData(creds, 'creds')) as unknown as void;
   },
  };
-};
+}

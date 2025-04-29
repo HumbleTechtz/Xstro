@@ -10,10 +10,10 @@ export default class MessageUpsert {
  constructor(client: WASocket, upserts: BaileysEventMap['messages.upsert']) {
   this.client = client;
   this.msg = upserts;
-  this.run();
+  this.msgHooks();
  }
 
- private async run() {
+ private async msgHooks() {
   new RunCommand(
    new Message(
     await serialize(this.client, structuredClone(this.msg?.messages?.[0]!)),

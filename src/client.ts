@@ -2,11 +2,11 @@ import {
  makeWASocket,
  makeCacheableSignalKeyStore,
  Browsers,
- WASocket,
+ type WASocket,
 } from 'baileys';
 import config from '../config.ts';
 import makeEvents from './messaging/_process.ts';
-import { log, connectProxy, useSqliteAuthStore } from './utils/index.ts';
+import { log, connectProxy, useSqliteAuthState } from './utils/index.ts';
 import { getMessage, cachedGroupMetadata } from './models/index.ts';
 
 export class WhatsAppClient {
@@ -20,7 +20,7 @@ export class WhatsAppClient {
  }
 
  public async initialize() {
-  const { state, saveCreds } = await useSqliteAuthStore();
+  const { state, saveCreds } = await useSqliteAuthState();
 
   this.sock = makeWASocket({
    auth: {
@@ -38,14 +38,6 @@ export class WhatsAppClient {
   });
 
   this.events = new makeEvents(this.sock, { saveCreds });
-  return this.events;
- }
-
- public getSocket() {
-  return this.sock;
- }
-
- public getEvents() {
   return this.events;
  }
 }

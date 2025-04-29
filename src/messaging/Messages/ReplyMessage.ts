@@ -1,5 +1,5 @@
 import Base from './Base.ts';
-import type { Serialize } from '../../types/index.ts';
+import type { Serialize } from '../../types/bot.ts';
 import type { WAMessageKey, WASocket } from 'baileys';
 
 export default class ReplyMessage extends Base {

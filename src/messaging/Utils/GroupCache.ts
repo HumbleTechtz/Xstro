@@ -15,6 +15,6 @@ export default class GroupCache {
    } catch (error) {
     log.error(error);
    }
-  }, 300000);
+  }, 600_000);
  }
 }

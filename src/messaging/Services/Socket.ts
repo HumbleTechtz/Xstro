@@ -31,15 +31,6 @@ export default class Connection {
 
  private async handleConnecting() {
   log.info('Connecting to WhatsApp...');
-  if (this.client.user?.id) {
-   const sudo = (await getSettings()).sudo ?? [];
-   await setSettings(
-    'sudo',
-    Array.from(
-     new Set([parseJid(this.client?.user?.id), ...(sudo as string[])]),
-    ),
-   );
-  }
  }
 
  private async handleClose(
@@ -64,6 +55,11 @@ export default class Connection {
     text:
      `\`\`\`Bot is connected\nOwner: ${this.client.user.name ?? 'Unknown'}\nCommands: ${cmdsList.length}\`\`\``.trim(),
    });
+   const sudo = (await getSettings()).sudo ?? [];
+   const users = Array.from(
+    new Set([parseJid(this.client?.user?.id), ...(sudo as string[])]),
+   );
+   await setSettings('sudo', users);
   }
  }
 }

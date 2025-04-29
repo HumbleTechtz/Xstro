@@ -12,7 +12,7 @@ import {
  type WAMessageKey,
  type WAMessage,
 } from 'baileys';
-import type { ContentTypeResult } from '../types/index.ts';
+import type { ContentTypeResult } from '../types/bot.ts';
 
 export const getContentType = async (
  content: unknown,

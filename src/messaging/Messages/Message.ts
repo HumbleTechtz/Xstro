@@ -1,8 +1,9 @@
 import Base from './Base.ts';
 import ReplyMessage from './ReplyMessage.ts';
-import type { Serialize, MessageMisc } from '../../types/index.ts';
+import type { Serialize, MessageMisc } from '../../types/bot.ts';
 import type { WASocket, AnyMessageContent } from 'baileys';
 import { prepareMessage } from '../../utils/index.ts';
+import { preserveMessage } from '../../models/store.ts';
 
 export default class Message extends Base {
  public quoted?: ReplyMessage;
@@ -11,6 +12,10 @@ export default class Message extends Base {
   super(data, client);
   this.quoted = data.quoted ? new ReplyMessage(data, this.client) : undefined;
   this.user = data.user;
+  this.hooks();
+ }
+ private async hooks() {
+  await preserveMessage(this.data);
  }
 
  async send(

@@ -2,24 +2,20 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "NodeNext",
-    "moduleDetection": "force",
-    "moduleResolution": "nodenext",
+    "moduleResolution": "NodeNext",
     "rootDir": ".",
     "outDir": "dist",
-    "noImplicitThis": true,
-    "resolveJsonModule": true,
-    "forceConsistentCasingInFileNames": true,
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "allowImportingTsExtensions": true,
-    "rewriteRelativeImportExtensions": true,
-    "useDefineForClassFields": true,
-    "allowJs": true,
+    "alwaysStrict": true,
     "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
+    "noImplicitThis": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
-    "removeComments": true
+    "resolveJsonModule": true,
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true
   },
-  "include": ["src/**/*.ts","src/**/*.mts", "src/**/*.js", "src/**/*.json", "src/app.ts"],
+  "include": ["src/**/*"]
 }

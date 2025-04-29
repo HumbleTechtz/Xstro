@@ -1,8 +1,8 @@
 import { createDecipheriv } from 'node:crypto';
 import config from '../../config.ts';
 import database from '../models/_db.ts';
-import { fetchJson, log, authstate } from './index.ts';
-import { DataType } from '@astrox11/sqlite';
+import { fetchJson, log, auth } from './index.ts';
+import { DataType } from '../sql/index.ts';
 
 export class SessionManager {
  private sessionId = database.define(
@@ -88,7 +88,7 @@ export class SessionManager {
   );
 
   for (const [name, dataValue] of Object.entries(merged)) {
-   await authstate.create({ name, data: JSON.stringify(dataValue) });
+   await auth.create({ name, data: JSON.stringify(dataValue) });
   }
   return await this.sessionId.create({ session: config.SESSION });
  }
