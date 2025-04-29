@@ -4,12 +4,13 @@ import {
  Browsers,
  type WASocket,
 } from 'baileys';
-import config from '../config.ts';
-import makeEvents from './messaging/_process.ts';
-import { log, connectProxy, useSqliteAuthState } from './utils/index.ts';
-import { getMessage, cachedGroupMetadata } from './models/index.ts';
+import config from '../../config.ts';
+import makeEvents from './events.ts';
+import { log, connectProxy, useSqliteAuthState } from '../utils/index.ts';
+import { getMessage, cachedGroupMetadata } from '../models/index.ts';
+import { CacheStore } from './Services/Cache.ts';
 
-export class WhatsAppClient {
+export default class WhatsAppClient {
  private sock: WASocket | undefined;
  private events: makeEvents | undefined;
 
@@ -25,7 +26,7 @@ export class WhatsAppClient {
   this.sock = makeWASocket({
    auth: {
     creds: state.creds,
-    keys: makeCacheableSignalKeyStore(state.keys, log),
+    keys: makeCacheableSignalKeyStore(state.keys, log, new CacheStore()),
    },
    agent: config.PROXY_URI ? connectProxy(config.PROXY_URI) : undefined,
    logger: log,

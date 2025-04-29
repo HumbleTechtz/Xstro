@@ -1,5 +1,8 @@
 import { Command, commands } from '../messaging/plugins.ts';
+import { platform, totalmem, freemem } from 'node:os';
 import type { Commands } from '../types/bot.ts';
+import { formatBytes, formatRuntime } from '../utils/constants.ts';
+import { cwd } from 'node:process';
 
 Command({
  name: 'menu',
@@ -9,7 +12,18 @@ Command({
  type: 'utilities',
  dontAddCommandList: true,
  function: async (message) => {
-  let menu = '';
+  let menu = `╭─── ${process.env.BOT_INFO?.split(';')[0] ?? `χѕтяσ м∂`} ────
+│ User: ${message.pushName?.trim() ?? `Unknown`}
+│ Owner: αѕтяσχ11
+│ Mode: ${message.mode ? 'Private' : 'Public'}
+│ Uptime: ${formatRuntime(process.uptime())}
+│ Platform: ${platform()}
+│ Ram: ${formatBytes(totalmem() - freemem())}
+│ Day: ${new Date().toLocaleDateString('en-US', { weekday: 'long' })}
+│ Date: ${new Date().toLocaleDateString('en-US')}
+│ Time: ${new Date().toLocaleTimeString('en-US', { timeZone: process.env.TZ })}
+│ Node: ${process.version}
+╰─────────────`.trim();
   const filteredCommands = commands.filter((cmd) => !cmd.dontAddCommandList);
 
   const groupedCommands: Record<Commands['type'], string[]> =
@@ -30,15 +44,27 @@ Command({
   ).sort() as Commands['type'][];
 
   for (const category of sortedCategories) {
-   menu += `=== ${category} ===\n`;
+   menu += `\n=== ${category} ===\n`;
    const sortedCommands = groupedCommands[category].sort();
    for (const cmd of sortedCommands) {
-    menu += `- ${cmd}\n`;
+    menu += `- _${cmd}_\n`;
    }
-   menu += '\n';
   }
 
-  return await message.send(menu.trim());
+  return await message.send(menu.trim(), {
+   contextInfo: {
+    externalAdReply: {
+     title: 'αѕтяσχ11',
+     body: message.pushName ?? '',
+     thumbnail: await (
+      await import('node:fs/promises')
+     ).readFile(`${cwd()}/src/media/logo.png`),
+     mediaType: 1,
+     sourceUrl: 'https://github.com/AstroX11/Xstro',
+     showAdAttribution: true
+    },
+   },
+  });
  },
 });
 

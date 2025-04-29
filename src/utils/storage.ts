@@ -1,12 +1,12 @@
 import {
- AuthenticationCreds,
  BufferJSON,
  initAuthCreds,
  WAProto,
+ type AuthenticationCreds,
  type SignalDataTypeMap,
 } from 'baileys';
 import database from '../models/_db.ts';
-import { DataType } from '../types/sql.ts';
+import { DataType } from '@astrox11/sqlite';
 
 export const auth = database.define(
  'auth',

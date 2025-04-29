@@ -1,5 +1,5 @@
 import database from '../models/_db.ts';
-import { DataType } from '../sql/index.ts';
+import { DataType } from '@astrox11/sqlite';
 import type { BotSettings } from '../types/bot.ts';
 
 export const config = database.define(

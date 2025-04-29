@@ -1,8 +1,9 @@
 import { createDecipheriv } from 'node:crypto';
+import { fetch } from '@astrox11/utily';
 import config from '../../config.ts';
 import database from '../models/_db.ts';
-import { fetchJson, log, auth } from './index.ts';
-import { DataType } from '../sql/index.ts';
+import { log, auth } from './index.ts';
+import { DataType } from '@astrox11/sqlite';
 
 export class SessionManager {
  private sessionId = database.define(
@@ -43,7 +44,7 @@ export class SessionManager {
   data: string;
  }> {
   try {
-   const encryption = await fetchJson(
+   const encryption = await fetch(
     `https://session.koyeb.app/session?session=${config.SESSION}`,
    );
    const session = JSON.parse(encryption);

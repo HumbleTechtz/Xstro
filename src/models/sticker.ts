@@ -1,4 +1,4 @@
-import { DataType } from '../sql/index.ts';
+import { DataType } from '@astrox11/sqlite';
 import database from './_db.ts';
 
 const StickerCMD = database.define(

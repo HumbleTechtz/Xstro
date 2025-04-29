@@ -1,6 +1,6 @@
 import database from './_db.ts';
 import { WAProto } from 'baileys';
-import { DataType } from '../sql/index.ts';
+import { DataType } from '@astrox11/sqlite';
 import type { WAMessage, WAMessageContent, WAMessageKey } from 'baileys';
 
 export const store = database.define(

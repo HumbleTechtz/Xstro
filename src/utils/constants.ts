@@ -1,4 +1,7 @@
 import { jidNormalizedUser } from 'baileys';
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
+import ora from 'ora';
 
 export function isPath(text: string): boolean {
  if (typeof text !== 'string' || text.trim() === '') return false;
@@ -60,4 +63,40 @@ export function parseBoolean(stringStatement: string): boolean {
   return false;
  }
  return true;
+}
+
+export async function parseModules() {
+ const spinner = ora('Scanning node_modules...').start();
+ const base = path.join(process.cwd(), 'node_modules');
+
+ try {
+  const dirs = (await fs.readdir(base, { withFileTypes: true })).filter(
+   (d) => d.isDirectory() && !d.name.startsWith('.'),
+  );
+
+  let count = 0;
+
+  for (const d of dirs) {
+   try {
+    const pkgPath = path.join(base, d.name, 'package.json');
+    const pkgRaw = await fs.readFile(pkgPath, 'utf8');
+    const pkg = JSON.parse(pkgRaw);
+
+    ora().succeed(`${d.name}@${pkg.version}`);
+    if (pkg.description) {
+     console.log(`    - ${pkg.description.slice(0, 50)}`);
+    }
+
+    count++;
+   } catch {
+    ora().warn(`Could not read package.json for ${d.name}`);
+   }
+  }
+
+  spinner.succeed(`${count} modules scanned successfully.`);
+  return true;
+ } catch (e: any) {
+  spinner.fail(`Module error: ${e.message}`);
+  return false;
+ }
 }

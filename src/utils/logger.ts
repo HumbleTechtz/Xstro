@@ -1,3 +1,4 @@
+import ora from 'ora';
 import config from '../../config.ts';
 import type { ILogger } from '../types/bot.ts';
 
@@ -12,6 +13,8 @@ const LEVELS = Object.freeze({
 
 const currentLevel = LEVELS[(config.LOGGER as keyof typeof LEVELS) || 'info'];
 
+const baseSpinner = ora({ discardStdin: false }); // shared base for proper formatting
+
 const logger = (level: keyof typeof LEVELS, data: unknown, msg?: unknown) => {
  if (LEVELS[level] < currentLevel) return;
 
@@ -24,10 +27,14 @@ const logger = (level: keyof typeof LEVELS, data: unknown, msg?: unknown) => {
     ? { ...data }
     : { msg: data };
 
+ const text = JSON.stringify(entry, null, 2); // prettified
+
  if (level === 'error' || level === 'fatal') {
-  console.error(JSON.stringify(entry));
+  ora().fail(`[${level.toUpperCase()}] ${text}`);
+ } else if (level === 'warn') {
+  ora().warn(`[WARN] ${text}`);
  } else {
-  console.log(JSON.stringify(entry));
+  ora().succeed(`[${level.toUpperCase()}] ${text}`);
  }
 };
 
@@ -39,6 +46,7 @@ export const log: ILogger = {
  info: (data, msg) => logger('info', data, msg),
  warn: (data, msg) => logger('warn', data, msg),
  error: (data, msg) => logger('error', data, msg),
+ fatal: (data, msg) => logger('fatal', data, msg),
 
  child: (obj: Record<string, unknown>) => {
   const childLog =

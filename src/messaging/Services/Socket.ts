@@ -39,10 +39,18 @@ export default class Connection {
   const error = lastDisconnect?.error as Boom;
   const statusCode = error?.output?.statusCode;
 
+  /**
+   * Handles logout
+   */
   if (statusCode === DisconnectReason.loggedOut) {
    this.client.ev.flush(true);
    await this.client.ws.close();
    process.exit(1);
+  }
+
+  /** Handles permature requests */
+  if (statusCode === DisconnectReason.badSession) {
+   process.exit();
   }
  }
 

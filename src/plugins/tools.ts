@@ -1,5 +1,5 @@
 import { Command } from '../messaging/plugins.ts';
-import { fetchJson, isUrl, urlBuffer } from '../utils/requests.ts';
+import { fetch, isUrl, urlBuffer } from '@astrox11/utily';
 
 Command({
  name: 'url',
@@ -9,9 +9,7 @@ Command({
  type: 'tools',
  function: async (message, match) => {
   if (!match || !isUrl(match)) return message.send('Provide a url to shorten');
-  const url = await fetchJson(
-   `https://tinyurl.com/api-create.php?url=${match}`,
-  );
+  const url = await fetch(`https://tinyurl.com/api-create.php?url=${match}`);
   return await message.send(url);
  },
 });

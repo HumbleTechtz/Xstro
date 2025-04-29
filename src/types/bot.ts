@@ -55,6 +55,7 @@ export interface ILogger {
  info(obj: unknown, msg?: unknown): void;
  warn(obj: unknown, msg?: unknown): void;
  error(obj: unknown, msg?: unknown): void;
+ fatal(obj: unknown, msg?: unknown): void;
 }
 
 type BaseOptions = {

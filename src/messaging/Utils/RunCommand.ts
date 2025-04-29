@@ -1,9 +1,9 @@
 import Message from '../Messages/Message.ts';
 import { log } from '../../utils/index.ts';
 import { commands } from '../plugins.ts';
-import { CONDITIONS } from '../../types/enum.ts';
-import type { Commands } from '../../types/bot.ts';
 import { getStickerCmd } from '../../models/sticker.ts';
+import lang from '../../utils/lang.ts';
+import type { Commands } from '../../types/bot.ts';
 
 export default class RunCommand {
  private message: Message;
@@ -73,11 +73,11 @@ export default class RunCommand {
  private checkBeforeCommandExecution(cmd: Commands): boolean {
   if (this.message.mode && !this.message.sudo) return false;
   if (cmd.fromMe && !this.message.sudo) {
-   this.message.send(CONDITIONS.FOR_SUDO_USERS);
+   this.message.send(lang.FOR_SUDO_USERS);
    return false;
   }
   if (cmd.isGroup && !this.message.isGroup) {
-   this.message.send(CONDITIONS.FOR_GROUPS_ONLY);
+   this.message.send(lang.FOR_GROUPS_ONLY);
    return false;
   }
   return true;

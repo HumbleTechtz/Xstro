@@ -10,6 +10,7 @@ export default class Base {
  public id: string | null | undefined;
  public fromMe: boolean | null | undefined;
  public participant: string | null | undefined;
+ public pushName: string | null | undefined;
  public key: WAMessageKey;
  public owner: string;
  public sender: string | null | undefined;
@@ -26,6 +27,7 @@ export default class Base {
   this.id = data.key.id;
   this.fromMe = data.key.fromMe;
   this.participant = data.key.participant;
+  this.pushName = data.pushName;
   this.key = data.key;
   this.owner = data.owner;
   this.sender = data.sender;

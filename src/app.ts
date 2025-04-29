@@ -1,8 +1,9 @@
-import { WhatsAppClient } from './client.ts';
+import WhatsAppClient from './messaging/client.ts';
 import { syncPlugins } from './messaging/plugins.ts';
 import { SessionManager } from './utils/migrate.ts';
 import { log } from './utils/logger.ts';
 import { delay } from 'baileys';
+import { parseModules } from './utils/constants.ts';
 
 export default class App {
  constructor() {
@@ -11,7 +12,8 @@ export default class App {
 
  private async init() {
   try {
-   await syncPlugins('../plugins', ['.mjs', '.mts']);
+   await parseModules();
+   await syncPlugins('../plugins', ['.ts']);
    new SessionManager();
    await delay(1000);
    new WhatsAppClient();

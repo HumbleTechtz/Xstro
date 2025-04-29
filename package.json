@@ -16,9 +16,13 @@
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-prettier": "^5.2.6",
     "jiti": "^2.4.2",
-    "prettier": "^3.5.3"
+    "prettier": "^3.5.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
   },
   "dependencies": {
+    "@astrox11/sqlite": "^3.0.0",
+    "@astrox11/utily": "^1.7.9",
     "@hapi/boom": "^10.0.1",
     "baileys": "*",
     "dotenv": "^16.5.0",
@@ -26,14 +30,14 @@
     "got": "^14.4.7",
     "https-proxy-agent": "^7.0.6",
     "link-preview-js": "^3.0.14",
-    "typescript": "^5.8.3"
+    "ora": "^8.2.0"
   },
   "engines": {
     "node": ">=23"
   },
   "scripts": {
-    "start": "node main",
-    "dev": "tsc && node ./dist/src/app.js"
+    "start": "ts-node main.ts",
+    "dev": "ts-node main.ts"
   },
   "packageManager": "yarn@1.22.22"
 }
