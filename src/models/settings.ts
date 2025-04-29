@@ -16,7 +16,7 @@ export const getSettings = async () => {
  if (!count) {
   const defaults = [
    { settings: 'prefix', value: JSON.stringify(['.']) },
-   { settings: 'sudo', value: JSON.stringify(['']) },
+   { settings: 'sudo', value: JSON.stringify([]) },
    { settings: 'banned', value: JSON.stringify(['']) },
    { settings: 'disablecmd', value: JSON.stringify(['']) },
    { settings: 'mode', value: JSON.stringify(1) },

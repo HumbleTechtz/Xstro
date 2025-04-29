@@ -27,7 +27,6 @@
     "baileys": "*",
     "dotenv": "^16.5.0",
     "file-type": "20.5.0",
-    "got": "^14.4.7",
     "https-proxy-agent": "^7.0.6",
     "link-preview-js": "^3.0.14",
     "ora": "^8.2.0"
@@ -36,8 +35,7 @@
     "node": ">=23"
   },
   "scripts": {
-    "start": "ts-node main.ts",
-    "dev": "ts-node main.ts"
+    "start": "ts-node main.ts"
   },
   "packageManager": "yarn@1.22.22"
 }
