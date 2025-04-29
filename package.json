@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@astrox11/sqlite": "^3.0.0",
-    "@astrox11/utily": "^1.7.9",
+    "@astrox11/utily": "^1.8.0",
     "@hapi/boom": "^10.0.1",
     "baileys": "*",
     "dotenv": "^16.5.0",

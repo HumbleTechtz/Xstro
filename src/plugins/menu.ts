@@ -61,7 +61,7 @@ Command({
      ).readFile(`${cwd()}/src/media/logo.png`),
      mediaType: 1,
      sourceUrl: 'https://github.com/AstroX11/Xstro',
-     showAdAttribution: true
+     showAdAttribution: true,
     },
    },
   });
