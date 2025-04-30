@@ -18,6 +18,7 @@ export default class Base {
  public sudo: boolean;
  public mode: boolean;
  public user: (match?: string) => string | undefined;
+ public messageTimestamp: number | Long.Long | null | undefined;
  public prefix: string[];
 
  constructor(data: Serialize, client: WASocket) {
@@ -35,6 +36,7 @@ export default class Base {
   this.sudo = data.sudo;
   this.mode = data.mode as boolean;
   this.user = data.user;
+  this.messageTimestamp = data.messageTimestamp ?? Date.now();
   this.prefix = data.prefix as string[];
  }
 
