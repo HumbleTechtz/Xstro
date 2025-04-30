@@ -35,7 +35,7 @@
     "node": ">=23"
   },
   "scripts": {
-    "start": "ts-node main.ts"
+    "start": "ts-node --no-warnings --loader ts-node/esm main.ts"
   },
   "packageManager": "yarn@1.22.22"
 }

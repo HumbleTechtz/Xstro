@@ -11,34 +11,12 @@ const Metadata = database.define(
  { timestamps: false },
 );
 
-export async function cachedGroupMetadata(
- jid: string,
-): Promise<GroupMetadata | undefined> {
- const metadata = (await Metadata.findOne({ where: { jid } })) as {
-  data: string;
- };
-
- if (!metadata) {
-  return undefined;
- }
-
- const parsedData = JSON.parse(metadata.data) as GroupMetadata;
- return parsedData;
+export async function cachedGroupMetadata(jid: string) {
+ const metadata = await Metadata.findOne({ where: { jid } });
+ if (!metadata) return undefined;
+ return JSON.parse(metadata?.data as unknown as string) as GroupMetadata;
 }
 
-export async function preserveGroupMetaData(
- jid: string,
- data: GroupMetadata,
-): Promise<GroupMetadata> {
- const metadata = JSON.stringify(data);
-
- const count = await Metadata.count();
-
- if (count === 0) {
-  await Metadata.create({ jid, data: metadata });
- } else {
-  await Metadata.upsert({ jid, data: metadata }, { where: { jid } });
- }
-
- return data;
+export async function preserveGroupMetaData(jid: string, data: GroupMetadata) {
+ return await Metadata.upsert({ jid, data });
 }

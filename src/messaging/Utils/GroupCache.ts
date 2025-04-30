@@ -9,11 +9,12 @@ export default class GroupCache {
   setInterval(async () => {
    try {
     const groups = await this.socket.groupFetchAllParticipating();
-    for (const [jid, metadata] of Object.entries(groups)) {
+    if (!groups) return;
+    for (const [jid, metadata] of Object?.entries(groups)) {
      await preserveGroupMetaData(jid, metadata);
     }
-   } catch (error) {
-    log.error(error);
+   } catch (error: any) {
+    log.error(error.message);
    }
   }, 600_000);
  }
