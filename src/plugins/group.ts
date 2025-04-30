@@ -289,7 +289,7 @@ Command({
  function: async (message, match) => {
   if (!match || !match.includes(';')) {
    return message.send(
-    `Usage:\n${message.prefix[0]}poll Question? ; option1, option2`,
+    `Usage:\n${message.prefix[0]}poll question; option1, option2, option3`,
    );
   }
 
