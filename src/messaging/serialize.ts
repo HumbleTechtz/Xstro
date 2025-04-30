@@ -51,7 +51,7 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
     return parseJid(match);
    } else {
     if (quoted && quoted.sender) return quoted.sender;
-    if (!match) return undefined;
+    if (!match) return this.key.remoteJid!;
     return parseJid(match);
    }
   },
