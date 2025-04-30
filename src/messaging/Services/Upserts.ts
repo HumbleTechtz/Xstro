@@ -15,6 +15,7 @@ export default class MessageUpsert {
  }
 
  private async msgHooks() {
+  if (this.msg.type === 'append') return;
   const instance = new Message(
    await serialize(this.client, structuredClone(this.msg?.messages?.[0]!)),
    this.client,
