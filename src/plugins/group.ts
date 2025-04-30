@@ -279,3 +279,30 @@ Command({
   }
  },
 });
+
+Command({
+ name: 'poll',
+ fromMe: false,
+ isGroup: true,
+ desc: 'Create a poll message',
+ type: 'group',
+ function: async (message, match) => {
+  if (!match || !match.includes(';')) {
+   return message.send(
+    `Usage:\n${message.prefix[0]}poll Question? ; option1, option2`,
+   );
+  }
+
+  const [question, optionsRaw] = match.split(';').map((s) => s.trim());
+  const options = optionsRaw
+   ?.split(',')
+   .map((opt) => opt.trim())
+   .filter(Boolean);
+
+  if (options?.length! < 2) return message.send('Add at least 2 options.');
+
+  await message.client.sendMessage(message.jid, {
+   poll: { name: question!, values: options!, selectableCount: 1 },
+  });
+ },
+});
