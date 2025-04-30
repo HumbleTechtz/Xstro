@@ -9,4 +9,5 @@ export default {
  PROXY_URI: process.env.PROXY_URI ?? '',
  LOGGER: process.env.LOG_LEVEL ?? 'info',
  PROCESS_NAME: process.env.PROCESS_NAME ?? 'xstro',
+ DEBUG: process.env.DEBUG ?? 0,
 } as AppConfig;

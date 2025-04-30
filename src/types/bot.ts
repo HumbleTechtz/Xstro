@@ -105,4 +105,5 @@ export interface AppConfig {
  PROXY_URI: string;
  LOGGER: string;
  PROCESS_NAME: string;
+ DEBUG: number;
 }
