@@ -35,7 +35,7 @@
     "node": ">=23"
   },
   "scripts": {
-    "start": "node main.js",
+    "start": "node main.mjs",
     "prestart": "eslint --fix"
   },
   "packageManager": "yarn@1.22.22"
