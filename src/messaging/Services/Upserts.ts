@@ -1,4 +1,5 @@
 import Message from '../Messages/Message.ts';
+import AntiWord from '../Utils/AntiWord.ts';
 import RunCommand from '../Utils/RunCommand.ts';
 import { serialize } from '../serialize.ts';
 import type { BaileysEventMap, WASocket } from 'baileys';
@@ -14,11 +15,10 @@ export default class MessageUpsert {
  }
 
  private async msgHooks() {
-  new RunCommand(
-   new Message(
-    await serialize(this.client, structuredClone(this.msg?.messages?.[0]!)),
-    this.client,
-   ),
+  const instance = new Message(
+   await serialize(this.client, structuredClone(this.msg?.messages?.[0]!)),
+   this.client,
   );
+  Promise.all([new RunCommand(instance), new AntiWord(instance)]);
  }
 }

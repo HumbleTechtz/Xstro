@@ -36,7 +36,10 @@ export const getSettings = async () => {
  return { ...vars };
 };
 
-export const setSettings = async (settingName: keyof BotSettings, value: any) => {
+export const setSettings = async (
+ settingName: keyof BotSettings,
+ value: any,
+) => {
  const db = await config.findOne({ where: { settings: settingName } });
 
  if (db) {

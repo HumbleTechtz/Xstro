@@ -1,31 +1,33 @@
 import { Command } from '../messaging/plugins.ts';
+import Message from '../messaging/Messages/Message.ts';
+
+const adminCheck = async (message: Message) => {
+ if (!(await message.isAdmin()) || !(await message.isBotAdmin())) {
+  return message.send('_Requires admin and bot admin privileges_');
+ }
+};
+
+const getUser = (message: Message, match: string | undefined) => {
+ const user = message.user(match);
+ if (!user) message.send('_Provide a number_');
+ return user;
+};
 
 Command({
  name: 'add',
  fromMe: true,
  isGroup: true,
- desc: 'Add a participant to a group',
+ desc: 'Add participant to group',
  type: 'group',
  function: async (message, match) => {
-  const isAdmin = await message.isAdmin();
-  const isBotAdmin = await message.isBotAdmin();
-
-  if (!isAdmin && !isBotAdmin) {
-   return message.send('_Requires admin and bot admin privileges_');
-  }
-
-  const user = message.user(match);
-  if (!user) return message.send('_Provide a number_');
-
+  await adminCheck(message);
+  const user = getUser(message, match);
+  if (!user) return;
   if (!(await message.client.onWhatsApp(user))) {
-   return message.send('_This number is invaild!_');
+   return message.send('_Invalid number_');
   }
-
   await message.client.groupParticipantsUpdate(message.jid, [user], 'add');
-  return await message.send(
-   `_@${user.split('@')[0]} has been added to the  Group_`,
-   { mentions: [user] },
-  );
+  message.send(`_@${user.split('@')[0]} added to group_`, { mentions: [user] });
  },
 });
 
@@ -33,21 +35,14 @@ Command({
  name: 'kick',
  fromMe: false,
  isGroup: true,
- desc: 'Ability to remove a participant from a Group',
+ desc: 'Remove participant from group',
  type: 'group',
  function: async (message, match) => {
-  const isAdmin = await message.isAdmin();
-  const isBotAdmin = await message.isBotAdmin();
-
-  if (!isAdmin && !isBotAdmin) {
-   return message.send('_Requires admin and bot admin privileges_');
-  }
-
-  const user = message.user(match);
-  if (!user) return message.send('_Provide a number_');
-
+  await adminCheck(message);
+  const user = getUser(message, match);
+  if (!user) return;
   await message.client.groupParticipantsUpdate(message.jid, [user], 'remove');
-  return await message.send(`_@${user.split('@')[0]} kicked from Group_`, {
+  message.send(`_@${user.split('@')[0]} kicked from group_`, {
    mentions: [user],
   });
  },
@@ -57,34 +52,21 @@ Command({
  name: 'promote',
  fromMe: false,
  isGroup: true,
- desc: 'Ability to make a participant admin, if the bot is an Admin',
+ desc: 'Promote participant to admin',
  type: 'group',
  function: async (message, match) => {
-  const isAdmin = await message.isAdmin();
-  const isBotAdmin = await message.isBotAdmin();
-
-  if (!isAdmin && !isBotAdmin) {
-   return message.send('_Requires admin and bot admin privileges_');
-  }
-
-  const user = message.user(match);
-  if (!user) return message.send('_Provide a number_');
-
+  await adminCheck(message);
+  const user = getUser(message, match);
+  if (!user) return;
   const groupData = await message.client.groupMetadata(message.jid);
-  const admins = groupData.participants
-   .filter((v) => v.admin !== null)
-   .map((v) => v.id);
-
+  const admins = groupData.participants.filter((v) => v.admin).map((v) => v.id);
   if (admins.includes(user)) {
-   return await message.send(`_@${user.split('@')[0]} was already an admin_`, {
+   return message.send(`_@${user.split('@')[0]} is already admin_`, {
     mentions: [user],
    });
   }
-
   await message.client.groupParticipantsUpdate(message.jid, [user], 'promote');
-  return await message.send(`_@${user.split('@')[0]} is now an admin_`, {
-   mentions: [user],
-  });
+  message.send(`_@${user.split('@')[0]} is now admin_`, { mentions: [user] });
  },
 });
 
@@ -92,32 +74,21 @@ Command({
  name: 'demote',
  fromMe: false,
  isGroup: true,
- desc: 'Ability to remove admin roles from a participant',
+ desc: 'Demote admin to participant',
  type: 'group',
  function: async (message, match) => {
-  const isAdmin = await message.isAdmin();
-  const isBotAdmin = await message.isBotAdmin();
-
-  if (!isAdmin || !isBotAdmin) {
-   return message.send('_Requires admin and bot admin privileges_');
-  }
-
-  const user = message.user(match);
-  if (!user) return message.send('_Provide a number_');
-
+  await adminCheck(message);
+  const user = getUser(message, match);
+  if (!user) return;
   const groupData = await message.client.groupMetadata(message.jid);
-  const admins = groupData.participants
-   .filter((v) => v.admin !== null)
-   .map((v) => v.id);
-
+  const admins = groupData.participants.filter((v) => v.admin).map((v) => v.id);
   if (!admins.includes(user)) {
-   return await message.send(`_@${user.split('@')[0]} is not an admin_`, {
+   return message.send(`_@${user.split('@')[0]} is not admin_`, {
     mentions: [user],
    });
   }
-
   await message.client.groupParticipantsUpdate(message.jid, [user], 'demote');
-  return await message.send(`_@${user.split('@')[0]} is no longer an admin_`, {
+  message.send(`_@${user.split('@')[0]} is no longer admin_`, {
    mentions: [user],
   });
  },
@@ -127,21 +98,19 @@ Command({
  name: 'newgc',
  fromMe: true,
  isGroup: false,
- desc: 'Create a new Group',
+ desc: 'Create new group',
  type: 'group',
  function: async (message, match) => {
-  if (!match) return message.send('_Provide a group name!_');
-
+  if (!match) return message.send('_Provide group name_');
   const gc = await message.client.groupCreate(match, [message.owner]);
   const invite = await message.client.groupInviteCode(gc.id);
   const url = `https://chat.whatsapp.com/${invite}`;
-
-  return await message.send(url, {
+  message.send(url, {
    contextInfo: {
     isForwarded: true,
     externalAdReply: {
      title: match,
-     body: `Click here to join ${match}`,
+     body: `Join ${match}`,
      sourceUrl: url,
      showAdAttribution: true,
     },
@@ -154,13 +123,12 @@ Command({
  name: 'tag',
  fromMe: false,
  isGroup: true,
- desc: 'Mention an entire Group',
+ desc: 'Mention entire group',
  type: 'group',
  function: async (message, match) => {
   const { participants } = await message.client.groupMetadata(message.jid);
   if (!participants?.length) return message.send('No participants');
-
-  return message.client.relayMessage(
+  message.client.relayMessage(
    message.jid,
    {
     extendedTextMessage: {
@@ -173,5 +141,141 @@ Command({
    },
    {},
   );
+ },
+});
+
+Command({
+ name: 'gname',
+ fromMe: false,
+ isGroup: true,
+ desc: 'Update group name',
+ type: 'group',
+ function: async (message, match) => {
+  if (!match) return message.send('Provide new group name');
+  await adminCheck(message);
+  await message.client.groupUpdateSubject(message.jid, match);
+  message.send('_Group name updated_');
+ },
+});
+
+Command({
+ name: 'gdesc',
+ fromMe: false,
+ isGroup: true,
+ desc: 'Update group description',
+ type: 'group',
+ function: async (message, match) => {
+  await adminCheck(message);
+  await message.client.groupUpdateDescription(message.jid, match);
+  message.send('_Group description updated_');
+ },
+});
+
+Command({
+ name: 'mute',
+ fromMe: false,
+ isGroup: true,
+ desc: 'Allow only admins to send messages',
+ type: 'group',
+ function: async (message) => {
+  await adminCheck(message);
+  const metadata = await message.client.groupMetadata(message.jid);
+  if (metadata.announce) return message.send('Group already muted');
+  await message.client.groupSettingUpdate(message.jid, 'announcement');
+  message.send('_Group muted, only admins can send messages_');
+ },
+});
+
+Command({
+ name: 'unmute',
+ fromMe: false,
+ isGroup: true,
+ desc: 'Allow all members to send messages',
+ type: 'group',
+ function: async (message) => {
+  await adminCheck(message);
+  const metadata = await message.client.groupMetadata(message.jid);
+  if (!metadata.announce) return message.send('_Group already unmuted_');
+  await message.client.groupSettingUpdate(message.jid, 'not_announcement');
+  message.send('_Group unmuted, all members can send messages_');
+ },
+});
+
+Command({
+ name: 'lock',
+ fromMe: false,
+ isGroup: true,
+ desc: 'Restrict settings to admins',
+ type: 'group',
+ function: async (message) => {
+  await adminCheck(message);
+  const metadata = await message.client.groupMetadata(message.jid);
+  if (metadata.restrict)
+   return message.send('_Group settings already restricted_');
+  await message.client.groupSettingUpdate(message.jid, 'locked');
+  message.send('_Group settings restricted to admins_');
+ },
+});
+
+Command({
+ name: 'unlock',
+ fromMe: false,
+ isGroup: true,
+ desc: 'Allow all members to manage settings',
+ type: 'group',
+ function: async (message) => {
+  await adminCheck(message);
+  const metadata = await message.client.groupMetadata(message.jid);
+  if (!metadata.restrict)
+   return message.send('_Group settings already unrestricted_');
+  await message.client.groupSettingUpdate(message.jid, 'unlocked');
+  message.send('_Group settings unrestricted_');
+ },
+});
+
+Command({
+ name: 'invite',
+ fromMe: false,
+ isGroup: true,
+ desc: 'Get group invite link',
+ type: 'group',
+ function: async (message) => {
+  await adminCheck(message);
+  const code = await message.client.groupInviteCode(message.jid);
+  message.send(`_https://chat.whatsapp.com/${code}_`);
+ },
+});
+
+Command({
+ name: 'revoke',
+ fromMe: false,
+ isGroup: true,
+ desc: 'Revoke group invite code',
+ type: 'group',
+ function: async (message) => {
+  await adminCheck(message);
+  const code = await message.client.groupRevokeInvite(message.jid);
+  message.send(`_https://chat.whatsapp.com/${code}_`);
+ },
+});
+
+Command({
+ name: 'approval',
+ fromMe: false,
+ isGroup: true,
+ desc: 'Toggle group join approval',
+ type: 'group',
+ function: async (message, match) => {
+  if (!match)
+   return message.send(`_Usage: ${message.prefix[0]}approval on | off_`);
+  match = match.toLowerCase().trim();
+  if (match === 'on') {
+   await message.client.groupJoinApprovalMode(message.jid, 'on');
+   return message.send('_Approval mode on_');
+  }
+  if (match === 'off') {
+   await message.client.groupJoinApprovalMode(message.jid, 'off');
+   return message.send('_Approval mode off_');
+  }
  },
 });
