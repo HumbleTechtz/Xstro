@@ -18,5 +18,5 @@ export async function cachedGroupMetadata(jid: string) {
 }
 
 export async function preserveGroupMetaData(jid: string, data: GroupMetadata) {
- return await Metadata.upsert({ jid, data });
+ return await Metadata.upsert({ jid, data }, { where: { jid, data } });
 }

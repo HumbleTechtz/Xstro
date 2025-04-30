@@ -11,15 +11,11 @@ const StickerCMD = database.define(
 );
 
 export const getStickerCmd = async function (filesha256: string) {
- const doesexist = await StickerCMD.findByPk(filesha256);
- if (!doesexist) {
-  return null;
- }
- const parsed = JSON.parse(JSON.stringify(doesexist)) as {
+ const record = (await StickerCMD.findByPk(filesha256)) as {
   filesha256: string;
   cmdname: string;
  };
- return parsed;
+ return record ? record : undefined;
 };
 
 export const setStickerCmd = async function (
