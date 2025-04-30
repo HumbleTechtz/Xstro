@@ -5,6 +5,7 @@
     "rootDir": ".",
     "strict": true,
     "noEmit": true,
+    "allowJs": true,
     "skipLibCheck": true,
     "alwaysStrict": true,
     "noImplicitThis": true,
