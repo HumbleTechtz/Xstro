@@ -15,10 +15,10 @@
     "@types/node" "^22.14.1"
     typescript "^5.8.3"
 
-"@astrox11/utily@^1.8.1":
-  version "1.8.1"
-  resolved "https://registry.yarnpkg.com/@astrox11/utily/-/utily-1.8.1.tgz#5b16fe63b30aec87d327462c7a8adf311c65e675"
-  integrity sha512-cT2ASv7NBSGYlvEvaiOqqLETIkaCbGqnE8pLLn4Ngqx3OJyoPcU+oPfQVPtH35wYvsnc2Pq53OhotaloTEeuUQ==
+"@astrox11/utily@^1.8.2":
+  version "1.8.2"
+  resolved "https://registry.yarnpkg.com/@astrox11/utily/-/utily-1.8.2.tgz#5ed5e81bfcdf1ec0fb5e4dd3faff378f59ba06cc"
+  integrity sha512-kzXKDiNIOg7CcQoNITh8N44EyrexzKFQBrDnynsoqA4GbMXEmbF7+CJoF7k4d7MrKQ99w1lD5yAHXj+FEinpVw==
   dependencies:
     "@hapi/boom" "^10.0.1"
     cheerio "^1.0.0"

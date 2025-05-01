@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@astrox11/sqlite": "^3.0.0",
-    "@astrox11/utily": "^1.8.1",
+    "@astrox11/utily": "^1.8.2",
     "@cacheable/node-cache": "^1.5.4",
     "@hapi/boom": "^10.0.1",
     "baileys": "*",
