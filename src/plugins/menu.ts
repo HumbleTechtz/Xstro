@@ -29,7 +29,7 @@ Command({
 │ Node: ${process.version}
 ╰─────────────\`\`\`\n`.trim();
 
-  menuInfo = '\n';
+  menuInfo += '\n';
   const commandsByType = commands
    .filter((cmd) => cmd.name && !cmd.dontAddCommandList)
    .reduce((acc: any, cmd) => {
