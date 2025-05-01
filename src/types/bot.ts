@@ -18,6 +18,7 @@ export interface Commands {
   | 'tools'
   | 'whatsapp'
   | 'group'
+  | 'fun'
   | 'news'
   | 'chats'
   | 'download'
