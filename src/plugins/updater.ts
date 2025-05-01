@@ -15,9 +15,7 @@ Command({
   const prefix = message.prefix[0];
   await execPromise('git fetch');
 
-  const { stdout: logOutput } = await execPromise(
-   'git log master..origin/master',
-  );
+  const { stdout: logOutput } = await execPromise('git log core..origin/core');
   const commits = logOutput.split('\n').filter(Boolean);
 
   if (match === 'now') {
@@ -26,7 +24,7 @@ Command({
    }
 
    await message.send('Updating...');
-   await execPromise('git stash && git pull origin ' + 'master');
+   await execPromise('git stash && git pull origin ' + 'core');
 
    await message.send('Restarting...');
    const dependencyChanged = await updatedDependencies();
@@ -34,10 +32,11 @@ Command({
    if (dependencyChanged) {
     await message.send('Dependancies changed installing new dependancies');
     await message.send('Restarting...');
-    await execPromise('npm install && pm2 restart ' + 'xstro');
+    await execPromise('yarn');
+    process.exit();
    } else {
     await message.send('Restarting...');
-    await execPromise('pm2 restart ' + 'xstro');
+    process.exit();
    }
   } else {
    if (commits.length === 0) {
