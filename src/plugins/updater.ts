@@ -57,7 +57,7 @@ Command({
 
 async function updatedDependencies(): Promise<boolean> {
  try {
-  const { stdout: diff } = await execPromise('git diff master..origin/master');
+  const { stdout: diff } = await execPromise('git diff core..origin/core');
   return diff.includes('"dependencies":');
  } catch (error) {
   log.error('Error occurred while checking package.json:', error);
