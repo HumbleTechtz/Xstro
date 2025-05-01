@@ -1,7 +1,7 @@
 import Message from '../Messages/Message.ts';
 import RunCommand from './Commands.ts';
 import { serialize } from '../serialize.ts';
-import type { BaileysEventMap, WASocket } from 'baileys';
+import { BufferJSON, type BaileysEventMap, type WASocket } from 'baileys';
 
 export default class MessageUpsert {
  private client: WASocket;
@@ -15,6 +15,14 @@ export default class MessageUpsert {
 
  private async msgHooks(): Promise<void> {
   for (const msg of this.msg.messages) {
+   if (msg?.messageStubParameters?.[0] === 'Message absent from node') {
+    await this.client.sendMessageAck(
+     JSON.parse(
+      JSON.stringify(msg?.messageStubParameters?.[1]),
+      BufferJSON.reviver,
+     ),
+    );
+   }
    const cloned = structuredClone(msg);
    const serialized = await serialize(this.client, cloned);
    const instance = new Message(serialized, this.client);
