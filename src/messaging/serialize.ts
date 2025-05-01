@@ -1,5 +1,5 @@
 import { isJidGroup, normalizeMessageContent } from 'baileys';
-import { getSettings } from '../models/index.ts';
+import { cachedGroupMetadata, getSettings } from '../models/index.ts';
 import {
  getMessageContent,
  getQuotedContent,
@@ -25,6 +25,19 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
      ? owner
      : key.remoteJid;
 
+ const isPersonAdmin = async () => {
+  if (isGroup) {
+   const metadata = await cachedGroupMetadata(jid);
+   if (!metadata) return undefined;
+   const allAdmins = metadata.participants
+    .filter((v) => v.admin !== null)
+    .map((v) => v.id);
+   return !Array.isArray(allAdmins)
+    ? Array.from(allAdmins).includes(sender)
+    : allAdmins.includes(sender!);
+  }
+ };
+
  const content = getMessageContent(message);
  const quoted = getQuotedContent(message, key, owner);
 
@@ -44,6 +57,7 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
   ...content,
   ...messages,
   quoted: quoted ? { ...quoted } : undefined,
+  isPersonAdmin: await isPersonAdmin(),
   user: function (match?: string): string | undefined {
    if (this.isGroup) {
     if (quoted && quoted.sender) return quoted.sender;

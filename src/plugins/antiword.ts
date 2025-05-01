@@ -57,8 +57,7 @@ Command({
   if (
    !msg.isGroup ||
    !msg.data?.text ||
-   !(await msg.isBotAdmin()) ||
-   (await msg.isAdmin()) ||
+   !msg.data.isPersonAdmin ||
    msg.sender === msg.owner
   )
    return;
