@@ -32,7 +32,7 @@ Command({
    if (dependencyChanged) {
     await message.send('Dependancies changed installing new dependancies');
     await message.send('Restarting...');
-    await execPromise('yarn');
+    await execPromise('yarn install && yarn upgrade');
     process.exit();
    } else {
     await message.send('Restarting...');
