@@ -13,12 +13,13 @@ export default class MessageUpsert {
   this.msgHooks();
  }
 
- private async msgHooks() {
-  if (this.msg.type === 'append') return;
-  const Instance = new Message(
-   await serialize(this.client, structuredClone(this.msg?.messages?.[0]!)),
-   this.client,
-  );
-  Promise.all([new RunCommand(Instance)]);
+ private async msgHooks(): Promise<void> {
+  for (const msg of this.msg.messages) {
+   const cloned = structuredClone(msg);
+   const serialized = await serialize(this.client, cloned);
+   const instance = new Message(serialized, this.client);
+
+   await Promise.all([new RunCommand(instance)]);
+  }
  }
 }

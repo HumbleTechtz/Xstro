@@ -51,7 +51,7 @@ export default class WhatsAppClient {
   this.sock = makeWASocket({
    auth: {
     creds: state.creds,
-    keys: makeCacheableSignalKeyStore(state.keys, print, cache),
+    keys: makeCacheableSignalKeyStore(state.keys, print),
    },
    agent: proxy ? connectProxy(proxy) : undefined,
    logger: print,
