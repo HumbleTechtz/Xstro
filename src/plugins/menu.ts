@@ -1,20 +1,25 @@
 import { Command, commands } from '../messaging/plugins.ts';
 import { platform, totalmem, freemem } from 'node:os';
-import type { Commands } from '../types/bot.ts';
 import { formatBytes, formatRuntime } from '../utils/constants.ts';
-import { cwd } from 'node:process';
 
 Command({
  name: 'menu',
  fromMe: false,
- isGroup: false,
- desc: 'Get all command names by category',
- type: 'utilities',
+ desc: 'Show All Commands',
+ type: undefined,
  dontAddCommandList: true,
  function: async (message) => {
-  let menu = `\`\`\`╭─── χѕтяσ м∂ ────
+  const cmds = commands.filter(
+   (cmd) =>
+    cmd.name &&
+    !cmd.dontAddCommandList &&
+    !cmd.name.toString().includes('undefined'),
+  ).length;
+  let menuInfo = `\`\`\`
+╭─── χѕтяσ м∂ ────
 │ User: ${message.pushName?.trim() ?? `Unknown`}
 │ Owner: αѕтяσχ11
+│ Plugins: ${cmds}
 │ Mode: ${message.mode ? 'Private' : 'Public'}
 │ Uptime: ${formatRuntime(process.uptime())}
 │ Platform: ${platform()}
@@ -23,48 +28,33 @@ Command({
 │ Date: ${new Date().toLocaleDateString('en-US')}
 │ Time: ${new Date().toLocaleTimeString('en-US', { timeZone: process.env.TZ })}
 │ Node: ${process.version}
-╰─────────────\`\`\``.trim();
-  const filteredCommands = commands.filter((cmd) => !cmd.dontAddCommandList);
+╰─────────────\`\`\`\n`.trim();
 
-  const groupedCommands: Record<Commands['type'], string[]> =
-   filteredCommands.reduce(
-    (acc: Record<Commands['type'], string[]>, cmd: Commands) => {
-     const cmdName = cmd.name?.toString().split(/[\p{S}\p{P}]/gu)[5];
-     if (!cmdName) return acc;
-     const type: Commands['type'] = (cmd.type || 'misc') as Commands['type'];
-     if (!acc[type]) acc[type] = [];
-     acc[type].push(cmdName);
-     return acc;
-    },
-    {} as Record<Commands['type'], string[]>,
-   );
+  const commandsByType = commands
+   .filter((cmd) => cmd.name && !cmd.dontAddCommandList)
+   .reduce((acc: any, cmd) => {
+    const type = cmd.type ?? 'misc';
+    if (!acc[type]) {
+     acc[type] = [];
+    }
+    acc[type].push(cmd.name?.toString().toLowerCase().split(/\W+/)[2]);
+    return acc;
+   }, {});
 
-  const sortedCategories = Object.keys(
-   groupedCommands,
-  ).sort() as Commands['type'][];
+  const sortedTypes = Object.keys(commandsByType).sort();
 
-  for (const category of sortedCategories) {
-   menu += `\n=== ${category} ===\n`;
-   const sortedCommands = groupedCommands[category].sort();
-   for (const cmd of sortedCommands) {
-    menu += `- _${cmd}_\n`;
-   }
-  }
+  let totalCommands = 1;
 
-  return await message.send(menu.trim(), {
-   contextInfo: {
-    externalAdReply: {
-     title: 'αѕтяσχ11',
-     body: message.pushName ?? '',
-     thumbnail: await (
-      await import('node:fs/promises')
-     ).readFile(`${cwd()}/src/media/logo.png`),
-     mediaType: 1,
-     sourceUrl: 'https://github.com/AstroX11/Xstro',
-     showAdAttribution: true,
-    },
-   },
+  sortedTypes.forEach((type) => {
+   const sortedCommands = commandsByType[type].sort();
+   menuInfo += `╭──── *${type}* ────\n`;
+   sortedCommands.forEach((cmd: unknown) => {
+    menuInfo += `│${totalCommands}· ${cmd}\n`;
+    totalCommands++;
+   });
+   menuInfo += `╰────────────\n`;
   });
+  return await message.send(menuInfo.trim());
  },
 });
 
@@ -85,14 +75,11 @@ Command({
     if (!cmdName) return null;
     return { name: cmdName, desc: cmd.desc || 'No description' };
    })
-   .filter((cmd) => cmd !== null);
+   .filter(Boolean)
+   .sort((a, b) => a!.name.localeCompare(b!.name));
 
-  const sortedCommands = commandList.sort((a, b) =>
-   a.name.localeCompare(b.name),
-  );
-
-  for (const cmd of sortedCommands) {
-   help += `- ${cmd.name}: ${cmd.desc}\n`;
+  for (const cmd of commandList) {
+   help += `- ${cmd?.name}: ${cmd?.desc}\n`;
   }
 
   return await message.send(help.trim());

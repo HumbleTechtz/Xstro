@@ -2,13 +2,24 @@ import {
  makeWASocket,
  makeCacheableSignalKeyStore,
  Browsers,
+ fetchLatestBaileysVersion,
  type WASocket,
 } from 'baileys';
+import NodeCache from '@cacheable/node-cache';
 import config from '../../config.ts';
 import makeEvents from './events.ts';
-import { log, connectProxy, useSqliteAuthState } from '../utils/index.ts';
-import { getMessage, cachedGroupMetadata } from '../models/index.ts';
-import { CacheStore } from './Services/Cache.ts';
+import {
+ log as print,
+ connectProxy,
+ useSqliteAuthState,
+} from '../utils/index.ts';
+import {
+ getMessage,
+ cachedGroupMetadata,
+ updateMetaGroup,
+} from '../models/index.ts';
+
+const proxy = config.PROXY_URI;
 
 export default class WhatsAppClient {
  private sock: WASocket | undefined;
@@ -17,23 +28,42 @@ export default class WhatsAppClient {
  constructor() {
   this.sock = undefined;
   this.events = undefined;
-  this.initialize();
+  this.run();
+  setInterval(async () => {
+   try {
+    if (this.sock) {
+     const groups = await this.sock.groupFetchAllParticipating();
+     if (!groups) return;
+
+     for (const [jid, metadata] of Object?.entries(groups)) {
+      await updateMetaGroup(jid, metadata);
+     }
+    }
+   } catch (e) {}
+  }, 600_000);
  }
 
- public async initialize() {
+ private async run() {
   const { state, saveCreds } = await useSqliteAuthState();
+  const { version } = await fetchLatestBaileysVersion();
+  const cache = new NodeCache();
 
   this.sock = makeWASocket({
    auth: {
     creds: state.creds,
-    keys: makeCacheableSignalKeyStore(state.keys, log, new CacheStore()),
+    keys: makeCacheableSignalKeyStore(state.keys, print, cache),
    },
-   agent: config.PROXY_URI ? connectProxy(config.PROXY_URI) : undefined,
-   logger: log,
+   agent: proxy ? connectProxy(proxy) : undefined,
+   logger: print,
+   version,
    browser: Browsers.windows('Chrome'),
    emitOwnEvents: true,
    generateHighQualityLinkPreview: true,
    linkPreviewImageThumbnailWidth: 1920,
+   msgRetryCounterCache: cache,
+   mediaCache: cache,
+   userDevicesCache: cache,
+   callOfferCache: cache,
    getMessage,
    cachedGroupMetadata,
   });

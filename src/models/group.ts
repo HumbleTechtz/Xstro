@@ -6,7 +6,7 @@ const Metadata = database.define(
  'group_metadata',
  {
   jid: { type: DataType.STRING, allowNull: false },
-  data: { type: DataType.JSON },
+  data: { type: DataType.JSON, allowNull: true },
  },
  { timestamps: false },
 );
@@ -17,6 +17,6 @@ export async function cachedGroupMetadata(jid: string) {
  return JSON.parse(metadata?.data as unknown as string) as GroupMetadata;
 }
 
-export async function preserveGroupMetaData(jid: string, data: GroupMetadata) {
+export async function updateMetaGroup(jid: string, data: GroupMetadata) {
  return await Metadata.upsert({ jid, data }, { where: { jid, data } });
 }

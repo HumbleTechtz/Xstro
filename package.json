@@ -17,19 +17,20 @@
     "eslint-plugin-prettier": "^5.2.6",
     "jiti": "^2.4.2",
     "prettier": "^3.5.3",
-    "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   },
   "dependencies": {
     "@astrox11/sqlite": "^3.0.0",
     "@astrox11/utily": "^1.8.0",
+    "@cacheable/node-cache": "^1.5.4",
     "@hapi/boom": "^10.0.1",
     "baileys": "*",
     "dotenv": "^16.5.0",
     "file-type": "20.5.0",
     "https-proxy-agent": "^7.0.6",
     "link-preview-js": "^3.0.14",
-    "ora": "^8.2.0"
+    "ora": "^8.2.0",
+    "tsx": "^4.19.4"
   },
   "engines": {
     "node": ">=23"

@@ -52,8 +52,6 @@ Command({
    return await message.send('_This command does not exist_');
   const set = await removeStickerCmd(cmdname);
   if (!set) return await message.send('_That cmd was not set in sticker cmd_');
-  return await message.send(
-   `_${cmdname.toWellFormed()} has been removed from Sticker Cmd_`,
-  );
+  return await message.send(`_${cmdname} has been removed from Sticker Cmd_`);
  },
 });

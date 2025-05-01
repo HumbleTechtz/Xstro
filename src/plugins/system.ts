@@ -37,3 +37,15 @@ Command({
   process.exit();
  },
 });
+
+Command({
+ name: 'shutdown',
+ fromMe: true,
+ isGroup: false,
+ desc: 'Shut down bot',
+ type: 'system',
+ function: async (msg) => {
+  await msg.send('_Shutting down..._');
+  process.exit(1);
+ },
+});

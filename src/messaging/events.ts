@@ -1,5 +1,4 @@
 import ConnectionUpdate from './Services/Socket.ts';
-import GroupCache from './Services/GroupCache.ts';
 import MessageUpsert from './Services/Upserts.ts';
 import type { WASocket } from 'baileys';
 
@@ -29,8 +28,6 @@ export default class MakeEvents {
    if (events['messages.upsert']) {
     new MessageUpsert(this.Socket, events['messages.upsert']);
    }
-
-   new GroupCache(this.Socket);
   });
  }
 }

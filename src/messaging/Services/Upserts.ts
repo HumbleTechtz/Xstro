@@ -1,5 +1,5 @@
 import Message from '../Messages/Message.ts';
-import RunCommand from './RunCommand.ts';
+import RunCommand from './Commands.ts';
 import { serialize } from '../serialize.ts';
 import type { BaileysEventMap, WASocket } from 'baileys';
 
