@@ -2,17 +2,17 @@ Xstro - WhatsApp Automation System
 
 Xstro is an open-source WhatsApp third-party automation system that leverages Baileys Web API for seamless interaction via WebSocket.
 
+Quick Deployment:
+For a direct link to the deployment interface, visit:
+https://xstro-web.vercel.app
+
 About Baileys:
 Baileys is a WebSockets-based TypeScript library for interacting with the WhatsApp Web API.
 
 For more information on Baileys, visit the official Baileys GitHub repository:
 https://github.com/WhiskeySockets/Baileys
 
-Quick Access:
-For a direct link to the Xstro web interface, visit:
-https://xstro-web.vercel.app
-
----------------------------
+---
 
 Installation
 
@@ -26,15 +26,15 @@ Ensure the following tools are installed:
    Open PowerShell and run the following commands:
    powershell -c "irm https://community.chocolatey.org/install.ps1|iex"
    choco install nodejs-lts --version="23"
-   node -v  # Should print "v23.11.0"
-   npm -v   # Should print "10.9.2"
+   node -v # Should print "v23.11.0"
+   npm -v # Should print "10.9.2"
 
    Alternatively, you can install Node.js version 23x using other methods.
 
 Note: Xstro supports Node.js 23 and above due to the use of the built-in Node SQLite module. This module has been abstracted into an ORM for ease of use. For more information on the ORM, visit:
 https://github.com/AstroX11/sqlite
 
----------------------------
+---
 
 Session Management
 
@@ -48,19 +48,19 @@ Web Interface:
 If you wish to integrate session management with a website, use the following repository as a base to get started:
 https://github.com/AstroX11/xstroweb
 
----------------------------
+---
 
 Deployment
 
 Xstro supports deployment on the following platforms:
 
-Platform   | Supported
-------------------------
-Heroku     | Yes
-Koyeb      | Yes
-Render     | Yes
-Panel      | No
-VPS        | Yes
-Local PC   | Yes
-------------------------
+## Platform | Supported
 
+Heroku | Yes
+Koyeb | Yes
+Render | Yes
+Panel | No
+VPS | Yes
+Local PC | Yes
+
+---
