@@ -5,7 +5,7 @@ import { Message } from '../messaging/Messages/index.ts';
 
 export interface Commands {
  name?: string | RegExp;
- on?: string;
+ on?: string | boolean;
  function: (message: Message, match?: string) => Promise<unknown>;
  fromMe?: boolean;
  isGroup?: boolean;

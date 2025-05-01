@@ -11,6 +11,7 @@ export const commands: Commands[] = [];
 
 export function Command({
  name,
+ on,
  function: func,
  fromMe,
  isGroup,
@@ -20,6 +21,7 @@ export function Command({
 }: Commands): number {
  return commands.push({
   name: new RegExp(`^\\s*(${name})(?:\\s+([\\s\\S]+))?$`, 'i'),
+  on,
   function: func,
   fromMe: fromMe,
   isGroup: isGroup,
