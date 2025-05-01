@@ -7,10 +7,10 @@ export interface Commands {
  name?: string | RegExp;
  on?: string;
  function: (message: Message, match?: string) => Promise<unknown>;
- fromMe: boolean;
- isGroup: boolean;
+ fromMe?: boolean;
+ isGroup?: boolean;
  desc?: string;
- type:
+ type?:
   | 'ai'
   | 'misc'
   | 'system'

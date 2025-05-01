@@ -16,9 +16,10 @@ export default class RunCommand {
   this.prefix = message.data.prefix;
   this.run();
   this.runSticker();
+  this.runOnlistener();
  }
 
- private async run(): Promise<void> {
+ private async run() {
   if (!this.text) return;
 
   for (const cmd of commands) {
@@ -40,7 +41,7 @@ export default class RunCommand {
   }
  }
 
- private async runSticker(): Promise<void> {
+ private async runSticker() {
   const stickerMessage = this.message.data.message?.stickerMessage;
   const lottieStickerMessage = this.message.data.message?.lottieStickerMessage;
 
@@ -70,7 +71,17 @@ export default class RunCommand {
   }
  }
 
- private checkBeforeCommandExecution(cmd: Commands): boolean {
+ private async runOnlistener() {
+  for (const cmd of commands.filter((cmd) => cmd.on)) {
+   try {
+    await cmd.function(this.message);
+   } catch (error) {
+    log.error(error);
+   }
+  }
+ }
+
+ private checkBeforeCommandExecution(cmd: Commands) {
   if (this.message.mode && !this.message.sudo) return false;
   if (cmd.fromMe && !this.message.sudo) {
    this.message.send(lang.FOR_SUDO_USERS);
