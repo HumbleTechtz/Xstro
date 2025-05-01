@@ -15,8 +15,7 @@ Command({
     !cmd.dontAddCommandList &&
     !cmd.name.toString().includes('undefined'),
   ).length;
-  let menuInfo = `\`\`\`
-╭─── χѕтяσ м∂ ────
+  let menuInfo = `\`\`\`╭─── χѕтяσ м∂ ────
 │ User: ${message.pushName?.trim() ?? `Unknown`}
 │ Owner: αѕтяσχ11
 │ Plugins: ${cmds}
@@ -30,6 +29,7 @@ Command({
 │ Node: ${process.version}
 ╰─────────────\`\`\`\n`.trim();
 
+  menuInfo = '\n';
   const commandsByType = commands
    .filter((cmd) => cmd.name && !cmd.dontAddCommandList)
    .reduce((acc: any, cmd) => {
