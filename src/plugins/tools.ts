@@ -41,8 +41,12 @@ Command({
  function: async (message, match) => {
   if (!match) return message.send('_Provide a song name_');
   const data = await lyrics(match);
-  return await message.send(await urlBuffer(data.thumbnail), {
-   caption: data.lyrics,
-  });
+  if (data?.thumbnail) {
+   return await message.send(await urlBuffer(data.thumbnail), {
+    caption: data.lyrics,
+   });
+  } else {
+   return await message.send(data?.lyrics!);
+  }
  },
 });
