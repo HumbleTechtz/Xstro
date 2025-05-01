@@ -1,8 +1,8 @@
 import Message from '../Messages/Message.ts';
+import lang from '../../utils/lang.ts';
 import { log } from '../../utils/index.ts';
 import { commands } from '../plugins.ts';
 import { getStickerCmd } from '../../models/sticker.ts';
-import lang from '../../utils/lang.ts';
 import type { Commands } from '../../types/bot.ts';
 
 export default class RunCommand {

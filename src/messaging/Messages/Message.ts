@@ -1,9 +1,9 @@
 import Base from './Base.ts';
 import ReplyMessage from './ReplyMessage.ts';
-import type { Serialize, MessageMisc } from '../../types/bot.ts';
-import type { WASocket, AnyMessageContent } from 'baileys';
 import { prepareMessage } from '../../utils/index.ts';
 import { preserveMessage } from '../../models/store.ts';
+import type { Serialize, MessageMisc } from '../../types/bot.ts';
+import type { WASocket, AnyMessageContent } from 'baileys';
 
 export default class Message extends Base {
  public quoted?: ReplyMessage;
