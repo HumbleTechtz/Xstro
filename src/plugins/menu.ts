@@ -6,7 +6,6 @@ Command({
  name: 'menu',
  fromMe: false,
  desc: 'Show All Commands',
- type: undefined,
  dontAddCommandList: true,
  function: async (message) => {
   const cmds = commands.filter(
@@ -63,7 +62,6 @@ Command({
  fromMe: false,
  isGroup: false,
  desc: 'Get all command names and descriptions',
- type: 'utilities',
  dontAddCommandList: true,
  function: async (message) => {
   let help = '';

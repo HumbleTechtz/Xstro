@@ -1,5 +1,5 @@
 import { Command } from '../messaging/plugins.ts';
-import { fetch, isUrl, urlBuffer } from '@astrox11/utily';
+import { fetch, isUrl, urlBuffer, lyrics } from '@astrox11/utily';
 
 Command({
  name: 'url',
@@ -29,5 +29,20 @@ Command({
     'User has no profile picture, or maybe their settings is prevent the bot from seeing it.',
    );
   return await message.send(await urlBuffer(profilePic));
+ },
+});
+
+Command({
+ name: 'lyrics',
+ fromMe: false,
+ isGroup: false,
+ desc: 'Get lyrics of any song',
+ type: 'tools',
+ function: async (message, match) => {
+  if (!match) return message.send('_Provide a song name_');
+  const data = await lyrics(match);
+  return await message.send(await urlBuffer(data.thumbnail), {
+   caption: data.lyrics,
+  });
  },
 });
