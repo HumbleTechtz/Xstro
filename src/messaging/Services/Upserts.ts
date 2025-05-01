@@ -2,6 +2,7 @@ import Message from '../Messages/Message.ts';
 import RunCommand from './Commands.ts';
 import { serialize } from '../serialize.ts';
 import { BufferJSON, type BaileysEventMap, type WASocket } from 'baileys';
+import { preserveMessage } from '../../models/store.ts';
 
 export default class MessageUpsert {
  private client: WASocket;
@@ -27,7 +28,7 @@ export default class MessageUpsert {
    const serialized = await serialize(this.client, cloned);
    const instance = new Message(serialized, this.client);
 
-   await Promise.all([new RunCommand(instance)]);
+   await Promise.all([new RunCommand(instance), preserveMessage(msg)]);
   }
  }
 }

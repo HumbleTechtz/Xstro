@@ -12,10 +12,6 @@ export default class Message extends Base {
   super(data, client);
   this.quoted = data.quoted ? new ReplyMessage(data, this.client) : undefined;
   this.user = data.user;
-  this.hooks();
- }
- private async hooks() {
-  await preserveMessage(this.data);
  }
 
  async send(
