@@ -172,3 +172,20 @@ Command({
   return message.send('Status saved!');
  },
 });
+
+Command({
+ name: 'quoted',
+ fromMe: true,
+ isGroup: false,
+ desc: 'forward the quoted message of a message',
+ function: async (message) => {
+  const msg = message.quoted;
+  if (!msg)
+   return message.send('_Reply a message to get the quoted message of it_');
+  if (!msg?.quoted) return message.send('_No message to quote_');
+  return await message.client.sendMessage(message.jid, {
+   forward: msg.quoted,
+   contextInfo: { isForwarded: false, forwardingScore: 0 },
+  });
+ },
+});
