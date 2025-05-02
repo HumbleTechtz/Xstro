@@ -1,15 +1,16 @@
 import Base from './Base.ts';
 import ReplyMessage from './ReplyMessage.ts';
 import { prepareMessage } from '../../utils/index.ts';
-import { preserveMessage } from '../../models/store.ts';
 import type { Serialize, MessageMisc } from '../../types/bot.ts';
 import type { WASocket, AnyMessageContent } from 'baileys';
 
 export default class Message extends Base {
  public quoted?: ReplyMessage;
+ public text?: string | null | undefined;
 
  constructor(data: Serialize, client: WASocket) {
   super(data, client);
+  this.text = data.text;
   this.quoted = data.quoted ? new ReplyMessage(data, this.client) : undefined;
   this.user = data.user;
  }
