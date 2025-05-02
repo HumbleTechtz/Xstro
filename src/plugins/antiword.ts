@@ -58,7 +58,7 @@ Command({
   if (
    !msg.isGroup ||
    !msg.data?.text ||
-   msg.sender === parseJid(msg.client.user?.id)
+   msg.sender === msg.owner
   )
    return;
   if (!(await msg.isBotAdmin()) || (await msg.isAdmin())) return;
