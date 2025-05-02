@@ -23,3 +23,7 @@ export const setAntidelete = async (mode: 'gc' | 'dm' | 'global' | null) => {
  if (existing && existing.mode === mode) return undefined;
  return undefined;
 };
+
+export const getAntidelete = async () => {
+ return await Antidelete.findAll()
+};

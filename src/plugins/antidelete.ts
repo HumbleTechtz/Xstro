@@ -1,5 +1,6 @@
 import { Command } from '../messaging/plugins.ts';
-import { setAntidelete } from '../models/antidelete.ts';
+import { getAntidelete, setAntidelete } from '../models/antidelete.ts';
+import { loadMesage } from '../models/store.ts';
 
 Command({
  name: 'antidelete',
@@ -43,6 +44,36 @@ Command({
 
   return message.send(
    `*Usage:*\n${p}antidelete on\n${p}antidelete off\n${p}antidelete set dm\n${p}antidelete set gc`,
+  );
+ },
+});
+
+Command({
+ on: true,
+ function: async (msg) => {
+  const status = (await getAntidelete()) as [{ mode: string }] | [];
+  if (!Array.isArray(status) || status.length === 0) return;
+
+  const mode = status[0]?.mode ?? null;
+
+  if ((mode === 'gc' && !msg.isGroup) || (mode === 'dm' && msg.isGroup)) return;
+
+  const protocolMessage = msg?.data?.message?.protocolMessage;
+  if (!protocolMessage || protocolMessage.type !== 0) return;
+
+  const messageKey = protocolMessage.key;
+  if (!messageKey?.id) return;
+
+  const m = await loadMesage(messageKey);
+  if (!m) return;
+
+  await msg.client.sendMessage(
+   msg.isGroup ? msg.jid : msg.owner,
+   {
+    forward: m,
+    contextInfo: { isForwarded: false, forwardingScore: 0 },
+   },
+   { quoted: m },
   );
  },
 });

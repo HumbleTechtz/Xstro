@@ -29,6 +29,18 @@ export async function getMessage(
   : undefined;
 }
 
+export async function loadMesage(
+ key: WAMessageKey,
+): Promise<WAMessage | undefined> {
+ if (!key?.id) return;
+ const record = await store.findOne({ where: { id: key.id } });
+ return record?.message
+  ? WAProto.WebMessageInfo.fromObject(
+     JSON.parse(record.message as string).message,
+    )
+  : undefined;
+}
+
 export async function getLastMessagesFromChat(
  jid: string,
 ): Promise<WAMessage[] | undefined> {
