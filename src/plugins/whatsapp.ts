@@ -1,4 +1,8 @@
+import { WAProto } from 'baileys';
+import Message from '../messaging/Messages/Message.ts';
 import { Command } from '../messaging/plugins.ts';
+import { serialize } from '../messaging/serialize.ts';
+import { getMessage } from '../models/store.ts';
 
 Command({
  name: 'bio',
@@ -182,10 +186,14 @@ Command({
   const msg = message.quoted;
   if (!msg)
    return message.send('_Reply a message to get the quoted message of it_');
-  if (!msg?.quoted) return message.send('_No message to quote_');
-  return await message.client.sendMessage(message.jid, {
-   forward: msg.quoted,
-   contextInfo: { isForwarded: false, forwardingScore: 0 },
-  });
+  let m;
+  m = await getMessage(msg.key);
+  if (!m)
+   return message.send('_Sorry xstro does not have this message in store_');
+  m = new Message(
+   await serialize(message.client, WAProto.WebMessageInfo.fromObject(m)),
+   message.client,
+  );
+  return await message.client.sendMessage(message.jid, { forward: m });
  },
 });
