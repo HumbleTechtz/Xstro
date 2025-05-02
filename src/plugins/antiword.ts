@@ -56,13 +56,7 @@ Command({
  function: async (msg) => {
   if (!msg.isGroup || !msg.data?.text) return;
   if (!(await msg.isBotAdmin()) || (await msg.isAdmin())) return;
-  if (
-   (await (await import('../models/settings.ts')).getSettings()).sudo.includes(
-    msg.sender!,
-   )
-  ) {
-   return;
-  }
+  if (msg.fromMe) return;
 
   const record = await getAntiword(msg.jid);
   if (!record?.status || !record.words?.length) return;
