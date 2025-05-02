@@ -55,8 +55,8 @@ Command({
  on: true,
  function: async (msg) => {
   if (!msg.isGroup || !msg.data?.text) return;
+  if (msg.fromMe || msg.sudo) return;
   if (!(await msg.isBotAdmin()) || (await msg.isAdmin())) return;
-  if (msg.fromMe) return;
 
   const record = await getAntiword(msg.jid);
   if (!record?.status || !record.words?.length) return;
@@ -67,8 +67,8 @@ Command({
   });
 
   if (matched) {
-   await msg.send(`_🚫 The word "${matched}" is not allowed here._`);
    await msg.delete();
+   await msg.send(`_🚫 The word "${matched}" is not allowed here._`);
   }
  },
 });
