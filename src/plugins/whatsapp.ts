@@ -176,24 +176,3 @@ Command({
   return message.send('Status saved!');
  },
 });
-
-Command({
- name: 'quoted',
- fromMe: true,
- isGroup: false,
- desc: 'forward the quoted message of a message',
- function: async (message) => {
-  const msg = message.quoted;
-  if (!msg)
-   return message.send('_Reply a message to get the quoted message of it_');
-  let m;
-  m = await getMessage(msg.key);
-  if (!m)
-   return message.send('_Sorry xstro does not have this message in store_');
-  m = new Message(
-   await serialize(message.client, WAProto.WebMessageInfo.fromObject(m)),
-   message.client,
-  );
-  return await message.client.sendMessage(message.jid, { forward: m });
- },
-});

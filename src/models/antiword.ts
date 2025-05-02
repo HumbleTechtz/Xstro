@@ -31,14 +31,9 @@ export async function getAntiword(jid: string) {
  const record = await Antiword.findOne({ where: { jid } });
  if (!record) return null;
 
- let wordList: string[] = [];
- if (Array.isArray(record.words)) {
-  wordList = record.words.filter((w) => typeof w === 'string');
- }
-
  return {
   jid: record.jid,
   status: Boolean(record.status),
-  words: wordList,
+  words: record.words ? JSON.parse(record.words as string) : [],
  };
 }

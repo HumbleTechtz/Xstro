@@ -54,21 +54,15 @@ ${prefix}antiword set word1, word2 — Set blocked words`);
 Command({
  on: true,
  function: async (msg) => {
-  if (
-   !msg.isGroup ||
-   !msg.data?.text ||
-   !msg.data.isPersonAdmin ||
-   msg.sender === msg.owner
-  )
-   return;
+  if (!msg.isGroup || !msg.data?.text || !msg.data.isPersonAdmin) return;
 
   const record = await getAntiword(msg.jid);
   if (!record?.status || !record.words?.length) return;
 
   const lowerText = msg.data.text.toLowerCase();
-  const matched = record.words.find((word) =>
-   lowerText.includes(word.toLowerCase()),
-  );
+  const matched = record.words.find((word: string) => {
+   return new RegExp(`\\b${escapeRegex(word)}\\b`, 'i').test(lowerText);
+  });
 
   if (matched) {
    await msg.send(`_🚫 The word "${matched}" is not allowed here._`);
@@ -76,3 +70,7 @@ Command({
   }
  },
 });
+
+export function escapeRegex(text: string): string {
+ return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
