@@ -54,7 +54,7 @@ ${prefix}antiword set word1, word2 — Set blocked words`);
 Command({
  on: true,
  function: async (msg) => {
-  if (!msg.isGroup || !msg.data?.text || msg.sudo) return;
+  if (!msg.isGroup || !msg.data?.text || msg.data.sudo) return;
   if (!(await msg.isBotAdmin()) || (await msg.isAdmin())) return;
 
   const record = await getAntiword(msg.jid);
