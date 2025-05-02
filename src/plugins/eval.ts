@@ -10,7 +10,7 @@ Command({
   const code = text.slice(2);
 
   try {
-   const result = await eval(code);
+   const result = await eval(`(async () => { ${code} })()`);
    const output = util.inspect(result, { depth: 1 });
    await message.send(output);
   } catch (error) {
