@@ -35,9 +35,7 @@ export async function loadMesage(
  if (!key?.id) return;
  const record = await store.findOne({ where: { id: key.id } });
  return record?.message
-  ? WAProto.WebMessageInfo.fromObject(
-     JSON.parse(record.message as string).message,
-    )
+  ? WAProto.WebMessageInfo.fromObject(JSON.parse(record.message as string))
   : undefined;
 }
 
