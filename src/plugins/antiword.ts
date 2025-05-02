@@ -1,5 +1,6 @@
 import { Command } from '../messaging/plugins.ts';
 import { setAntiWord, getAntiword } from '../models/antiword.ts';
+import { parseJid } from '../utils/constants.ts';
 
 Command({
  name: 'antiword',
@@ -54,7 +55,12 @@ ${prefix}antiword set word1, word2 — Set blocked words`);
 Command({
  on: true,
  function: async (msg) => {
-  if (!msg.isGroup || !msg.data?.text) return;
+  if (
+   !msg.isGroup ||
+   !msg.data?.text ||
+   msg.sender === parseJid(msg.client.user?.id)
+  )
+   return;
   if (!(await msg.isBotAdmin()) || (await msg.isAdmin())) return;
 
   const record = await getAntiword(msg.jid);
