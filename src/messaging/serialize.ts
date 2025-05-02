@@ -1,5 +1,5 @@
 import { isJidGroup, normalizeMessageContent } from 'baileys';
-import { cachedGroupMetadata, getSettings } from '../models/index.ts';
+import { getSettings } from '../models/index.ts';
 import {
  getMessageContent,
  getQuotedContent,
