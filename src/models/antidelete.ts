@@ -15,15 +15,18 @@ const Antidelete = database.define(
 );
 
 export const setAntidelete = async (mode: 'gc' | 'dm' | 'global' | null) => {
- const existing = await Antidelete.findOne({ where: { mode } });
- if (!existing) {
-  await Antidelete.upsert({ mode });
+ const record = await Antidelete.findOne();
+
+ if (!record) {
+  await Antidelete.create({ mode });
   return true;
  }
- if (existing && existing.mode === mode) return undefined;
- return undefined;
+ if (record.mode === mode) return undefined;
+ await Antidelete.destroy({ where: { mode: record.mode } });
+ await Antidelete.create({ mode });
+ return true;
 };
 
 export const getAntidelete = async () => {
- return await Antidelete.findAll()
+ return await Antidelete.findAll();
 };
