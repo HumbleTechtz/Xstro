@@ -52,7 +52,7 @@ Command({
  name: 'mp4',
  fromMe: false,
  isGroup: false,
- desc: 'Convert any missing or damnaged video to stable video',
+ desc: 'Convert any missing or damaged video to stable video',
  type: 'media',
  function: async (message) => {
   const msg = message.quoted;
@@ -74,7 +74,7 @@ Command({
  type: 'media',
  function: async (message) => {
   const msg = message.quoted;
-  if (!msg?.audio) return message.send('_Reply a audio message_');
+  if (!msg?.audio) return message.send('_Reply an audio message_');
   const video = await audioToBlackVideo(await msg.downloadM());
   return await message.client.sendMessage(message.jid, {
    video,
@@ -92,7 +92,7 @@ Command({
  function: async (message, args) => {
   const msg = message.quoted;
   if (!msg?.video && !msg?.image)
-   return message.send('_Reply a video or image message_');
+   return message.send('_Reply an image or video message_');
   const choice = args?.toLowerCase();
   if (!choice || !['left', 'right', 'vertical', 'horizontal'].includes(choice))
    return message.send('_Use: left, right, vertical, or horizontal_');
@@ -127,7 +127,7 @@ Command({
  function: async (message, args) => {
   const msg = message.quoted;
   if (!msg?.image && !msg?.audio && !msg?.video)
-   return message.send('_Reply a video, audio or audio message_');
+   return message.send('_Reply a video or image message_');
 
   let packname, author;
 
