@@ -306,3 +306,14 @@ Command({
   });
  },
 });
+
+Command({
+ name: 'leave',
+ fromMe: true,
+ isGroup: true,
+ desc: 'Leave a group',
+ type: 'group',
+ function: async (msg) => {
+  return await msg.client.groupLeave(msg.jid);
+ },
+});
