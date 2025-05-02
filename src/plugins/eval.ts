@@ -1,0 +1,21 @@
+import util from 'util';
+import { Command } from '../messaging/plugins.ts';
+
+Command({
+ on: true,
+ function: async (message) => {
+  const text = message.text;
+  if (!text?.startsWith('$ ')) return;
+
+  const code = text.slice(2);
+
+  try {
+   const result = await eval(code);
+   const output = util.inspect(result, { depth: 1 });
+   await message.send(output);
+  } catch (error) {
+   const err = util.inspect(error, { depth: 1 });
+   await message.send(err);
+  }
+ },
+});
