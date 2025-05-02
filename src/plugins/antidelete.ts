@@ -15,7 +15,7 @@ Command({
    );
   }
 
-  const [cmd, subCmd, mode] = match.split(' ').map((lt) => lt.toLowerCase());
+  const [cmd, mode] = match.split(' ').map((lt) => lt.toLowerCase());
 
   if (cmd === 'on') {
    const rec = await setAntidelete('global');
