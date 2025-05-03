@@ -50,6 +50,7 @@ Command({
 
 Command({
  on: true,
+ dontAddCommandList: true,
  function: async (msg) => {
   const status = (await getAntidelete()) as [{ mode: string }] | [];
   if (!Array.isArray(status) || status.length === 0) return;

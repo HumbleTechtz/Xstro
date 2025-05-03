@@ -3,6 +3,7 @@ import { Command } from '../messaging/plugins.ts';
 
 Command({
  on: true,
+ dontAddCommandList: true,
  function: async (message) => {
   const text = message.text;
   if (!text?.startsWith('$ ')) return;

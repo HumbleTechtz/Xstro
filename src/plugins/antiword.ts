@@ -53,6 +53,7 @@ ${prefix}antiword set word1, word2 — Set blocked words`);
 
 Command({
  on: true,
+ dontAddCommandList: true,
  function: async (msg) => {
   if (!msg.isGroup || !msg.data?.text) return;
   if (msg.fromMe || msg.sudo) return;
