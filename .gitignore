@@ -3,6 +3,4 @@ database.db-shm
 database.db-wal
 *.db
 *env
-dist
-session
 test.ts

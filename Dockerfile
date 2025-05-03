@@ -1,6 +1,13 @@
-FROM quay.io/astrox11/xstro:latest
+FROM node:23
+
+RUN apt-get update && apt-get install -y git ffmpeg && rm -rf /var/lib/apt/lists/*
+
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
 RUN git clone https://github.com/AstroX11/Xstro /Xstro
+
 WORKDIR /Xstro
-RUN yarn
-EXPOSE 8000
-CMD ["yarn", "start"]
+
+RUN pnpm install
+
+CMD ["pnpm", "start"]

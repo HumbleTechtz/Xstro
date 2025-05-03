@@ -1,8 +1,8 @@
-run = "yarn start"
+run = "pnpm start"
 modules = ["nodejs-23", "typescript-language-server"]
 
 [nix]
 channel = "stable-24_05"
 
 [deployment]
-run = ["sh", "-c", "yarn start"]
+run = ["sh", "-c", "pnpm start"]

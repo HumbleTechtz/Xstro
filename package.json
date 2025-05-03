@@ -12,6 +12,7 @@
   "homepage": "https://github.com/AstroX11/Xstro#readme",
   "author": "AstroX11 <danielfx0012@gmail.com>",
   "devDependencies": {
+    "@typescript-eslint/parser": "^8.31.1",
     "eslint": "^9.25.1",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-prettier": "^5.2.6",
@@ -39,5 +40,5 @@
     "start": "node main.mjs",
     "prestart": "eslint --fix"
   },
-  "packageManager": "yarn@1.22.22"
+  "packageManager": "pnpm@10.10.0"
 }

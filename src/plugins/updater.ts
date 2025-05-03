@@ -32,7 +32,7 @@ Command({
    if (dependencyChanged) {
     await message.send('Dependancies changed installing new dependancies');
     await message.send('Restarting...');
-    await execPromise('yarn install && yarn upgrade');
+    await execPromise('pnpm install');
     process.exit();
    } else {
     await message.send('Restarting...');
