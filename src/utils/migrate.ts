@@ -20,12 +20,16 @@ export class SessionManager {
 
  private async init(): Promise<unknown> {
   if (!config.SESSION) throw new Error('No session Id found!');
-  if (await this.isSessionSame(config.SESSION))
-   return log.info('Session Loaded!');
+  const isSameSession = await this.isSessionSame(config.SESSION);
+  if (isSameSession) {
+   log.info('Session Loaded!');
+   return;
+  }
   const data = await this.fetchSession();
   if (!data) throw new Error('Session no longer exists on server!');
   const decrypted = await this.decryptSession(data);
-  return await this.transferToDb(decrypted);
+  await this.transferToDb(decrypted);
+  process.exit();
  }
 
  private async isSessionSame(session: string): Promise<boolean> {
@@ -76,7 +80,7 @@ export class SessionManager {
  private async transferToDb(data: {
   creds: { [key: string]: any };
   syncKeys: { [key: string]: string };
- }): Promise<unknown> {
+ }) {
   const creds = Object.keys(data)[0];
   const AppStateSyncKeyDataNames = Object.keys(data.syncKeys).map((appKeys) =>
    appKeys.replace('.json', ''),
@@ -89,8 +93,8 @@ export class SessionManager {
   );
 
   for (const [name, dataValue] of Object.entries(merged)) {
-   await auth.create({ name, data: JSON.stringify(dataValue) });
+   await auth.create({ name, data: dataValue as object });
   }
-  return await this.sessionId.create({ session: config.SESSION });
+  await this.sessionId.create({ session: config.SESSION });
  }
 }

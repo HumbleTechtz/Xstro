@@ -19,7 +19,10 @@ export const auth = database.define(
 
 export async function useSqliteAuthState() {
  const writeData = async (data: any, name: string) => {
-  return await auth.upsert({ name, data: JSON.parse(JSON.stringify(data)) });
+  return await auth.upsert({
+   name,
+   data: JSON.parse(JSON.stringify(data ?? {})),
+  });
  };
 
  const readData = async (name: string) => {

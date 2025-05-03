@@ -6,18 +6,12 @@ import path from 'node:path';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const appPath = path.join(__dirname, 'src', 'app.ts');
 
-const nodeArgs = [
- '--no-warnings',
- '--import=tsx/esm',
- appPath,
-];
+const nodeArgs = ['--no-warnings', '--import=tsx/esm', appPath];
 
 (function run() {
- const load = ora('\x1b[1mstarting...\x1b[0m').start();
-
+ const load = ora('\x1b[1mStarting...\x1b[0m').start();
  setTimeout(() => {
   load.stop();
-
   try {
    const proc = spawn('node', nodeArgs, {
     stdio: 'inherit',
@@ -28,7 +22,6 @@ const nodeArgs = [
      TS_NODE_TRANSPILE_ONLY: 'true',
     },
    });
-
    proc.on('close', (code) => {
     if (code === 0) {
      ora().info('\x1b[1mrestarting...\x1b[0m');
@@ -38,7 +31,6 @@ const nodeArgs = [
      process.exit(code || 1);
     }
    });
-
    proc.on('error', (err) => {
     ora().fail(`\x1b[1mProcess error: ${err.message}\x1b[0m`);
     process.exit(1);
@@ -47,5 +39,5 @@ const nodeArgs = [
    ora().fail(`\x1b[1mFailed to start: ${err.message}\x1b[0m`);
    process.exit(1);
   }
- }, 3000);
+ }, 1500);
 })();
