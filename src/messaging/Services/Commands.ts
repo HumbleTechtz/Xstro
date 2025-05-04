@@ -1,6 +1,6 @@
 import Message from '../Messages/Message.ts';
 import lang from '../../utils/lang.ts';
-import { log } from '../../utils/index.ts';
+import { print } from '../../utils/index.ts';
 import { commands } from '../plugins.ts';
 import { getStickerCmd } from '../../models/sticker.ts';
 import type { Commands } from '../../types/bot.ts';
@@ -36,7 +36,7 @@ export default class RunCommand {
     await this.message.react('⏳');
     await cmd.function(this.message, match[2] ?? '');
    } catch (err) {
-    log.error(err);
+    print.fail(JSON.stringify(err));
    }
   }
  }
@@ -65,7 +65,7 @@ export default class RunCommand {
     try {
      await cmd.function(this.message, match[2] ?? '');
     } catch (err) {
-     log.error(err);
+     print.fail(JSON.stringify(err));
     }
    }
   }
@@ -76,7 +76,7 @@ export default class RunCommand {
    try {
     await cmd.function(this.message);
    } catch (error) {
-    log.error(error);
+    print.fail(JSON.stringify(error));
    }
   }
  }

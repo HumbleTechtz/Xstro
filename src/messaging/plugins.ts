@@ -1,34 +1,19 @@
 import { pathToFileURL, fileURLToPath } from 'node:url';
 import { join, extname, dirname } from 'node:path';
 import { readdir } from 'node:fs/promises';
-import { log } from '../utils/index.ts';
+import { print } from '../utils/index.ts';
 import type { Commands } from '../types/bot.ts';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const commands: Commands[] = [];
 
-export function Command({
- name,
- on,
- function: func,
- fromMe,
- isGroup,
- desc,
- type,
- dontAddCommandList,
-}: Commands): number {
- return commands.push({
-  name: new RegExp(`^\\s*(${name})(?:\\s+([\\s\\S]+))?$`, 'i'),
-  on,
-  function: func,
-  fromMe: fromMe,
-  isGroup: isGroup,
-  desc: desc,
-  type: type,
-  dontAddCommandList: dontAddCommandList,
+export function Command(cmd: Commands) {
+ const cmds = commands.push({
+  name: new RegExp(`^\\s*(${cmd.name})(?:\\s+([\\s\\S]+))?$`, 'i'),
+  ...cmd,
  });
+ print.succeed(`Synced ${cmds} Plugins.`);
 }
 
 export async function syncPlugins(
@@ -47,10 +32,9 @@ export async function syncPlugins(
      const fileUrl: string = pathToFileURL(fullPath).href;
      await import(fileUrl);
     } catch (err) {
-     log.error('ERROR', `${file.name}: ${(err as Error).message}`);
+     print.fail(`${file.name}: ${(err as Error).message}`);
     }
    }
   }),
  );
- log.info('Synced Plugins');
 }
