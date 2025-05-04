@@ -18,7 +18,7 @@ You do not need a so-called _session ID_ to run the bot. Once the deployment is 
 
 [Heroku](https://www.heroku.com/deploy?template=https://github.com/AstroX11/Xstro)
 
-[Koyeb](https://app.koyeb.com/deploy?name=xstro&repository=AstroX11%2FXstro&branch=core&builder=dockerfile&instance_type=free&instances_min=0&env%5BNUMBER%5D=)
+[Koyeb](https://app.koyeb.com/services/deploy?name=xstro&repository=AstroX11/Xstro&branch=core&builder=dockerfile&instance_type=free&instances_min=0&env[NUMBER]=)
 
 [Render](https://render.com/deploy?repo=https://github.com/AstroX11/Xstro)
 
