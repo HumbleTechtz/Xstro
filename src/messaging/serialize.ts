@@ -40,6 +40,7 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
   disablecmd,
   disablegc,
   disabledm,
+  mention: quoted?.mentionedJid,
   sudo: sudo.includes(parseJid(sender)) ? true : sender === owner,
   ...content,
   ...messages,

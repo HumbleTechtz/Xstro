@@ -94,6 +94,17 @@ export function getMessageContent(message?: WAMessageContent) {
  };
 }
 
+export function hasContextInfo(
+ msg: unknown,
+): msg is { contextInfo: WAContextInfo } {
+ if (!msg || typeof msg !== 'object' || msg === null) return false;
+ return (
+  'contextInfo' in msg &&
+  msg.contextInfo !== null &&
+  typeof msg.contextInfo === 'object'
+ );
+}
+
 export function getQuotedContent(
  message?: WAMessageContent,
  key?: WAMessageKey,
@@ -101,14 +112,6 @@ export function getQuotedContent(
 ) {
  if (!message) return undefined;
  const mtype = contentType(message);
- function hasContextInfo(msg: unknown): msg is { contextInfo: WAContextInfo } {
-  if (!msg || typeof msg !== 'object' || msg === null) return false;
-  return (
-   'contextInfo' in msg &&
-   msg.contextInfo !== null &&
-   typeof msg.contextInfo === 'object'
-  );
- }
  const messageContent = message?.[mtype!];
  const Quoted = hasContextInfo(messageContent)
   ? messageContent.contextInfo
@@ -117,19 +120,19 @@ export function getQuotedContent(
   ? normalizeMessageContent(Quoted.quotedMessage)
   : undefined;
 
- return Quoted && quotedM
+ return Quoted
   ? {
      key: {
       remoteJid: key?.remoteJid,
       fromMe:
-       Quoted.participant === owner ? true : Quoted.participant ? false : null,
+       Quoted.participant === owner ? true : Quoted.participant ? false : false,
       id: Quoted.stanzaId,
       participant:
        isJidGroup(key?.remoteJid!) || isJidBroadcast(key?.remoteJid!)
         ? Quoted.participant
         : undefined,
      },
-     message: quotedM,
+     message: quotedM ?? undefined,
      type: contentType(quotedM),
      sender: Quoted.participant!,
      text: extractStringfromMessage(quotedM),
@@ -138,10 +141,9 @@ export function getQuotedContent(
       quotedM?.videoMessage?.viewOnce ??
       quotedM?.imageMessage?.viewOnce ??
       undefined,
-     broadcast: Boolean(Quoted.remoteJid!),
+     broadcast: Boolean(Quoted?.remoteJid!),
      mentions: Quoted.mentionedJid || [],
-     ...(({ quotedMessage, stanzaId, remoteJid, ...rest }): WAContextInfo =>
-      rest)(Quoted),
+     ...(({ quotedMessage, stanzaId, remoteJid, ...rest }) => rest)(Quoted),
     }
   : undefined;
 }

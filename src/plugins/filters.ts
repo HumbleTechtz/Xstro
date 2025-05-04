@@ -1,5 +1,11 @@
 import { Command } from '../messaging/plugins.ts';
-import { Filters, setFilter, getFilter, delFilter } from '../models/filter.ts';
+import {
+ Filters,
+ setFilter,
+ delFilter,
+ getAllFilters,
+} from '../models/filter.ts';
+import { escapeRegex } from './antiword.ts';
 
 Command({
  name: 'filter',
@@ -10,8 +16,8 @@ Command({
  function: async (msg) => {
   return await msg.send(
    `\`\`\`Filters Menu:
-${msg.prefix[0]}pfilter <name>:<response>
-${msg.prefix[0]}gfilter <name>
+${msg.prefix[0]}pfilter <name>:<response> (Private)
+${msg.prefix[0]}gfilter <name>:<response> (Group)
 ${msg.prefix[0]}getfilters
 ${msg.prefix[0]}delfilter <name>\`\`\``.trim(),
   );
@@ -29,7 +35,7 @@ Command({
   const [name, ...rest] = match.split(':');
   const response = rest.join(':').trim();
   if (!name || !response) return await msg.send('Name or response missing');
-  await setFilter(name.trim(), response, true, msg.isGroup ? [msg.jid] : []);
+  await setFilter(name.trim(), response, true, false); // updated
   return await msg.send(`*Filter saved for _${name.trim()}_*`);
  },
 });
@@ -37,14 +43,20 @@ Command({
 Command({
  name: 'gfilter',
  fromMe: true,
- desc: 'Get filter by name',
+ desc: 'Add or update group filter',
  type: 'filter',
  function: async (msg, match) => {
-  if (!match || !match.trim()) return await msg.send('Provide filter name');
-  const name = match.trim();
-  const data = await getFilter(name);
-  if (!data) return await msg.send('Filter not found');
-  return await msg.send(`\`\`\`${data.response}\`\`\`\n_For: ${name}_`);
+  if (!msg.isGroup)
+   return await msg.send('This command is only for group chats.');
+  if (!match || !match.includes(':'))
+   return await msg.send('Use format name:response');
+
+  const [name, ...rest] = match.split(':');
+  const response = rest.join(':').trim();
+  if (!name || !response) return await msg.send('Name or response missing');
+
+  await setFilter(name.trim(), response, true, true); // updated
+  return await msg.send(`*Group filter saved for _${name.trim()}_*`);
  },
 });
 
@@ -72,5 +84,32 @@ Command({
   const deleted = await delFilter(name);
   if (!deleted) return await msg.send('Filter not found');
   return await msg.send(`Deleted filter _${name}_`);
+ },
+});
+
+Command({
+ on: true,
+ dontAddCommandList: true,
+ function: async (msg) => {
+  if (msg.fromMe) return;
+
+  const text = msg.text?.trim().toLowerCase();
+  if (!text) return;
+
+  const allFilters = await getAllFilters();
+
+  const keyword = allFilters.find((filter) => {
+   const regex = new RegExp(`\\b${escapeRegex(filter.name)}\\b`, 'i');
+   return regex.test(text);
+  });
+
+  if (!keyword || !keyword.status) return;
+
+  if (keyword.isGroup) {
+   if (!msg.isGroup) return;
+   if (!msg.mention?.includes(msg.owner) || msg.fromMe) return;
+  }
+
+  return await msg.send(keyword.response);
  },
 });

@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@astrox11/sqlite':
-        specifier: ^3.0.0
-        version: 3.0.0
+        specifier: ^3.5.0
+        version: 3.5.0
       '@astrox11/utily':
         specifier: ^1.8.2
         version: 1.8.2
@@ -69,8 +69,8 @@ packages:
   '@adiwajshing/keyed-db@0.2.4':
     resolution: {integrity: sha512-yprSnAtj80/VKuDqRcFFLDYltoNV8tChNwFfIgcf6PGD4sjzWIBgs08pRuTqGH5mk5wgL6PBRSsMCZqtZwzFEw==}
 
-  '@astrox11/sqlite@3.0.0':
-    resolution: {integrity: sha512-dU8ZTJBykTTX60jNTy3VxnzznVPIRzcCRh8PiE+Ef6pdScgsuznlZi4hJkE8nbh1yAXbLykcOn6aC62w322mpA==}
+  '@astrox11/sqlite@3.5.0':
+    resolution: {integrity: sha512-5tz3S7bLlsvx8S17CNc0HAxLPpkXuwp7qCMr44UO2ldIAInn9cZnCWfahPtrSjD3MeMoWp1inUSM9BmmX3gjyg==}
     engines: {node: '>=23'}
 
   '@astrox11/utily@1.8.2':
@@ -1904,7 +1904,7 @@ snapshots:
 
   '@adiwajshing/keyed-db@0.2.4': {}
 
-  '@astrox11/sqlite@3.0.0':
+  '@astrox11/sqlite@3.5.0':
     dependencies:
       '@types/node': 22.15.3
       typescript: 5.8.3

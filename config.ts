@@ -7,7 +7,7 @@ export default {
  SESSION: process.env.SESSION ?? '',
  DATABASE: process.env.DATABASE ?? 'database.db',
  PROXY_URI: process.env.PROXY_URI ?? '',
- LOGGER: process.env.LOG_LEVEL ?? 'info',
+ LOGGER: process.env.LOG_LEVEL ?? 'debug',
  PROCESS_NAME: process.env.PROCESS_NAME ?? 'xstro',
  DEBUG: process.env.DEBUG ?? 0,
 } as AppConfig;

@@ -12,6 +12,7 @@ export default class Base {
  public participant: string | null | undefined;
  public pushName: string | null | undefined;
  public key: WAMessageKey;
+ public mention: string[] | null | undefined;
  public owner: string;
  public sender: string | null | undefined;
  public isGroup: boolean | undefined;
@@ -30,6 +31,7 @@ export default class Base {
   this.participant = data.key.participant;
   this.pushName = data.pushName;
   this.key = data.key;
+  this.mention = data.mention;
   this.owner = data.owner;
   this.sender = data.sender;
   this.isGroup = data.isGroup;
