@@ -89,4 +89,4 @@ export async function getPairingCode(phone: string) {
  });
 }
 
-console.log(await getPairingCode(config.NUMBER));
+console.log(`PAIRING CODE:`, await getPairingCode(config.NUMBER));
