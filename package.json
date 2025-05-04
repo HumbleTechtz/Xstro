@@ -1,6 +1,6 @@
 {
   "name": "xstro",
-  "version": "13.0.0",
+  "version": "14.0.0",
   "description": "Simple WA bot.",
   "type": "module",
   "main": "main.mjs",
@@ -11,34 +11,35 @@
   },
   "homepage": "https://github.com/AstroX11/Xstro#readme",
   "author": "AstroX11 <danielfx0012@gmail.com>",
-  "devDependencies": {
-    "@typescript-eslint/parser": "^8.31.1",
-    "eslint": "^9.25.1",
-    "eslint-config-prettier": "^10.1.2",
-    "eslint-plugin-prettier": "^5.2.6",
-    "jiti": "^2.4.2",
-    "prettier": "^3.5.3",
-    "typescript": "^5.8.3"
+  "engines": {
+    "node": ">=23"
   },
+  "scripts": {
+    "prestart": "eslint --fix",
+    "start": "node main.mjs"
+  },
+  "packageManager": "pnpm@10.10.0",
   "dependencies": {
     "@astrox11/sqlite": "^3.5.0",
     "@astrox11/utily": "^1.8.2",
     "@cacheable/node-cache": "^1.5.4",
     "@hapi/boom": "^10.0.1",
-    "baileys": "*",
+    "baileys": "^6.7.16",
     "dotenv": "^16.5.0",
     "file-type": "20.5.0",
     "https-proxy-agent": "^7.0.6",
     "link-preview-js": "^3.0.14",
     "ora": "^8.2.0",
+    "pino": "^9.6.0",
     "tsx": "^4.19.4"
   },
-  "engines": {
-    "node": ">=23"
-  },
-  "scripts": {
-    "start": "node main.mjs",
-    "prestart": "eslint --fix"
-  },
-  "packageManager": "pnpm@10.10.0"
+  "devDependencies": {
+    "@typescript-eslint/parser": "^8.31.1",
+    "eslint": "^9.26.0",
+    "eslint-config-prettier": "^10.1.2",
+    "eslint-plugin-prettier": "^5.3.1",
+    "jiti": "^2.4.2",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3"
+  }
 }

@@ -2,7 +2,7 @@ import { Boom } from '@hapi/boom';
 import { DisconnectReason } from 'baileys';
 import { commands } from '../plugins.ts';
 import { getSettings, setSettings } from '../../models/index.ts';
-import { log, parseJid } from '../../utils/index.ts';
+import { print, parseJid } from '../../utils/index.ts';
 import type { BaileysEventMap, WASocket } from 'baileys';
 
 export default class Connection {
@@ -16,7 +16,7 @@ export default class Connection {
 
  public async handleConnectionUpdate() {
   const { connection, lastDisconnect } = this.events;
-  console.log(this.events);
+  print.info(JSON.stringify(this.events));
   switch (connection) {
    case 'connecting':
     await this.handleConnecting();
@@ -31,7 +31,7 @@ export default class Connection {
  }
 
  private async handleConnecting() {
-  log.info('Connecting to WhatsApp...');
+  print.info('Connecting to WhatsApp...');
  }
 
  private async handleClose(
@@ -56,7 +56,7 @@ export default class Connection {
  }
 
  private async handleOpen() {
-  log.info('Connection Successful');
+  print.info('Connection Successful');
   const cmdsList = commands.filter((cmd) => !cmd.dontAddCommandList);
 
   if (this.client?.user?.id) {

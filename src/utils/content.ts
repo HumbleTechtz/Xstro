@@ -1,6 +1,5 @@
 import { fileTypeFromBuffer } from 'file-type';
-import { isPath, isText } from './constants.ts';
-import { log } from './logger.ts';
+import { isPath, isText, print } from './constants.ts';
 import { extractStringfromMessage } from './extractor.ts';
 import {
  isJidBroadcast,
@@ -35,7 +34,7 @@ export const getContentType = async (
   const fileType = await fileTypeFromBuffer(buffer);
   return fileType;
  } catch (error) {
-  log.error('Error detecting content type:', error as string);
+  print.fail(JSON.stringify(error));
   return undefined;
  }
 };
