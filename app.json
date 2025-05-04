@@ -6,29 +6,9 @@
     "stack": "container",
     "success_url": "/",
     "env": {
-        "SESSION": {
-            "description": "Session id goes here",
+        "NUMBER": {
+            "description": "Your WhatsApp Account Number that want's to run the bot.",
             "required": true
-        },
-        "SESSION_URL": {
-            "description": "Server URL for the custom session ID",
-            "required": false
-        },
-        "HUGGING_FACE_KEY": {
-            "description": "Please Put your hugging face Api key inorder to use Ai commands",
-            "required": false
-        },
-        "META_DATA": {
-            "description": "Metadata such as sticker data and bot name",
-            "required": false
-        },
-        "WARN_COUNT": {
-            "description": "Number of warnings before action is taken",
-            "required": false
-        },
-        "TIME_ZONE": {
-            "description": "Time zone of the bot",
-            "required": false
         }
     }
 }
