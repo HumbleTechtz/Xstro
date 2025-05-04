@@ -1,6 +1,6 @@
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import { log } from '../utils/index.ts';
+import { print } from '../utils/index.ts';
 import { Command } from '../messaging/plugins.ts';
 
 const execPromise = promisify(exec);
@@ -60,7 +60,7 @@ async function updatedDependencies(): Promise<boolean> {
   const { stdout: diff } = await execPromise('git diff core..origin/core');
   return diff.includes('"dependencies":');
  } catch (error) {
-  log.error('Error occurred while checking package.json:', error);
+  print.fail(JSON.stringify(error));
   return false;
  }
 }

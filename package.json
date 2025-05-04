@@ -15,8 +15,10 @@
     "node": ">=23"
   },
   "scripts": {
-    "start": "node main.mjs",
-    "prestart": "eslint --fix"
+    "lint": "eslint --fix",
+    "serve": "vite dev",
+    "prestart": "",
+    "start": "node main.mjs"
   },
   "packageManager": "pnpm@10.10.0",
   "dependencies": {
@@ -33,13 +35,10 @@
     "pino": "^9.6.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-markdown": "^10.1.0",
     "react-router-dom": "^7.5.3",
     "tsx": "^4.19.4"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.17",
-    "@types/express": "^5.0.1",
     "@types/node": "^22.15.3",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.3",

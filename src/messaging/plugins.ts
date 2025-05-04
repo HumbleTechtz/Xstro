@@ -9,11 +9,11 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 export const commands: Commands[] = [];
 
 export function Command(cmd: Commands) {
- const cmds = commands.push({
-  name: new RegExp(`^\\s*(${cmd.name})(?:\\s+([\\s\\S]+))?$`, 'i'),
+ const _cmds = {
   ...cmd,
- });
- print.succeed(`Synced ${cmds} Plugins.`);
+  name: new RegExp(`^\\s*(${cmd.name})(?:\\s+([\\s\\S]+))?$`, 'i'),
+ };
+ return commands.push(_cmds);
 }
 
 export async function syncPlugins(

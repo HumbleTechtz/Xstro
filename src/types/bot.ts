@@ -101,7 +101,7 @@ export interface BotSettings {
 }
 
 export interface AppConfig {
- SESSION: string;
+ NUMBER: string;
  SESSION_DIR: string;
  DATABASE: string;
  PROXY_URI: string;

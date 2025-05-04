@@ -1,5 +1,6 @@
 import {
  Browsers,
+ delay,
  DisconnectReason,
  fetchLatestBaileysVersion,
  makeCacheableSignalKeyStore,
@@ -7,10 +8,12 @@ import {
 } from 'baileys';
 import { pino } from 'pino';
 import { Boom } from '@hapi/boom';
-import { useSqliteAuthState } from './storage.ts';
-import { print } from './constants.ts';
+import { useSqliteAuthState } from '../utils/storage.ts';
+import { print } from '../utils/constants.ts';
+import config from '../../config.ts';
 
-export async function getPairingCode(phone: string): Promise<string> {
+export async function getPairingCode(phone: string) {
+ if (!phone) return process.exit();
  return new Promise(async (resolve, reject) => {
   try {
    const logger = pino({ level: 'silent' });
@@ -48,6 +51,7 @@ export async function getPairingCode(phone: string): Promise<string> {
       await conn.sendMessage(conn.user.id, {
        text: '```Session Initalized```',
       });
+      process.exit();
      }
     }
 
@@ -84,3 +88,5 @@ export async function getPairingCode(phone: string): Promise<string> {
   }
  });
 }
+
+console.log(await getPairingCode(config.NUMBER));
