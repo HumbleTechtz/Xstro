@@ -23,7 +23,7 @@ export const setFilter = async (
  };
 
  if (exists) {
-  return await Filters.upsert(query, { where: { name } });
+  return await Filters.update(query, { where: { name } });
  } else {
   return await Filters.create(query);
  }

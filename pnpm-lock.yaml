@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@astrox11/sqlite':
-        specifier: ^3.5.0
-        version: 3.5.0
+        specifier: ^3.6.0
+        version: 3.6.0
       '@astrox11/utily':
         specifier: ^1.8.2
         version: 1.8.2
@@ -55,8 +55,8 @@ importers:
         specifier: ^10.1.2
         version: 10.1.2(eslint@9.26.0(jiti@2.4.2))
       eslint-plugin-prettier:
-        specifier: ^5.3.1
-        version: 5.3.1(eslint-config-prettier@10.1.2(eslint@9.26.0(jiti@2.4.2)))(eslint@9.26.0(jiti@2.4.2))(prettier@3.5.3)
+        specifier: ^5.4.0
+        version: 5.4.0(eslint-config-prettier@10.1.2(eslint@9.26.0(jiti@2.4.2)))(eslint@9.26.0(jiti@2.4.2))(prettier@3.5.3)
       jiti:
         specifier: ^2.4.2
         version: 2.4.2
@@ -72,8 +72,8 @@ packages:
   '@adiwajshing/keyed-db@0.2.4':
     resolution: {integrity: sha512-yprSnAtj80/VKuDqRcFFLDYltoNV8tChNwFfIgcf6PGD4sjzWIBgs08pRuTqGH5mk5wgL6PBRSsMCZqtZwzFEw==}
 
-  '@astrox11/sqlite@3.5.0':
-    resolution: {integrity: sha512-5tz3S7bLlsvx8S17CNc0HAxLPpkXuwp7qCMr44UO2ldIAInn9cZnCWfahPtrSjD3MeMoWp1inUSM9BmmX3gjyg==}
+  '@astrox11/sqlite@3.6.0':
+    resolution: {integrity: sha512-PrCfyt8DA9u7ejiZXXxmpd3gH6nejoAJt6IN+s7jgILMYvIF2LsrGsNjA2lS3oBYdNh1f75ZX7c+shxqLOIJUg==}
     engines: {node: '>=23'}
 
   '@astrox11/utily@1.8.2':
@@ -601,8 +601,8 @@ packages:
   '@wasm-audio-decoders/common@9.0.6':
     resolution: {integrity: sha512-E9n3jvsiO0a7+ZNKOJZB6Y2akKbU1dj+6Cena8aZgkgZE27pfhMwgJlt0qw2CpKBZn9nOC3HmJu6jmq/cbuNfQ==}
 
-  '@wasm-audio-decoders/flac@0.2.6':
-    resolution: {integrity: sha512-NYn7F93cDbJgI9XFYjz45gotfChMUKRzMgdHhwj4oBJ4TTLowQoexU0KVhf9pdlKvcsQ9vkfuJDxisH/dWbXOg==}
+  '@wasm-audio-decoders/flac@0.2.7':
+    resolution: {integrity: sha512-2a2Abe6lEM54CGxG3cty3rJl4/sb7C1Gr2uwlUnBEcRvfgQTd4tsA+Aku+RxV2/SuDmjdw1wZe4h/b+WoAAvbw==}
 
   '@wasm-audio-decoders/ogg-vorbis@0.1.17':
     resolution: {integrity: sha512-Cb0i1BiXsW8YrFif1DC5NBaPJ1owSbP+fRqxNpyUz1Hd4OApwE68JtkiIWxTwDB1+w5Cu1EqdGGoO3z3Lx9Gyg==}
@@ -952,8 +952,8 @@ packages:
     peerDependencies:
       eslint: '>=7.0.0'
 
-  eslint-plugin-prettier@5.3.1:
-    resolution: {integrity: sha512-vad9VWgEm9xaVXRNmb4aeOt0PWDc61IAdzghkbYQ2wavgax148iKoX1rNJcgkBGCipzLzOnHYVgL7xudM9yccQ==}
+  eslint-plugin-prettier@5.4.0:
+    resolution: {integrity: sha512-BvQOvUhkVQM1i63iMETK9Hjud9QhqBnbtT1Zc642p9ynzBuCe5pybkOnvqZIBypXmMlsGcnU4HZ8sCTPfpAexA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       '@types/eslint': '>=8.0.0'
@@ -1443,8 +1443,8 @@ packages:
     resolution: {integrity: sha512-W67iLl4J2EXEGTbfeHCffrjDfitvLANg0UlX3wFUUSTx92KXRFegMHUVgSqE+wvhAbi4WqjGg9czysTV2Epbew==}
     engines: {node: '>= 0.4'}
 
-  ogg-opus-decoder@1.6.15:
-    resolution: {integrity: sha512-rS9kXNUHHPKhcDEys3JREjYZQgGFYrIx8gtwiRxflb28f+gsvwknOyCjRmTlcg1KKNOhUZXZuF/asE2tGht3IA==}
+  ogg-opus-decoder@1.6.16:
+    resolution: {integrity: sha512-pKVX235NHTctj5G6H0JarOR9R/qd3ZXv7mrPzBL4vyt018Fj6m++1EX35/7gBtL7Ozf6RNiNHIjJyatGwyEQng==}
 
   on-exit-leak-free@2.1.2:
     resolution: {integrity: sha512-0eJJY6hXLGf1udHwfNftBqH+g73EU4B504nZeKpz1sYRKafAghwxEJunB2O7rDZkL4PGfsMVnTXZ2EjibbqcsA==}
@@ -1465,8 +1465,8 @@ packages:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
     engines: {node: '>= 0.8.0'}
 
-  opus-decoder@0.7.8:
-    resolution: {integrity: sha512-OOopkQVcjjmWbfqQe7iu+RRKK3XKB46inYUm12RnCEtlkBELNa5V/1N477lyWv4Hyhv/4mwljt/MQXd1omT5Ug==}
+  opus-decoder@0.7.9:
+    resolution: {integrity: sha512-I7tD5XZMxJZNXcE/yB60FC+bIAiSOE8FyM+bva5XF8lcvgPE/Ahbk6C3W1xJ/Tskw7akC421F5bTUprcyN2PVQ==}
 
   ora@8.2.0:
     resolution: {integrity: sha512-weP+BZ8MVNnlCm8c0Qdc1WSWq4Qn7I+9CJGm7Qali6g44e/PUzbjNqJX5NJ9ljlNMosfJvg1fKEGILklK9cwnw==}
@@ -1900,14 +1900,14 @@ packages:
     peerDependencies:
       zod: ^3.24.1
 
-  zod@3.24.3:
-    resolution: {integrity: sha512-HhY1oqzWCQWuUqvBFnsyrtZRhyPeR7SUGv+C4+MsisMuVfSPx8HpwWqH8tRahSlt6M3PiFAcoeFhZAqIXTxoSg==}
+  zod@3.24.4:
+    resolution: {integrity: sha512-OdqJE9UDRPwWsrHjLN2F8bPxvwJBK22EHLWtanu0LSYr5YqzsaaW3RMgmjwr8Rypg5k+meEJdSPXJZXE/yqOMg==}
 
 snapshots:
 
   '@adiwajshing/keyed-db@0.2.4': {}
 
-  '@astrox11/sqlite@3.5.0':
+  '@astrox11/sqlite@3.6.0':
     dependencies:
       '@types/node': 22.15.3
       typescript: 5.8.3
@@ -2173,8 +2173,8 @@ snapshots:
       express-rate-limit: 7.5.0(express@5.1.0)
       pkce-challenge: 5.0.0
       raw-body: 3.0.0
-      zod: 3.24.3
-      zod-to-json-schema: 3.24.5(zod@3.24.3)
+      zod: 3.24.4
+      zod-to-json-schema: 3.24.5(zod@3.24.4)
     transitivePeerDependencies:
       - supports-color
 
@@ -2377,7 +2377,7 @@ snapshots:
       '@eshaz/web-worker': 1.2.2
       simple-yenc: 1.0.4
 
-  '@wasm-audio-decoders/flac@0.2.6':
+  '@wasm-audio-decoders/flac@0.2.7':
     dependencies:
       '@wasm-audio-decoders/common': 9.0.6
       codec-parser: 2.5.0
@@ -2446,13 +2446,13 @@ snapshots:
 
   audio-decode@2.2.2:
     dependencies:
-      '@wasm-audio-decoders/flac': 0.2.6
+      '@wasm-audio-decoders/flac': 0.2.7
       '@wasm-audio-decoders/ogg-vorbis': 0.1.17
       audio-buffer: 5.0.0
       audio-type: 2.2.1
       mpg123-decoder: 1.0.1
       node-wav: 0.0.2
-      ogg-opus-decoder: 1.6.15
+      ogg-opus-decoder: 1.6.16
       qoa-format: 1.0.1
 
   audio-type@2.2.1: {}
@@ -2787,7 +2787,7 @@ snapshots:
     dependencies:
       eslint: 9.26.0(jiti@2.4.2)
 
-  eslint-plugin-prettier@5.3.1(eslint-config-prettier@10.1.2(eslint@9.26.0(jiti@2.4.2)))(eslint@9.26.0(jiti@2.4.2))(prettier@3.5.3):
+  eslint-plugin-prettier@5.4.0(eslint-config-prettier@10.1.2(eslint@9.26.0(jiti@2.4.2)))(eslint@9.26.0(jiti@2.4.2))(prettier@3.5.3):
     dependencies:
       eslint: 9.26.0(jiti@2.4.2)
       prettier: 3.5.3
@@ -2847,7 +2847,7 @@ snapshots:
       minimatch: 3.1.2
       natural-compare: 1.4.0
       optionator: 0.9.4
-      zod: 3.24.3
+      zod: 3.24.4
     optionalDependencies:
       jiti: 2.4.2
     transitivePeerDependencies:
@@ -3298,11 +3298,11 @@ snapshots:
 
   object-inspect@1.13.4: {}
 
-  ogg-opus-decoder@1.6.15:
+  ogg-opus-decoder@1.6.16:
     dependencies:
       '@wasm-audio-decoders/common': 9.0.6
       codec-parser: 2.5.0
-      opus-decoder: 0.7.8
+      opus-decoder: 0.7.9
 
   on-exit-leak-free@2.1.2: {}
 
@@ -3327,7 +3327,7 @@ snapshots:
       type-check: 0.4.0
       word-wrap: 1.2.5
 
-  opus-decoder@0.7.8:
+  opus-decoder@0.7.9:
     dependencies:
       '@wasm-audio-decoders/common': 9.0.6
 
@@ -3775,8 +3775,8 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  zod-to-json-schema@3.24.5(zod@3.24.3):
+  zod-to-json-schema@3.24.5(zod@3.24.4):
     dependencies:
-      zod: 3.24.3
+      zod: 3.24.4
 
-  zod@3.24.3: {}
+  zod@3.24.4: {}
