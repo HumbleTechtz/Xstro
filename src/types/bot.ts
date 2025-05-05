@@ -106,6 +106,5 @@ export interface AppConfig {
  DATABASE: string;
  PROXY_URI: string;
  LOGGER: string;
- PROCESS_NAME: string;
  DEBUG: number;
 }
