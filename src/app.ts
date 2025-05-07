@@ -2,7 +2,6 @@ import http from 'http';
 import WhatsAppClient from './messaging/client.ts';
 import { syncPlugins } from './messaging/plugins.ts';
 import { print } from './utils/constants.ts';
-import { disablelogs } from './utils/console.js';
 
 const PORT = 8000;
 
@@ -22,7 +21,6 @@ export default class App {
 
  private async init() {
   try {
-   disablelogs('libsignal');
    await syncPlugins('../plugins', ['.ts']);
    new WhatsAppClient();
   } catch (error) {
