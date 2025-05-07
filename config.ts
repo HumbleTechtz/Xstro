@@ -1,12 +1,20 @@
 import { config } from 'dotenv';
-import type { AppConfig } from './src/types/bot.ts';
 
 config();
 
+/**
+ * Loads environment variables for configuration.
+ *
+ * @remarks
+ * - On a local PC, create a `.env` file and fill in the required variables.
+ * - On deployment platforms (e.g., Vercel, Railway, etc.), the platform typically allows you to configure these.
+ * - All variables except `USER_NUMBER` can be ignored unless you know what you’re doing.
+ */
 export default {
- NUMBER: process.env.NUMBER ?? '',
- DATABASE: process.env.DATABASE ?? 'database.db',
- PROXY_URI: process.env.PROXY_URI ?? '',
- LOGGER: process.env.LOG_LEVEL ?? 'slient',
- DEBUG: process.env.DEBUG ?? 0,
-} as AppConfig;
+ USER_NUMBER: process.env.USER_NUMBER,
+ BOT_NAME: process.env.BOT_NAME,
+ API_KEY: process.env.API_KEY,
+ PORT: process.env.PORT,
+ PROXY: process.env.PROXY,
+ DEBUG: Number(process.env.DEBUG),
+};

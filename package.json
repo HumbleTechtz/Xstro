@@ -15,7 +15,6 @@
     "node": ">=23"
   },
   "scripts": {
-    "prestart": "eslint --fix",
     "start": "node main.mjs"
   },
   "packageManager": "pnpm@10.10.0",

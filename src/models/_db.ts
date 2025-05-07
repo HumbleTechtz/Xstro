@@ -1,12 +1,6 @@
 import { Database } from '@astrox11/sqlite';
-import config from '../../config.ts';
 
-const database = new Database(
- config.DEBUG.toString() === '1' ? ':memory:' : config.DATABASE,
- {
-  /** That's all I need */
- },
-);
+const database = new Database('database.db');
 
 process.on('exit', () => {
  database.close();

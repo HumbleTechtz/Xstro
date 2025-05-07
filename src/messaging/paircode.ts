@@ -1,8 +1,6 @@
 import {
  Browsers,
- delay,
  DisconnectReason,
- fetchLatestBaileysVersion,
  makeCacheableSignalKeyStore,
  makeWASocket,
 } from 'baileys';
@@ -12,51 +10,62 @@ import { useSqliteAuthState } from '../utils/storage.ts';
 import { print } from '../utils/constants.ts';
 import config from '../../config.ts';
 
-export async function getPairingCode(phone: string) {
- if (!phone) return process.exit();
+export async function getPairingCode(phone?: string) {
+ if (!phone) {
+  console.log('no phone. bye');
+  return process.exit();
+ }
+
  return new Promise(async (resolve, reject) => {
   try {
    const logger = pino({ level: 'silent' });
    const { state, saveCreds } = await useSqliteAuthState();
-   const { version } = await fetchLatestBaileysVersion();
 
    const conn = makeWASocket({
     auth: {
      creds: state.creds,
      keys: makeCacheableSignalKeyStore(state.keys, logger),
     },
-    printQRInTerminal: true,
-    browser: Browsers.ubuntu('Chrome'),
-    logger,
-    version,
+    printQRInTerminal: false,
+    browser: Browsers.windows('Chrome'),
    });
 
    if (!conn.authState.creds.registered) {
     let phoneNumber = phone ? phone.replace(/[^0-9]/g, '') : '';
-    if (phoneNumber.length < 11)
-     return reject(new Error('Enter Valid Phone Number'));
+    if (phoneNumber.length < 11) {
+     console.log(`bad phone (${phoneNumber}). bye`);
+     process.exit(1);
+     return reject(new Error('bad phone'));
+    }
 
+    console.log(`pairing for: ${phoneNumber}`);
     setTimeout(async () => {
      let code = await conn.requestPairingCode(phoneNumber);
+     console.log(`got code: ${code}`);
      resolve(code);
     }, 3000);
    }
 
    conn.ev.on('creds.update', saveCreds);
+
    conn.ev.on('connection.update', async (update) => {
     const { connection, lastDisconnect } = update;
 
     if (connection === 'open') {
+     console.log('conn up');
      if (conn.user?.id) {
+      console.log(`msg to: ${conn.user.id}`);
       await conn.sendMessage(conn.user.id, {
-       text: '```Session Initalized```',
+       text: '```ready```',
       });
-      process.exit();
+      console.log('msg sent. bye');
+      process.exit(1);
      }
     }
 
     if (connection === 'close') {
      const reason = new Boom(lastDisconnect?.error)?.output.statusCode;
+     console.log(`conn down. code: ${reason}`);
 
      const resetReasons = [
       DisconnectReason.connectionClosed,
@@ -70,12 +79,16 @@ export async function getPairingCode(phone: string) {
      ];
 
      if (resetReasons.includes(reason)) {
+      console.log('temp down. bye');
       process.exit();
      } else if (resetWithClearStateReasons.includes(reason)) {
+      console.log('wipe needed. bye');
       process.exit();
      } else if (reason === DisconnectReason.restartRequired) {
+      console.log('need restart...');
       getPairingCode(phone);
      } else {
+      console.log('bad reason. bye');
       process.exit();
      }
     }
@@ -83,10 +96,11 @@ export async function getPairingCode(phone: string) {
 
    conn.ev.on('messages.upsert', () => {});
   } catch (error) {
+   console.log('err caught:');
    print.fail(JSON.stringify(error));
-   reject(new Error('An Error Occurred'));
+   reject(new Error('fail'));
   }
  });
 }
 
-console.log(`PAIRING CODE:`, await getPairingCode(config.NUMBER));
+console.log(await getPairingCode(config.USER_NUMBER));

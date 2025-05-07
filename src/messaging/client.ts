@@ -3,65 +3,54 @@ import {
  makeCacheableSignalKeyStore,
  Browsers,
  fetchLatestBaileysVersion,
- type WASocket,
 } from 'baileys';
 import { pino } from 'pino';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import NodeCache from '@cacheable/node-cache';
+
 import config from '../../config.ts';
 import makeEvents from './events.ts';
 import { useSqliteAuthState } from '../utils/index.ts';
 import { getMessage, cachedGroupMetadata } from '../models/index.ts';
 import { socketHooks } from './hooks.ts';
-import { print } from '../utils/constants.ts'; // Assuming print is here
+import { print } from '../utils/constants.ts';
 
-export default class WhatsAppClient {
- private sock: WASocket | undefined;
+export default async function () {
+ print.info('⚙ Initializing WhatsApp client...');
 
- constructor() {
-  this.sock = undefined;
-  this.run();
- }
+ const { state, saveCreds } = await useSqliteAuthState();
+ print.info('🔐 Loaded auth state');
 
- private async run() {
-  print.info('⚙ Initializing WhatsApp client...');
+ const { version } = await fetchLatestBaileysVersion();
+ print.info(`📦 Using Baileys version: ${version.join('.')}`);
 
-  const { state, saveCreds } = await useSqliteAuthState();
-  print.info('🔐 Loaded auth state');
+ const cache = new NodeCache();
+ const logger = pino({ level: 'debug' });
 
-  const { version } = await fetchLatestBaileysVersion();
-  print.info(`📦 Using Baileys version: ${version.join('.')}`);
+ print.info('📶 Creating WASocket instance...');
+ const sock = makeWASocket({
+  auth: {
+   creds: state.creds,
+   keys: makeCacheableSignalKeyStore(state.keys, logger),
+  },
+  agent: config.PROXY ? new HttpsProxyAgent(config.PROXY) : undefined,
+  logger,
+  version,
+  browser: Browsers.windows('Chrome'),
+  emitOwnEvents: true,
+  generateHighQualityLinkPreview: true,
+  linkPreviewImageThumbnailWidth: 1920,
+  msgRetryCounterCache: cache,
+  mediaCache: cache,
+  userDevicesCache: cache,
+  callOfferCache: cache,
+  getMessage,
+  cachedGroupMetadata,
+ });
 
-  const cache = new NodeCache();
-  const logger = pino({ level: 'debug' });
+ print.info('🔗 Setting up event handlers and hooks...');
+ await Promise.all([new makeEvents(sock, { saveCreds }), socketHooks(sock)]);
 
-  print.info('📶 Creating WASocket instance...');
-  this.sock = makeWASocket({
-   auth: {
-    creds: state.creds,
-    keys: makeCacheableSignalKeyStore(state.keys, logger),
-   },
-   agent: config.PROXY_URI ? new HttpsProxyAgent(config.PROXY_URI) : undefined,
-   logger,
-   version,
-   browser: Browsers.windows('Chrome'),
-   emitOwnEvents: true,
-   generateHighQualityLinkPreview: true,
-   linkPreviewImageThumbnailWidth: 1920,
-   msgRetryCounterCache: cache,
-   mediaCache: cache,
-   userDevicesCache: cache,
-   callOfferCache: cache,
-   getMessage,
-   cachedGroupMetadata,
-  });
-
-  print.info('🔗 Setting up event handlers and hooks...');
-  await Promise.all([
-   new makeEvents(this.sock, { saveCreds }),
-   socketHooks(this.sock),
-  ]);
-
-  print.info('✅ WhatsApp client initialized successfully.');
- }
+ print.info('✅ WhatsApp client initialized successfully.');
+ return sock;
 }
