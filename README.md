@@ -10,93 +10,38 @@ Xstro is a simple, open-source, fast, and reliable WhatsApp automation system th
 For more information about Baileys, see:
 [https://github.com/WhiskeySockets/Baileys](https://github.com/WhiskeySockets/Baileys)
 
----
+#### Deployment
 
-### Deployment for Node.js Platforms
+Once the deployment is complete and the bot starts, it will generate a local pairing code. You’ll be required to enter this code to connect the bot to your WhatsApp account.
 
-You do not need a so-called _session ID_ to run the bot. Once the deployment is complete and the bot starts, it will generate a local pairing code. You’ll be required to enter this code to connect the bot to your WhatsApp account.
+<a href='https://www.heroku.com/deploy?template=https://github.com/AstroX11/Xstro' target="_blank"><img alt='DEPLOY' src='https://img.shields.io/badge/-Heroku-black?style=for-the-badge&logo=heroku&logoColor=white'/></a>
 
-[Heroku](https://www.heroku.com/deploy?template=https://github.com/AstroX11/Xstro)
+<a href='https://app.koyeb.com/deploy?name=xstro&repository=AstroX11%2FXstro&branch=core&builder=dockerfile&instance_type=free&instances_min=0&autoscaling_sleep_idle_delay=300&env%5BUSER_NUMBER%5D=' target="_blank"><img alt='DEPLOY' src='https://img.shields.io/badge/-Koyeb-black?style=for-the-badge&logo=koyeb&logoColor=white'/></a>
 
-[Koyeb](https://app.koyeb.com/deploy?name=xstro&repository=AstroX11%2FXstro&branch=core&builder=dockerfile&instance_type=free&instances_min=0&autoscaling_sleep_idle_delay=300&env%5BNUMBER%5D=)
+<a href='https://render.com/deploy?repo=https://github.com/AstroX11/Xstro' target="_blank"><img alt='DEPLOY' src='https://img.shields.io/badge/-Render-black?style=for-the-badge&logo=render&logoColor=white'/></a>
 
-[Render](https://render.com/deploy?repo=https://github.com/AstroX11/Xstro)
+<a href='https://pterodactyl.io/' target="_blank"><img alt='DEPLOY' src='https://img.shields.io/badge/-Panel-black?style=for-the-badge&logo=pterodactyl&logoColor=white'/></a>
 
-[Panel](https://pterodactyl.io/)
+<a href='https://replit.com/github/AstroX11/Xstro' target="_blank"><img alt='DEPLOY' src='https://img.shields.io/badge/-Replit-black?style=for-the-badge&logo=Replit&logoColor=white'/></a>
 
-[Replit](https://replit.com/github/AstroX11/Xstro)
+#### RUN ON VPS/UBUNTU/WINDOWS
 
-### Installation
+1. Install NodeJs, ffmpeg
+2. Installation
+   ```
+   npm i -global pnpm
+   git clone https://github.com/AstroX11/Xstro.git
+   cd Xstro
+   pnpm install
+   ```
+3. Configuration
+   ```
+   echo "VPS = true
+    USER_NUMBER=" > config.env
+   ```
 
-If you are using a local PC to run this, Docker is recommended for isolation and ease of setup.
-
----
-
-#### **Windows**
-
-- [Download Docker](https://www.docker.com/get-started)
-
-- **Clone the Repository**
-
-```bash
-git clone https://github.com/AstroX11/Xstro.git
-cd Xstro
-```
-
-- **Configurations `.env`**
-  Create an `.env` file and fill in the required variables. Most importantly, set your WhatsApp number—without it, the bot won't connect.
-
-```env
-NUMBER=yournumber
-```
-
-- **Build the Docker Image**
-
-```bash
-docker build -t xstro .
-```
-
-- **Run the Container**
-
-```bash
-docker run -it --rm xstro
-```
-
----
-
-#### **Linux & macOS**
-
-- Ensure Docker is installed. You can follow the [official guide for Linux/macOS](https://docs.docker.com/get-docker/).
-
-- **Clone the Repository**
-
-```bash
-git clone https://github.com/AstroX11/Xstro.git
-cd Xstro
-```
-
-- **Set up the Environment File**
-
-```bash
-cp .env.example .env
-# Then edit the file with your number
-nano .env
-```
-
-Make sure your `.env` file contains:
-
-```env
-NUMBER=yournumber
-```
-
-- **Build the Docker Image**
-
-```bash
-docker build -t xstro .
-```
-
-- **Run the Container**
-
-```bash
-docker run -it --rm xstro
-```
+- Start
+  ```
+  pnpm start
+  ```
+  <br>

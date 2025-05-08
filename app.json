@@ -6,7 +6,7 @@
     "stack": "container",
     "success_url": "/",
     "env": {
-        "NUMBER": {
+        "USER_NUMBER": {
             "description": "Your WhatsApp Account Number that want's to run the bot.",
             "required": true
         }
