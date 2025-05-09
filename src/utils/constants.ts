@@ -1,6 +1,4 @@
 import { jidNormalizedUser } from 'baileys';
-import { promises as fs } from 'node:fs';
-import path from 'node:path';
 import ora from 'ora';
 
 export function isPath(text: string): boolean {
