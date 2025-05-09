@@ -27,7 +27,6 @@ export default class RunCommand {
   setInterval(
    async () => {
     try {
-     print.info('Checking rate limiters...');
      await resetIfExpired();
     } catch (e) {
      console.error('Rate limiter reset error:', e);
@@ -45,7 +44,6 @@ export default class RunCommand {
 
  private async run() {
   if (!this.text) return;
-  console.log(this.sudo);
   for (const cmd of commands) {
    const handler =
     this.prefix.find((p: string) => this.text?.startsWith(p)) ?? '';

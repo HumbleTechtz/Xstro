@@ -13,21 +13,13 @@ import makeEvents from './events.ts';
 import { useSqliteAuthState } from '../utils/index.ts';
 import { getMessage, cachedGroupMetadata } from '../models/index.ts';
 import { socketHooks } from './hooks.ts';
-import { print } from '../utils/constants.ts';
 
 export default async function () {
- print.info('⚙ Initializing WhatsApp client...');
-
  const { state, saveCreds } = await useSqliteAuthState();
- print.info('🔐 Loaded auth state');
-
  const { version } = await fetchLatestBaileysVersion();
- print.info(`📦 Using Baileys version: ${version.join('.')}`);
-
  const cache = new NodeCache();
- const logger = pino({ level: 'debug' });
+ const logger = pino({ level: 'silent' });
 
- print.info('📶 Creating WASocket instance...');
  const sock = makeWASocket({
   auth: {
    creds: state.creds,
@@ -36,7 +28,7 @@ export default async function () {
   agent: config.PROXY ? new HttpsProxyAgent(config.PROXY) : undefined,
   logger,
   version,
-  browser: Browsers.windows('Chrome'),
+  browser: Browsers.windows('chrome'),
   emitOwnEvents: true,
   generateHighQualityLinkPreview: true,
   linkPreviewImageThumbnailWidth: 1920,
@@ -48,9 +40,6 @@ export default async function () {
   cachedGroupMetadata,
  });
 
- print.info('🔗 Setting up event handlers and hooks...');
  await Promise.all([new makeEvents(sock, { saveCreds }), socketHooks(sock)]);
-
- print.info('✅ WhatsApp client initialized successfully.');
  return sock;
 }

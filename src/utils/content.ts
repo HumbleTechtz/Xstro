@@ -52,7 +52,10 @@ export const getDataType = async (
    content.toString('utf8');
    return { contentType: 'text', mimeType: 'text/plain' };
   } catch {
-   return { contentType: 'document', mimeType: 'application/octet-stream' };
+   return {
+    contentType: 'document',
+    mimeType: 'application/octet-stream',
+   };
   }
  }
  const mimeType = data.mime;

@@ -24,9 +24,8 @@ const log = {
  spin: (msg) => ora(`\x1b[1m${msg}\x1b[0m`).start(),
 };
 
-function runProc(args, tag) {
+function runProc(args) {
  return new Promise((resolve) => {
-  log.info(`Running ${tag} process...`);
   const proc = spawn('node', args, {
    stdio: 'inherit',
    shell: true,
@@ -34,7 +33,6 @@ function runProc(args, tag) {
   });
 
   proc.on('close', (code) => {
-   log.info(`${tag} process exited with code: ${code ?? 0}`);
    resolve(code ?? 0);
   });
 
@@ -47,27 +45,21 @@ function runProc(args, tag) {
 
 async function run() {
  try {
-  const spin = log.spin('Initializing...');
-  await new Promise((r) => setTimeout(r, 1500));
-  spin.stop();
+  const p1 = await runProc(firstCommandArgs, 'First');
 
-  const code1 = await runProc(firstCommandArgs, 'First');
-
-  if (code1 === 0 || code1 == null) {
-   log.info('First process completed successfully. Restarting sequence...');
+  if (p1 === 0 || p1 == null) {
+   log.info('Restarting process...');
    setTimeout(run, 1000);
   } else {
-   log.info(
-    `First process exited with code ${code1}. Starting second process...`,
-   );
-   const code2 = await runProc(nodeArgs, 'Second');
+   log.info(`Starting client process...`);
+   const p2 = await runProc(nodeArgs, 'Second');
 
-   if (code2 === 0) {
-    log.info('Second process completed successfully. Restarting sequence...');
+   if (p2 === 0) {
+    log.info('Restarting sequence...');
     setTimeout(run, 1000);
    } else {
-    log.fail(`Second process failed with code ${code2}. Terminating.`);
-    process.exit(code2 || 1);
+    log.fail(`Terminating process...`);
+    process.exit(p2 || 1);
    }
   }
  } catch (err) {

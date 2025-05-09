@@ -27,7 +27,9 @@ Command({
    return message.send('_Invalid number_');
   }
   await message.client.groupParticipantsUpdate(message.jid, [user], 'add');
-  message.send(`_@${user.split('@')[0]} added to group_`, { mentions: [user] });
+  message.send(`_@${user.split('@')[0]} added to group_`, {
+   mentions: [user],
+  });
  },
 });
 
@@ -66,7 +68,9 @@ Command({
    });
   }
   await message.client.groupParticipantsUpdate(message.jid, [user], 'promote');
-  message.send(`_@${user.split('@')[0]} is now admin_`, { mentions: [user] });
+  message.send(`_@${user.split('@')[0]} is now admin_`, {
+   mentions: [user],
+  });
  },
 });
 

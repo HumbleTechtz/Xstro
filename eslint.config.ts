@@ -1,43 +1,32 @@
-import type { FlatConfig } from '@typescript-eslint/utils/ts-eslint';
-import prettier from 'eslint-plugin-prettier';
 import tsParser from '@typescript-eslint/parser';
-import typescriptEslintPlugin from '@typescript-eslint/eslint-plugin';
+import typescriptPlugin from '@typescript-eslint/eslint-plugin';
+import prettierPlugin from 'eslint-plugin-prettier';
+import type { FlatConfig } from '@typescript-eslint/utils/ts-eslint';
 
-const eslintConfig: FlatConfig.Config = {
- files: ['**/*.{ts,mts}'],
- ignores: ['node_modules/**'],
+const config: FlatConfig.Config = {
+ files: ['**/*.ts'],
+ ignores: ['node_modules/**', 'dist/**'],
  languageOptions: {
+  parser: tsParser,
   ecmaVersion: 'latest',
   sourceType: 'module',
-  parser: tsParser,
-  globals: {
-   node: true,
-   esnext: true,
-  },
  },
  plugins: {
-  '@typescript-eslint': typescriptEslintPlugin,
-  prettier,
+  '@typescript-eslint': typescriptPlugin,
+  prettier: prettierPlugin,
  },
  rules: {
   'prettier/prettier': [
    'error',
    {
-    printWidth: 80,
     tabWidth: 1,
-    useTabs: false,
     singleQuote: true,
-    semi: true,
-    quoteProps: 'as-needed',
     trailingComma: 'all',
-    bracketSpacing: true,
-    bracketSameLine: false,
     arrowParens: 'always',
     endOfLine: 'lf',
-    proseWrap: 'preserve',
    },
   ],
  },
 };
 
-export default [eslintConfig];
+export default [config];

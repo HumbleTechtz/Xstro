@@ -1,6 +1,6 @@
 {
   "name": "xstro",
-  "version": "14.0.0",
+  "version": "15.0.0",
   "description": "Simple WA bot.",
   "type": "module",
   "main": "main.mjs",
@@ -15,7 +15,8 @@
     "node": ">=23"
   },
   "scripts": {
-    "start": "node main.mjs"
+    "start": "node main.mjs",
+    "lint": "eslint --fix"
   },
   "packageManager": "pnpm@10.10.0",
   "dependencies": {
@@ -33,7 +34,10 @@
     "tsx": "^4.19.4"
   },
   "devDependencies": {
+    "@types/node": "^22.15.17",
+    "@typescript-eslint/eslint-plugin": "^8.32.0",
     "@typescript-eslint/parser": "^8.32.0",
+    "@typescript-eslint/utils": "^8.32.0",
     "eslint": "^9.26.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-prettier": "^5.4.0",

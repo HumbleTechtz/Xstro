@@ -1,7 +1,7 @@
 import { Command } from '../messaging/plugins.ts';
 
 Command({
- name: 'pin',
+ name: 'cpin',
  fromMe: true,
  isGroup: false,
  desc: 'Pin a chat',
@@ -13,7 +13,7 @@ Command({
 });
 
 Command({
- name: 'unpin',
+ name: 'cunpin',
  fromMe: true,
  isGroup: false,
  desc: 'Unpin a chat',
@@ -109,17 +109,22 @@ Command({
  isGroup: false,
  desc: 'Star a message',
  type: 'chats',
- function: async (message) => {
-  if (!message.quoted) {
-   return message.send('Reply a message to star');
+ function: async (msg) => {
+  if (!msg.quoted) {
+   return msg.send('Reply a message to star');
   }
-  const { key } = message.quoted;
-  if (!key.id) return;
-  await message.client.chatModify(
-   { star: { messages: [{ id: key.id, fromMe: key.fromMe! }], star: true } },
-   message.jid,
+  const { id, fromMe } = msg.quoted.key as { id: string; fromMe: boolean };
+
+  await msg.client.chatModify(
+   {
+    star: {
+     messages: [{ id, fromMe }],
+     star: true,
+    },
+   },
+   msg.jid,
   );
-  return message.send('Starred.');
+  return msg.send('Starred.');
  },
 });
 
@@ -129,22 +134,27 @@ Command({
  isGroup: false,
  desc: 'Unstar a message',
  type: 'chats',
- function: async (message) => {
-  if (!message.quoted) {
-   return message.send('Reply a message to unstar');
+ function: async (msg) => {
+  if (!msg.quoted) {
+   return msg.send('Reply a message to unstar');
   }
-  const { key } = message.quoted;
-  if (!key.id) return;
-  await message.client.chatModify(
-   { star: { messages: [{ id: key.id, fromMe: key.fromMe! }], star: false } },
-   message.jid,
+  const { id, fromMe } = msg.quoted.key as { id: string; fromMe: boolean };
+
+  await msg.client.chatModify(
+   {
+    star: {
+     messages: [{ id, fromMe }],
+     star: false,
+    },
+   },
+   msg.jid,
   );
-  return message.send('Unstarred.');
+  return msg.send('Unstarred.');
  },
 });
 
 Command({
- name: 'pinm',
+ name: 'pin',
  fromMe: false,
  isGroup: false,
  desc: 'Pin a message',
@@ -162,7 +172,7 @@ Command({
 });
 
 Command({
- name: 'unpinm',
+ name: 'unpin',
  fromMe: false,
  isGroup: false,
  desc: 'Unpin a message',
