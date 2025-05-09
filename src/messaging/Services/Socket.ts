@@ -16,7 +16,6 @@ export default class Connection {
 
  public async handleConnectionUpdate() {
   const { connection, lastDisconnect } = this.events;
-  print.info(JSON.stringify(this.events));
   switch (connection) {
    case 'connecting':
     await this.handleConnecting();
@@ -56,19 +55,20 @@ export default class Connection {
  }
 
  private async handleOpen() {
-  print.info('Connection Successful');
-  const cmdsList = commands.filter((cmd) => !cmd.dontAddCommandList);
+  print.succeed('Connected to WhatsApp');
+  await this.hooks();
+ }
 
+ private async hooks() {
   if (this.client?.user?.id) {
+   const cmdsList = commands.filter((cmd) => !cmd.dontAddCommandList);
    await this.client.sendMessage(this.client.user.id, {
     text:
      `\`\`\`Bot is connected\nOwner: ${this.client.user.name ?? 'Unknown'}\nCommands: ${cmdsList.length}\`\`\``.trim(),
    });
-   const sudo = (await getSettings()).sudo ?? [];
-   const users = Array.from(
-    new Set([parseJid(this.client?.user?.id), ...(sudo as string[])]),
-   );
-   await setSettings('sudo', users);
   }
+  const sudo = await getSettings().then((s) => s.sudo);
+  const users = Array.from(new Set([parseJid(this.client?.user?.id), ...sudo]));
+  await setSettings('sudo', users);
  }
 }

@@ -13,6 +13,7 @@ import makeEvents from './events.ts';
 import { useSqliteAuthState } from '../utils/index.ts';
 import { getMessage, cachedGroupMetadata } from '../models/index.ts';
 import { socketHooks } from './hooks.ts';
+import sql_store from '../models/sql_store.ts';
 
 export default async function () {
  const { state, saveCreds } = await useSqliteAuthState();
@@ -40,6 +41,10 @@ export default async function () {
   cachedGroupMetadata,
  });
 
- await Promise.all([new makeEvents(sock, { saveCreds }), socketHooks(sock)]);
+ await Promise.all([
+  new makeEvents(sock, { saveCreds }),
+  socketHooks(sock),
+  sql_store(sock),
+ ]);
  return sock;
 }
