@@ -21,7 +21,7 @@
   "dependencies": {
     "@astrox11/sqlite": "^3.6.0",
     "@astrox11/utily": "^1.8.2",
-    "@cacheable/node-cache": "^1.5.4",
+    "@cacheable/node-cache": "^1.5.5",
     "@hapi/boom": "^10.0.1",
     "baileys": "^6.7.16",
     "dotenv": "^16.5.0",
@@ -33,9 +33,9 @@
     "tsx": "^4.19.4"
   },
   "devDependencies": {
-    "@typescript-eslint/parser": "^8.31.1",
+    "@typescript-eslint/parser": "^8.32.0",
     "eslint": "^9.26.0",
-    "eslint-config-prettier": "^10.1.2",
+    "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-prettier": "^5.4.0",
     "jiti": "^2.4.2",
     "prettier": "^3.5.3",

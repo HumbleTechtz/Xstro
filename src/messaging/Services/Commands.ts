@@ -4,24 +4,48 @@ import { print } from '../../utils/index.ts';
 import { commands } from '../plugins.ts';
 import { getStickerCmd } from '../../models/sticker.ts';
 import type { Commands } from '../../types/bot.ts';
+import {
+ canProceed,
+ getRemainingQuota,
+ resetIfExpired,
+} from '../../models/ratelimter.ts';
 
 export default class RunCommand {
  private message: Message;
+ private sudo: boolean;
+ private sender: string | null | undefined;
  private text: string | null | undefined;
  private prefix: string[];
 
  constructor(message: Message) {
   this.message = message;
+  this.sudo = message.sudo;
+  this.sender = message.sender;
   this.text = message.data.text;
   this.prefix = message.data.prefix;
-  this.run();
-  this.runSticker();
-  this.runOnlistener();
+  this.init();
+  setInterval(
+   async () => {
+    try {
+     print.info('Checking rate limiters...');
+     await resetIfExpired();
+    } catch (e) {
+     console.error('Rate limiter reset error:', e);
+    }
+   },
+   5 * 60 * 1000,
+  );
+ }
+
+ private async init() {
+  await this.run();
+  await this.runSticker();
+  await this.runOnlistener();
  }
 
  private async run() {
   if (!this.text) return;
-
+  console.log(this.sudo);
   for (const cmd of commands) {
    const handler =
     this.prefix.find((p: string) => this.text?.startsWith(p)) ?? '';
@@ -33,6 +57,12 @@ export default class RunCommand {
    if (!this.checkBeforeCommandExecution(cmd)) continue;
 
    try {
+    if (!this.sudo) {
+     if (!(await canProceed(this.sender!)))
+      return await this.message.send(
+       `_⛔ You have reached your daily limit. Try again tomorrow._`,
+      );
+    }
     await this.message.react('⏳');
     await cmd.function(this.message, match[2] ?? '');
    } catch (err) {
