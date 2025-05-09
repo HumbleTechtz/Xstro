@@ -36,8 +36,7 @@ Once the deployment is complete and the bot starts, it will generate a local pai
    ```
 3. Configuration
    ```
-   echo "VPS = true
-    USER_NUMBER=" > config.env
+   echo "USER_NUMBER=" > config.env
    ```
 
 - Start
