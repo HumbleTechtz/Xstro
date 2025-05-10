@@ -14,7 +14,7 @@ export default {
 	USER_NUMBER: process.env.USER_NUMBER,
 	BOT_NAME: process.env.BOT_NAME,
 	API_KEY: process.env.API_KEY,
-	PORT: process.env.PORT,
 	PROXY: process.env.PROXY,
+	PORT: Number(process.env.PORT),
 	DEBUG: Number(process.env.DEBUG),
 };
