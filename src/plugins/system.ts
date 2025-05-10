@@ -2,50 +2,50 @@ import { Command } from '../messaging/plugins.ts';
 import { formatRuntime } from '../utils/constants.ts';
 
 Command({
- name: 'ping',
- fromMe: false,
- isGroup: false,
- desc: 'Ping the bot',
- type: 'system',
- function: async (message) => {
-  const start = Date.now();
-  const msg = await message.send('Pong!');
-  const end = Date.now();
-  return await msg.edit(`\`\`\`${end - start} ms\`\`\``);
- },
+	name: 'ping',
+	fromMe: false,
+	isGroup: false,
+	desc: 'Ping the bot',
+	type: 'system',
+	function: async message => {
+		const start = Date.now();
+		const msg = await message.send('Pong!');
+		const end = Date.now();
+		return await msg.edit(`\`\`\`${end - start} ms\`\`\``);
+	},
 });
 
 Command({
- name: 'runtime',
- fromMe: false,
- isGroup: false,
- desc: 'Get bot runtime',
- type: 'system',
- function: async (message) => {
-  return await message.send(`\`\`\`${formatRuntime(process.uptime())}\`\`\``);
- },
+	name: 'runtime',
+	fromMe: false,
+	isGroup: false,
+	desc: 'Get bot runtime',
+	type: 'system',
+	function: async message => {
+		return await message.send(`\`\`\`${formatRuntime(process.uptime())}\`\`\``);
+	},
 });
 
 Command({
- name: 'restart',
- fromMe: true,
- isGroup: false,
- desc: 'Restart the process',
- type: 'system',
- function: async (message) => {
-  await message.send('_Restarting..._');
-  process.exit();
- },
+	name: 'restart',
+	fromMe: true,
+	isGroup: false,
+	desc: 'Restart the process',
+	type: 'system',
+	function: async message => {
+		await message.send('_Restarting..._');
+		process.exit();
+	},
 });
 
 Command({
- name: 'shutdown',
- fromMe: true,
- isGroup: false,
- desc: 'Shut down bot',
- type: 'system',
- function: async (msg) => {
-  await msg.send('_Shutting down..._');
-  process.exit(1);
- },
+	name: 'shutdown',
+	fromMe: true,
+	isGroup: false,
+	desc: 'Shut down bot',
+	type: 'system',
+	function: async msg => {
+		await msg.send('_Shutting down..._');
+		process.exit(1);
+	},
 });

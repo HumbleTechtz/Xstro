@@ -11,10 +11,10 @@ config();
  * - All variables except `USER_NUMBER` can be ignored unless you know what you’re doing.
  */
 export default {
- USER_NUMBER: process.env.USER_NUMBER,
- BOT_NAME: process.env.BOT_NAME,
- API_KEY: process.env.API_KEY,
- PORT: process.env.PORT,
- PROXY: process.env.PROXY,
- DEBUG: Number(process.env.DEBUG),
+	USER_NUMBER: process.env.USER_NUMBER,
+	BOT_NAME: process.env.BOT_NAME,
+	API_KEY: process.env.API_KEY,
+	PORT: process.env.PORT,
+	PROXY: process.env.PROXY,
+	DEBUG: Number(process.env.DEBUG),
 };

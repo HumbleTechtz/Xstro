@@ -3,31 +3,31 @@ import MessageUpsert from './Services/Upserts.ts';
 import type { WASocket } from 'baileys';
 
 export default class MakeEvents {
- private Socket: WASocket;
- private saveCreds: () => Promise<void>;
+	private Socket: WASocket;
+	private saveCreds: () => Promise<void>;
 
- constructor(
-  clientSocket: WASocket,
-  { saveCreds }: { saveCreds: () => Promise<void> },
- ) {
-  this.Socket = clientSocket;
-  this.saveCreds = saveCreds;
-  this.hooks();
- }
+	constructor(
+		clientSocket: WASocket,
+		{ saveCreds }: { saveCreds: () => Promise<void> },
+	) {
+		this.Socket = clientSocket;
+		this.saveCreds = saveCreds;
+		this.hooks();
+	}
 
- async hooks() {
-  return this.Socket.ev.process(async (events) => {
-   if (events['creds.update']) {
-    await this.saveCreds();
-   }
+	async hooks() {
+		return this.Socket.ev.process(async events => {
+			if (events['creds.update']) {
+				await this.saveCreds();
+			}
 
-   if (events['connection.update']) {
-    new ConnectionUpdate(this.Socket, events['connection.update']);
-   }
+			if (events['connection.update']) {
+				new ConnectionUpdate(this.Socket, events['connection.update']);
+			}
 
-   if (events['messages.upsert']) {
-    new MessageUpsert(this.Socket, events['messages.upsert']);
-   }
-  });
- }
+			if (events['messages.upsert']) {
+				new MessageUpsert(this.Socket, events['messages.upsert']);
+			}
+		});
+	}
 }
