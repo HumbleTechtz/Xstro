@@ -12,6 +12,7 @@ config();
  */
 export default {
 	USER_NUMBER: process.env.USER_NUMBER,
+	OWNER_NAME: process.env.OWNER_NAME,
 	BOT_NAME: process.env.BOT_NAME,
 	API_KEY: process.env.API_KEY,
 	PROXY: process.env.PROXY,
