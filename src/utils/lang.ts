@@ -1,4 +1,6 @@
 export default {
-	FOR_SUDO_USERS: '_This command is for sudo users only!_',
-	FOR_GROUPS_ONLY: '_This command is for Groups only!_',
+	FOR_SUDO_USERS: '```This command is for Sudo Users.```',
+	FOR_GROUPS_ONLY: '```This command is for Groups.```_',
+	SESSION_INFO: '```Session Initialized```',
+	RATE_LIMIT_REACHED: '```You have reached your daily limit.```',
 };

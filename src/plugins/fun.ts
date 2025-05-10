@@ -1,5 +1,5 @@
 import { fetch } from '@astrox11/utily';
-import { Command } from '../messaging/plugins.ts';
+import { Command } from '../messaging/plugin.ts';
 
 Command({
 	name: 'rizz',

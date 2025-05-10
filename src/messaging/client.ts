@@ -9,13 +9,12 @@ import { HttpsProxyAgent } from 'https-proxy-agent';
 import NodeCache from '@cacheable/node-cache';
 
 import config from '../../config.ts';
-import makeEvents from './events.ts';
-import { useSqliteAuthState } from '../utils/index.ts';
+import emit from './emit.ts';
+import bind from './bind.ts';
+import useSqliteAuthState from '../utils/useSqliteAuthState.ts';
 import { getMessage, cachedGroupMetadata } from '../models/index.ts';
-import { socketHooks } from './hooks.ts';
-import sql_store from '../models/sql_store.ts';
 
-export default async function () {
+(async () => {
 	const { state, saveCreds } = await useSqliteAuthState();
 	const { version } = await fetchLatestBaileysVersion();
 	const cache = new NodeCache();
@@ -29,6 +28,7 @@ export default async function () {
 		agent: config.PROXY ? new HttpsProxyAgent(config.PROXY) : undefined,
 		logger,
 		version,
+		keepAliveIntervalMs: 2000,
 		browser: Browsers.windows('chrome'),
 		emitOwnEvents: true,
 		generateHighQualityLinkPreview: true,
@@ -41,10 +41,6 @@ export default async function () {
 		cachedGroupMetadata,
 	});
 
-	await Promise.all([
-		new makeEvents(sock, { saveCreds }),
-		socketHooks(sock),
-		sql_store(sock),
-	]);
+	await Promise.all([emit(sock, { saveCreds }), bind(sock)]);
 	return sock;
-}
+})();

@@ -1,4 +1,4 @@
-import { Command, commands } from '../messaging/plugins.ts';
+import { Command, commands } from '../messaging/plugin.ts';
 import { removeStickerCmd, setStickerCmd } from '../models/sticker.ts';
 
 Command({

@@ -1,7 +1,7 @@
-import { Command } from '../messaging/plugins.ts';
+import { Command } from '../messaging/plugin.ts';
 
 Command({
-	name: 'cpin',
+	name: 'chatpin',
 	fromMe: true,
 	isGroup: false,
 	desc: 'Pin a chat',
@@ -13,7 +13,7 @@ Command({
 });
 
 Command({
-	name: 'cunpin',
+	name: 'chatunpin',
 	fromMe: true,
 	isGroup: false,
 	desc: 'Unpin a chat',

@@ -1,7 +1,7 @@
 import { WASocket } from 'baileys';
 import { updateMetaGroup } from '../models/group.ts';
 
-export async function socketHooks(sock: WASocket) {
+export default async function (sock: WASocket) {
 	setInterval(async () => {
 		try {
 			const data = await sock.groupFetchAllParticipating();

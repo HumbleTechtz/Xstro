@@ -4,12 +4,12 @@ import path from 'node:path';
 import ora from 'ora';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const appPath = path.join(__dirname, 'src', 'app.ts');
-const firstScriptPath = './src/messaging/paircode.ts';
+const client = path.join(__dirname, 'src', 'messaging', 'client.ts');
+const pairing = './src/messaging/paircode.ts';
 
 const baseNodeArgs = ['--no-warnings', '--import=tsx/esm'];
-const nodeArgs = [...baseNodeArgs, appPath];
-const firstCommandArgs = [...baseNodeArgs, firstScriptPath];
+const nodeArgs = [...baseNodeArgs, client];
+const firstCommandArgs = [...baseNodeArgs, pairing];
 
 const childEnv = {
 	...process.env,
@@ -18,25 +18,25 @@ const childEnv = {
 };
 
 const log = {
-	info: (msg) => ora().info(`\x1b[1m${msg}\x1b[0m`),
-	warn: (msg) => ora().warn(`\x1b[1m${msg}\x1b[0m`),
-	fail: (msg) => ora().fail(`\x1b[1m${msg}\x1b[0m`),
-	spin: (msg) => ora(`\x1b[1m${msg}\x1b[0m`).start(),
+	info: msg => ora().info(`\x1b[1m${msg}\x1b[0m`),
+	warn: msg => ora().warn(`\x1b[1m${msg}\x1b[0m`),
+	fail: msg => ora().fail(`\x1b[1m${msg}\x1b[0m`),
+	spin: msg => ora(`\x1b[1m${msg}\x1b[0m`).start(),
 };
 
 function runProc(args) {
-	return new Promise((resolve) => {
+	return new Promise(resolve => {
 		const proc = spawn('node', args, {
 			stdio: 'inherit',
 			shell: true,
 			env: childEnv,
 		});
 
-		proc.on('close', (code) => {
+		proc.on('close', code => {
 			resolve(code ?? 0);
 		});
 
-		proc.on('error', (err) => {
+		proc.on('error', err => {
 			log.fail(`${tag} process error: ${err.message}`);
 			resolve(1);
 		});

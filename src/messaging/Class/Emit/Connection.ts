@@ -1,8 +1,8 @@
 import { Boom } from '@hapi/boom';
 import { DisconnectReason } from 'baileys';
-import { commands } from '../plugins.ts';
-import { getSettings, setSettings } from '../../models/index.ts';
-import { print, parseJid } from '../../utils/index.ts';
+import { commands, syncPlugins } from '../../plugin.ts';
+import { getSettings, setSettings } from '../../../models/index.ts';
+import { print, parseJid } from '../../../utils/index.ts';
 import type { BaileysEventMap, WASocket } from 'baileys';
 
 export default class Connection {
@@ -31,6 +31,8 @@ export default class Connection {
 
 	private async handleConnecting() {
 		print.info('Connecting to WhatsApp...');
+		await syncPlugins('../plugins', ['.ts']);
+		print.succeed('Plugins Installed');
 	}
 
 	private async handleClose(

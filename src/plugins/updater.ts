@@ -1,7 +1,7 @@
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import { print } from '../utils/index.ts';
-import { Command } from '../messaging/plugins.ts';
+import { Command } from '../messaging/plugin.ts';
 
 const execPromise = promisify(exec);
 

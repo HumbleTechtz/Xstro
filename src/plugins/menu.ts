@@ -1,4 +1,4 @@
-import { Command, commands } from '../messaging/plugins.ts';
+import { Command, commands } from '../messaging/plugin.ts';
 import { platform, totalmem, freemem } from 'node:os';
 import { formatBytes, formatRuntime } from '../utils/constants.ts';
 

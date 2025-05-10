@@ -6,17 +6,19 @@ import {
 } from 'baileys';
 import { pino } from 'pino';
 import { Boom } from '@hapi/boom';
-import { useSqliteAuthState } from '../utils/storage.ts';
-import { print } from '../utils/constants.ts';
-import config from '../../config.ts';
 
-export async function getPairingCode() {
+import config from '../../config.ts';
+import lang from '../utils/lang.ts';
+import useSqliteAuthState from '../utils/useSqliteAuthState.ts';
+import { print } from '../utils/constants.ts';
+
+(async () => {
+	// Check if the user inputs a phone number, if there's no number, warn them
 	if (!config.USER_NUMBER) {
-		print.fail(
-			'NO NUMBER FOUND!\nPLEASE INPUT YOUR WHATSAPP PHONE NUMBER IN USER_NUMBER VARIABLE.',
-		);
+		return print.fail('NO PHONE NUMBER FOUND IN VAR.');
 	}
 
+	// Warp our pairing in a promise
 	return new Promise(async (resolve, reject) => {
 		try {
 			const logger = pino({ level: 'silent' });
@@ -31,9 +33,11 @@ export async function getPairingCode() {
 			});
 
 			if (!conn.authState.creds.registered) {
+				// remove any special characters and extract only numbers
+				// We must ensure that the number isn't less than 11 characters in length
 				let phoneNumber = config.USER_NUMBER?.replace(/[^0-9]/g, '') ?? '';
 				if (phoneNumber.length < 11) {
-					print.fail('BAD PHONE NUMBER, ILLEGAL!');
+					print.fail('Input a vaild number');
 					process.exit(1);
 					return reject(new Error('invaild whatsapp number'));
 				}
@@ -53,7 +57,7 @@ export async function getPairingCode() {
 				if (connection === 'open') {
 					if (conn.user?.id) {
 						await conn.sendMessage(conn.user.id, {
-							text: '```Initail Session Sucessfully Loaded```',
+							text: lang.SESSION_INFO,
 						});
 						process.exit(1);
 					}
@@ -68,6 +72,7 @@ export async function getPairingCode() {
 						DisconnectReason.timedOut,
 						DisconnectReason.connectionReplaced,
 					];
+
 					const resetWithClearStateReasons = [
 						DisconnectReason.loggedOut,
 						DisconnectReason.badSession,
@@ -79,19 +84,15 @@ export async function getPairingCode() {
 						process.exit();
 					} else if (reason === DisconnectReason.restartRequired) {
 						print.info('RESTARTING PAIRING...');
-						getPairingCode();
+						process.exit();
 					} else {
 						print.fail(`PAIR FAILED, REASON UNKNOWN.`);
 						process.exit();
 					}
 				}
 			});
-
-			conn.ev.on('messages.upsert', () => {});
 		} catch (error) {
 			reject(error);
 		}
 	});
-}
-
-await getPairingCode();
+})();

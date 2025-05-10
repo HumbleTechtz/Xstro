@@ -1,4 +1,4 @@
-import { Command } from '../messaging/plugins.ts';
+import { Command } from '../messaging/plugin.ts';
 import { getAntidelete, setAntidelete } from '../models/antidelete.ts';
 import { loadMesage } from '../models/store.ts';
 

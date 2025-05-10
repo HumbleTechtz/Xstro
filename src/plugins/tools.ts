@@ -1,4 +1,4 @@
-import { Command } from '../messaging/plugins.ts';
+import { Command } from '../messaging/plugin.ts';
 import { fetch, isUrl, urlBuffer, lyrics } from '@astrox11/utily';
 
 Command({

@@ -1,4 +1,4 @@
-import { Command } from '../messaging/plugins.ts';
+import { Command } from '../messaging/plugin.ts';
 import Message from '../messaging/Messages/Message.ts';
 
 const adminCheck = async (message: Message) => {

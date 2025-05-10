@@ -1,7 +1,7 @@
 import Base from './Base.ts';
 import ReplyMessage from './ReplyMessage.ts';
-import { prepareMessage } from '../../utils/index.ts';
-import type { Serialize, MessageMisc } from '../../types/bot.ts';
+import { prepareMessage } from '../../../utils/index.ts';
+import type { Serialize, MessageMisc } from '../../../types/index.ts';
 import type { WASocket, AnyMessageContent } from 'baileys';
 
 export default class Message extends Base {
@@ -10,6 +10,7 @@ export default class Message extends Base {
 
 	constructor(data: Serialize, client: WASocket) {
 		super(data, client);
+		this.key = data.key;
 		this.text = data.text;
 		this.quoted = data.quoted ? new ReplyMessage(data, this.client) : undefined;
 		this.user = data.user;
@@ -23,7 +24,7 @@ export default class Message extends Base {
 		const updatedOptions = { ...options, jid };
 		const msg = await prepareMessage(this.client, content, updatedOptions);
 		return new Message(
-			await (await import('../serialize.ts')).serialize(this.client, msg!),
+			await (await import('../../serialize.ts')).serialize(this.client, msg!),
 			this.client,
 		);
 	}
@@ -53,6 +54,6 @@ export default class Message extends Base {
 	}
 
 	async react(emoji: string) {
-		return await super.react(emoji, this.key);
+		return await super.react(emoji, this?.key ?? '');
 	}
 }

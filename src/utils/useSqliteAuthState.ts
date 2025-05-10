@@ -17,7 +17,7 @@ export const auth = database.define(
 	{ timestamps: false },
 );
 
-export async function useSqliteAuthState() {
+export default async function () {
 	const writeData = async (data: any, name: string) => {
 		return await auth.upsert({
 			name,

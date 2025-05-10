@@ -1,6 +1,6 @@
 import { downloadMediaMessage } from 'baileys';
-import { isMediaMessage } from '../../utils/index.ts';
-import type { Serialize } from '../../types/bot.ts';
+import { isMediaMessage } from '../../../utils/index.ts';
+import type { Serialize } from '../../../types/index.ts';
 import type { WASocket, WAMessageKey, WAMessage, WAContextInfo } from 'baileys';
 
 export default class Base {
@@ -19,7 +19,7 @@ export default class Base {
 	public sudo: boolean;
 	public mode: boolean;
 	public user: (match?: string) => string | undefined;
-	public messageTimestamp: number | Long.Long | null | undefined;
+	public messageTimestamp: number | Long | null | undefined;
 	public prefix: string[];
 
 	constructor(data: Serialize, client: WASocket) {

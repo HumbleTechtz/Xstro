@@ -1,6 +1,6 @@
 import { WAProto } from 'baileys';
 import Message from '../messaging/Messages/Message.ts';
-import { Command } from '../messaging/plugins.ts';
+import { Command } from '../messaging/plugin.ts';
 import { serialize } from '../messaging/serialize.ts';
 import { getMessage } from '../models/store.ts';
 

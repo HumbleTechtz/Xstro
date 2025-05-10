@@ -1,4 +1,4 @@
-import { Command } from '../messaging/plugins.ts';
+import { Command } from '../messaging/plugin.ts';
 import { getSettings, setSettings } from '../models/settings.ts';
 
 Command({

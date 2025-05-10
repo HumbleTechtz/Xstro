@@ -1,5 +1,5 @@
 import util from 'util';
-import { Command } from '../messaging/plugins.ts';
+import { Command } from '../messaging/plugin.ts';
 
 Command({
 	on: true,

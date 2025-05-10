@@ -2,7 +2,7 @@ import { pathToFileURL, fileURLToPath } from 'node:url';
 import { join, extname, dirname } from 'node:path';
 import { readdir } from 'node:fs/promises';
 import { print } from '../utils/index.ts';
-import type { Commands } from '../types/bot.ts';
+import type { Commands } from '../types/index.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
