@@ -48,11 +48,28 @@ export function formatBytes(bytes: number): string {
 	return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))}${sizes[i]}`;
 }
 
-export function parseJid(num?: unknown): string {
-	if (!num) return ``;
+export function parseJidLid(num?: unknown): string {
+	if (!num) return '';
+
 	let strNum = typeof num === 'string' ? num : num.toString();
-	strNum = strNum.replace(/:\d+/, '').replace(/\D/g, '');
-	return jidNormalizedUser(`${strNum}@s.whatsapp.net`);
+	strNum = strNum.trim();
+
+	// Cut off at first colon, if any
+	const colonIndex = strNum.indexOf(':');
+	if (colonIndex !== -1) {
+		strNum = strNum.slice(0, colonIndex);
+	}
+
+	// If ends with @lid and the part before is digits only
+	if (strNum.endsWith('@lid')) {
+		const [id] = strNum.split('@');
+		if (/^\d+$/.test(id)) return strNum;
+	}
+
+	// Otherwise, keep only digits and form standard jid
+	const digitsOnly = strNum.replace(/\D/g, '');
+
+	return jidNormalizedUser(`${digitsOnly}@s.whatsapp.net`);
 }
 
 export function parseBoolean(stringStatement: string): boolean {
@@ -64,3 +81,9 @@ export function parseBoolean(stringStatement: string): boolean {
 }
 
 export const print = ora();
+
+export function toStandardCase(text: string): string {
+	if (!text) return '';
+	text = text.trim();
+	return text[0].toUpperCase() + text.slice(1).toLowerCase();
+}

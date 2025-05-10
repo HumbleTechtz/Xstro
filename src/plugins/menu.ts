@@ -1,6 +1,11 @@
 import { Command, commands } from '../messaging/plugin.ts';
 import { platform, totalmem, freemem } from 'node:os';
-import { formatBytes, formatRuntime } from '../utils/constants.ts';
+import {
+	formatBytes,
+	formatRuntime,
+	toStandardCase,
+} from '../utils/constants.ts';
+import config from '../../config.ts';
 
 Command({
 	name: 'menu',
@@ -14,9 +19,9 @@ Command({
 				!cmd.dontAddCommandList &&
 				!cmd.name.toString().includes('undefined'),
 		).length;
-		let menuInfo = `\`\`\`╭─── χѕтяσ м∂ ────
+		let menuInfo = `\`\`\`╭─── ${config.BOT_NAME ?? `χѕтяσ м∂`} ────
 │ User: ${message.pushName?.trim() ?? `Unknown`}
-│ Owner: αѕтяσχ11
+│ Owner: ${config.OWNER_NAME ?? `αѕтяσχ11`}
 │ Plugins: ${cmds}
 │ Mode: ${message.mode ? 'Private' : 'Public'}
 │ Uptime: ${formatRuntime(process.uptime())}
@@ -46,7 +51,7 @@ Command({
 
 		sortedTypes.forEach(type => {
 			const sortedCommands = commandsByType[type].sort();
-			menuInfo += `╭──── *${type}* ────\n`;
+			menuInfo += `╭──── *${toStandardCase(type)}* ────\n`;
 			sortedCommands.forEach((cmd: unknown) => {
 				menuInfo += `│${totalCommands}· ${cmd}\n`;
 				totalCommands++;

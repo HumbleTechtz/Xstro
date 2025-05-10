@@ -48,17 +48,17 @@ async function run() {
 		const p1 = await runProc(firstCommandArgs, 'First');
 
 		if (p1 === 0 || p1 == null) {
-			log.info('Restarting process...');
+			log.info('Restarting Process...');
 			setTimeout(run, 1000);
 		} else {
-			log.info(`Starting client process...`);
+			log.info(`Starting Process...`);
 			const p2 = await runProc(nodeArgs, 'Second');
 
 			if (p2 === 0) {
-				log.info('Restarting sequence...');
+				log.info('Restarting Process...');
 				setTimeout(run, 1000);
 			} else {
-				log.fail(`Terminating process...`);
+				log.fail(`Terminating Process...`);
 				process.exit(p2 || 1);
 			}
 		}

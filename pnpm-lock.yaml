@@ -21,8 +21,8 @@ importers:
         specifier: ^10.0.1
         version: 10.0.1
       baileys:
-        specifier: ^6.7.16
-        version: 6.7.16(eslint@9.26.0(jiti@2.4.2))(link-preview-js@3.0.14)(typescript@5.8.3)
+        specifier: github:WhiskeySockets/Baileys
+        version: https://codeload.github.com/WhiskeySockets/Baileys/tar.gz/a85251250d470438cba2568414a4276a17c1923f(audio-decode@2.2.2)(eslint@9.26.0(jiti@2.4.2))(link-preview-js@3.0.14)(typescript@5.8.3)
       dotenv:
         specifier: ^16.5.0
         version: 16.5.0
@@ -77,9 +77,6 @@ importers:
         version: 5.8.3
 
 packages:
-
-  '@adiwajshing/keyed-db@0.2.4':
-    resolution: {integrity: sha512-yprSnAtj80/VKuDqRcFFLDYltoNV8tChNwFfIgcf6PGD4sjzWIBgs08pRuTqGH5mk5wgL6PBRSsMCZqtZwzFEw==}
 
   '@astrox11/sqlite@3.9.0':
     resolution: {integrity: sha512-+Bs169mYYrB4nRNsFWe6E+jA2GBRBceYpNVwhLVxUkVcY09ysHtYLK0tf1HK/SOsypvafBtJD0WuVW2A73UWQg==}
@@ -627,8 +624,8 @@ packages:
   argparse@2.0.1:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
 
-  async-lock@1.4.1:
-    resolution: {integrity: sha512-Az2ZTpuytrtqENulXwO3GGv1Bztugx6TT37NIo7imr/Qo0gsYiGtSdBa2B6fsXhTpVZDNfu1Qn3pk531e3q+nQ==}
+  async-mutex@0.5.0:
+    resolution: {integrity: sha512-1A94B18jkJ3DYq284ohPxoXbfTA5HsQ7/Mf4DEhcyLx3Bz27Rh59iScbB6EPiP+B+joue6YCxcMXSbFC1tZKwA==}
 
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
@@ -650,19 +647,21 @@ packages:
   axios@1.9.0:
     resolution: {integrity: sha512-re4CqKTJaURpzbLHtIi6XpDv20/CnpXOtjRY5/CU32L8gU8ek9UIivcfvSWvmKEngmVbrUtPpdDwWDWL7DNHvg==}
 
-  baileys@6.7.16:
-    resolution: {integrity: sha512-hyWdrtEd9iy9Z/i57HdmYB+Ao5VZhQxKvGP5pcKEuUh1I/m8cwqgaIUYhoqV9jJeWrWn1sZsyFb2jS/rzSMAMw==}
+  baileys@https://codeload.github.com/WhiskeySockets/Baileys/tar.gz/a85251250d470438cba2568414a4276a17c1923f:
+    resolution: {tarball: https://codeload.github.com/WhiskeySockets/Baileys/tar.gz/a85251250d470438cba2568414a4276a17c1923f}
+    version: 6.7.16
+    engines: {node: '>=20.0.0'}
     peerDependencies:
+      audio-decode: ^2.1.3
       jimp: ^0.16.1
       link-preview-js: ^3.0.0
-      qrcode-terminal: ^0.12.0
       sharp: ^0.32.6
     peerDependenciesMeta:
+      audio-decode:
+        optional: true
       jimp:
         optional: true
       link-preview-js:
-        optional: true
-      qrcode-terminal:
         optional: true
       sharp:
         optional: true
@@ -696,10 +695,6 @@ packages:
   bytes@3.1.2:
     resolution: {integrity: sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==}
     engines: {node: '>= 0.8'}
-
-  cache-manager@5.7.6:
-    resolution: {integrity: sha512-wBxnBHjDxF1RXpHCBD6HGvKER003Ts7IIm0CHpggliHzN1RZditb7rXoduE1rplc2DEFYKxhLKgFuchXMJje9w==}
-    engines: {node: '>= 18'}
 
   cacheable-lookup@7.0.0:
     resolution: {integrity: sha512-+qJyx4xiKra8mZrcwhjMRMUhD5NR1R8esPkzIYxX96JiecFoxAXFuz/GpR3+ev4PE1WamHip78wV0vcmPQtp8w==}
@@ -986,9 +981,6 @@ packages:
     resolution: {integrity: sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==}
     engines: {node: '>=6'}
 
-  eventemitter3@5.0.1:
-    resolution: {integrity: sha512-GWkBvjiSZK87ELrYOSESUYeVIc9mvLLf/nXalMOS5dYrgZq9o5OVkbZAVM06CVxYsCwH9BDZFPlQTlPA1j4ahA==}
-
   events@3.3.0:
     resolution: {integrity: sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==}
     engines: {node: '>=0.8.x'}
@@ -1273,9 +1265,6 @@ packages:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
     engines: {node: '>= 0.8.0'}
 
-  libphonenumber-js@1.12.8:
-    resolution: {integrity: sha512-f1KakiQJa9tdc7w1phC2ST+DyxWimy9c3g3yeF+84QtEanJr2K77wAmBPP22riU05xldniHsvXuflnLZ4oysqA==}
-
   link-preview-js@3.0.14:
     resolution: {integrity: sha512-BAGZGCogqsWfF3msPt0c6DXr4+4zv7fregAxPioFYZJKoQEbKhJOhmu7VQjZmtKd1VRQ6CbL80Ok2KhpIuWJnQ==}
     engines: {node: '>=18'}
@@ -1283,9 +1272,6 @@ packages:
   locate-path@6.0.0:
     resolution: {integrity: sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==}
     engines: {node: '>=10'}
-
-  lodash.clonedeep@4.5.0:
-    resolution: {integrity: sha512-H5ZhCF25riFd9uB5UCkVKo61m3S/xZk1x4wA6yp/L3RFP6Z/eHH1ymQcGLo7J3GMPfm0V/7m1tryHuGVxpqEBQ==}
 
   lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
@@ -1306,9 +1292,6 @@ packages:
   lowercase-keys@3.0.0:
     resolution: {integrity: sha512-ozCC6gdQ+glXOQsveKD0YsDy8DSQFjDTz4zyzEHNV5+JP5D62LmfDZ6o1cycFx9ouG940M5dE8C8CTewdj2YWQ==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
-
-  lru-cache@10.4.3:
-    resolution: {integrity: sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==}
 
   math-intrinsics@1.1.0:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
@@ -1519,10 +1502,6 @@ packages:
   process@0.11.10:
     resolution: {integrity: sha512-cdGef/drWFoydD1JsMzuFf8100nZl+GT+yacc2bEced5f9Rjk4z+WtFUTBu9PhOi9j/jfmBPu0mMEY4wIdAF8A==}
     engines: {node: '>= 0.6.0'}
-
-  promise-coalesce@1.1.2:
-    resolution: {integrity: sha512-zLaJ9b8hnC564fnJH6NFSOGZYYdzrAJn2JUUIwzoQb32fG2QAakpDNM+CZo1km6keXkRXRM+hml1BFAPVnPkxg==}
-    engines: {node: '>=16'}
 
   protobufjs@6.8.8:
     resolution: {integrity: sha512-AAmHtD5pXgZfi7GMpllpO3q1Xw1OYldr+dMUlAnffGTAhqkg72WdmSY71uKBF/JuyiKs8psYbtKrhi0ASCD8qw==}
@@ -1798,10 +1777,6 @@ packages:
   url@0.11.0:
     resolution: {integrity: sha512-kbailJa29QrtXnxgq+DdCEGlbTeYM2eJUxsz6vjZavrCYPMIFHMKQmSKYAIuUK2i7hgPm28a8piX5NTUtM/LKQ==}
 
-  uuid@10.0.0:
-    resolution: {integrity: sha512-8XkAphELsDnEGrDxUOHB3RGvXz6TeuYSGEZBOjtTtPm2lwhGBjLgOzLHB63IUWfBpNucQjND6d3AOudO+H3RWQ==}
-    hasBin: true
-
   vary@1.1.2:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
     engines: {node: '>= 0.8'}
@@ -1851,8 +1826,6 @@ packages:
     resolution: {integrity: sha512-OdqJE9UDRPwWsrHjLN2F8bPxvwJBK22EHLWtanu0LSYr5YqzsaaW3RMgmjwr8Rypg5k+meEJdSPXJZXE/yqOMg==}
 
 snapshots:
-
-  '@adiwajshing/keyed-db@0.2.4': {}
 
   '@astrox11/sqlite@3.9.0':
     dependencies:
@@ -1957,7 +1930,8 @@ snapshots:
   '@esbuild/win32-x64@0.25.4':
     optional: true
 
-  '@eshaz/web-worker@1.2.2': {}
+  '@eshaz/web-worker@1.2.2':
+    optional: true
 
   '@eslint-community/eslint-utils@4.7.0(eslint@9.26.0(jiti@2.4.2))':
     dependencies:
@@ -2173,8 +2147,10 @@ snapshots:
   '@thi.ng/bitstream@2.4.19':
     dependencies:
       '@thi.ng/errors': 2.5.33
+    optional: true
 
-  '@thi.ng/errors@2.5.33': {}
+  '@thi.ng/errors@2.5.33':
+    optional: true
 
   '@tokenizer/inflate@0.2.7':
     dependencies:
@@ -2281,16 +2257,19 @@ snapshots:
     dependencies:
       '@eshaz/web-worker': 1.2.2
       simple-yenc: 1.0.4
+    optional: true
 
   '@wasm-audio-decoders/flac@0.2.7':
     dependencies:
       '@wasm-audio-decoders/common': 9.0.6
       codec-parser: 2.5.0
+    optional: true
 
   '@wasm-audio-decoders/ogg-vorbis@0.1.17':
     dependencies:
       '@wasm-audio-decoders/common': 9.0.6
       codec-parser: 2.5.0
+    optional: true
 
   '@whiskeysockets/eslint-config@https://codeload.github.com/whiskeysockets/eslint-config/tar.gz/f264cd06d24a43f76e4ad2d81528f8485a1e7efe(eslint@9.26.0(jiti@2.4.2))(typescript@5.8.3)':
     dependencies:
@@ -2339,13 +2318,16 @@ snapshots:
 
   argparse@2.0.1: {}
 
-  async-lock@1.4.1: {}
+  async-mutex@0.5.0:
+    dependencies:
+      tslib: 2.8.1
 
   asynckit@0.4.0: {}
 
   atomic-sleep@1.0.0: {}
 
-  audio-buffer@5.0.0: {}
+  audio-buffer@5.0.0:
+    optional: true
 
   audio-decode@2.2.2:
     dependencies:
@@ -2357,8 +2339,10 @@ snapshots:
       node-wav: 0.0.2
       ogg-opus-decoder: 1.6.16
       qoa-format: 1.0.1
+    optional: true
 
-  audio-type@2.2.1: {}
+  audio-type@2.2.1:
+    optional: true
 
   axios@1.9.0:
     dependencies:
@@ -2368,25 +2352,21 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  baileys@6.7.16(eslint@9.26.0(jiti@2.4.2))(link-preview-js@3.0.14)(typescript@5.8.3):
+  baileys@https://codeload.github.com/WhiskeySockets/Baileys/tar.gz/a85251250d470438cba2568414a4276a17c1923f(audio-decode@2.2.2)(eslint@9.26.0(jiti@2.4.2))(link-preview-js@3.0.14)(typescript@5.8.3):
     dependencies:
-      '@adiwajshing/keyed-db': 0.2.4
       '@cacheable/node-cache': 1.5.5
       '@hapi/boom': 9.1.4
       '@whiskeysockets/eslint-config': https://codeload.github.com/whiskeysockets/eslint-config/tar.gz/f264cd06d24a43f76e4ad2d81528f8485a1e7efe(eslint@9.26.0(jiti@2.4.2))(typescript@5.8.3)
-      async-lock: 1.4.1
-      audio-decode: 2.2.2
+      async-mutex: 0.5.0
       axios: 1.9.0
-      cache-manager: 5.7.6
-      libphonenumber-js: 1.12.8
       libsignal: '@whiskeysockets/libsignal-node@https://codeload.github.com/WhiskeySockets/libsignal-node/tar.gz/d13b6622a208d3037a98b6f447bbde70261c39a9'
       lodash: 4.17.21
       music-metadata: 7.14.0
       pino: 9.6.0
       protobufjs: 7.5.1
-      uuid: 10.0.0
       ws: 8.18.2
     optionalDependencies:
+      audio-decode: 2.2.2
       link-preview-js: 3.0.14
     transitivePeerDependencies:
       - bufferutil
@@ -2435,13 +2415,6 @@ snapshots:
       ieee754: 1.2.1
 
   bytes@3.1.2: {}
-
-  cache-manager@5.7.6:
-    dependencies:
-      eventemitter3: 5.0.1
-      lodash.clonedeep: 4.5.0
-      lru-cache: 10.4.3
-      promise-coalesce: 1.1.2
 
   cacheable-lookup@7.0.0: {}
 
@@ -2519,7 +2492,8 @@ snapshots:
 
   cli-spinners@2.9.2: {}
 
-  codec-parser@2.5.0: {}
+  codec-parser@2.5.0:
+    optional: true
 
   color-convert@2.0.1:
     dependencies:
@@ -2773,8 +2747,6 @@ snapshots:
   etag@1.8.1: {}
 
   event-target-shim@5.0.1: {}
-
-  eventemitter3@5.0.1: {}
 
   events@3.3.0: {}
 
@@ -3083,8 +3055,6 @@ snapshots:
       prelude-ls: 1.2.1
       type-check: 0.4.0
 
-  libphonenumber-js@1.12.8: {}
-
   link-preview-js@3.0.14:
     dependencies:
       cheerio: 1.0.0-rc.11
@@ -3093,8 +3063,6 @@ snapshots:
   locate-path@6.0.0:
     dependencies:
       p-locate: 5.0.0
-
-  lodash.clonedeep@4.5.0: {}
 
   lodash.merge@4.6.2: {}
 
@@ -3110,8 +3078,6 @@ snapshots:
   long@5.3.2: {}
 
   lowercase-keys@3.0.0: {}
-
-  lru-cache@10.4.3: {}
 
   math-intrinsics@1.1.0: {}
 
@@ -3155,6 +3121,7 @@ snapshots:
   mpg123-decoder@1.0.1:
     dependencies:
       '@wasm-audio-decoders/common': 9.0.6
+    optional: true
 
   ms@2.1.3: {}
 
@@ -3174,7 +3141,8 @@ snapshots:
 
   negotiator@1.0.0: {}
 
-  node-wav@0.0.2: {}
+  node-wav@0.0.2:
+    optional: true
 
   node-webpmux@3.2.1: {}
 
@@ -3193,6 +3161,7 @@ snapshots:
       '@wasm-audio-decoders/common': 9.0.6
       codec-parser: 2.5.0
       opus-decoder: 0.7.9
+    optional: true
 
   on-exit-leak-free@2.1.2: {}
 
@@ -3220,6 +3189,7 @@ snapshots:
   opus-decoder@0.7.9:
     dependencies:
       '@wasm-audio-decoders/common': 9.0.6
+    optional: true
 
   ora@8.2.0:
     dependencies:
@@ -3308,8 +3278,6 @@ snapshots:
 
   process@0.11.10: {}
 
-  promise-coalesce@1.1.2: {}
-
   protobufjs@6.8.8:
     dependencies:
       '@protobufjs/aspromise': 1.1.2
@@ -3355,6 +3323,7 @@ snapshots:
   qoa-format@1.0.1:
     dependencies:
       '@thi.ng/bitstream': 2.4.19
+    optional: true
 
   qs@6.14.0:
     dependencies:
@@ -3524,7 +3493,8 @@ snapshots:
     dependencies:
       is-arrayish: 0.3.2
 
-  simple-yenc@1.0.4: {}
+  simple-yenc@1.0.4:
+    optional: true
 
   sonic-boom@4.2.0:
     dependencies:
@@ -3634,8 +3604,6 @@ snapshots:
     dependencies:
       punycode: 1.3.2
       querystring: 0.2.0
-
-  uuid@10.0.0: {}
 
   vary@1.1.2: {}
 

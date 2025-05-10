@@ -70,7 +70,11 @@ export default class Connection {
 		}
 		const sudo = await getSettings().then(s => s.sudo);
 		const users = Array.from(
-			new Set([parseJid(this.client?.user?.id), ...sudo]),
+			new Set([
+				parseJid(this.client.user?.id),
+				parseJid(this.client.user?.lid),
+				...sudo,
+			]),
 		);
 		await setSettings('sudo', users);
 	}

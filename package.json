@@ -1,6 +1,6 @@
 {
   "name": "xstro",
-  "version": "15.0.0",
+  "version": "16.0.0",
   "description": "Simple WA bot.",
   "type": "module",
   "main": "main.mjs",
@@ -24,7 +24,7 @@
     "@astrox11/utily": "^1.8.2",
     "@cacheable/node-cache": "^1.5.5",
     "@hapi/boom": "^10.0.1",
-    "baileys": "^6.7.16",
+    "baileys": "github:WhiskeySockets/Baileys",
     "dotenv": "^16.5.0",
     "file-type": "20.5.0",
     "https-proxy-agent": "^7.0.6",

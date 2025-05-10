@@ -37,20 +37,20 @@ export default async function (message: Message) {
 						await send(lang.FOR_SUDO_USERS);
 						continue;
 					}
+
 					if (cmd.isGroup && !isGroup) {
 						await send(lang.FOR_GROUPS_ONLY);
 						continue;
 					}
+
 					if (!sudo && !(await canProceed(sender!))) {
-						await send(lang.RATE_LIMIT_REACHED);
+						await message.send(lang.RATE_LIMIT_REACHED);
 						continue;
 					}
 
 					await message.react('⏳');
 
 					await cmd.function(message, match[2] ?? '');
-
-					return message.react('');
 				}
 			} catch (err) {
 				print.fail('Command Error: ' + (err as Error).stack);
