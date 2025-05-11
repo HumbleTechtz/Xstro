@@ -34,7 +34,7 @@ export default async function (message: Message) {
 					if (mode && !sudo) continue;
 
 					if (cmd.fromMe && !sudo) {
-						await send(lang.FOR_SUDO_USERS);
+						await message.send(lang.FOR_SUDO_USERS);
 						continue;
 					}
 
@@ -50,7 +50,14 @@ export default async function (message: Message) {
 
 					await message.react('⏳');
 
-					await cmd.function(message, match[2] ?? '');
+					try {
+						await cmd.function(message, match[2] ?? '');
+					} catch (error) {
+						await message.send(
+							`\`\`\`An error occured while running ${cmd.name?.toString().toLowerCase().split(/\W+/)[2]} command\`\`\``,
+						);
+						print.fail(String(error));
+					}
 				}
 			} catch (err) {
 				print.fail('Command Error: ' + (err as Error).stack);

@@ -2,7 +2,7 @@ import { Boom } from '@hapi/boom';
 import { DisconnectReason } from 'baileys';
 import { commands, syncPlugins } from '../../plugin.ts';
 import { getSettings, setSettings } from '../../../models/index.ts';
-import { print, parseJid } from '../../../utils/index.ts';
+import { print, parseJidLid } from '../../../utils/index.ts';
 import type { BaileysEventMap, WASocket } from 'baileys';
 
 export default class Connection {
@@ -71,8 +71,8 @@ export default class Connection {
 		const sudo = await getSettings().then(s => s.sudo);
 		const users = Array.from(
 			new Set([
-				parseJid(this.client.user?.id),
-				parseJid(this.client.user?.lid),
+				parseJidLid(this.client.user?.id),
+				parseJidLid(this.client.user?.lid),
 				...sudo,
 			]),
 		);

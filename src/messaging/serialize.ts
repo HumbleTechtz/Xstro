@@ -3,7 +3,7 @@ import { getSettings } from '../models/index.ts';
 import {
 	getMessageContent,
 	getQuotedContent,
-	parseJid,
+	parseJidLid,
 } from '../utils/index.ts';
 import type { WAMessage, WASocket } from 'baileys';
 
@@ -17,7 +17,7 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 		await getSettings();
 	const jid = key.remoteJid ?? '';
 	const isGroup = isJidGroup(key.remoteJid!);
-	const owner = parseJid(client?.user?.id);
+	const owner = parseJidLid(client?.user?.id);
 	const sender =
 		isJidGroup(key.remoteJid!) || broadcast
 			? key.participant
@@ -41,7 +41,7 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 		disablegc,
 		disabledm,
 		mention: quoted?.mentionedJid,
-		sudo: sudo.includes(parseJid(sender)) ? true : sender === owner,
+		sudo: sudo.includes(parseJidLid(sender)) ? true : sender === owner,
 		...content,
 		...messages,
 		quoted: quoted ? { ...quoted } : undefined,
@@ -49,11 +49,11 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 			if (this.isGroup) {
 				if (quoted && quoted.sender) return quoted.sender;
 				if (!match) return undefined;
-				return parseJid(match);
+				return parseJidLid(match);
 			} else {
 				if (quoted && quoted.sender) return quoted.sender;
 				if (!match) return this.key.remoteJid!;
-				return parseJid(match);
+				return parseJidLid(match);
 			}
 		},
 	};
