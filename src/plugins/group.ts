@@ -1,10 +1,12 @@
 import { Command } from '../messaging/plugin.ts';
-import Message from '../messaging/Messages/Message.ts';
+import Message from '../messaging/Class/Messages/Message.ts';
 
-const adminCheck = async (message: Message) => {
+const adminCheck = async (message: Message): Promise<boolean> => {
 	if (!(await message.isAdmin()) || !(await message.isBotAdmin())) {
-		return message.send('_Requires admin and bot admin privileges_');
+		await message.send('_Requires admin and bot admin privileges_');
+		return false;
 	}
+	return true;
 };
 
 const getUser = (message: Message, match: string | undefined) => {
@@ -20,7 +22,7 @@ Command({
 	desc: 'Add participant to group',
 	type: 'group',
 	function: async (message, match) => {
-		await adminCheck(message);
+		if (!(await adminCheck(message))) return;
 		const user = getUser(message, match);
 		if (!user) return;
 		if (!(await message.client.onWhatsApp(user))) {
@@ -40,7 +42,7 @@ Command({
 	desc: 'Remove participant from group',
 	type: 'group',
 	function: async (message, match) => {
-		await adminCheck(message);
+		if (!(await adminCheck(message))) return;
 		const user = getUser(message, match);
 		if (!user) return;
 		await message.client.groupParticipantsUpdate(message.jid, [user], 'remove');
@@ -57,7 +59,7 @@ Command({
 	desc: 'Promote participant to admin',
 	type: 'group',
 	function: async (message, match) => {
-		await adminCheck(message);
+		if (!(await adminCheck(message))) return;
 		const user = getUser(message, match);
 		if (!user) return;
 		const groupData = await message.client.groupMetadata(message.jid);
@@ -85,7 +87,7 @@ Command({
 	desc: 'Demote admin to participant',
 	type: 'group',
 	function: async (message, match) => {
-		await adminCheck(message);
+		if (!(await adminCheck(message))) return;
 		const user = getUser(message, match);
 		if (!user) return;
 		const groupData = await message.client.groupMetadata(message.jid);
@@ -162,7 +164,7 @@ Command({
 	type: 'group',
 	function: async (message, match) => {
 		if (!match) return message.send('Provide new group name');
-		await adminCheck(message);
+		if (!(await adminCheck(message))) return;
 		await message.client.groupUpdateSubject(message.jid, match);
 		message.send('_Group name updated_');
 	},
@@ -175,7 +177,7 @@ Command({
 	desc: 'Update group description',
 	type: 'group',
 	function: async (message, match) => {
-		await adminCheck(message);
+		if (!(await adminCheck(message))) return;
 		await message.client.groupUpdateDescription(message.jid, match);
 		message.send('_Group description updated_');
 	},
@@ -188,7 +190,7 @@ Command({
 	desc: 'Allow only admins to send messages',
 	type: 'group',
 	function: async message => {
-		await adminCheck(message);
+		if (!(await adminCheck(message))) return;
 		const metadata = await message.client.groupMetadata(message.jid);
 		if (metadata.announce) return message.send('Group already muted');
 		await message.client.groupSettingUpdate(message.jid, 'announcement');
@@ -203,7 +205,7 @@ Command({
 	desc: 'Allow all members to send messages',
 	type: 'group',
 	function: async message => {
-		await adminCheck(message);
+		if (!(await adminCheck(message))) return;
 		const metadata = await message.client.groupMetadata(message.jid);
 		if (!metadata.announce) return message.send('_Group already unmuted_');
 		await message.client.groupSettingUpdate(message.jid, 'not_announcement');
@@ -218,7 +220,7 @@ Command({
 	desc: 'Restrict settings to admins',
 	type: 'group',
 	function: async message => {
-		await adminCheck(message);
+		if (!(await adminCheck(message))) return;
 		const metadata = await message.client.groupMetadata(message.jid);
 		if (metadata.restrict)
 			return message.send('_Group settings already restricted_');
@@ -234,7 +236,7 @@ Command({
 	desc: 'Allow all members to manage settings',
 	type: 'group',
 	function: async message => {
-		await adminCheck(message);
+		if (!(await adminCheck(message))) return;
 		const metadata = await message.client.groupMetadata(message.jid);
 		if (!metadata.restrict)
 			return message.send('_Group settings already unrestricted_');
@@ -250,7 +252,7 @@ Command({
 	desc: 'Get group invite link',
 	type: 'group',
 	function: async message => {
-		await adminCheck(message);
+		if (!(await adminCheck(message))) return;
 		const code = await message.client.groupInviteCode(message.jid);
 		message.send(`_https://chat.whatsapp.com/${code}_`);
 	},
@@ -263,7 +265,7 @@ Command({
 	desc: 'Revoke group invite code',
 	type: 'group',
 	function: async message => {
-		await adminCheck(message);
+		if (!(await adminCheck(message))) return;
 		const code = await message.client.groupRevokeInvite(message.jid);
 		message.send(`_https://chat.whatsapp.com/${code}_`);
 	},
@@ -276,6 +278,7 @@ Command({
 	desc: 'Toggle group join approval',
 	type: 'group',
 	function: async (message, match) => {
+		if (!(await adminCheck(message))) return;
 		if (!match)
 			return message.send(`_Usage: ${message.prefix[0]}approval on | off_`);
 		match = match.toLowerCase().trim();

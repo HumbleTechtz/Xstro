@@ -26,9 +26,9 @@ export const getAntilink = async function (jid: string) {
 	if (!record) return null;
 
 	return {
-		jid: record.jid,
-		mode: record.mode ?? false,
-		links: record.links ?? [],
+		jid: typeof record.jid !== 'string' ? String(record.jid) : record.jid,
+		mode: Boolean(record.mode),
+		links: record.links ? (JSON.parse(record.links as string) as string[]) : [],
 	};
 };
 

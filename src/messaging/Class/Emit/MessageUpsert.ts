@@ -1,8 +1,14 @@
 import Message from '../Messages/Message.ts';
 import { serialize } from '../../serialize.ts';
-import { BufferJSON, type BaileysEventMap, type WASocket } from 'baileys';
-import { preserveMessage } from '../../../models/store.ts';
+import {
+	BufferJSON,
+	isJidUser,
+	type BaileysEventMap,
+	type WASocket,
+} from 'baileys';
+import { saveContact, saveMessage } from '../../../models/store.ts';
 import handlers from '../../handlers.ts';
+import { isLid, print } from '../../../utils/constants.ts';
 
 export default class MessageUpsert {
 	private client: WASocket;
@@ -27,8 +33,15 @@ export default class MessageUpsert {
 			const cloned = structuredClone(msg);
 			const serialized = await serialize(this.client, cloned);
 			const instance = new Message(serialized, this.client);
-
-			await Promise.all([handlers(instance), preserveMessage(msg)]);
+			await Promise.all([
+				handlers(instance),
+				saveMessage(msg),
+				saveContact(
+					instance.pushName,
+					isJidUser(instance.sender!) ? instance.sender : null,
+					isLid(instance.sender!) ? instance.sender : null,
+				),
+			]);
 		}
 	}
 }

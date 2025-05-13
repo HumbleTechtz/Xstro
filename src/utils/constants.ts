@@ -48,28 +48,29 @@ export function formatBytes(bytes: number): string {
 	return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))}${sizes[i]}`;
 }
 
-export function parseJidLid(num?: unknown): string {
-	if (!num) return '';
+export function parseJidLid(input?: any): string {
+	if (!input) return '';
 
-	let strNum = typeof num === 'string' ? num : num.toString();
-	strNum = strNum.trim();
+	const str = Array.isArray(input) ? String(input[0]) : String(input);
 
-	// Cut off at first colon, if any
-	const colonIndex = strNum.indexOf(':');
-	if (colonIndex !== -1) {
-		strNum = strNum.slice(0, colonIndex);
+	if (str.endsWith('@s.whatsapp.net')) {
+		return jidNormalizedUser(str);
 	}
 
-	// If ends with @lid and the part before is digits only
-	if (strNum.endsWith('@lid')) {
-		const [id] = strNum.split('@');
-		if (/^\d+$/.test(id)) return strNum;
+	if (str.endsWith('@lid')) {
+		const [id] = str.split(':');
+		return id + '@lid';
 	}
 
-	// Otherwise, keep only digits and form standard jid
-	const digitsOnly = strNum.replace(/\D/g, '');
+	return '';
+}
 
-	return jidNormalizedUser(`${digitsOnly}@s.whatsapp.net`);
+export function isLid(id?: string) {
+	if (!id) return undefined;
+	if (id.toLowerCase().trim().endsWith('@lid')) {
+		return true;
+	}
+	return undefined;
 }
 
 export function parseBoolean(stringStatement: string): boolean {

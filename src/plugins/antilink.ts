@@ -1,5 +1,5 @@
 import { Command } from '../messaging/plugin.ts';
-import { delAntilink, setAntilink } from '../models/antilink.ts';
+import { delAntilink, getAntilink, setAntilink } from '../models/antilink.ts';
 
 Command({
 	name: 'antilink',
@@ -8,9 +8,9 @@ Command({
 	desc: 'Setup Antilink for Group Chat',
 	type: 'group',
 	function: async (msg, args) => {
-		const { send, prefix, jid } = msg;
+		const { prefix, jid } = msg.data;
 		if (!args) {
-			return await send(
+			return await msg.send(
 				`\`\`\`
 Usage: 
 ${prefix}antilink on
@@ -24,31 +24,75 @@ ${prefix}antilink set chat.whatsapp.com,google.com\`\`\``,
 		const choice = args.split(' ');
 		if (choice[0] === 'on') {
 			await setAntilink(jid, true);
-			return await send('_Antilink turned on_');
+			return await msg.send('_Antilink turned on_');
 		}
 		if (choice[0] === 'off') {
 			await delAntilink(jid);
-			return await send('_Antilink turned off_');
+			return await msg.send('_Antilink turned off_');
 		}
 
 		if (choice[0] === 'mode') {
 			if (choice[1] !== 'kick' && choice[1] !== 'delete')
-				return await send(
+				return await msg.send(
 					`\`\`\`Usage:\n${prefix}antilink mode kick\nOR\n${prefix}antilink mode delete\`\`\``,
 				);
 			await setAntilink(jid, choice[1] === 'kick' ? true : false);
-			return await send(
+			return await msg.send(
 				'_Antilink mode is now set to ' + choice[1] + ' participant_',
 			);
 		}
 
 		if (choice[0] === 'set') {
 			if (!choice?.[1])
-				return await send('_You need to add some specific links to prohibit_');
+				return await msg.send(
+					'_You need to add some specific links to prohibit_',
+				);
 			await setAntilink(jid, true, choice.slice(1));
-			return await send(
+			return await msg.send(
 				`_Antilink set to handle ${choice.slice(1).length} links_`,
 			);
+		}
+	},
+});
+
+Command({
+	on: true,
+	function: async msg => {
+		if (!msg.isGroup || !msg?.text) return;
+		if (msg.fromMe || msg.sudo) return;
+		if (!(await msg.isBotAdmin()) || (await msg.isAdmin())) return;
+
+		const antilink = await getAntilink(msg.jid);
+		if (!antilink) return;
+
+		const text = msg.text.toLowerCase();
+		let hasProhibitedLink = false;
+
+		if (antilink.links?.length) {
+			hasProhibitedLink = antilink.links.some(link =>
+				text.includes(link.toLowerCase()),
+			);
+		} else {
+			hasProhibitedLink =
+				/https?:\/\/([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?/i.test(text);
+		}
+
+		if (!hasProhibitedLink) return;
+
+		await msg.delete();
+
+		if (antilink.mode === true) {
+			await msg.client.groupParticipantsUpdate(
+				msg.jid,
+				[msg.sender!],
+				'remove',
+			);
+			await msg.send(
+				`_@${msg.sender!.split('@')[0]} was removed for sending a prohibited link_`,
+				{ mentions: [msg.sender!] },
+			);
+		} else {
+			await msg.send('_Links are not allowed here_');
 		}
 	},
 });

@@ -1,6 +1,6 @@
-import { Database } from '@astrox11/sqlite';
+import { Database, JournalMode } from '@astrox11/sqlite';
 
-const database = new Database('database.db');
+const database = new Database('database.db', { journalMode: JournalMode.OFF });
 
 process.on('exit', () => {
 	database.close();
