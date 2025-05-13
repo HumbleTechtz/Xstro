@@ -57,6 +57,7 @@ ${prefix}antilink set chat.whatsapp.com,google.com\`\`\``,
 
 Command({
 	on: true,
+	dontAddCommandList: true,
 	function: async msg => {
 		if (!msg.isGroup || !msg?.text) return;
 		if (msg.fromMe || msg.sudo) return;

@@ -1,6 +1,7 @@
 import { Command, commands } from '../messaging/plugin.ts';
 import { platform, totalmem, freemem } from 'node:os';
 import {
+	fancy,
 	formatBytes,
 	formatRuntime,
 	toStandardCase,
@@ -51,9 +52,9 @@ Command({
 
 		sortedTypes.forEach(type => {
 			const sortedCommands = commandsByType[type].sort();
-			menuInfo += `╭──── *${toStandardCase(type)}* ────\n`;
+			menuInfo += `╭──── *${fancy(type)}* ────\n`;
 			sortedCommands.forEach((cmd: unknown) => {
-				menuInfo += `│${totalCommands}· ${cmd}\n`;
+				menuInfo += `│${fancy(totalCommands as unknown as string)}· ${fancy(cmd as string)}\n`;
 				totalCommands++;
 			});
 			menuInfo += `╰────────────\n`;
