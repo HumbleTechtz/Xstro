@@ -1,11 +1,14 @@
-# `xstro`
+## `xstro`
 
-### Getting started
-
-Xstro is a simple, open-source, fast, and reliable WhatsApp automation system that operates via the Baileys Web API to send, receive, manage, and process various WhatsApp-related events.
-
-> ⚠️ **Important**: WhatsApp's Terms of Service prohibit the use of third-party automation tools. Use this project at your own risk.
-> Keep yourself away from stupid scammers, and social enginners, I will not ask you for your session of any kind, the moment you chose to use this software you have chosen to manage everything you do with it.
+> \[!IMPORTANT]
+> **Use at Your Own Risk**
+> WhatsApp’s [Terms of Service](https://www.whatsapp.com/legal/terms-of-service) explicitly **prohibit the use of unauthorized third-party automation tools or software** that interact with its platform. This includes bots, automation frameworks, and reverse-engineered clients. Violating these terms can result in your account being **permanently banned** or facing legal action.
+>
+> Additionally, always be vigilant against **scammers** and **social engineering attacks**. I will never ask for your WhatsApp session, QR code, token, or any sensitive credential—**you are fully responsible** for your data and actions while using this software.
+>
+> By choosing to use this project, you acknowledge and accept all associated risks and liabilities.
+>
+> It is a simple, open-source, fast, and reliable WhatsApp automation system that operates via the Baileys Web API to send, receive, manage, and process various WhatsApp-related events.
 
 For more information about Baileys, see:
 [https://github.com/WhiskeySockets/Baileys](https://github.com/WhiskeySockets/Baileys)
