@@ -33,7 +33,7 @@ Once the deployment is complete and the bot starts, it will generate a local pai
 2. Installation
 
    ```bash
-   npm i -global pnpm
+   npm i -global pnpm yarn
    git clone https://github.com/AstroX11/Xstro.git
    cd Xstro
    pnpm install
@@ -42,7 +42,7 @@ Once the deployment is complete and the bot starts, it will generate a local pai
 3. Configuration
 
    ```bash
-   echo "USER_NUMBER=" > config.env
+   echo "USER_NUMBER=" > .env
    ```
 
 - Start
