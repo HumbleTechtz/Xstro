@@ -1,5 +1,5 @@
 import database from '../models/_db.ts';
-import { DataType } from 'qunatava';
+import { DataType } from 'quantava';
 import type { BotSettings } from '../types/index.ts';
 
 export const config = database.define(

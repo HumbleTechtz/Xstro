@@ -6,7 +6,7 @@ import {
 	type SignalDataTypeMap,
 } from 'baileys';
 import database from '../models/_db.ts';
-import { DataType } from 'qunatava';
+import { DataType } from 'quantava';
 
 export const auth = database.define(
 	'auth',

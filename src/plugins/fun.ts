@@ -1,4 +1,4 @@
-import { fetch } from '@astrox11/utily';
+import { fetch } from '../utils/fetch.mts';
 import { Command } from '../messaging/plugin.ts';
 
 Command({

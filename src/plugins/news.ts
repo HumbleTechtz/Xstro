@@ -1,5 +1,5 @@
 import { Command } from '../messaging/plugin.ts';
-import { voxnews, wabetanews, technews } from '@astrox11/utily';
+import { voxnews, wabetanews, technews } from '../utils/scraper.mts';
 
 Command({
 	name: 'news',

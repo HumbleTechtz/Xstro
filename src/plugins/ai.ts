@@ -1,4 +1,4 @@
-import { chatGpt } from '@astrox11/utily';
+import { chatGpt } from '../utils/chatbot.mts';
 import { Command } from '../messaging/plugin.ts';
 
 Command({

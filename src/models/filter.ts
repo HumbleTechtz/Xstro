@@ -1,4 +1,4 @@
-import { DataType } from 'qunatava';
+import { DataType } from 'quantava';
 import database from './_db.ts';
 
 export const Filters = database.define('filters', {

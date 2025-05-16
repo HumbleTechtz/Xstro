@@ -8,7 +8,7 @@ import {
 	cropToCircle,
 	createSticker,
 	trimVideo,
-} from '@astrox11/utily';
+} from '../utils/ffmpeg.mts';
 
 Command({
 	name: 'ptt',

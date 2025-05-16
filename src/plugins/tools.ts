@@ -1,5 +1,5 @@
 import { Command } from '../messaging/plugin.ts';
-import { fetch, isUrl, urlBuffer, lyrics } from '@astrox11/utily';
+import { fetch, isUrl, urlBuffer, lyrics } from '../utils/index.ts';
 
 Command({
 	name: 'url',

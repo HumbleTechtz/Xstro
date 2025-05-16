@@ -1,4 +1,4 @@
-import { fetch, urlBuffer } from '@astrox11/utily';
+import { fetch, urlBuffer } from '../utils/fetch.mts';
 import { Command } from '../messaging/plugin.ts';
 
 /**
