@@ -26,6 +26,9 @@ importers:
       file-type:
         specifier: 20.5.0
         version: 20.5.0
+      form-data:
+        specifier: ^4.0.2
+        version: 4.0.2
       got:
         specifier: ^14.4.7
         version: 14.4.7
@@ -589,8 +592,8 @@ packages:
       eslint: '*'
       typescript: '>=4'
 
-  '@whiskeysockets/libsignal-node@https://codeload.github.com/WhiskeySockets/libsignal-node/tar.gz/d13b6622a208d3037a98b6f447bbde70261c39a9':
-    resolution: {tarball: https://codeload.github.com/WhiskeySockets/libsignal-node/tar.gz/d13b6622a208d3037a98b6f447bbde70261c39a9}
+  '@whiskeysockets/libsignal-node@git+https://github.com/WhiskeySockets/libsignal-node.git#d13b6622a208d3037a98b6f447bbde70261c39a9':
+    resolution: {commit: d13b6622a208d3037a98b6f447bbde70261c39a9, repo: https://github.com/WhiskeySockets/libsignal-node.git, type: git}
     version: 2.0.1
 
   abort-controller@3.0.0:
@@ -2282,7 +2285,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@whiskeysockets/libsignal-node@https://codeload.github.com/WhiskeySockets/libsignal-node/tar.gz/d13b6622a208d3037a98b6f447bbde70261c39a9':
+  '@whiskeysockets/libsignal-node@git+https://github.com/WhiskeySockets/libsignal-node.git#d13b6622a208d3037a98b6f447bbde70261c39a9':
     dependencies:
       curve25519-js: 0.0.4
       protobufjs: 6.8.8
@@ -2360,7 +2363,7 @@ snapshots:
       '@whiskeysockets/eslint-config': https://codeload.github.com/whiskeysockets/eslint-config/tar.gz/f264cd06d24a43f76e4ad2d81528f8485a1e7efe(eslint@9.26.0(jiti@2.4.2))(typescript@5.8.3)
       async-mutex: 0.5.0
       axios: 1.9.0
-      libsignal: '@whiskeysockets/libsignal-node@https://codeload.github.com/WhiskeySockets/libsignal-node/tar.gz/d13b6622a208d3037a98b6f447bbde70261c39a9'
+      libsignal: '@whiskeysockets/libsignal-node@git+https://github.com/WhiskeySockets/libsignal-node.git#d13b6622a208d3037a98b6f447bbde70261c39a9'
       lodash: 4.17.21
       music-metadata: 7.14.0
       pino: 9.6.0
