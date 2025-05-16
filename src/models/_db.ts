@@ -1,4 +1,4 @@
-import { Database, JournalMode } from '@astrox11/sqlite';
+import { Database, JournalMode } from 'quantava';
 
 const database = new Database('database.db', { journalMode: JournalMode.OFF });
 

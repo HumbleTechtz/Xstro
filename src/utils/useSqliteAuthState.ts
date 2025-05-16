@@ -6,7 +6,7 @@ import {
 	type SignalDataTypeMap,
 } from 'baileys';
 import database from '../models/_db.ts';
-import { DataType } from '@astrox11/sqlite';
+import { DataType } from 'qunatava';
 
 export const auth = database.define(
 	'auth',

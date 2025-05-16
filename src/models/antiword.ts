@@ -1,4 +1,4 @@
-import { DataType } from '@astrox11/sqlite';
+import { DataType } from 'qunatava';
 import database from './_db.ts';
 
 const Antiword = database.define('antiword', {

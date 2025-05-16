@@ -1,6 +1,6 @@
 import database from './_db.ts';
 import { WAProto } from 'baileys';
-import { DataType } from '@astrox11/sqlite';
+import { DataType } from 'qunatava';
 import type { WAMessage, WAMessageContent, WAMessageKey } from 'baileys';
 
 const messages = database.define(

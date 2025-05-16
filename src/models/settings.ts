@@ -1,5 +1,5 @@
 import database from '../models/_db.ts';
-import { DataType } from '@astrox11/sqlite';
+import { DataType } from 'qunatava';
 import type { BotSettings } from '../types/index.ts';
 
 export const config = database.define(
