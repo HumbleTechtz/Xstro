@@ -1,4 +1,4 @@
-## `xstro`
+# `xstro`
 
 > \[!IMPORTANT]
 > **Use at Your Own Risk**
@@ -13,13 +13,13 @@
 For more information about Baileys, see:
 [https://github.com/WhiskeySockets/Baileys](https://github.com/WhiskeySockets/Baileys)
 
-#### Deployment
+## Deployment
 
 Once the deployment is complete and the bot starts, it will generate a local pairing code. You’ll be required to enter this code to connect the bot to your WhatsApp account.
 
 <a href='https://www.heroku.com/deploy?template=https://github.com/AstroX11/Xstro' target="_blank"><img alt='DEPLOY' src='https://img.shields.io/badge/-Heroku-black?style=for-the-badge&logo=heroku&logoColor=white'/></a>
 
-<a href='https://app.koyeb.com/deploy?name=xstro&repository=AstroX11%2FXstro&branch=core&builder=dockerfile&instance_type=free&instances_min=0&autoscaling_sleep_idle_delay=300&env%5BUSER_NUMBER%5D=' target="_blank"><img alt='DEPLOY' src='https://img.shields.io/badge/-Koyeb-black?style=for-the-badge&logo=koyeb&logoColor=white'/></a>
+<a href='https://app.koyeb.com/deploy?name=xstro&repository=AstroX11%2FXstro&branch=stable&builder=dockerfile&instance_type=free&instances_min=0&autoscaling_sleep_idle_delay=300&env%5BUSER_NUMBER%5D=' target="_blank"><img alt='DEPLOY' src='https://img.shields.io/badge/-Koyeb-black?style=for-the-badge&logo=koyeb&logoColor=white'/></a>
 
 <a href='https://render.com/deploy?repo=https://github.com/AstroX11/Xstro' target="_blank"><img alt='DEPLOY' src='https://img.shields.io/badge/-Render-black?style=for-the-badge&logo=render&logoColor=white'/></a>
 
@@ -27,23 +27,26 @@ Once the deployment is complete and the bot starts, it will generate a local pai
 
 <a href='https://replit.com/github/AstroX11/Xstro' target="_blank"><img alt='DEPLOY' src='https://img.shields.io/badge/-Replit-black?style=for-the-badge&logo=Replit&logoColor=white'/></a>
 
-#### RUN ON VPS/UBUNTU/WINDOWS
+## RUN ON VPS/UBUNTU/WINDOWS
 
-1. Install NodeJs, ffmpeg
+1. Install NodeJs 23, ffmpeg
 2. Installation
-   ```
+
+   ```bash
    npm i -global pnpm
    git clone https://github.com/AstroX11/Xstro.git
    cd Xstro
    pnpm install
    ```
+
 3. Configuration
-   ```
+
+   ```bash
    echo "USER_NUMBER=" > config.env
    ```
 
 - Start
-  ```
+
+  ```bash
   pnpm start
   ```
-  <br>

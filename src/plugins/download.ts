@@ -30,7 +30,6 @@ Command({
 			await msg.send(await urlBuffer(sd));
 			return await msg.react('✅');
 		}
-		return;
 	},
 });
 

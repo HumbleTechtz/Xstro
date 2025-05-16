@@ -16,7 +16,7 @@ Command({
 		await execPromise('git fetch');
 
 		const { stdout: logOutput } = await execPromise(
-			'git log core..origin/core',
+			'git log stable..origin/stable',
 		);
 		const commits = logOutput.split('\n').filter(Boolean);
 
@@ -26,7 +26,7 @@ Command({
 			}
 
 			await message.send('Updating...');
-			await execPromise('git stash && git pull origin ' + 'core');
+			await execPromise('git stash && git pull origin ' + 'stable');
 
 			await message.send('Restarting...');
 			const dependencyChanged = await updatedDependencies();
@@ -59,7 +59,9 @@ Command({
 
 async function updatedDependencies(): Promise<boolean> {
 	try {
-		const { stdout: diff } = await execPromise('git diff core..origin/core');
+		const { stdout: diff } = await execPromise(
+			'git diff stable..origin/stable',
+		);
 		return diff.includes('"dependencies":');
 	} catch (error) {
 		print.fail(JSON.stringify(error));

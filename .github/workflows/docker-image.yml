@@ -2,9 +2,9 @@ name: Docker Build
 
 on:
   push:
-    branches: [ "core" ]
+    branches: [ "stable" ]
   pull_request:
-    branches: [ "core" ]
+    branches: [ "stable" ]
 
 jobs:
 
