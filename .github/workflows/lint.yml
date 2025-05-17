@@ -28,8 +28,9 @@ jobs:
           corepack enable
           corepack prepare pnpm@latest --activate
 
-      - name: Install only ESLint dependencies
-        run: pnpm install --filter eslint...
+      - name: Install only ESLint
+        run: |
+          pnpm add -w -D eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin eslint-config-prettier eslint-plugin-prettier jiti
 
-      - name: Run ESLint on TypeScript files in src/
+      - name: Run ESLint on .ts files
         run: pnpm exec eslint "src/**/*.ts"
