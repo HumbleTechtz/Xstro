@@ -1,6 +1,7 @@
 # `xstro`
 
-> [!IMPORTANT] > **Use at Your Own Risk**
+> [!IMPORTANT]
+> **Use at Your Own Risk**
 > WhatsApp’s [Terms of Service](https://www.whatsapp.com/legal/terms-of-service) explicitly **prohibit the use of unauthorized third-party automation tools or software** that interact with its platform. This includes bots, automation frameworks, and reverse-engineered clients. Violating these terms can result in your account being **permanently banned** or facing legal action.
 >
 > Additionally, always be vigilant against **scammers** and **social engineering attacks**. I will never ask for your WhatsApp session, QR code, token, or any sensitive credential—**you are fully responsible** for your data and actions while using this software.
