@@ -8,7 +8,7 @@
 
 FROM node:24
 RUN apt-get update && apt-get install -y git ffmpeg && rm -rf /var/lib/apt/lists/*
-RUN npm install -g pnpm@latest yarn@stable
+RUN npm install -g pnpm yarn
 RUN git clone https://github.com/AstroX11/Xstro /Xstro
 WORKDIR /Xstro
 RUN pnpm install

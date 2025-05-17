@@ -29,17 +29,16 @@ jobs:
           node-version: '24'
           cache: 'pnpm'
 
-      # We skip running scripts like 'prepare' to avoid unnecessary builds
-      - name: Install dependencies
-        run: pnpm install --ignore-scripts
+      - name: Fetch metadata only (no install/build)
+        run: pnpm fetch
 
-      - name: Save old lockfile for diffing
+      - name: Save old lockfile
         run: cp pnpm-lock.yaml pnpm-lock.old.yaml
 
-      - name: Upgrade dependencies
+      - name: Bump dependencies
         run: pnpm -r update --latest
 
-      - name: Check for dependency changes
+      - name: Check for changes
         id: changes
         run: |
           git config --global user.name "github-actions[bot]"
