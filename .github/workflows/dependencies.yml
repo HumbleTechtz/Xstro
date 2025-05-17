@@ -29,8 +29,9 @@ jobs:
           node-version: '24'
           cache: 'pnpm'
 
+      # We skip running scripts like 'prepare' to avoid unnecessary builds
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --ignore-scripts
 
       - name: Save old lockfile for diffing
         run: cp pnpm-lock.yaml pnpm-lock.old.yaml
