@@ -1,74 +1,43 @@
-name: Upgrade Dependencies
+name: Test Dependency Bump (Dry Run)
 
 on:
-  push:
-    branches: [stable]
+  workflow_dispatch:
 
 jobs:
-  upgrade:
+  test-bump:
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: write
-      pull-requests: write
-
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          version: latest
-
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: 20
           cache: 'pnpm'
 
-      - name: Fetch metadata only (no install/build)
-        run: pnpm fetch
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
 
-      - name: Save old lockfile
+      - name: Install dependencies (ignore scripts)
+        run: pnpm install --ignore-scripts
+
+      - name: Copy original lockfile
         run: cp pnpm-lock.yaml pnpm-lock.old.yaml
 
-      - name: Bump dependencies
+      - name: Update dependencies to latest
         run: pnpm -r update --latest
 
-      - name: Check for changes
-        id: changes
+      - name: Show lockfile diff (dry-run)
+        run: git diff --color pnpm-lock.yaml
+
+      - name: Show changed packages
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          echo "=== Changed packages ==="
+          diff pnpm-lock.old.yaml pnpm-lock.yaml || echo "No differences found"
 
-          git add pnpm-lock.yaml package.json
-
-          if git diff --cached --quiet; then
-            echo "no_changes=true" >> $GITHUB_OUTPUT
-          else
-            echo "no_changes=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Generate lockfile diff
-        if: steps.changes.outputs.no_changes == 'false'
-        run: |
-          echo '### 🔧 Dependency Updates' > pr_body.md
-          echo '' >> pr_body.md
-          echo 'The following dependencies were upgraded using `pnpm update --latest`:' >> pr_body.md
-          echo '' >> pr_body.md
-          npx @pnpm/lockfile-diff pnpm-lock.old.yaml pnpm-lock.yaml >> pr_body.md || echo '_Could not generate lockfile diff_'
-
-      - name: Create Pull Request
-        if: steps.changes.outputs.no_changes == 'false'
-        uses: peter-evans/create-pull-request@v5
-        with:
-          commit-message: 'chore(deps): upgrade dependencies'
-          branch: upgrade-dependencies
-          title: 'chore(deps): upgrade dependencies'
-          body-path: pr_body.md
-          labels: |
-            dependencies
-            automated-pr
+      - name: Done
+        run: echo "Dry run complete. No changes committed."
