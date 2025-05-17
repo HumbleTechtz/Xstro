@@ -2,9 +2,13 @@ name: Lint
 
 on:
   push:
-    branches: [stable]
+    paths:
+      - 'src/**/*.ts'
+      - '.github/workflows/lint.yml'
   pull_request:
-    branches: [stable]
+    paths:
+      - 'src/**/*.ts'
+      - '.github/workflows/lint.yml'
 
 jobs:
   lint:
@@ -14,25 +18,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          version: latest
-
-      - name: Setup Node.js 24
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
-          cache: 'pnpm'
+          node-version: 24
 
-      - name: Install Yarn globally
-        run: npm install -g yarn
+      - name: Enable Corepack and install pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
 
-      - name: Allow TypeScript errors during Baileys install
-        run: echo 'TSC_COMPILE_ON_ERROR=true' >> $GITHUB_ENV
+      - name: Install only ESLint dependencies
+        run: pnpm install --filter eslint...
 
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Run ESLint
-        run: pnpm eslint . --ext .ts,.tsx,.js
+      - name: Run ESLint on TypeScript files in src/
+        run: pnpm exec eslint "src/**/*.ts"

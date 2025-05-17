@@ -8,10 +8,6 @@
 		"noEmit": true,
 		"skipLibCheck": true,
 		"noImplicitThis": true,
-		"isolatedModules": false,
-		"ignoreDeprecations": "5.0",
-		"preserveSymlinks": true,
-		"resolveJsonModule": true,
 		"allowImportingTsExtensions": true,
 		"forceConsistentCasingInFileNames": true
 	}
