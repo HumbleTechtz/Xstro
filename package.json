@@ -1,9 +1,9 @@
 {
   "name": "xstro",
-  "version": "17.0.0",
+  "version": "18.0.0",
   "description": "Simple WA bot.",
   "type": "module",
-  "main": "main.mts",
+  "main": "serve.mjs",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -15,7 +15,7 @@
     "node": ">=23"
   },
   "scripts": {
-    "start": "tsx main.mts --module nodenext",
+    "start": "node serve.mjs",
     "lint": "eslint --fix"
   },
   "packageManager": "pnpm@10.10.0",
