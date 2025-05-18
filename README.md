@@ -142,9 +142,9 @@ For more usage examples and advanced options, see [`docs/USAGE.md`](docs/USAGE.m
 ```
 .
 ├── src/           # Core source code and handlers
-├── plugins/       # Optional plugins and extensions
-├── docs/          # Documentation (if available)
-├── .env.example   # Example environment configuration (auto-generated)
+├── plugins/       # Plugins and Commands
+├── docs/          # Documentation
+├── .env.example   # Example environment configuration (auto-generated via cli)
 └── ...
 ```
 
