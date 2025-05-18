@@ -1,7 +1,7 @@
 import { Command, commands } from '../messaging/plugin.ts';
 import { platform, totalmem, freemem } from 'node:os';
 import { fancy, formatBytes, formatRuntime } from '../utils/constants.ts';
-import config from '../../config.ts';
+import config from '../../config.mjs';
 
 Command({
 	name: 'menu',

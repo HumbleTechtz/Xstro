@@ -1,15 +1,15 @@
 {
 	"name": "xstro",
-	"version": "17.0.0",
+	"version": "18.0.0",
 	"description": "Simple WA bot.",
 	"type": "module",
-	"main": "main.mts",
+	"main": "serve.mjs",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/AstroX11/Xstro"
+		"url": "git+https://github.com/AstroXTeam/whatsapp-bot.git"
 	},
-	"homepage": "https://github.com/AstroX11/Xstro#readme",
+	"homepage": "https://github.com/AstroXTeam/whatsapp-bot#readme",
 	"author": "AstroX11 <danielfx0012@gmail.com>",
 	"engines": {
 		"node": ">=23"

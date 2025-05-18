@@ -1,7 +1,7 @@
 import { fetch, urlBuffer } from '../utils/fetch.mts';
 import { Command } from '../messaging/plugin.ts';
 import { convertToMp3, toPTT } from '../utils/ffmpeg.mts';
-import config from '../../config.ts';
+import config from '../../config.mjs';
 import { type WAMediaUpload } from 'baileys';
 
 Command({
