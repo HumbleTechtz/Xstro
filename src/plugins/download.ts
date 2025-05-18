@@ -1,6 +1,6 @@
 import { fetch, urlBuffer } from '../utils/fetch.mts';
 import { Command } from '../messaging/plugin.ts';
-import { convertToMp3, toPTT } from '../utils/ffmpeg.mts';
+import { convertToMp3 } from '../utils/ffmpeg.mts';
 import config from '../../config.mjs';
 import { type WAMediaUpload } from 'baileys';
 
@@ -177,7 +177,7 @@ Command({
 	desc: 'Download Tiktok Media',
 	type: 'download',
 	function: async (msg, args) => {
-		const url = /^https?:\/\/(www\.|m\.)?tiktok\.com(\/|$)/.test(args ?? '');
+		const url = /^https?:\/\/([a-z]+\.)?tiktok\.com(\/|$)/.test(args ?? '');
 		if (!url || !args) return await msg.send('_Provide a valid tiktok link_');
 
 		await msg.react('⬇️');
