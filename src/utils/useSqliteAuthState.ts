@@ -60,7 +60,14 @@ export default async function () {
 						ids.map(async id => {
 							let value = await readData(`${type}-${id}`);
 							if (type === 'app-state-sync-key' && value) {
-								value = WAProto.Message.AppStateSyncKeyData.fromObject(value);
+								try {
+									value = WAProto.Message.AppStateSyncKeyData.fromObject(value);
+								} catch (e) {
+									console.error(
+										`Failed to decode AppStateSyncKeyData for ID "${id}":`,
+										e,
+									);
+								}
 							}
 							data[id] = value as SignalDataTypeMap[T];
 						}),
