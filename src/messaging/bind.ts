@@ -1,4 +1,4 @@
-import { WASocket } from 'baileys';
+import { type WASocket } from 'baileys';
 import { updateMetaGroup } from '../models/group.ts';
 
 export default async function (sock: WASocket) {

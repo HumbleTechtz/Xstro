@@ -1,6 +1,6 @@
 import * as cheerio from 'cheerio';
 import { Boom } from '@hapi/boom';
-import { fetch } from './fetch.mjs';
+import { fetch } from './fetch.mts';
 
 /** Under the permission of
  * https://www.vox.com/robots.txt

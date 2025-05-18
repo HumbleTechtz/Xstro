@@ -1,4 +1,4 @@
-import { postfetch } from './fetch.mjs';
+import { postfetch } from './fetch.mts';
 
 export async function chatGpt(query: string) {
  if (!query) throw new Error('No Query Found!');
