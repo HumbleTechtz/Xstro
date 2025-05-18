@@ -19,7 +19,7 @@
 		"lint:check": "eslint",
 		"prettier": "prettier --write .",
 		"prettier:check": "prettier --check .",
-		"start": "tsx main.mts --module nodenext"
+		"start": "node serve.mjs"
 	},
 	"packageManager": "pnpm@10.10.0",
 	"dependencies": {
