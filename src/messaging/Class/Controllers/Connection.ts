@@ -2,7 +2,7 @@ import { Boom } from '@hapi/boom';
 import { DisconnectReason } from 'baileys';
 import { commands, syncPlugins } from '../../plugin.ts';
 import { getSettings, setSettings } from '../../../models/index.ts';
-import { parseJidLid } from '../../../utils/index.ts';
+import { auth, parseJidLid } from '../../../utils/index.ts';
 import type { BaileysEventMap, WASocket } from 'baileys';
 
 export default class Connection {
@@ -39,43 +39,75 @@ export default class Connection {
 		lastDisconnect?: BaileysEventMap['connection.update']['lastDisconnect'],
 	) {
 		const error = lastDisconnect?.error as Boom;
-		const statusCode = error?.output?.statusCode;
+		const reason = error?.output?.statusCode;
 
-		/**
-		 * Handles logout
-		 */
-		if (statusCode === DisconnectReason.loggedOut) {
+		/** List of disconnect reasons that warrant a safe exit */
+		const resetReasons = [
+			DisconnectReason.connectionClosed,
+			DisconnectReason.connectionLost,
+			DisconnectReason.timedOut,
+			DisconnectReason.connectionReplaced,
+		];
+
+		const resetWithClearStateReasons = [
+			DisconnectReason.loggedOut,
+			DisconnectReason.badSession,
+		];
+
+		if (resetReasons.includes(reason)) {
+			console.warn(`Disconnected: ${reason} — resetting`);
+			process.exit(0);
+		} else if (resetWithClearStateReasons.includes(reason)) {
+			console.warn(`Critical error: ${reason} — clearing state and exiting`);
+			/** Clean up memory */
 			this.client.ev.flush(true);
+			/** Close the websocket */
 			await this.client.ws.close();
-			process.exit(1);
-		}
+			/** Clear the authenication state */
+			await auth.truncate();
 
-		/** Handles permature requests */
-		if (statusCode === DisconnectReason.badSession) {
-			process.exit();
+			console.log('Cleared auth state');
+			process.exit(1);
+		} else if (reason === DisconnectReason.restartRequired) {
+			console.info('Restart required — exiting to allow restart');
+			process.exit(0);
+		} else {
+			console.error('Unexpected disconnect reason:', reason);
+			try {
+				await auth.truncate();
+				console.log('Cleared auth state');
+			} catch (e) {
+				console.error('Failed to clear auth state:', e);
+			}
+			console.log('Please re-pair again');
+			process.exit(1);
 		}
 	}
 
 	private async handleOpen() {
 		console.info('Connected to WhatsApp');
-		await this.hooks();
-	}
 
-	private async hooks() {
-		if (this.client?.user?.id) {
-			const cmdsList = commands.filter(cmd => !cmd.dontAddCommandList);
-			await this.client.sendMessage(this.client.user.id, {
-				text: `\`\`\`Bot is connected\nOwner: ${this.client.user.name ?? 'Unknown'}\nCommands: ${cmdsList.length}\`\`\``.trim(),
+		const userId = this.client?.user?.id;
+		const userLid = this.client?.user?.lid;
+		const userName = this.client?.user?.name ?? 'Unknown';
+
+		if (userId) {
+			const availableCommands = commands.filter(cmd => !cmd.dontAddCommandList);
+			await this.client.sendMessage(userId, {
+				text: `\`\`\`
+Bot is connected
+Owner: ${userName}
+Commands: ${availableCommands.length}
+\`\`\``.trim(),
 			});
 		}
-		const sudo = await getSettings().then(s => s.sudo);
-		const users = Array.from(
-			new Set([
-				parseJidLid(this.client.user?.id),
-				parseJidLid(this.client.user?.lid),
-				...sudo,
-			]),
+
+		/** Update sudo settings */
+		const existingSudo = await getSettings().then(s => s.sudo);
+		const owner = Array.from(
+			new Set([parseJidLid(userId), parseJidLid(userLid), ...existingSudo]),
 		);
-		await setSettings('sudo', users);
+
+		await setSettings('sudo', owner);
 	}
 }

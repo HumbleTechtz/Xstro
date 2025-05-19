@@ -24,11 +24,11 @@ export async function syncPlugins(
 	const files = await readdir(plugins, { withFileTypes: true });
 	await Promise.all(
 		files.map(async file => {
-			const fullPath: string = join(plugins, file.name);
+			const path: string = join(plugins, file.name);
 			const fileExtension = extname(file.name).toLowerCase();
 			if (extensions.some(ext => ext.toLowerCase() === fileExtension)) {
 				try {
-					const fileUrl: string = pathToFileURL(fullPath).href;
+					const fileUrl: string = pathToFileURL(path).href;
 					await import(fileUrl);
 				} catch (err) {
 					console.error(`${file.name}: ${(err as Error).message}`);

@@ -83,10 +83,12 @@ export default async function (message: Message) {
 					if (!match) continue;
 
 					if (mode && !sudo) continue;
+
 					if (cmd.fromMe && !sudo) {
 						await send(lang.FOR_SUDO_USERS);
 						continue;
 					}
+
 					if (cmd.isGroup && !isGroup) {
 						await send(lang.FOR_GROUPS_ONLY);
 						continue;

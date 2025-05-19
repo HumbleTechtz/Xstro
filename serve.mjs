@@ -33,20 +33,12 @@ function runProc(scriptPath) {
 function run() {
 	return new Promise(async (resolve, reject) => {
 		try {
-			const p1 = await runProc('./src/messaging/pair.ts');
-			if (p1 === 0) {
-				console.info('Restarting...');
-				setTimeout(() => run().then(resolve).catch(reject), 1000);
-				return;
-			}
-
-			const p2 = await runProc('./src/messaging/client.ts');
-			if (p2 === 0) {
-				console.info('Restarting...');
+			const sock = await runProc('./src/messaging/client.ts');
+			if (sock === 0) {
+				/** If we recived an exit signal of 0 then we restart the proess else we terminate it completely */
 				setTimeout(() => run().then(resolve).catch(reject), 1000);
 			} else {
-				console.error('Exit...');
-				process.exit(p2);
+				process.exit(sock);
 			}
 		} catch (e) {
 			console.error(e);
