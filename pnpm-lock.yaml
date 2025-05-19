@@ -42,7 +42,7 @@ importers:
         specifier: ^3.2.1
         version: 3.2.1
       pino:
-        specifier: ^9.6.0
+        specifier: ^9.7.0
         version: 9.7.0
       quantava:
         specifier: ^1.0.0
