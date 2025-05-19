@@ -3,7 +3,7 @@ name: Bug report
 about: Report a problem or unexpected behavior.
 title: ''
 labels: bug, help wanted
-assignees: Itxxwasi, AstroX11
+assignees: AstroX11, Itxxwasi
 
 ---
 
