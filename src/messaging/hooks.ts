@@ -10,7 +10,7 @@ export default function (sock: WASocket) {
 				await updateMetaGroup(jid, metadata);
 			}
 		} catch (e) {
-			console.error('Failed to update group metadata:', e);
+			/** Just handle it slienly, we're not doing anything with it's error  */
 		}
 	};
 

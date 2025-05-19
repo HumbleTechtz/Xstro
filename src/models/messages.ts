@@ -1,4 +1,4 @@
-import database from './_db.ts';
+import database from '../messaging/database.ts';
 import { WAProto } from 'baileys';
 import { DataType } from 'quantava';
 import type { WAMessage, WAMessageContent, WAMessageKey } from 'baileys';

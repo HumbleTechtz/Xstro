@@ -1,4 +1,4 @@
-import database from '../models/_db.ts';
+import database from '../messaging/database.ts';
 import { DataType } from 'quantava';
 import type { BotSettings } from '../types/index.ts';
 

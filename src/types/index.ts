@@ -1,7 +1,7 @@
 import type { WAContextInfo, WAMessage, WAMessageContent } from 'baileys';
 import type { FileTypeResult } from 'file-type';
 import type { serialize } from '../messaging/serialize.ts';
-import { Message } from '../messaging/Class/Messages/index.ts';
+import { Message } from '../messaging/Messages/index.ts';
 
 export interface Commands {
 	name?: string | RegExp;

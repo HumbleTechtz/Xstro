@@ -1,5 +1,5 @@
 import { DataType } from 'quantava';
-import database from './_db.ts';
+import database from '../messaging/database.ts';
 
 const Antilink = database.define('antilink', {
 	jid: { type: DataType.STRING, allowNull: false, unique: true },

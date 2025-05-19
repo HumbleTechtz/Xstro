@@ -1,7 +1,7 @@
 import { DataType } from 'quantava';
-import database from './_db.ts';
+import database from '../messaging/database.ts';
 import config from '../../config.mjs';
-import Message from '../messaging/Class/Messages/Message.ts';
+import Message from '../messaging/Messages/Message.ts';
 
 const Alive = database.define(
 	'alive',

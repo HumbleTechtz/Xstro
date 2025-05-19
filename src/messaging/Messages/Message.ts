@@ -1,7 +1,7 @@
 import Base from './Base.ts';
 import ReplyMessage from './ReplyMessage.ts';
-import { prepareMessage } from '../../../utils/index.ts';
-import type { Serialize, MessageMisc } from '../../../types/index.ts';
+import { prepareMessage } from '../../utils/index.ts';
+import type { Serialize, MessageMisc } from '../../types/index.ts';
 import type { WASocket, AnyMessageContent } from 'baileys';
 
 export default class Message extends Base {
@@ -24,7 +24,7 @@ export default class Message extends Base {
 		const updatedOptions = { ...options, jid };
 		const msg = await prepareMessage(this.client, content, updatedOptions);
 		return new Message(
-			await (await import('../../serialize.ts')).serialize(this.client, msg!),
+			await (await import('../serialize.ts')).serialize(this.client, msg!),
 			this.client,
 		);
 	}

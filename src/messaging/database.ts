@@ -1,6 +1,6 @@
 import { Database, JournalMode } from 'quantava';
 
-const database = new Database('database.db', { journalMode: JournalMode.OFF });
+const database = new Database('database.db', { journalMode: JournalMode.WAL });
 
 process.on('exit', () => {
 	database.close();

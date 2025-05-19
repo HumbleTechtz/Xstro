@@ -1,6 +1,6 @@
 import { downloadMediaMessage } from 'baileys';
-import { isMediaMessage } from '../../../utils/index.ts';
-import type { Serialize } from '../../../types/index.ts';
+import { isMediaMessage } from '../../utils/index.ts';
+import type { Serialize } from '../../types/index.ts';
 import type { WASocket, WAMessageKey, WAMessage, WAContextInfo } from 'baileys';
 
 export default class Base {

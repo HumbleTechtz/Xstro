@@ -1,5 +1,5 @@
 import { Command } from '../messaging/plugin.ts';
-import Message from '../messaging/Class/Messages/Message.ts';
+import Message from '../messaging/Messages/Message.ts';
 
 const adminCheck = async (message: Message): Promise<boolean> => {
 	if (!(await message.isAdmin()) || !(await message.isBotAdmin())) {
