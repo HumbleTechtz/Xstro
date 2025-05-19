@@ -1,6 +1,5 @@
 import { Message } from './Class/Messages/index.ts';
 import lang from '../utils/lang.ts';
-import { print } from '../utils/index.ts';
 import { commands } from './plugin.ts';
 import { getStickerCmd } from '../models/sticker.ts';
 import { canProceed, resetIfExpired } from '../models/ratelimter.ts';
@@ -52,15 +51,15 @@ export default async function (message: Message) {
 
 					try {
 						await cmd.function(message, match[2] ?? '');
-					} catch (error) {
+					} catch (e) {
 						await message.send(
 							`\`\`\`An error occured while running ${cmd.name?.toString().toLowerCase().split(/\W+/)[2]} command\`\`\``,
 						);
-						print.fail(String(error));
+						console.error(e);
 					}
 				}
-			} catch (err) {
-				print.fail('Command Error: ' + (err as Error).stack);
+			} catch (e) {
+				console.error('Command Error: ' + (e as Error).stack);
 			}
 		})(),
 
@@ -96,7 +95,7 @@ export default async function (message: Message) {
 					await cmd.function(message, match[2] ?? '');
 				}
 			} catch (err) {
-				print.fail('Sticker command error: ' + (err as Error).stack);
+				console.error('Sticker command error: ' + (err as Error).stack);
 			}
 		})(),
 
@@ -106,7 +105,7 @@ export default async function (message: Message) {
 					await cmd.function(message);
 				}
 			} catch (err) {
-				print.fail('On-listener error: ' + (err as Error).stack);
+				console.error('On-listener error: ' + (err as Error).stack);
 			}
 		})(),
 	]);

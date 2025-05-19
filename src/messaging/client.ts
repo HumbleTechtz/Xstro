@@ -10,7 +10,7 @@ import NodeCache from '@cacheable/node-cache';
 
 import config from '../../config.mjs';
 import emit from './emit.ts';
-import bind from './bind.ts';
+import hooks from './hooks.ts';
 import useSqliteAuthState from '../utils/useSqliteAuthState.ts';
 import { getMessage, cachedGroupMetadata } from '../models/index.ts';
 
@@ -41,6 +41,6 @@ import { getMessage, cachedGroupMetadata } from '../models/index.ts';
 		cachedGroupMetadata,
 	});
 
-	await Promise.all([emit(sock, { saveCreds }), bind(sock)]);
+	await Promise.all([emit(sock, { saveCreds }), hooks(sock)]);
 	return sock;
 })();

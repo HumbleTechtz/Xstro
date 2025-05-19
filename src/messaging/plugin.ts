@@ -1,7 +1,6 @@
 import { pathToFileURL, fileURLToPath } from 'node:url';
 import { join, extname, dirname } from 'node:path';
 import { readdir } from 'node:fs/promises';
-import { print } from '../utils/index.ts';
 import type { Commands } from '../types/index.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -32,7 +31,7 @@ export async function syncPlugins(
 					const fileUrl: string = pathToFileURL(fullPath).href;
 					await import(fileUrl);
 				} catch (err) {
-					print.fail(`${file.name}: ${(err as Error).message}`);
+					console.error(`${file.name}: ${(err as Error).message}`);
 				}
 			}
 		}),

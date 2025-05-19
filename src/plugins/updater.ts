@@ -1,6 +1,5 @@
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import { print } from '../utils/index.ts';
 import { Command } from '../messaging/plugin.ts';
 
 const execPromise = promisify(exec);
@@ -63,8 +62,8 @@ async function updatedDependencies(): Promise<boolean> {
 			'git diff stable..origin/stable',
 		);
 		return diff.includes('"dependencies":');
-	} catch (error) {
-		print.fail(JSON.stringify(error));
+	} catch (e) {
+		console.error(e as Error);
 		return false;
 	}
 }

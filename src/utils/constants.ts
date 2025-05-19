@@ -1,5 +1,4 @@
 import { jidNormalizedUser } from 'baileys';
-import ora from 'ora';
 
 export function isPath(text: string): boolean {
 	if (typeof text !== 'string' || text.trim() === '') return false;
@@ -80,8 +79,6 @@ export function parseBoolean(stringStatement: string): boolean {
 	}
 	return true;
 }
-
-export const print = ora();
 
 export function toStandardCase(text: string): string {
 	if (!text) return '';

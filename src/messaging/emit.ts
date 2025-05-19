@@ -1,5 +1,5 @@
-import ConnectionUpdate from './Class/Emit/Connection.ts';
-import MessageUpsert from './Class/Emit/MessageUpsert.ts';
+import ConnectionUpdate from './Class/Controllers/Connection.ts';
+import MessageUpsert from './Class/Controllers/MessageUpsert.ts';
 import type { WASocket } from 'baileys';
 
 export default function (

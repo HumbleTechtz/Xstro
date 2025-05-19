@@ -102,7 +102,7 @@ Below are key files and folders. For full content, see each directory on [GitHub
 
 ### messaging/
 
-- [`bind.ts`](https://github.com/AstroXTeam/whatsapp-bot/blob/stable/src/messaging/bind.ts): Event bindings.
+- [`hooks.ts`](https://github.com/AstroXTeam/whatsapp-bot/blob/stable/src/messaging/bind.ts): Event bindings.
 - [`client.ts`](https://github.com/AstroXTeam/whatsapp-bot/blob/stable/src/messaging/client.ts): WhatsApp client connection.
 - [`emit.ts`](https://github.com/AstroXTeam/whatsapp-bot/blob/stable/src/messaging/emit.ts): Event emitters.
 - [`handlers.ts`](https://github.com/AstroXTeam/whatsapp-bot/blob/stable/src/messaging/handlers.ts): Event handlers.

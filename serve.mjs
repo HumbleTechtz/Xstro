@@ -1,12 +1,4 @@
 import { spawn } from 'node:child_process';
-import ora from 'ora';
-
-const processes = {
-	client: './src/messaging/client.ts',
-	pairing: './src/messaging/paircode.ts',
-};
-
-const { info, fail } = ora();
 
 /**
  * Executes a Node.js script in a new process and returns a promise that resolves with the exit code
@@ -21,7 +13,7 @@ function runProc(scriptPath) {
 
 		proc.on('close', code => resolve(code ?? 0));
 		proc.on('error', err => {
-			fail(err.message);
+			console.error(err.message);
 			resolve(1);
 		});
 	});
@@ -41,25 +33,24 @@ function runProc(scriptPath) {
 function run() {
 	return new Promise(async (resolve, reject) => {
 		try {
-			const p1 = await runProc(processes.pairing);
+			const p1 = await runProc('./src/messaging/pair.ts');
 			if (p1 === 0) {
-				info('Restarting...');
-				setTimeout(() => run().then(resolve).catch(reject), 3000);
+				console.info('Restarting...');
+				setTimeout(() => run().then(resolve).catch(reject), 1000);
 				return;
 			}
 
-			const p2 = await runProc(processes.client);
+			const p2 = await runProc('./src/messaging/client.ts');
 			if (p2 === 0) {
-				info('Restarting...');
-				setTimeout(() => run().then(resolve).catch(reject), 3000);
+				console.info('Restarting...');
+				setTimeout(() => run().then(resolve).catch(reject), 1000);
 			} else {
-				fail('Exit...');
+				console.error('Exit...');
 				process.exit(p2);
 			}
-		} catch (err) {
-			fail(err instanceof Error ? err.message : String(err));
+		} catch (e) {
+			console.error(e);
 			process.exit(1);
-			reject(err);
 		}
 	});
 }

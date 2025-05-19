@@ -8,7 +8,7 @@ import {
 } from 'baileys';
 import { saveContact, saveMessage } from '../../../models/store.ts';
 import handlers from '../../handlers.ts';
-import { isLid, print } from '../../../utils/constants.ts';
+import { isLid } from '../../../utils/constants.ts';
 
 export default class MessageUpsert {
 	private client: WASocket;
