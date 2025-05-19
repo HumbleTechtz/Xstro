@@ -1,5 +1,5 @@
 import { DataType } from 'quantava';
-import database from './_db.ts';
+import database from '../messaging/database.ts';
 
 const StickerCMD = database.define(
 	'sticker_cmd',

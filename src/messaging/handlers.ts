@@ -1,4 +1,4 @@
-import { Message } from './Class/Messages/index.ts';
+import { Message } from './Messages/index.ts';
 import lang from '../utils/lang.ts';
 import { commands } from './plugin.ts';
 import { getStickerCmd } from '../models/sticker.ts';

@@ -1,8 +1,8 @@
 import { Boom } from '@hapi/boom';
 import { DisconnectReason } from 'baileys';
-import { commands, syncPlugins } from '../../plugin.ts';
-import { getSettings, setSettings } from '../../../models/index.ts';
-import { auth, parseJidLid } from '../../../utils/index.ts';
+import { commands, syncPlugins } from '../plugin.ts';
+import { getSettings, setSettings } from '../../models/index.ts';
+import { auth, parseJidLid } from '../../utils/index.ts';
 import type { BaileysEventMap, WASocket } from 'baileys';
 
 export default class Connection {

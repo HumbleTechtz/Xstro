@@ -1,5 +1,5 @@
 import { DataType } from 'quantava';
-import database from './_db.ts';
+import database from '../messaging/database.ts';
 
 export const Filters = database.define('filters', {
 	name: { type: DataType.STRING, allowNull: false, unique: true },
