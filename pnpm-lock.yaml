@@ -45,8 +45,8 @@ importers:
         specifier: ^9.7.0
         version: 9.7.0
       quantava:
-        specifier: ^1.0.0
-        version: 1.0.0
+        specifier: ^1.0.1
+        version: 1.0.1
       sharp:
         specifier: ^0.34.1
         version: 0.34.1
@@ -1177,9 +1177,9 @@ packages:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
 
-  quantava@1.0.0:
-    resolution: {integrity: sha512-XkODikCs0P7tzZDEKLM5WbcAoxO1OYagcadCikq+z0kn7Vdty8B8I92iggB6J4l6vXhL4tJMRbeeZCcgXQsieA==}
-    engines: {node: '>=23'}
+  quantava@1.0.1:
+    resolution: {integrity: sha512-B22FaUucsrYDXvYz7WVcr1hCm4h/8AnIrPiCjJs7yMU4OBHLAT3LwWAAE8QaEKJhAlwKw2aGUQYINBr/Az/gIw==}
+    engines: {node: '>=v22.5.0'}
 
   querystring@0.2.0:
     resolution: {integrity: sha512-X/xY82scca2tau62i9mDyU9K+I+djTMUsvwf7xnUX5GLvVzgJybOJf4Y6o9Zx3oJK/LSXg5tTZBjwzqVPaPO2g==}
@@ -2523,7 +2523,7 @@ snapshots:
 
   punycode@2.3.1: {}
 
-  quantava@1.0.0:
+  quantava@1.0.1:
     dependencies:
       '@types/node': 22.15.19
       typescript: 5.8.3
