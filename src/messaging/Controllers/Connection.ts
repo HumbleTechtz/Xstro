@@ -94,11 +94,7 @@ export default class Connection {
 		if (userId) {
 			const availableCommands = commands.filter(cmd => !cmd.dontAddCommandList);
 			await this.client.sendMessage(userId, {
-				text: `\`\`\`
-Bot is connected
-Owner: ${userName}
-Commands: ${availableCommands.length}
-\`\`\``.trim(),
+				text: `\`\`\`Established Connection\nOwner: ${userName}\nCommands: ${availableCommands.length}\`\`\``.trim(),
 			});
 		}
 
