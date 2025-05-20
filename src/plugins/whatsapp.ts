@@ -173,3 +173,21 @@ Command({
 		return message.send('Status saved!');
 	},
 });
+
+Command({
+	name: 'forward',
+	fromMe: true,
+	isGroup: false,
+	desc: 'Forward a message to a user',
+	type: 'whatsapp',
+	function: async (message, match) => {
+		const msg = message.quoted;
+		if (!msg) return message.send('No message quoted to forward');
+		const jid = message.user(match);
+		if (!jid) return message.send('No user specified to forward');
+		if (!(await message.client.onWhatsApp(jid)))
+			return message.send('User is not on WhatsApp');
+		await msg.forward(jid);
+		return message.send('Message forwarded successfully');
+	},
+});
