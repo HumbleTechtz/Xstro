@@ -80,15 +80,15 @@ Command({
 	type: 'whatsapp',
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg || !msg.viewOnce)
+		if (!msg || !msg.viewonce)
 			return message.send('_Reply a viewOnce message_');
 		if (msg.message) {
-			const mediaType = msg.mtype as
+			const mediaType = msg.type as
 				| 'imageMessage'
 				| 'videoMessage'
 				| 'audioMessage';
 			msg.message[mediaType]!.viewOnce = false;
-			return await msg.forward(message.jid);
+			return await msg.forward(message.jid, { quoted: message.data });
 		}
 	},
 });
@@ -104,12 +104,12 @@ Command({
 		if (!msg || (!msg.image && !msg.audio && !msg.video))
 			return message.send('_Reply a media message_');
 		if (msg.message) {
-			const mediaType = msg.mtype as
+			const mediaType = msg.type as
 				| 'imageMessage'
 				| 'videoMessage'
 				| 'audioMessage';
 			msg.message[mediaType]!.viewOnce = true;
-			return await msg.forward(message.jid);
+			return await msg.forward(message.jid, { quotedMessage: msg.message });
 		}
 	},
 });

@@ -48,7 +48,14 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 			: sender === (ownerJid ?? ownerLid),
 		...content,
 		...messages,
-		quoted: quoted ? { ...quoted } : undefined,
+		quoted: quoted
+			? {
+					sudo: sudo_users.includes(quoted.sender ?? '')
+						? true
+						: quoted.sender === (ownerJid ?? ownerLid),
+					...quoted,
+				}
+			: undefined,
 		user: function (match?: string): string | undefined {
 			if (this.isGroup) {
 				if (quoted && quoted.sender) return quoted.sender;

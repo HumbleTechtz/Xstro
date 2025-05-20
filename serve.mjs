@@ -13,7 +13,7 @@ function runProc(scriptPath) {
 
 		proc.on('close', code => resolve(code ?? 0));
 		proc.on('error', err => {
-			console.error(err.message);
+			console.error('Process error:', err.message);
 			resolve(1);
 		});
 	});
@@ -22,9 +22,6 @@ function runProc(scriptPath) {
 /**
  * Executes the main application flow by running pairing and client processes sequentially.
  * Returns a promise that resolves when the processes complete or rejects on error.
- * If the pairing process exits with code 0, it restarts after a 1-second delay.
- * If the client process exits with code 0, it also restarts after a 1-second delay.
- * If the client process exits with any other code, the application terminates with that exit code.
  * @async
  * @function run
  * @returns {Promise<void>} Resolves when processes complete successfully, rejects with error otherwise
@@ -35,16 +32,24 @@ function run() {
 		try {
 			const sock = await runProc('./src/messaging/client.ts');
 			if (sock === 0) {
-				/** If we recived an exit signal of 0 then we restart the proess else we terminate it completely */
+				/** If we received an exit signal of 0 then we restart the process else we terminate it completely */
 				setTimeout(() => run().then(resolve).catch(reject), 1000);
 			} else {
 				process.exit(sock);
 			}
 		} catch (e) {
-			console.error(e);
+			console.error('Run error:', e);
 			process.exit(1);
 		}
 	});
 }
+
+process.on('uncaughtException', err => {
+	console.error('Uncaught Exception:', err);
+});
+
+process.on('unhandledRejection', reason => {
+	console.error('Unhandled Rejection:', reason);
+});
 
 run();

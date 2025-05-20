@@ -12,7 +12,9 @@ export default class Message extends Base {
 		super(data, client);
 		this.key = data.key;
 		this.text = data.text;
-		this.quoted = data.quoted ? new ReplyMessage(data, this.client) : undefined;
+		this.quoted = data.quoted
+			? new ReplyMessage(data.quoted, this.client)
+			: undefined;
 		this.user = data.user;
 	}
 
