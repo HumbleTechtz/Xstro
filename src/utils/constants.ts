@@ -1,4 +1,4 @@
-import { jidNormalizedUser } from 'baileys';
+import { jidNormalizedUser, type WASocket } from 'baileys';
 
 export function isPath(text: string): boolean {
 	if (typeof text !== 'string' || text.trim() === '') return false;
@@ -122,4 +122,29 @@ export function fancy(text: any): string {
 		.split('')
 		.map((char: string) => fancyMap[char] || char)
 		.join('');
+}
+
+export async function isAdmin(
+	client: WASocket,
+	groupJid: string,
+	user: string,
+) {
+	const metadata = await client.groupMetadata(groupJid);
+	const allAdmins = metadata.participants
+		.filter(v => v.admin !== null)
+		.map(v => v.id);
+	return !Array.isArray(allAdmins)
+		? Array.from(allAdmins).includes(user)
+		: allAdmins.includes(user);
+}
+
+export async function isBotAdmin(
+	client: Pick<WASocket, 'groupMetadata' | 'user'>,
+	groupJid: string,
+) {
+	const metadata = await client.groupMetadata(groupJid);
+	const allAdmins = metadata.participants
+		.filter(v => v.admin !== null)
+		.map(v => v.id);
+	return allAdmins.includes(client.user?.lid ?? client.user?.id!);
 }

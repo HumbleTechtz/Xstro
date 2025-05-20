@@ -1,3 +1,4 @@
+import { delay } from 'baileys';
 import { Command } from '../messaging/plugin.ts';
 import { formatRuntime } from '../utils/constants.ts';
 
@@ -33,7 +34,9 @@ Command({
 	desc: 'Restart the process',
 	type: 'system',
 	function: async message => {
+		await delay(2000);
 		await message.send('_Restarting..._');
+		await delay(2000);
 		process.exit();
 	},
 });
