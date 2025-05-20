@@ -7,7 +7,9 @@ export const messageDb = database.define(
 	'messages',
 	{
 		id: { type: DataType.STRING },
-		message: { type: DataType.JSON, allowNull: true },
+		messages: { type: DataType.JSON, allowNull: true },
+		type: { type: DataType.STRING, allowNull: true },
+		requestId: { type: DataType.STRING, allowNull: true },
 	},
 	{ timestamps: false },
 );
