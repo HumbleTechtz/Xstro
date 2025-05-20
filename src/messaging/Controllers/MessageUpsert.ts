@@ -6,34 +6,41 @@ import { messageDb } from '../../models/messages.ts';
 
 export default class MessageUpsert {
 	private client: WASocket;
-	private msg: BaileysEventMap['messages.upsert'];
+	private data: BaileysEventMap['messages.upsert'];
 
 	constructor(client: WASocket, upserts: BaileysEventMap['messages.upsert']) {
 		this.client = client;
-		this.msg = upserts;
-		this.msgHooks();
+		this.data = upserts;
 	}
 
-	private async msgHooks(): Promise<void> {
-		for (const msg of this.msg.messages) {
-			if (msg?.messageStubParameters?.[0] === 'Message absent from node') {
-				await this.client.sendMessageAck(
-					JSON.parse(
-						JSON.stringify(msg?.messageStubParameters?.[1]),
-						BufferJSON.reviver,
-					),
-				);
-			}
-			const cloned = structuredClone(msg);
-			const serialized = await serialize(this.client, cloned);
-			const instance = new Message(serialized, this.client);
-			await Promise.all([
-				handlers(instance),
-				messageDb.create({
-					id: instance.id,
-					message: serialized.message,
-				}),
-			]);
+	/** Process upserted messages */
+	async create(): Promise<void> {
+		const msg = this.data.messages[0];
+
+		if (msg?.messageStubParameters?.[0] === 'Message absent from node') {
+			console.log(
+				`Message SubParameters at index 1`,
+				msg?.messageStubParameters?.[1],
+			);
+			await this.client.sendMessageAck(
+				JSON.parse(
+					JSON.stringify(msg?.messageStubParameters?.[1]),
+					BufferJSON.reviver,
+				),
+			);
 		}
+
+		const cloned = structuredClone(msg);
+		const serialized = await serialize(this.client, cloned);
+		const instance = new Message(serialized, this.client);
+		await Promise.all([
+			handlers(instance),
+			messageDb.create({
+				id: msg.key?.id,
+				messages: msg,
+				type: this.data?.type,
+				requestId: this.data?.requestId,
+			}),
+		]);
 	}
 }

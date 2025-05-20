@@ -31,6 +31,7 @@ import { getMessage, cachedGroupMetadata } from '../models/index.ts';
 		version,
 		keepAliveIntervalMs: 2000,
 		browser: Browsers.windows('chrome'),
+		syncFullHistory: true,
 		emitOwnEvents: true,
 		generateHighQualityLinkPreview: true,
 		linkPreviewImageThumbnailWidth: 1920,

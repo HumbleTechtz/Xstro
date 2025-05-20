@@ -16,7 +16,10 @@ export default function (
 		}
 
 		if (events['messages.upsert']) {
-			new MessageUpsert(clientSocket, events['messages.upsert']);
+			await new MessageUpsert(clientSocket, events['messages.upsert']).create();
+		}
+
+		if (events['messaging-history.set']) {
 		}
 	});
 }
