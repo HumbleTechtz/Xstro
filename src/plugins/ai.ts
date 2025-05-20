@@ -1,4 +1,4 @@
-import { chatGpt } from '../utils/chatbot.mts';
+import { chatGpt } from '../utils/ai.ts';
 import { Command } from '../messaging/plugin.ts';
 
 Command({
