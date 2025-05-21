@@ -32,6 +32,7 @@ export const postfetch = async function (
 	url: string,
 	options?: {
 		formData?: Record<string, any>;
+		jsonBody?: Record<string, any>;
 		headers?: Record<string, string>;
 	},
 ): Promise<string> {
@@ -47,28 +48,32 @@ export const postfetch = async function (
 			DNT: '1',
 		};
 
-		const form = new FormData();
-		if (options?.formData) {
+		let body: any;
+		let contentHeaders = {};
+
+		if (options?.jsonBody) {
+			body = JSON.stringify(options.jsonBody);
+			contentHeaders = { 'Content-Type': 'application/json' };
+		} else if (options?.formData) {
+			const form = new FormData();
 			for (const [key, value] of Object.entries(options.formData)) {
 				form.append(key, value);
 			}
+			body = form;
+			contentHeaders = form.getHeaders();
 		}
 
 		const response = await got.post(url, {
 			headers: {
 				...defaultHeaders,
+				...contentHeaders,
 				...options?.headers,
-				...form.getHeaders(),
 			},
-			body: form,
+			body,
 			throwHttpErrors: true,
 		});
 
-		try {
-			return response.body;
-		} catch (jsonError) {
-			return response.body;
-		}
+		return response.body;
 	} catch (error: any) {
 		throw new Boom(error.message, {
 			statusCode: error.response?.statusCode || 500,

@@ -1,5 +1,5 @@
 import { Command } from '../messaging/plugin.ts';
-import { fetch, isUrl, urlBuffer, lyrics } from '../utils/index.ts';
+import { fetch, isUrl, urlBuffer, lyrics, postfetch } from '../utils/index.ts';
 
 Command({
 	name: 'url',
@@ -49,5 +49,26 @@ Command({
 		} else {
 			return await message.send(data?.lyrics!);
 		}
+	},
+});
+
+Command({
+	name: 'carbon',
+	fromMe: false,
+	isGroup: false,
+	desc: 'Create a carbon code',
+	type: 'tools',
+	function: async (message, match) => {
+		if (!match) return message.send('_Provide a code_');
+
+		const response = await urlBuffer(
+			`https://bk9.fun/maker/carbonimg?q=${match}`,
+		);
+
+		await message.client.sendMessage(message.jid, {
+			caption: 'Here is your carbon image',
+			image: response,
+			mimetype: 'image/png',
+		});
 	},
 });

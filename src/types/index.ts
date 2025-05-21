@@ -27,7 +27,8 @@ export interface Commands {
 		| 'utilities'
 		| 'user'
 		| 'privacy'
-		| 'games';
+		| 'games'
+		| 'maker';
 	dontAddCommandList?: boolean;
 }
 
