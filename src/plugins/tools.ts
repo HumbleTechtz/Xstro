@@ -84,12 +84,26 @@ Command({
 		if (!msg || !msg.image) return message.send('Reply to an image');
 		const buffer = await msg.downloadM();
 		const url = await uploadFile(buffer);
-		return await message.send(
-			`https://bk9.fun/tools/enhance?url=${encodeURIComponent(url!)}`,
-			{
-				caption: 'Here is your enhanced image',
-				mimetype: 'image/png',
-			},
-		);
+		return await message.client.sendMessage(message.jid, {
+			image: { url: `https://bk9.fun/tools/enhance?url=${url}` },
+			caption: 'Here is your enhanced image',
+			mimetype: 'image/jpeg',
+		});
+	},
+});
+
+Command({
+	name: 'pdf',
+	fromMe: false,
+	isGroup: false,
+	desc: 'Convert image to pdf',
+	type: 'tools',
+	function: async message => {
+		const txt = message.text || message?.quoted?.text;
+		if (!txt) return message.send('Provide a text');
+		return await message.send(`https://bk9.fun/tools/pdf?url=${txt}`, {
+			caption: 'Here is your pdf',
+			mimetype: 'application/pdf',
+		});
 	},
 });

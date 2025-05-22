@@ -79,7 +79,7 @@ export default async function (message: Message) {
 				if (!sticker) return;
 
 				for (const cmd of commands) {
-					const match = sticker.cmdname.match(cmd.name as string);
+					const match = sticker.cmdname.match(cmd.name! as string | RegExp);
 					if (!match) continue;
 
 					if (mode && !sudo) continue;
