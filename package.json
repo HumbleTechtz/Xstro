@@ -10,7 +10,7 @@
 		"url": "git+https://github.com/AstroXTeam/whatsapp-bot.git"
 	},
 	"homepage": "https://github.com/AstroXTeam/whatsapp-bot#readme",
-	"author": "AstroX11 <danielfx0012@gmail.com>",
+	"author": "AstroX11 <devastro0010@gmail.com>",
 	"engines": {
 		"node": ">=23"
 	},
@@ -35,12 +35,11 @@
 		"https-proxy-agent": "^7.0.6",
 		"link-preview-js": "^3.0.15",
 		"node-webpmux": "^3.2.1",
-		"pino": "^9.7.0",
 		"quantava": "^1.0.1",
-		"sharp": "^0.34.1"
+		"sharp": "^0.34.2"
 	},
 	"devDependencies": {
-		"@types/node": "^22.15.19",
+		"@types/node": "^22.15.21",
 		"@typescript-eslint/eslint-plugin": "^8.32.1",
 		"@typescript-eslint/parser": "^8.32.1",
 		"@typescript-eslint/utils": "^8.32.1",
@@ -48,7 +47,6 @@
 		"eslint-config-prettier": "^10.1.5",
 		"eslint-plugin-prettier": "^5.4.0",
 		"jiti": "^2.4.2",
-		"ora": "^8.2.0",
 		"prettier": "^3.5.3",
 		"typescript": "^5.8.3"
 	}

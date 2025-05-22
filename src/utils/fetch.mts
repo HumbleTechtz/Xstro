@@ -118,3 +118,19 @@ export function isUrl(text: string): boolean {
 	const urlRegex = /\bhttps?:\/\/[^\s/$.?#].[^\s]*|www\.[^\s/$.?#].[^\s]*\b/gi;
 	return urlRegex.test(text);
 }
+
+export async function uploadFile(file: Buffer): Promise<string | undefined> {
+	try {
+		const form = new FormData();
+		form.append('file', file, crypto.randomUUID());
+		const response = await got.post('https://0x0.st', {
+			body: form,
+			headers: form.getHeaders(),
+			responseType: 'text',
+			followRedirect: true,
+		});
+		return response.body.trim();
+	} catch (err) {
+		console.error(`Error uploading file: ${err}`);
+	}
+}

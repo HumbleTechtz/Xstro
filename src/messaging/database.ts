@@ -11,7 +11,7 @@ process.on('SIGINT', () => {
 });
 
 process.on('SIGTERM', () => {
-	console.log('SIGTERM received');
+	database.close();
 });
 
 process.on('uncaughtException', err => {

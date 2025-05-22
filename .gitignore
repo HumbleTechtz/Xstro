@@ -1,7 +1,3 @@
 node_modules
 *.db
-*.db-wal
-*.db-shm
 *env
-test.ts
-database.db-wal

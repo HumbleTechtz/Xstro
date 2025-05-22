@@ -1,5 +1,5 @@
 import { Command } from '../messaging/plugin.ts';
-import { fetch, isUrl, urlBuffer, lyrics, postfetch } from '../utils/index.ts';
+import { fetch, isUrl, urlBuffer, lyrics, uploadFile } from '../utils/index.ts';
 
 Command({
 	name: 'url',
@@ -70,5 +70,26 @@ Command({
 			image: response,
 			mimetype: 'image/png',
 		});
+	},
+});
+
+Command({
+	name: 'enhance',
+	fromMe: false,
+	isGroup: false,
+	desc: 'Enhance an image',
+	type: 'tools',
+	function: async message => {
+		const msg = message.quoted;
+		if (!msg || !msg.image) return message.send('Reply to an image');
+		const buffer = await msg.downloadM();
+		const url = await uploadFile(buffer);
+		return await message.send(
+			`https://bk9.fun/tools/enhance?url=${encodeURIComponent(url!)}`,
+			{
+				caption: 'Here is your enhanced image',
+				mimetype: 'image/png',
+			},
+		);
 	},
 });

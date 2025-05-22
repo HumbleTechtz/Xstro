@@ -1,7 +1,5 @@
 import { Command } from '../messaging/plugin.ts';
-import { urlBuffer } from '../utils/fetch.mts';
-import got from 'got';
-import FormData from 'form-data';
+import { uploadFile, urlBuffer } from '../utils/fetch.mts';
 
 type LogoType =
 	| 'wasted'
@@ -15,17 +13,10 @@ type LogoType =
 
 async function meme(image: Buffer, type: LogoType) {
 	try {
-		const form = new FormData();
-		form.append('file', image, 'image.png');
-		const uploadRes = await got.post('https://0x0.st', {
-			body: form,
-			headers: form.getHeaders(),
-			responseType: 'text',
-			followRedirect: true,
-		});
-		const uploadedUrl = uploadRes.body.trim();
+		const url = await uploadFile(image);
+		if (!url) return;
 		return await urlBuffer(
-			`https://bk9.fun/maker/${type}?url=${encodeURIComponent(uploadedUrl)}`,
+			`https://bk9.fun/maker/${type}?url=${encodeURIComponent(url)}`,
 		);
 	} catch (err) {
 		console.error(`Error in meme function: ${err}`);
