@@ -1,4 +1,4 @@
-import { isJidGroup, normalizeMessageContent } from 'baileys';
+import { getDevice, isJidGroup, normalizeMessageContent } from 'baileys';
 import { getSettings } from '../models/index.ts';
 import {
 	getMessageContent,
@@ -42,6 +42,7 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 		disablecmd,
 		disablegc,
 		disabledm,
+		device: getDevice(key?.id ?? ''),
 		mention: quoted?.mentionedJid,
 		sudo: sudo_users.includes(sender ?? '')
 			? true

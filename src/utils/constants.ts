@@ -72,6 +72,17 @@ export function isLid(id?: string) {
 	return undefined;
 }
 
+export function cleanJidLid(input: string): string {
+	if (!input) return '';
+	if (input.endsWith('@s.whatsapp.net')) {
+		return input.split('@')[0];
+	}
+	if (input.endsWith('@lid')) {
+		return input.split('@')[0];
+	}
+	return input;
+}
+
 export function parseBoolean(stringStatement: string): boolean {
 	stringStatement = stringStatement.toLowerCase().trim();
 	if (stringStatement === 'false') {

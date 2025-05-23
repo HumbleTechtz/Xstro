@@ -15,11 +15,11 @@ process.on('SIGTERM', () => {
 });
 
 process.on('uncaughtException', err => {
-	console.log('Database Error:', err);
+	console.log('Error:', err);
 });
 
 process.on('unhandledRejection', er => {
-	console.log('Database Error', er);
+	console.log('Error', er);
 });
 
 export default database;
