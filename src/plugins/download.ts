@@ -98,8 +98,10 @@ Command({
 	desc: 'Download Twitter Media',
 	type: 'download',
 	function: async (msg, args) => {
-		const url = /^https?:\/\/(www\.|m\.)?twitter\.com(\/|$)/.test(args ?? '');
-		if (!url || !args) return await msg.send('_Provide a valid twitter link_');
+		if (!args) return await msg.send('_Provide a valid twitter link_');
+		let inputUrl = args.replace(/^https?:\/\/(www\.)?x\.com/, match => match.replace('x.com', 'twitter.com'));
+		const url = /^https?:\/\/(www\.|m\.)?twitter\.com(\/|$)/.test(inputUrl);
+		if (!url) return await msg.send('_Provide a valid twitter link_');
 
 		await msg.react('⬇️');
 
