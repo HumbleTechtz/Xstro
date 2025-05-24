@@ -83,6 +83,13 @@ Deploy easily on these platforms, or use your own server:
 
 </div>
 
+### Panel Pterodactyl Server
+
+1. Download the panel deployment file [here.](https://github.com/AstroX11/Pterodactyl-Deploy/raw/refs/heads/main/deploy.zip)
+2. Ensure you have created [Pterodactyl Account](https://pterodactyl.io/)
+3. Create your server and Watch a Tutorial if you don't know how to deploy on it.
+   <video controls src="https://github.com/AstroX11/Pterodactyl-Deploy/raw/refs/heads/main/help.mp4" title=""></video>
+
 ### Manual Start (VPS/Ubuntu/Windows)
 
 1. Follow the installation steps above.
