@@ -1,9 +1,25 @@
 import { Command } from '../messaging/plugin.ts';
 import Message from '../messaging/Messages/Message.ts';
+import { isAdmin, isBotAdmin } from '../utils/constants.ts';
+import type { WASocket } from 'baileys';
 
 const adminCheck = async (message: Message): Promise<boolean> => {
-	if (!(await message.isAdmin()) || !(await message.isBotAdmin())) {
-		await message.send('_Requires admin and bot admin privileges_');
+	const isUserAdmin = await isAdmin(
+		message.client as WASocket,
+		message.jid,
+		message.sender as string,
+	);
+	if (!isUserAdmin) {
+		await message.send(
+			`\`\`\`@${message.sender?.split('@')[0]} You must be an admin to perform this action.\`\`\``,
+		);
+		return false;
+	}
+	const botIsAdmin = await isBotAdmin(message.client, message.jid);
+	if (!botIsAdmin) {
+		await message.send(
+			`\`\`\`Bot must be an admin to perform this action.\`\`\``,
+		);
 		return false;
 	}
 	return true;

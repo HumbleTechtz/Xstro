@@ -5,7 +5,7 @@ import { getStickerCmd } from '../models/sticker.ts';
 import { canProceed, resetIfExpired } from '../models/ratelimter.ts';
 
 export default async function (message: Message) {
-	const { data, sudo, sender, prefix, text, mode, isGroup, send } = message;
+	const { sudo, sender, prefix, text, mode, isGroup, send } = message;
 
 	setInterval(
 		async () => {
@@ -65,8 +65,8 @@ export default async function (message: Message) {
 
 		(async () => {
 			try {
-				const stickerMessage = data.message?.stickerMessage;
-				const lottieStickerMessage = data.message?.lottieStickerMessage;
+				const stickerMessage = message?.message?.stickerMessage;
+				const lottieStickerMessage = message?.message?.lottieStickerMessage;
 				const fileSha256 =
 					stickerMessage?.fileSha256 ??
 					lottieStickerMessage?.message?.stickerMessage?.fileSha256;

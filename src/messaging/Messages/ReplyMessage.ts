@@ -15,10 +15,11 @@ export default class ReplyMessage {
 	client: Pick<
 		WASocket,
 		'sendMessage' | 'chatModify' | 'groupMetadata' | 'user'
-	>;
+	> &
+		Omit<WASocket, 'logger' | 'ws' | 'ev' | 'authState' | 'signalRepository'>;
 	quoted: Serialize['quoted'];
 	key: WAMessageKey;
-	jid: string | null | undefined;
+	jid: string;
 	sudo: boolean | undefined;
 	owner: boolean;
 	sender: string | undefined;
@@ -41,12 +42,17 @@ export default class ReplyMessage {
 	poll: boolean | undefined;
 	template: boolean | undefined;
 
-	constructor(quoted: Serialize['quoted'], client: WASocket) {
-		const { sendMessage, chatModify, groupMetadata, user } = client;
-		this.client = { sendMessage, chatModify, groupMetadata, user };
+	constructor(
+		quoted: Serialize['quoted'],
+		client: Omit<
+			WASocket,
+			'logger' | 'ws' | 'ev' | 'authState' | 'signalRepository'
+		>,
+	) {
+		this.client = client;
 		this.quoted = quoted;
 		this.key = quoted?.key as WAMessageKey;
-		this.jid = quoted?.key.remoteJid;
+		this.jid = quoted?.key.remoteJid as string;
 		this.sudo = quoted?.sudo;
 		this.owner =
 			parseJidLid(client?.user?.id ?? client?.user?.lid!) === quoted?.sender;
@@ -65,19 +71,33 @@ export default class ReplyMessage {
 		this.sticker = quoted?.type === 'stickerMessage';
 		this.location = quoted?.type === 'locationMessage';
 		this.contact = quoted?.type === 'contactMessage';
-		this.buttons = quoted?.type === 'buttonsResponseMessage';
-		this.list = quoted?.type === 'listResponseMessage';
+		this.buttons = quoted?.type === 'buttonsMessage';
+		this.list = quoted?.type === 'listMessage';
 		this.poll = quoted?.type === 'pollCreationMessage';
-		this.template = quoted?.type === 'templateButtonReplyMessage';
+		this.template = quoted?.type === 'templateMessage';
 	}
 
 	async edit(text: string) {
-		return await this.client.sendMessage(this.jid!, { text, edit: this.key });
+		if (this.image) {
+			return await this.client.sendMessage(this.jid, {
+				image: await this.downloadM(),
+				caption: text,
+				edit: this.key,
+			});
+		} else if (this.video) {
+			return await this.client.sendMessage(this.jid, {
+				video: await this.downloadM(),
+				caption: text,
+				edit: this.key,
+			});
+		} else {
+			return await this.client.sendMessage(this.jid, { text, edit: this.key });
+		}
 	}
 
 	async delete() {
 		const isRestrictedGroup =
-			this.isGroup && !(await isBotAdmin(this.client, this.jid!));
+			this.isGroup && !(await isBotAdmin(this.client, this.jid));
 		const isPrivateNotMe = !this.isGroup && !this.key.fromMe;
 
 		if (isRestrictedGroup || isPrivateNotMe) {
@@ -92,7 +112,7 @@ export default class ReplyMessage {
 				this.jid!,
 			);
 		}
-		return await this.client.sendMessage(this.jid!, { delete: this.key });
+		return await this.client.sendMessage(this.jid, { delete: this.key });
 	}
 
 	async forward(jid: string, options?: WAContextInfo & { quoted?: WAMessage }) {

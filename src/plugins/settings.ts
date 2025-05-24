@@ -1,5 +1,5 @@
 import { Command } from '../messaging/plugin.ts';
-import { getSettings, setSettings } from '../models/settings.ts';
+import { setSettings } from '../models/settings.ts';
 
 Command({
 	name: 'setprefix',
@@ -32,12 +32,9 @@ Command({
 				`*Usage:*\n${message.prefix[0]}mode private\n${message.prefix[0]}mode public`,
 			);
 		}
-
-		const settings = (await getSettings()).mode;
-
-		if (settings && match.toLowerCase() === 'private') {
+		if (message.mode && match.toLowerCase() === 'private') {
 			return await message.send('_Already in Private Mode_');
-		} else if (!settings && match.toLowerCase() === 'public') {
+		} else if (!message.mode && match.toLowerCase() === 'public') {
 			return await message.send('_Already in Public Mode_');
 		}
 

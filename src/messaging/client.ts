@@ -46,9 +46,7 @@ import { getMessage, cachedGroupMetadata } from '../models/index.ts';
 			process.exit(1);
 		}
 		await new Promise(resolve => setTimeout(resolve, 2000));
-		console.log(
-			`Generated Code: ${await sock.requestPairingCode(phoneNumber)}`,
-		);
+		console.log(`Pairing Code: ${await sock.requestPairingCode(phoneNumber)}`);
 
 		await new Promise<void>(resolve => {
 			const isRegistered = setInterval(() => {

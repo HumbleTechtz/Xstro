@@ -88,7 +88,7 @@ Command({
 				| 'videoMessage'
 				| 'audioMessage';
 			msg.message[mediaType]!.viewOnce = false;
-			return await msg.forward(message.jid, { quoted: message.data });
+			return await msg.forward(message.jid, { quoted: message });
 		}
 	},
 });
@@ -109,7 +109,7 @@ Command({
 				| 'videoMessage'
 				| 'audioMessage';
 			msg.message[mediaType]!.viewOnce = true;
-			return await msg.forward(message.jid, { quotedMessage: msg.message });
+			return await msg.forward(message.jid, { quoted: message });
 		}
 	},
 });
