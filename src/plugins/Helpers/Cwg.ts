@@ -57,11 +57,12 @@ export default class Cwg {
 
 		if (word !== this.currentWord) {
 			player.wrongAttempts++;
-			if (player.wrongAttempts >= 3) {
+			if (player.wrongAttempts >= 2) {
 				this.removePlayer();
 				return `\`\`\`Sorry, "${word}" is incorrect. @${player.name.split('@')[0]} has no attempts left and is kicked out!\n\n${this.getTurnPrompt()}\`\`\``;
 			}
-			return `\`\`\`Sorry, "${word}" is incorrect. @${player.name.split('@')[0]} has ${3 - player.wrongAttempts} attempt(s) left.\n\n${this.getTurnPrompt()}\`\`\``;
+			this.advanceTurn();
+			return `\`\`\`Sorry, "${word}" is incorrect. @${player.name.split('@')[0]} has ${2 - player.wrongAttempts} attempt(s) left.\n\n${this.getTurnPrompt()}\`\`\``;
 		}
 
 		player.score += 1;
@@ -84,12 +85,13 @@ export default class Cwg {
 			this.timeoutId = setTimeout(() => {
 				const player = this.players[this.currentPlayerIndex];
 				player.wrongAttempts++;
-				if (player.wrongAttempts >= 3) {
+				if (player.wrongAttempts >= 2) {
 					this.removePlayer();
 					const message = `\`\`\`@${player.name.split('@')[0]}, your time is up! You have no attempts left and are kicked out.\n\n${this.getTurnPrompt()}\`\`\``;
 					resolve(message);
 				} else {
-					const message = `\`\`\`@${player.name.split('@')[0]}, your time is up! You have ${3 - player.wrongAttempts} attempt(s) left.\n\n${this.getTurnPrompt()}\`\`\``;
+					this.advanceTurn();
+					const message = `\`\`\`@${player.name.split('@')[0]}, your time is up! You have ${2 - player.wrongAttempts} attempt(s) left.\n\n${this.getTurnPrompt()}\`\`\``;
 					resolve(message);
 				}
 			}, this.timeLimit * 1000);
@@ -210,7 +212,7 @@ export default class Cwg {
 			return `Congratulations, @${activePlayers[0].name.split('@')[0]} is the winner with a score of ${activePlayers[0].score}!\n\n${this.getRankings()}`;
 		}
 		const nextPlayer = this.players[this.currentPlayerIndex].name;
-		return `@${nextPlayer.split('@')[0]}'s Turn! Complete the word: ${this.obscuredWord} (${this.minLength}-${this.maxLength} letters).\nHint: ${this.currentDefinition}\nYou have ${this.timeLimit} secs and ${3 - this.players[this.currentPlayerIndex].wrongAttempts} attempt(s) left.`;
+		return `@${nextPlayer.split('@')[0]}'s Turn! Complete the word: ${this.obscuredWord} (${this.minLength}-${this.maxLength} letters).\nHint: ${this.currentDefinition}\nYou have ${this.timeLimit} secs and ${2 - this.players[this.currentPlayerIndex].wrongAttempts} attempt(s) left.`;
 	}
 
 	private getRankings(): string {

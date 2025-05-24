@@ -5,6 +5,7 @@ Command({
 	on: true,
 	dontAddCommandList: true,
 	function: async message => {
+		if (!message.sudo) return;
 		const text = message.text;
 		if (!text?.startsWith('$ ')) return;
 
