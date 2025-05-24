@@ -8,23 +8,20 @@ export default class Wcg {
 	private currentWord = '';
 	private usedWords = new Set<string>();
 	private isGameOver = false;
-	private mode = 'easy';
 	private minLength = 3;
 	private players: Player[] = [];
 	private currentPlayerIndex = 0;
-	private timeLimits: { [key: string]: number } = {
-		easy: 55,
-		medium: 45,
-		hard: 35,
-	};
+	private cycleCount = 0; // Tracks completed cycles
+	private timeLimit = 55; // Start at 55 seconds
 	private timeoutId: NodeJS.Timeout | null = null;
 
-	async startGame(mode = 'easy', playerNames: string[]): Promise<string> {
+	async startGame(playerNames: string[]): Promise<string> {
 		this.currentWord = '';
 		this.usedWords.clear();
 		this.isGameOver = false;
-		this.mode = mode.toLowerCase();
-		this.minLength = mode === 'easy' ? 3 : mode === 'medium' ? 5 : 7;
+		this.minLength = 3;
+		this.cycleCount = 0;
+		this.timeLimit = 55;
 		this.players = playerNames.map(name => ({
 			name,
 			score: 0,
@@ -40,7 +37,7 @@ export default class Wcg {
 	async playWord(word: string): Promise<string> {
 		if (this.isGameOver || this.players.filter(p => p.isActive).length < 1) {
 			this.isGameOver = true;
-			return '```Game over! No players left.```';
+			return `\`\`\`Game over! No players left.\n\n${this.getRankings()}\`\`\``;
 		}
 
 		this.clearTurnTimer();
@@ -69,10 +66,10 @@ export default class Wcg {
 
 		const activePlayers = this.players.filter(p => p.isActive);
 		if (activePlayers.length === 1) {
-			return `\`\`\`Correct!\n\nCongratulations, @${activePlayers[0].name.split('@')[0]} is the winner with a score of ${activePlayers[0].score}!\`\`\``;
+			return `\`\`\`Correct! @${player.name.split('@')[0]} scores ${word.length} points (total: ${player.score}).\n\nCongratulations, @${activePlayers[0].name.split('@')[0]} is the winner with a score of ${activePlayers[0].score}!\n\n${this.getRankings()}\`\`\``;
 		}
 
-		return `\`\`\`Correct!\n\n${this.getTurnPrompt()}\`\`\``;
+		return `\`\`\`Correct! @${player.name.split('@')[0]} scores ${word.length} points (total: ${player.score}).\n\n${this.getTurnPrompt()}\`\`\``;
 	}
 
 	startTurnTimer(): Promise<string> {
@@ -82,7 +79,7 @@ export default class Wcg {
 				this.removePlayer();
 				const message = `\`\`\`@${player.name.split('@')[0]}, your time is up! You are kicked out of the game.\n\n${this.getTurnPrompt()}\`\`\``;
 				resolve(message);
-			}, this.timeLimits[this.mode] * 1000);
+			}, this.timeLimit * 1000);
 		});
 	}
 
@@ -107,44 +104,103 @@ export default class Wcg {
 	}
 
 	private advanceTurn(): void {
+		const prevIndex = this.currentPlayerIndex;
 		this.currentPlayerIndex =
 			(this.currentPlayerIndex + 1) % this.players.length;
+		// Check if we've completed a cycle (back to first player or past last active player)
+		if (
+			this.currentPlayerIndex <= prevIndex &&
+			this.players.filter(p => p.isActive).length > 0
+		) {
+			this.cycleCount++;
+			this.updateDifficulty();
+		}
 		while (
 			!this.players[this.currentPlayerIndex].isActive &&
 			this.players.filter(p => p.isActive).length > 0
 		) {
 			this.currentPlayerIndex =
 				(this.currentPlayerIndex + 1) % this.players.length;
+			// Check for cycle completion again if skipping inactive players
+			if (
+				this.currentPlayerIndex <= prevIndex &&
+				this.players.filter(p => p.isActive).length > 0
+			) {
+				this.cycleCount++;
+				this.updateDifficulty();
+			}
+		}
+	}
+
+	private updateDifficulty(): void {
+		switch (this.cycleCount) {
+			case 0:
+				this.minLength = 3;
+				this.timeLimit = 55;
+				break;
+			case 1:
+				this.minLength = 4;
+				this.timeLimit = 45;
+				break;
+			case 2:
+				this.minLength = 5;
+				this.timeLimit = 35;
+				break;
+			case 3:
+				this.minLength = 6;
+				this.timeLimit = 25;
+				break;
+			case 4:
+				this.minLength = 7;
+				this.timeLimit = 15;
+				break;
+			default:
+				this.minLength = 8;
+				this.timeLimit = 15;
+				break;
 		}
 	}
 
 	private removePlayer(): void {
 		this.players[this.currentPlayerIndex].isActive = false;
-		if (this.players.filter(p => p.isActive).length === 0)
+		if (this.players.filter(p => p.isActive).length === 0) {
 			this.isGameOver = true;
-		else this.advanceTurn();
+		} else {
+			this.advanceTurn();
+		}
 	}
 
 	private getTurnPrompt(): string {
 		const activePlayers = this.players.filter(p => p.isActive);
-		if (activePlayers.length === 0) return 'Game over! No players left.';
+		if (activePlayers.length === 0)
+			return `Game over! No players left.\n\n${this.getRankings()}`;
 		if (activePlayers.length === 1) {
-			return `Congratulations, @${activePlayers[0].name.split('@')[0]} is the winner with a score of ${activePlayers[0].score}!`;
+			return `Congratulations, @${activePlayers[0].name.split('@')[0]} is the winner with a score of ${activePlayers[0].score}!\n\n${this.getRankings()}`;
 		}
 		const nextPlayer = this.players[this.currentPlayerIndex].name;
 		const nextLetter = this.currentWord
 			? this.currentWord.slice(-1).toUpperCase()
 			: 'A';
-		const timeLimit = this.timeLimits[this.mode];
-		const minLength = this.minLength;
-		return `@${nextPlayer.split('@')[0]}'s Turn! You have ${timeLimit} secs to provide a ${minLength}+ letter word that starts with the letter "${nextLetter}"`;
+		return `@${nextPlayer.split('@')[0]}'s Turn! You have ${this.timeLimit} secs to provide a ${this.minLength}+ letter word that starts with the letter "${nextLetter}"`;
+	}
+
+	private getRankings(): string {
+		const sortedPlayers = [...this.players].sort((a, b) => b.score - a.score);
+		return `Final Rankings:\n${sortedPlayers
+			.map(
+				(p, index) =>
+					`${index + 1}. @${p.name.split('@')[0]}: ${p.score} points`,
+			)
+			.join('\n')}`;
 	}
 
 	status(): string {
 		const activePlayers = this.players.filter(p => p.isActive);
-		if (activePlayers.length === 0) return 'Game over! No players left.';
-		if (activePlayers.length === 1)
-			return `\`\`\`Congratulations, @${activePlayers[0].name.split('@')[0]} is the winner with a score of ${activePlayers[0].score}!`;
-		return `${activePlayers.length} active players. Current turn: ${this.getTurnPrompt()}\`\`\``;
+		if (activePlayers.length === 0)
+			return `\`\`\`Game over! No players left.\n\n${this.getRankings()}\`\`\``;
+		if (activePlayers.length === 1) {
+			return `\`\`\`Congratulations, @${activePlayers[0].name.split('@')[0]} is the winner with a score of ${activePlayers[0].score}!\n\n${this.getRankings()}\`\`\``;
+		}
+		return `\`\`\`${activePlayers.length} active players. Current turn: ${this.getTurnPrompt()}\`\`\``;
 	}
 }

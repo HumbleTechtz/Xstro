@@ -1,12 +1,12 @@
 import { Command } from '../messaging/plugin.ts';
-import Wcg from './Helpers/Wcg.ts';
+import Cwg from './Helpers/Cwg.ts';
 
 const gameStates = new Map();
 
 Command({
-	name: 'wcg',
+	name: 'cwg',
 	fromMe: false,
-	desc: 'Start a Word Chain Game',
+	desc: 'Start a Complete the Word Game',
 	type: 'games',
 	function: async (message, match) => {
 		const chatId = message.key.remoteJid;
@@ -33,7 +33,7 @@ Command({
 		});
 
 		await message.send(
-			'```Word Chain Game starting! Type "join" to participate. The game gets harder each round with shorter time limits (down to 12s) and longer words required.```',
+			'```Complete the Word Game starting! Type "join" to participate. Fill in missing letters to complete words. Difficulty increases with longer words and shorter time limits (down to 15s).```',
 		);
 
 		setTimeout(async () => {
@@ -57,7 +57,7 @@ Command({
 			}
 
 			const playerNames = Array.from(state.players) as string[];
-			const game = new Wcg();
+			const game = new Cwg();
 			state.game = game;
 
 			const msg = await game.startGame(playerNames);
