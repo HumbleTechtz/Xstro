@@ -13,28 +13,31 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 		message: normalizeMessageContent(WAMessage?.message),
 	};
 	const { key, message, broadcast, ...messages } = normalizedMessages;
-	const { prefix, mode, banned, disablecmd, disablegc, disabledm } =
-		await getSettings();
+	const settings = await getSettings();
+	const { prefix, mode, banned, disablecmd, disablegc, disabledm, sudo } =
+		settings;
+
 	const jid = key.remoteJid ?? '';
 	const isGroup = isJidGroup(key.remoteJid!);
-	const ownerJid = parseJidLid(client?.user?.id);
-	const ownerLid = parseJidLid(client?.user?.lid);
+	const jidOwner = parseJidLid(client?.user?.id);
+	const lidOwner = parseJidLid(client?.user?.lid);
 	const sender =
-		isJidGroup(key.remoteJid!) || broadcast
-			? key.participant
+		isJidGroup(jid) || broadcast
+			? (key.participant as string)
 			: key.fromMe
-				? ownerJid
-				: key.remoteJid;
-	const sudo_users = await getSettings().then(settings => settings.sudo);
+				? jidOwner
+				: jid;
 
 	const content = getMessageContent(message);
-	const quoted = getQuotedContent(message, key, ownerJid);
+	const quoted = getQuotedContent(message, key, jidOwner);
+
+	const isSudoUser = (user?: string) =>
+		sudo.includes(user ?? '') || user === jidOwner || user === lidOwner;
 
 	return {
 		key,
 		jid,
 		isGroup,
-		owner: ownerJid,
 		prefix,
 		sender,
 		mode,
@@ -42,32 +45,25 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 		disablecmd,
 		disablegc,
 		disabledm,
-		device: getDevice(key?.id ?? ''),
+		broadcast,
+		owner: jidOwner,
 		mention: quoted?.mentionedJid,
-		sudo: sudo_users.includes(sender ?? '')
-			? true
-			: sender === (ownerJid ?? ownerLid),
+		device: getDevice(key?.id ?? ''),
+		sudo: isSudoUser(sender),
 		...content,
 		...messages,
 		quoted: quoted
 			? {
-					sudo: sudo_users.includes(quoted.sender ?? '')
-						? true
-						: quoted.sender === (ownerJid ?? ownerLid),
+					sudo: isSudoUser(quoted.sender),
 					...quoted,
 				}
 			: undefined,
-		user: function (match?: string): string | undefined {
+		user(match?: string): string | undefined {
+			if (quoted?.sender) return quoted.sender;
 			if (this.isGroup) {
-				if (quoted && quoted.sender) return quoted.sender;
-				if (!match) return undefined;
-				return parseJidLid(match);
-			} else {
-				if (quoted && quoted.sender) return quoted.sender;
-				if (!match) return this.key.remoteJid!;
-				parseJidLid(match);
-				return parseJidLid(match);
+				return match ? parseJidLid(match) : undefined;
 			}
+			return match ? parseJidLid(match) : this.key.remoteJid!;
 		},
 	};
 }

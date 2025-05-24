@@ -90,8 +90,7 @@ export default class Message {
 	) {
 		const client = this.client as WASocket;
 		const jid = options?.jid ?? this.jid;
-		const updatedOptions = { ...options, jid };
-		const msg = await prepareMessage(client, content, updatedOptions);
+		const msg = await prepareMessage(client, content, { ...options, jid });
 		return new Message(
 			await (
 				await import('../serialize.ts')
@@ -101,29 +100,24 @@ export default class Message {
 	}
 
 	async edit(text: string) {
-		if (this.image) {
-			return await this.client.sendMessage(this.jid, {
-				image: await this.downloadM(),
-				caption: text,
-				edit: this.key,
-			});
-		} else if (this.video) {
-			return await this.client.sendMessage(this.jid, {
-				video: await this.downloadM(),
-				caption: text,
-				edit: this.key,
-			});
-		} else {
-			return await this.client.sendMessage(this.jid, { text, edit: this.key });
+		if (this.image || this.video) {
+			const media = await this.downloadM();
+			return await this.client.sendMessage(
+				this.jid,
+				this.image
+					? { image: media, caption: text, edit: this.key }
+					: { video: media, caption: text, edit: this.key },
+			);
 		}
+		return await this.client.sendMessage(this.jid, { text, edit: this.key });
 	}
 
 	async delete() {
-		const isRestrictedGroup =
-			this.isGroup && !(await isBotAdmin(this.client, this.jid));
-		const isPrivateNotMe = !this.isGroup && !this.key.fromMe;
+		const canDeleteForAll =
+			this.key.fromMe ||
+			(this.isGroup && (await isBotAdmin(this.client, this.jid)));
 
-		if (isRestrictedGroup || isPrivateNotMe) {
+		if (!canDeleteForAll) {
 			return await this.client.chatModify(
 				{
 					deleteForMe: {
@@ -142,11 +136,15 @@ export default class Message {
 		return await downloadMediaMessage(this, 'buffer', {});
 	}
 
-	async forward(jid: string, options?: WAContextInfo) {
-		return await this.client.sendMessage(jid, {
-			forward: this,
-			contextInfo: { ...options },
-		});
+	async forward(jid: string, options?: WAContextInfo & { quoted: WAMessage }) {
+		return await this.client.sendMessage(
+			jid,
+			{
+				forward: this,
+				contextInfo: { ...options },
+			},
+			{ quoted: options?.quoted },
+		);
 	}
 
 	async react(emoji?: string) {
