@@ -99,7 +99,9 @@ Command({
 	type: 'download',
 	function: async (msg, args) => {
 		if (!args) return await msg.send('_Provide a valid twitter link_');
-		let inputUrl = args.replace(/^https?:\/\/(www\.)?x\.com/, match => match.replace('x.com', 'twitter.com'));
+		let inputUrl = args.replace(/^https?:\/\/(www\.)?x\.com/, match =>
+			match.replace('x.com', 'twitter.com'),
+		);
 		const url = /^https?:\/\/(www\.|m\.)?twitter\.com(\/|$)/.test(inputUrl);
 		if (!url) return await msg.send('_Provide a valid twitter link_');
 
