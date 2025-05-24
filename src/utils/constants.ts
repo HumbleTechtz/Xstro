@@ -72,15 +72,12 @@ export function isLid(id?: string) {
 	return undefined;
 }
 
+/**
+ * Purpose of this function is to simply remove the "@" at the end of the jid/lid string
+ */
 export function cleanJidLid(input: string): string {
 	if (!input) return '';
-	if (input.endsWith('@s.whatsapp.net')) {
-		return input.split('@')[0];
-	}
-	if (input.endsWith('@lid')) {
-		return input.split('@')[0];
-	}
-	return input;
+	return input.split('@')[0];
 }
 
 export function parseBoolean(stringStatement: string): boolean {
