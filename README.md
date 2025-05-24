@@ -1,7 +1,6 @@
 # `xstro`
 
-> [!IMPORTANT]
-> **Use at Your Own Risk**
+> [!IMPORTANT] > **Use at Your Own Risk**
 >
 > WhatsApp’s [Terms of Service](https://www.whatsapp.com/legal/terms-of-service) **explicitly prohibit the use of unauthorized third-party automation tools** that interact with its platform. This includes bots, automation frameworks, and reverse-engineered clients. **Violations can result in permanent bans or legal action.**
 >
@@ -76,11 +75,12 @@ Deploy easily on these platforms, or use your own server:
 
 <div align="center">
 
-  <a href="https://www.heroku.com/deploy?template=https://github.com/AstroX11/Xstro" target="_blank"><img src="https://img.shields.io/badge/-Heroku-black?style=for-the-badge&logo=heroku&logoColor=white" alt="Deploy to Heroku"></a>
-  <a href="https://app.koyeb.com/deploy?name=xstro&repository=AstroX11%2FXstro&branch=stable&builder=dockerfile" target="_blank"><img src="https://img.shields.io/badge/-Koyeb-black?style=for-the-badge&logo=koyeb&logoColor=white" alt="Deploy to Koyeb"></a>
-  <a href="https://render.com/deploy?repo=https://github.com/AstroX11/Xstro" target="_blank"><img src="https://img.shields.io/badge/-Render-black?style=for-the-badge&logo=render&logoColor=white" alt="Deploy to Render"></a>
-  <a href="https://pterodactyl.io/" target="_blank"><img src="https://img.shields.io/badge/-Panel-black?style=for-the-badge&logo=pterodactyl&logoColor=white" alt="Deploy on Pterodactyl"></a>
-  <a href="https://replit.com/github/AstroX11/Xstro" target="_blank"><img src="https://img.shields.io/badge/-Replit-black?style=for-the-badge&logo=Replit&logoColor=white" alt="Run on Replit"></a>
+<a href="https://www.heroku.com/deploy?template=https://github.com/AstroX11/Xstro" target="_blank"><img src="https://img.shields.io/badge/-Heroku-black?style=for-the-badge&logo=heroku&logoColor=white" alt="Deploy to Heroku"></a>
+<a href="https://app.koyeb.com/deploy?name=xstro&repository=AstroX11%2FXstro&branch=stable&builder=dockerfile" target="_blank"><img src="https://img.shields.io/badge/-Koyeb-black?style=for-the-badge&logo=koyeb&logoColor=white" alt="Deploy to Koyeb"></a>
+<a href="https://render.com/deploy?repo=https://github.com/AstroX11/Xstro" target="_blank"><img src="https://img.shields.io/badge/-Render-black?style=for-the-badge&logo=render&logoColor=white" alt="Deploy to Render"></a>
+<a href="https://pterodactyl.io/" target="_blank"><img src="https://img.shields.io/badge/-Panel-black?style=for-the-badge&logo=pterodactyl&logoColor=white" alt="Deploy on Pterodactyl"></a>
+<a href="https://replit.com/github/AstroX11/Xstro" target="_blank"><img src="https://img.shields.io/badge/-Replit-black?style=for-the-badge&logo=Replit&logoColor=white" alt="Run on Replit"></a>
+
 </div>
 
 ### Manual Start (VPS/Ubuntu/Windows)
@@ -97,13 +97,18 @@ Deploy easily on these platforms, or use your own server:
 
 1. **Environment Variables**
 
-   Generate a `.env.example` file automatically from `config.mjs`:
+   Create a `config.env` file or rename the existing `config.env.example` to `config.env`:
 
    ```bash
-   node config.mjs --gen-env-example
+   USER_NUMBER=1234567890
+   OWNER_NAME=AstroX11
+   BOT_NAME=Xstro
+   PROXY=156.228.115.84:3128
+   PORT=8080
+   DEBUG=false
    ```
 
-   This will create a `.env.example` file containing all required environment variables and descriptions.
+   Edit the existing values to your needs.
 
 2. **Customization**
 
@@ -142,17 +147,14 @@ For more usage examples and advanced options, see [`docs/USAGE.md`](docs/USAGE.m
 ```
 .
 ├── src/           # Core source code and handlers
-├── plugins/       # Plugins and Commands
 ├── docs/          # Documentation
-├── .env.example   # Example environment configuration (auto-generated via cli)
 └── ...
 ```
 
 ### Scripts
 
-- `pnpm start` – Start the bot in production mode
-- `pnpm dev` – Start in development mode (auto-reloads if configured)
-- `pnpm test` – Run test suite if available
+- `pnpm start` – Start the bot
+- `pnpm test` – Run test, for advanced users
 
 ## Contributing
 
@@ -160,17 +162,20 @@ We welcome and appreciate contributions from the community!
 If you have ideas, improvements, bugfixes, or want to add new features, please follow the steps below:
 
 1. **Read the Guidelines**
+
    - Please review our [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines, and our [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for community standards.
 
 2. **Getting Started**
+
    - Fork this repository and clone it to your local machine.
-   - Create a new branch for your feature or fix:  
+   - Create a new branch for your feature or fix:
      ```bash
      git checkout -b feature/my-feature
      ```
    - Make your changes, write clear commit messages, and include tests if possible.
 
 3. **Linting & Testing**
+
    - Run `pnpm lint` (mandatory) to ensure your code meets formatting and style guidelines.
    - Run `pnpm test` (if available) to ensure nothing is broken and your contribution is stable.
 

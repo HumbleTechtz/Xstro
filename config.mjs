@@ -1,6 +1,6 @@
 import { config } from 'dotenv';
 
-config();
+config({ path: ['.env', 'config.env'], override: true });
 
 /**
  * Loads environment variables for configuration.
