@@ -91,7 +91,7 @@ Command({
 	on: true,
 	dontAddCommandList: true,
 	function: async msg => {
-		if (msg.fromMe) return;
+		if (msg.key.fromMe) return;
 
 		const text = msg.text?.trim().toLowerCase();
 		if (!text) return;
@@ -107,7 +107,7 @@ Command({
 
 		if (keyword.isGroup) {
 			if (!msg.isGroup) return;
-			if (!msg.mention?.includes(msg.owner) || msg.fromMe) return;
+			if (!msg.mention?.includes(msg.owner) || msg.key.fromMe) return;
 		}
 
 		return await msg.send(keyword.response);

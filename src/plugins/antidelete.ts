@@ -62,7 +62,7 @@ Command({
 		if ((mode === 'gc' && !msg.isGroup) || (mode === 'dm' && msg.isGroup))
 			return;
 
-		const protocolMessage = msg?.data?.message?.protocolMessage;
+		const protocolMessage = msg?.message?.protocolMessage;
 		if (!protocolMessage || protocolMessage.type !== 0) return;
 
 		const messageKey = protocolMessage.key;

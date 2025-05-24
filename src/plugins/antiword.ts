@@ -1,5 +1,7 @@
+import { type WASocket } from 'baileys';
 import { Command } from '../messaging/plugin.ts';
 import { setAntiWord, getAntiword } from '../models/antiword.ts';
+import { isAdmin, isBotAdmin } from '../utils/constants.ts';
 
 Command({
 	name: 'antiword',
@@ -59,14 +61,18 @@ Command({
 	on: true,
 	dontAddCommandList: true,
 	function: async msg => {
-		if (!msg.isGroup || !msg.data?.text) return;
-		if (msg.fromMe || msg.sudo) return;
-		if (!(await msg.isBotAdmin()) || (await msg.isAdmin())) return;
+		if (!msg.isGroup || !msg?.text) return;
+		if (msg.key.fromMe || msg.sudo) return;
+		if (
+			!(await isBotAdmin(msg.client, msg.jid)) ||
+			(await isAdmin(msg.client as WASocket, msg.jid, msg.sender as string))
+		)
+			return;
 
 		const record = await getAntiword(msg.jid);
 		if (!record?.status || !record.words?.length) return;
 
-		const lowerText = msg.data.text.toLowerCase();
+		const lowerText = msg.text.toLowerCase();
 		const matched = record.words.find((word: string) => {
 			return new RegExp(`\\b${escapeRegex(word)}\\b`, 'i').test(lowerText);
 		});

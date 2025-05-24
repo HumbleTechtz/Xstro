@@ -27,9 +27,11 @@ export default class Message {
 	sender: string | null | undefined;
 	message: WAMessageContent | undefined;
 	type: keyof WAMessageContent | undefined;
+	messageTimestamp: number | Long | null | undefined;
 	sudo: boolean;
 	owner: string;
 	pushName: string | null | undefined;
+	mention: string[] | null | undefined;
 	image: boolean;
 	video: boolean;
 	audio: boolean;
@@ -52,7 +54,9 @@ export default class Message {
 			sudo,
 			owner,
 			pushName,
+			mention,
 			text,
+			messageTimestamp,
 			user,
 			quoted,
 		} = data;
@@ -67,10 +71,12 @@ export default class Message {
 		this.sudo = sudo;
 		this.owner = owner;
 		this.pushName = pushName;
+		this.mention = mention;
 		this.image = mtype === 'imageMessage';
 		this.video = mtype === 'videoMessage';
 		this.audio = mtype === 'audioMessage';
 		this.mode = mode;
+		this.messageTimestamp = messageTimestamp;
 		this.text = text;
 		this.user = user;
 		this.quoted = quoted

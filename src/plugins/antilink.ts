@@ -1,5 +1,7 @@
+import { type WASocket } from 'baileys';
 import { Command } from '../messaging/plugin.ts';
 import { delAntilink, getAntilink, setAntilink } from '../models/antilink.ts';
+import { isAdmin, isBotAdmin } from '../utils/constants.ts';
 
 Command({
 	name: 'antilink',
@@ -8,7 +10,7 @@ Command({
 	desc: 'Setup Antilink for Group Chat',
 	type: 'group',
 	function: async (msg, args) => {
-		const { prefix, jid } = msg.data;
+		const { prefix, jid } = msg;
 		if (!args) {
 			return await msg.send(
 				`\`\`\`
@@ -60,8 +62,12 @@ Command({
 	dontAddCommandList: true,
 	function: async msg => {
 		if (!msg.isGroup || !msg?.text) return;
-		if (msg.fromMe || msg.sudo) return;
-		if (!(await msg.isBotAdmin()) || (await msg.isAdmin())) return;
+		if (msg.key.fromMe || msg.sudo) return;
+		if (
+			!(await isBotAdmin(msg.client, msg.jid)) ||
+			(await isAdmin(msg.client as WASocket, msg.jid, msg.sender as string))
+		)
+			return;
 
 		const antilink = await getAntilink(msg.jid);
 		if (!antilink) return;
