@@ -14,6 +14,9 @@ importers:
       '@hapi/boom':
         specifier: ^10.0.1
         version: 10.0.1
+      axios:
+        specifier: ^1.9.0
+        version: 1.9.0
       baileys:
         specifier: github:WhiskeySockets/Baileys
         version: https://codeload.github.com/WhiskeySockets/Baileys/tar.gz/bb9f8d5c61b7b2ace2d964b54622f728b9c059ee(eslint@9.27.0(jiti@2.4.2))(link-preview-js@3.0.15)(sharp@0.34.2)(typescript@5.8.3)
@@ -48,6 +51,9 @@ importers:
         specifier: ^0.34.2
         version: 0.34.2
     devDependencies:
+      '@types/axios':
+        specifier: ^0.14.4
+        version: 0.14.4
       '@types/node':
         specifier: ^22.15.21
         version: 22.15.21
@@ -339,6 +345,10 @@ packages:
 
   '@tokenizer/token@0.3.0':
     resolution: {integrity: sha512-OvjF+z51L3ov0OyAU0duzsYuvO01PH7x4t6DJx+guahgTnBHkhJdG7soQeTSFLWN3efnHyibZ4Z8l2EuWwJN3A==}
+
+  '@types/axios@0.14.4':
+    resolution: {integrity: sha512-9JgOaunvQdsQ/qW2OPmE5+hCeUB52lQSolecrFrthct55QekhmXEwT203s20RL+UHtCQc15y3VXpby9E7Kkh/g==}
+    deprecated: This is a stub types definition. axios provides its own type definitions, so you do not need this installed.
 
   '@types/estree@1.0.7':
     resolution: {integrity: sha512-w28IoSUCJpidD/TGviZwwMJckNESJZXFu7NBZ5YJ4mEUnNraUn9Pm8HSZm/jDF1pDWYKspWE7oVphigUPRakIQ==}
@@ -1543,6 +1553,12 @@ snapshots:
       - supports-color
 
   '@tokenizer/token@0.3.0': {}
+
+  '@types/axios@0.14.4':
+    dependencies:
+      axios: 1.9.0
+    transitivePeerDependencies:
+      - debug
 
   '@types/estree@1.0.7': {}
 

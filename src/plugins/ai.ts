@@ -1,7 +1,7 @@
 import { chatGpt } from '../utils/ai.ts';
 import { Command } from '../messaging/plugin.ts';
 import { fetch, urlBuffer } from '../utils/fetch.mts';
-
+import AI from './Helpers/ai.ts'
 Command({
 	name: 'gpt',
 	fromMe: false,
@@ -49,3 +49,60 @@ Command({
 		return await message.send(`https://bk9.fun/ai/magicstudio?prompt=${match}`);
 	},
 });
+
+
+Command({
+	name: "groq",
+	fromMe: false,
+	isGroup: false,
+	desc: "grok ai interaction",
+	type: 'ai',
+	function: async (message, match) => {
+		if(!match) return message.send(`_Usage: ${message.prefix[0]}grok <prompt>_`)
+		const res = await AI.groq(match)
+		const messageContent = {
+			text: res.trim(),
+			contextInfo: {
+				externalAdReply: {
+					title: 'GROK-Ai',
+					body: 'Xstro',
+					mediaType: 1,
+					thumbnailUrl: 'https://files.catbox.moe/tjrwt8.jpg',
+					sourceUrl: 'https://gemini.com',
+					renderLargerThumbnail: false,
+					showAdAttribution: true,
+				},
+			},
+			quoted: message
+		};
+		return await message.client.sendMessage(message.jid, messageContent, { quoted: message });
+	}
+})
+
+Command({
+	name: "llama",
+	fromMe: false,
+	isGroup: false,
+	desc: "llama ai interaction",
+	type: 'ai',
+	function: async (message, match) => {
+		if(!match) return message.send(`_Usage: ${message.prefix[0]}llama <prompt>_`)
+		const res = await AI.llama(match)
+		const messageContent = {
+			text: res.trim(),
+			contextInfo: {
+				externalAdReply: {
+					title: 'llama-Ai',
+					body: 'Xstro',
+					mediaType: 1,
+					thumbnailUrl: 'https://files.catbox.moe/yq1d4x.jpg',
+					sourceUrl: 'https://llama.com',
+					renderLargerThumbnail: false,
+					showAdAttribution: true,
+				},
+			},
+			
+		};
+		return await message.client.sendMessage(message.jid, messageContent, { quoted: message });
+	}
+})

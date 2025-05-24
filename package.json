@@ -26,6 +26,7 @@
 	"dependencies": {
 		"@cacheable/node-cache": "^1.5.5",
 		"@hapi/boom": "^10.0.1",
+		"axios": "^1.9.0",
 		"baileys": "github:WhiskeySockets/Baileys",
 		"cheerio": "^1.0.0",
 		"dotenv": "^16.5.0",
@@ -39,6 +40,7 @@
 		"sharp": "^0.34.2"
 	},
 	"devDependencies": {
+		"@types/axios": "^0.14.4",
 		"@types/node": "^22.15.21",
 		"@typescript-eslint/eslint-plugin": "^8.32.1",
 		"@typescript-eslint/parser": "^8.32.1",
