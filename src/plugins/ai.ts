@@ -1,7 +1,8 @@
 import { chatGpt } from '../utils/ai.ts';
 import { Command } from '../messaging/plugin.ts';
-import { fetch, urlBuffer } from '../utils/fetch.mts';
-import AI from './Helpers/ai.ts'
+import { fetch } from '../utils/fetch.mts';
+import AI from './Helpers/ai.ts';
+
 Command({
 	name: 'gpt',
 	fromMe: false,
@@ -50,22 +51,22 @@ Command({
 	},
 });
 
-
 Command({
-	name: "groq",
+	name: 'groq',
 	fromMe: false,
 	isGroup: false,
-	desc: "grok ai interaction",
+	desc: 'grok ai interaction',
 	type: 'ai',
 	function: async (message, match) => {
-		if(!match) return message.send(`_Usage: ${message.prefix[0]}grok <prompt>_`)
-		const res = await AI.groq(match)
+		if (!match)
+			return message.send(`_Usage: ${message.prefix[0]}grok <prompt>_`);
+		const res = await AI.groq(match);
 		const messageContent = {
 			text: res.trim(),
 			contextInfo: {
 				externalAdReply: {
 					title: 'GROK-Ai',
-					body: 'Xstro',
+					body: message.pushName,
 					mediaType: 1,
 					thumbnailUrl: 'https://files.catbox.moe/tjrwt8.jpg',
 					sourceUrl: 'https://gemini.com',
@@ -73,27 +74,30 @@ Command({
 					showAdAttribution: true,
 				},
 			},
-			quoted: message
+			quoted: message,
 		};
-		return await message.client.sendMessage(message.jid, messageContent, { quoted: message });
-	}
-})
+		return await message.client.sendMessage(message.jid, messageContent, {
+			quoted: message,
+		});
+	},
+});
 
 Command({
-	name: "llama",
+	name: 'llama',
 	fromMe: false,
 	isGroup: false,
-	desc: "llama ai interaction",
+	desc: 'llama ai interaction',
 	type: 'ai',
 	function: async (message, match) => {
-		if(!match) return message.send(`_Usage: ${message.prefix[0]}llama <prompt>_`)
-		const res = await AI.llama(match)
+		if (!match)
+			return message.send(`_Usage: ${message.prefix[0]}llama <prompt>_`);
+		const res = await AI.llama(match);
 		const messageContent = {
 			text: res.trim(),
 			contextInfo: {
 				externalAdReply: {
 					title: 'llama-Ai',
-					body: 'Xstro',
+					body: message.pushName,
 					mediaType: 1,
 					thumbnailUrl: 'https://files.catbox.moe/yq1d4x.jpg',
 					sourceUrl: 'https://llama.com',
@@ -101,8 +105,9 @@ Command({
 					showAdAttribution: true,
 				},
 			},
-			
 		};
-		return await message.client.sendMessage(message.jid, messageContent, { quoted: message });
-	}
-})
+		return await message.client.sendMessage(message.jid, messageContent, {
+			quoted: message,
+		});
+	},
+});

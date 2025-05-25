@@ -1,10 +1,11 @@
-import { getDevice, isJidGroup, normalizeMessageContent } from 'baileys';
-import { getSettings } from '../models/index.ts';
 import {
-	getMessageContent,
-	getQuotedContent,
-	parseJidLid,
-} from '../utils/index.ts';
+	getDevice,
+	isJidGroup,
+	jidNormalizedUser,
+	normalizeMessageContent,
+} from 'baileys';
+import { getSettings } from '../models/index.ts';
+import { getMessageContent, getQuotedContent } from '../utils/index.ts';
 import type { WAMessage, WASocket } from 'baileys';
 
 export async function serialize(client: WASocket, WAMessage: WAMessage) {
@@ -19,8 +20,8 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 
 	const jid = key.remoteJid ?? '';
 	const isGroup = isJidGroup(key.remoteJid!);
-	const jidOwner = parseJidLid(client?.user?.id);
-	const lidOwner = parseJidLid(client?.user?.lid);
+	const jidOwner = jidNormalizedUser(client?.user?.id);
+	const lidOwner = jidNormalizedUser(client?.user?.lid);
 	const sender =
 		isJidGroup(jid) || broadcast
 			? (key.participant as string)
@@ -29,11 +30,12 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 				: jid;
 
 	const content = getMessageContent(message);
-	const quoted = getQuotedContent(message, key, jidOwner);
+	const quoted = getQuotedContent(message, key, [jidOwner, lidOwner]);
 
 	const isSudoUser = (user?: string) =>
 		sudo.includes(user ?? '') || user === jidOwner || user === lidOwner;
 
+	key.fromMe = [jidOwner, lidOwner].includes(sender);
 	return {
 		key,
 		jid,
@@ -58,12 +60,10 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 					...quoted,
 				}
 			: undefined,
-		user(match?: string): string | undefined {
+		user(id?: string): string | undefined {
 			if (quoted?.sender) return quoted.sender;
-			if (this.isGroup) {
-				return match ? parseJidLid(match) : undefined;
-			}
-			return match ? parseJidLid(match) : this.key.remoteJid!;
+			if (this.isGroup) return id ? jidNormalizedUser(id) : undefined;
+			return id ? jidNormalizedUser(id) : this.jid;
 		},
 	};
 }

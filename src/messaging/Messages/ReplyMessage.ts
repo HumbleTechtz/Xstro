@@ -6,10 +6,11 @@ import {
 	type WASocket,
 	type WAContextInfo,
 	type WAMessage,
+	jidNormalizedUser,
 } from 'baileys';
 import type { Serialize } from '../../types/index.ts';
 import { isMediaMessage } from '../../utils/content.ts';
-import { isBotAdmin, parseJidLid } from '../../utils/constants.ts';
+import { isBotAdmin } from '../../utils/constants.ts';
 
 export default class ReplyMessage {
 	client: Pick<
@@ -55,7 +56,7 @@ export default class ReplyMessage {
 		this.jid = quoted?.key.remoteJid as string;
 		this.sudo = quoted?.sudo;
 		this.owner =
-			parseJidLid(client?.user?.id ?? client?.user?.lid!) === quoted?.sender;
+			jidNormalizedUser(client?.user?.id ?? client?.user?.lid!) === quoted?.sender;
 		this.sender = quoted?.sender;
 		this.message = quoted?.message;
 		this.type = quoted?.type;

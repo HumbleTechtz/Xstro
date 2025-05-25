@@ -118,7 +118,7 @@ Command({
 	},
 });
 Command({
-	name: 'dmp3',
+	name: 'mp3url',
 	fromMe: false,
 	isGroup: false,
 	desc: 'Download Any Mp3 Media via Link.',
@@ -147,7 +147,7 @@ Command({
 });
 
 Command({
-	name: 'dmp4',
+	name: 'mp4url',
 	fromMe: false,
 	isGroup: false,
 	desc: 'Download Any Mp4 Media via Link.',

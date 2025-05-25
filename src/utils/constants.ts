@@ -47,22 +47,6 @@ export function formatBytes(bytes: number): string {
 	return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))}${sizes[i]}`;
 }
 
-export function parseJidLid(input?: any): string {
-	if (!input) return '';
-
-	const str = Array.isArray(input) ? String(input[0]) : String(input);
-
-	if (str.endsWith('@s.whatsapp.net')) {
-		return jidNormalizedUser(str);
-	}
-
-	if (str.endsWith('@lid')) {
-		const [id] = str.split(':');
-		return id + '@lid';
-	}
-
-	return '';
-}
 
 export function isLid(id?: string) {
 	if (!id) return undefined;
@@ -135,24 +119,25 @@ export function fancy(text: any): string {
 export async function isAdmin(
 	client: WASocket,
 	groupJid: string,
-	user: string,
+	sender: string,
 ) {
 	const metadata = await client.groupMetadata(groupJid);
 	const allAdmins = metadata.participants
 		.filter(v => v.admin !== null)
 		.map(v => v.id);
-	return !Array.isArray(allAdmins)
-		? Array.from(allAdmins).includes(user)
-		: allAdmins.includes(user);
+	return allAdmins.includes(sender);
 }
 
 export async function isBotAdmin(
 	client: Pick<WASocket, 'groupMetadata' | 'user'>,
 	groupJid: string,
 ) {
+	const jid = jidNormalizedUser(client.user?.id);
+	const lid = jidNormalizedUser(client?.user?.lid);
 	const metadata = await client.groupMetadata(groupJid);
 	const allAdmins = metadata.participants
 		.filter(v => v.admin !== null)
 		.map(v => v.id);
-	return allAdmins.includes(client.user?.lid ?? client.user?.id!);
+	if (metadata.addressingMode === 'lid') return allAdmins.includes(lid);
+	return allAdmins.includes(jid);
 }

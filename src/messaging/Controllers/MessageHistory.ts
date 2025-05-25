@@ -1,4 +1,4 @@
-import { type BaileysEventMap } from 'baileys';
+import { isJidUser, isLidUser, type BaileysEventMap } from 'baileys';
 import { ChatsDb } from '../../models/chats.ts';
 import { contactsDb } from '../../models/contact.ts';
 import { messageDb } from '../../models/messages.ts';
@@ -18,13 +18,14 @@ export default class MessageHistory {
 		if (chats) {
 			for (const chat of chats) {
 				await ChatsDb.create({
-					data: chat,
+					data: chat ?? null,
 				});
 			}
 		}
 
 		if (contacts) {
 			for (const contact of contacts) {
+				if (!isJidUser(contact?.id) || !isLidUser(contact?.lid)) return;
 				await contactsDb.create({ ...contact });
 			}
 		}

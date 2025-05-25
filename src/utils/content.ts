@@ -110,7 +110,7 @@ export function hasContextInfo(
 export function getQuotedContent(
 	message?: WAMessageContent,
 	key?: WAMessageKey,
-	owner?: string,
+	owner?: string[],
 ) {
 	if (!message) return undefined;
 	const mtype = contentType(message);
@@ -126,12 +126,7 @@ export function getQuotedContent(
 		? {
 				key: {
 					remoteJid: key?.remoteJid,
-					fromMe:
-						Quoted.participant === owner
-							? true
-							: Quoted.participant
-								? false
-								: false,
+					fromMe: owner?.includes(Quoted?.participant as string) ? true : false,
 					id: Quoted.stanzaId,
 					participant:
 						isJidGroup(key?.remoteJid!) || isJidBroadcast(key?.remoteJid!)

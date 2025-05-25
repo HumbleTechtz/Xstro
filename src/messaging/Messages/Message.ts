@@ -24,7 +24,7 @@ export default class Message {
 	jid: string;
 	prefix: string[];
 	isGroup: boolean | undefined;
-	sender: string | null | undefined;
+	sender: string;
 	message: WAMessageContent | undefined;
 	type: keyof WAMessageContent | undefined;
 	messageTimestamp: number | Long | null | undefined;
