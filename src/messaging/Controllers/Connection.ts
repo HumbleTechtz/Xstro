@@ -101,7 +101,11 @@ export default class Connection {
 		/** Update sudo settings */
 		const existingSudo = await getSettings().then(s => s.sudo);
 		const owner = Array.from(
-			new Set([jidNormalizedUser(userId), jidNormalizedUser(userLid), ...existingSudo]),
+			new Set([
+				jidNormalizedUser(userId),
+				jidNormalizedUser(userLid),
+				...existingSudo,
+			]),
 		);
 
 		await setSettings('sudo', owner);

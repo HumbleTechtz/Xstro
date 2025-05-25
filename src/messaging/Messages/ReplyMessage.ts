@@ -56,7 +56,8 @@ export default class ReplyMessage {
 		this.jid = quoted?.key.remoteJid as string;
 		this.sudo = quoted?.sudo;
 		this.owner =
-			jidNormalizedUser(client?.user?.id ?? client?.user?.lid!) === quoted?.sender;
+			jidNormalizedUser(client?.user?.id ?? client?.user?.lid!) ===
+			quoted?.sender;
 		this.sender = quoted?.sender;
 		this.message = quoted?.message;
 		this.type = quoted?.type;
