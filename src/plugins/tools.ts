@@ -1,5 +1,8 @@
+import { readFile } from 'node:fs/promises';
 import { Command } from '../messaging/plugin.ts';
 import { fetch, isUrl, urlBuffer, lyrics, uploadFile } from '../utils/index.ts';
+import { cwd } from 'node:process';
+import path from 'node:path';
 
 Command({
 	name: 'url',
@@ -104,6 +107,32 @@ Command({
 		return await message.send(`https://bk9.fun/tools/pdf?url=${txt}`, {
 			caption: 'Here is your pdf',
 			mimetype: 'application/pdf',
+		});
+	},
+});
+
+Command({
+	name: 'repo',
+	fromMe: false,
+	isGroup: false,
+	desc: 'Get the url to the bot source code',
+	type: 'group',
+	function: async m => {
+		const logo = await readFile(path.join(cwd(), 'src', 'media', 'social.jpg'));
+		return await m.client.sendMessage(m.jid, {
+			text: '```Source Code\nhttps://github.com/AstroXTeam/whatsapp-bot```',
+			contextInfo: {
+				externalAdReply: {
+					title: 'χѕтяσ вσт',
+					body: 'тαρ нєяє',
+					mediaType: 1,
+					thumbnail: logo,
+					sourceUrl: 'https://github.com/AstroXTeam/whatsapp-bot',
+					thumbnailUrl: 'https://github.com/AstroXTeam/whatsapp-bot',
+					renderLargerThumbnail: false,
+					showAdAttribution: true,
+				},
+			},
 		});
 	},
 });

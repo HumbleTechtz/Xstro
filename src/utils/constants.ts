@@ -1,4 +1,6 @@
 import { jidNormalizedUser, type WASocket } from 'baileys';
+import { cachedGroupMetadata } from '../models/group.ts';
+import Message from '../messaging/Messages/Message.ts';
 
 export function isPath(text: string): boolean {
 	if (typeof text !== 'string' || text.trim() === '') return false;
@@ -115,28 +117,58 @@ export function fancy(text: any): string {
 		.join('');
 }
 
-export async function isAdmin(
-	client: WASocket,
-	groupJid: string,
-	sender: string,
-) {
-	const metadata = await client.groupMetadata(groupJid);
+export async function isAdmin(jid: string, participant: string) {
+	const metadata = await cachedGroupMetadata(jid);
+	if (!metadata) return false;
 	const allAdmins = metadata.participants
 		.filter(v => v.admin !== null)
 		.map(v => v.id);
-	return allAdmins.includes(sender);
+	return allAdmins.includes(participant);
 }
 
-export async function isBotAdmin(
-	client: Pick<WASocket, 'groupMetadata' | 'user'>,
-	groupJid: string,
-) {
+export async function isBotAdmin(client: WASocket, groupJid: string) {
 	const jid = jidNormalizedUser(client.user?.id);
 	const lid = jidNormalizedUser(client?.user?.lid);
-	const metadata = await client.groupMetadata(groupJid);
+	const metadata = await cachedGroupMetadata(groupJid);
+	if (!metadata) return false;
 	const allAdmins = metadata.participants
 		.filter(v => v.admin !== null)
 		.map(v => v.id);
 	if (metadata.addressingMode === 'lid') return allAdmins.includes(lid);
 	return allAdmins.includes(jid);
 }
+
+export async function parseId(id: string, jid: string) {
+	const groupInfo = await cachedGroupMetadata(jid);
+	if (!groupInfo) return undefined;
+
+	if (groupInfo.addressingMode === 'lid') {
+		if (id.startsWith('@')) {
+			return `${id.split('@')[1]}@lid`;
+		}
+		return jidNormalizedUser(id);
+	} else if (groupInfo.addressingMode === 'pn') {
+		if (id.startsWith('@')) {
+			return `${id.split('@')[1]}@s.whatsapp.net`;
+		}
+		if (!id.endsWith('@s.whatsapp.net')) {
+			return `${id}@s.whatsapp.net`;
+		}
+		return id;
+	}
+	return;
+}
+
+export const adminCheck = (message: Message): Promise<boolean> => {
+	return new Promise(async resolve => {
+		const { jid, client, sender } = message;
+		if (!(await isAdmin(jid, sender))) {
+			await message.send(`_@${sender.split('@')[0]} You are not Admin_`);
+			return resolve(false);
+		}
+		if (!(await isBotAdmin(client as any, jid))) {
+			await message.send(`_@${sender.split('@')[0]} I am not an Admin_`);
+		}
+		resolve(true);
+	});
+};

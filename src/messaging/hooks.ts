@@ -16,6 +16,6 @@ export default function (sock: WASocket) {
 
 	setTimeout(() => {
 		fetchAndUpdateGroups();
-		setInterval(fetchAndUpdateGroups, 10 * 60 * 1000);
-	}, 5000); // Fetch every 10 minutes, it's the safest way to avoid being rate limited, because Baileys just needs the partiicipants Array to be able to actaully send messages to the group, so we don't need to fetch it every 5 minutes, but as soon as the socket is connected fetch our groups as inital data inn 5 Secs
+		setInterval(fetchAndUpdateGroups, 45 * 1000);
+	}, 5000);
 }

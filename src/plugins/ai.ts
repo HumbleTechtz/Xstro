@@ -2,6 +2,9 @@ import { chatGpt } from '../utils/ai.ts';
 import { Command } from '../messaging/plugin.ts';
 import { fetch } from '../utils/fetch.mts';
 import AI from './Helpers/ai.ts';
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
+import { cwd } from 'node:process';
 
 Command({
 	name: 'gpt',
@@ -61,6 +64,8 @@ Command({
 		if (!match)
 			return message.send(`_Usage: ${message.prefix[0]}grok <prompt>_`);
 		const res = await AI.groq(match);
+		const logo = await readFile(path.join(cwd(), 'src', 'media', 'social.jpg'));
+
 		const messageContent = {
 			text: res.trim(),
 			contextInfo: {
@@ -68,8 +73,9 @@ Command({
 					title: 'GROK-Ai',
 					body: message.pushName,
 					mediaType: 1,
-					thumbnailUrl: 'https://files.catbox.moe/tjrwt8.jpg',
-					sourceUrl: 'https://gemini.com',
+					thumbnail: logo,
+					sourceUrl: 'https://github.com/AstroXTeam/whatsapp-bot',
+					thumbnailUrl: 'https://github.com/AstroXTeam/whatsapp-bot',
 					renderLargerThumbnail: false,
 					showAdAttribution: true,
 				},
@@ -92,6 +98,7 @@ Command({
 		if (!match)
 			return message.send(`_Usage: ${message.prefix[0]}llama <prompt>_`);
 		const res = await AI.llama(match);
+		const logo = await readFile(path.join(cwd(), 'src', 'media', 'social.jpg'));
 		const messageContent = {
 			text: res.trim(),
 			contextInfo: {
@@ -99,8 +106,9 @@ Command({
 					title: 'llama-Ai',
 					body: message.pushName,
 					mediaType: 1,
-					thumbnailUrl: 'https://files.catbox.moe/yq1d4x.jpg',
-					sourceUrl: 'https://llama.com',
+					thumbnail: logo,
+					sourceUrl: 'https://github.com/AstroXTeam/whatsapp-bot',
+					thumbnailUrl: 'https://github.com/AstroXTeam/whatsapp-bot',
 					renderLargerThumbnail: false,
 					showAdAttribution: true,
 				},
