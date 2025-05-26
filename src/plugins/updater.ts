@@ -21,49 +21,32 @@ Command({
 
 		if (match === 'now') {
 			if (commits.length === 0) {
-				return await message.send('No changes in the latest commit');
+				return await message.send(
+					'```You are already on the latest version```',
+				);
 			}
 
 			await message.send('Updating...');
 			await execPromise('git stash && git pull origin ' + 'stable');
-
+			await message.send('Installing new dependancies');
 			await message.send('Restarting...');
-			const dependencyChanged = await updatedDependencies();
-
-			if (dependencyChanged) {
-				await message.send('Dependancies changed installing new dependancies');
-				await message.send('Restarting...');
-				await execPromise('pnpm install');
-				process.exit();
-			} else {
-				await message.send('Restarting...');
-				process.exit();
-			}
+			await execPromise('pnpm install');
+			process.exit();
 		} else {
 			if (commits.length === 0) {
-				return await message.send('No changes in the latest commit');
+				return await message.send(
+					'```You are already on the latest version```',
+				);
 			}
 
-			let changes = 'New update available!\n\n';
+			let changes = 'New update available\n\n';
 			changes += 'Commits: ' + commits.length + '\n';
 			changes += 'Changes: \n';
 			commits.forEach((commit: string, index: number) => {
 				changes += index + 1 + '. ' + commit + '\n';
 			});
-			changes += '\nTo update, send ' + prefix + 'update now';
+			changes += '\nUse, ' + prefix[0] + 'update now';
 			await message.send(changes);
 		}
 	},
 });
-
-async function updatedDependencies(): Promise<boolean> {
-	try {
-		const { stdout: diff } = await execPromise(
-			'git diff stable..origin/stable',
-		);
-		return diff.includes('"dependencies":');
-	} catch (e) {
-		console.error(e as Error);
-		return false;
-	}
-}
