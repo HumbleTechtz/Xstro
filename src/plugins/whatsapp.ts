@@ -33,7 +33,7 @@ Command({
 	desc: 'Block a user from Messaging you',
 	type: 'whatsapp',
 	function: async (message, match) => {
-		const jid = message.user(match);
+		const jid = await message.user(match);
 		if (!jid) return message.send('No user specified to block');
 		if (!(await message.client.onWhatsApp(jid)))
 			return message.send('User is not on WhatsApp');
@@ -49,7 +49,7 @@ Command({
 	desc: 'Unblock a user to allow Messaging',
 	type: 'whatsapp',
 	function: async (message, match) => {
-		const jid = message.user(match);
+		const jid = await message.user(match);
 		if (!jid) return message.send('No user specified to unblock');
 		await message.send('User unblocked successfully');
 		return message.client.updateBlockStatus(jid, 'unblock');
@@ -183,7 +183,7 @@ Command({
 	function: async (message, match) => {
 		const msg = message.quoted;
 		if (!msg) return message.send('No message quoted to forward');
-		const jid = message.user(match);
+		const jid = await message.user(match);
 		if (!jid) return message.send('No user specified to forward');
 		if (!(await message.client.onWhatsApp(jid)))
 			return message.send('User is not on WhatsApp');

@@ -36,7 +36,7 @@ export default class Message {
 	video: boolean;
 	audio: boolean;
 	mode: boolean;
-	user: (match?: string) => string | undefined;
+	user: (match?: string) => Promise<string | undefined>;
 	quoted?: ReplyMessage;
 	text?: string | null | undefined;
 
@@ -115,7 +115,7 @@ export default class Message {
 	async delete() {
 		const canDeleteForAll =
 			this.key.fromMe ||
-			(this.isGroup && (await isBotAdmin(this.client, this.jid)));
+			(this.isGroup && (await isBotAdmin(this.client as WASocket, this.jid)));
 
 		if (!canDeleteForAll) {
 			return await this.client.chatModify(

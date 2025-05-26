@@ -25,7 +25,7 @@ Command({
 	desc: 'Get the profile picture of any person or group',
 	type: 'tools',
 	function: async (message, match) => {
-		const user = message.user(match);
+		const user = await message.user(match);
 		if (!user) return message.send('Provide someone number');
 		const profilePic = await message.client.profilePictureUrl(user, 'image');
 		if (!profilePic)

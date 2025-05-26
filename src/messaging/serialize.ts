@@ -5,7 +5,11 @@ import {
 	normalizeMessageContent,
 } from 'baileys';
 import { getSettings } from '../models/index.ts';
-import { getMessageContent, getQuotedContent } from '../utils/index.ts';
+import {
+	getMessageContent,
+	getQuotedContent,
+	parseId,
+} from '../utils/index.ts';
 import type { WAMessage, WASocket } from 'baileys';
 
 export async function serialize(client: WASocket, WAMessage: WAMessage) {
@@ -60,7 +64,10 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 					...quoted,
 				}
 			: undefined,
-		user(id?: string): string | undefined {
+		user: async function (id?: string): Promise<string | undefined> {
+			if (id?.startsWith('@')) {
+				return await parseId(id, jid);
+			}
 			if (quoted?.sender) return quoted.sender;
 			if (this.isGroup) return id ? jidNormalizedUser(id) : undefined;
 			return id ? jidNormalizedUser(id) : this.jid;

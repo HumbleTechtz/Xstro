@@ -1,6 +1,6 @@
 import { pathToFileURL, fileURLToPath } from 'node:url';
 import { join, extname, dirname } from 'node:path';
-import { readdir } from 'node:fs/promises';
+import { readdir, stat } from 'node:fs/promises';
 import type { Commands } from '../types/index.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -21,19 +21,28 @@ export async function syncPlugins(
 ): Promise<void> {
 	const plugins = join(__dirname, plugin);
 
-	const files = await readdir(plugins, { withFileTypes: true });
-	await Promise.all(
-		files.map(async file => {
-			const path: string = join(plugins, file.name);
-			const fileExtension = extname(file.name).toLowerCase();
-			if (extensions.some(ext => ext.toLowerCase() === fileExtension)) {
-				try {
-					const fileUrl: string = pathToFileURL(path).href;
-					await import(fileUrl);
-				} catch (err) {
-					console.error(`${file.name}: ${(err as Error).message}`);
+	async function loadDirectory(directory: string) {
+		const entries = await readdir(directory, { withFileTypes: true });
+
+		await Promise.all(
+			entries.map(async entry => {
+				const fullPath = join(directory, entry.name);
+				if (entry.isDirectory()) {
+					await loadDirectory(fullPath);
+				} else {
+					const fileExtension = extname(entry.name).toLowerCase();
+					if (extensions.includes(fileExtension)) {
+						try {
+							const fileUrl = pathToFileURL(fullPath).href;
+							await import(fileUrl);
+						} catch (err) {
+							console.error(`${entry.name}: ${(err as Error).message}`);
+						}
+					}
 				}
-			}
-		}),
-	);
+			}),
+		);
+	}
+
+	await loadDirectory(plugins);
 }

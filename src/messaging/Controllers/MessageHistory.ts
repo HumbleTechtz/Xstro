@@ -1,19 +1,23 @@
-import { isJidUser, isLidUser, type BaileysEventMap } from 'baileys';
+import {
+	isJidUser,
+	isLidUser,
+	type WASocket,
+	type BaileysEventMap,
+} from 'baileys';
 import { ChatsDb } from '../../models/chats.ts';
 import { contactsDb } from '../../models/contact.ts';
 import { messageDb } from '../../models/messages.ts';
 
 export default class MessageHistory {
 	private update: BaileysEventMap['messaging-history.set'];
-	constructor(update: BaileysEventMap['messaging-history.set']) {
+	constructor(
+		update: BaileysEventMap['messaging-history.set'],
+		client?: WASocket,
+	) {
 		this.update = update;
 	}
 	async create() {
-		const { chats, contacts, messages, progress } = this.update;
-
-		if (progress) {
-			console.log(`Sync Progress`, progress);
-		}
+		const { chats, contacts, messages } = this.update;
 
 		if (chats) {
 			for (const chat of chats) {
@@ -25,7 +29,7 @@ export default class MessageHistory {
 
 		if (contacts) {
 			for (const contact of contacts) {
-				if (!isJidUser(contact?.id) || !isLidUser(contact?.lid)) return;
+				if (!isJidUser(contact?.id) && !isLidUser(contact?.lid)) return;
 				await contactsDb.create({ ...contact });
 			}
 		}

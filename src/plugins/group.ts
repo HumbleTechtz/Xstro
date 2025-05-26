@@ -1,7 +1,6 @@
-import { delay } from 'baileys';
 import { Command } from '../messaging/plugin.ts';
 import { cachedGroupMetadata } from '../models/group.ts';
-import { adminCheck, parseId } from '../utils/constants.ts';
+import { adminCheck } from '../utils/constants.ts';
 
 Command({
 	name: 'add',
@@ -32,7 +31,7 @@ Command({
 	function: async (message, match) => {
 		if (!(await adminCheck(message))) return;
 		if (!match) return message.send('_Provide a valid number or mention_');
-		const user = await parseId(match, message.jid);
+		const user = await message.user(match);
 		if (!user) return message.send('_Invalid number or mention_');
 		await message.client.groupParticipantsUpdate(message.jid, [user], 'remove');
 		message.send(`_@${user.split('@')[0]} kicked from group_`, {
@@ -71,7 +70,7 @@ Command({
 	function: async (message, match) => {
 		if (!(await adminCheck(message))) return;
 		if (!match) return message.send('_Provide a valid number or mention_');
-		const user = await parseId(match, message.jid);
+		const user = await message.user(match);
 		if (!user) return message.send('_Invalid number or mention_');
 		const groupData = await cachedGroupMetadata(message.jid);
 		const admins = groupData.participants.filter(v => v.admin).map(v => v.id);
@@ -85,7 +84,7 @@ Command({
 			[user],
 			'promote',
 		);
-		message.send(`_@${user.split('@')[0]} is now admin_`, {
+		return await message.send(`_@${user.split('@')[0]} is now admin_`, {
 			mentions: [user],
 		});
 	},
@@ -100,7 +99,7 @@ Command({
 	function: async (message, match) => {
 		if (!(await adminCheck(message))) return;
 		if (!match) return message.send('_Provide a valid number or mention_');
-		const user = await parseId(match, message.jid);
+		const user = await message.user(match);
 		if (!user) return message.send('_Invalid number or mention_');
 		const groupData = await cachedGroupMetadata(message.jid);
 		const admins = groupData.participants.filter(v => v.admin).map(v => v.id);
@@ -110,7 +109,7 @@ Command({
 			});
 		}
 		await message.client.groupParticipantsUpdate(message.jid, [user], 'demote');
-		message.send(`_@${user.split('@')[0]} is no longer admin_`, {
+		return await message.send(`_@${user.split('@')[0]} is no longer admin_`, {
 			mentions: [user],
 		});
 	},
@@ -127,7 +126,7 @@ Command({
 		const gc = await message.client.groupCreate(match, [message.owner]);
 		const invite = await message.client.groupInviteCode(gc.id);
 		const url = `https://chat.whatsapp.com/${invite}`;
-		message.send(url, {
+		return await message.send(url, {
 			contextInfo: {
 				isForwarded: true,
 				externalAdReply: {
@@ -177,7 +176,7 @@ Command({
 		if (!(await adminCheck(message))) return;
 		if (!match) return message.send('_Provide new group name_');
 		await message.client.groupUpdateSubject(message.jid, match);
-		message.send('_Group name updated_');
+		return await message.send('_Group name updated_');
 	},
 });
 
@@ -191,7 +190,7 @@ Command({
 		if (!(await adminCheck(message))) return;
 		if (!match) return message.send('_Provide new group description_');
 		await message.client.groupUpdateDescription(message.jid, match);
-		message.send('_Group description updated_');
+		return await message.send('_Group description updated_');
 	},
 });
 
@@ -206,7 +205,7 @@ Command({
 		const metadata = await cachedGroupMetadata(message.jid);
 		if (metadata.announce) return message.send('_Group already muted_');
 		await message.client.groupSettingUpdate(message.jid, 'announcement');
-		message.send('_Group muted, only admins can send messages_');
+		return await message.send('_Group muted, only admins can send messages_');
 	},
 });
 
@@ -221,7 +220,7 @@ Command({
 		const metadata = await cachedGroupMetadata(message.jid);
 		if (!metadata.announce) return message.send('_Group already unmuted_');
 		await message.client.groupSettingUpdate(message.jid, 'not_announcement');
-		message.send('_Group unmuted, all members can send messages_');
+		return await message.send('_Group unmuted, all members can send messages_');
 	},
 });
 
@@ -237,7 +236,7 @@ Command({
 		if (metadata.restrict)
 			return message.send('_Group settings already restricted_');
 		await message.client.groupSettingUpdate(message.jid, 'locked');
-		message.send('_Group settings restricted to admins_');
+		return await message.send('_Group settings restricted to admins_');
 	},
 });
 
@@ -253,7 +252,7 @@ Command({
 		if (!metadata.restrict)
 			return message.send('_Group settings already unrestricted_');
 		await message.client.groupSettingUpdate(message.jid, 'unlocked');
-		message.send('_Group settings unrestricted_');
+		return await message.send('_Group settings unrestricted_');
 	},
 });
 
@@ -266,7 +265,7 @@ Command({
 	function: async message => {
 		if (!(await adminCheck(message))) return;
 		const code = await message.client.groupInviteCode(message.jid);
-		message.send(`_https://chat.whatsapp.com/${code}_`);
+		return await message.send(`_https://chat.whatsapp.com/${code}_`);
 	},
 });
 
@@ -279,7 +278,7 @@ Command({
 	function: async message => {
 		if (!(await adminCheck(message))) return;
 		const code = await message.client.groupRevokeInvite(message.jid);
-		message.send(`_https://chat.whatsapp.com/${code}_`);
+		return await message.send(`_https://chat.whatsapp.com/${code}_`);
 	},
 });
 
@@ -339,6 +338,88 @@ Command({
 	desc: 'Leave a group',
 	type: 'group',
 	function: async message => {
-		await message.client.groupLeave(message.jid);
+		return await message.client.groupLeave(message.jid);
+	},
+});
+
+Command({
+	name: 'requests',
+	fromMe: false,
+	isGroup: true,
+	desc: 'Get group join requests',
+	type: 'group',
+	function: async message => {
+		if (!(await adminCheck(message))) return;
+		const requests = await message.client.groupRequestParticipantsList(
+			message.jid,
+		);
+		if (!requests || requests.length === 0) {
+			return message.send('_No join requests found_');
+		}
+		const participants = requests.map(p => p.id);
+		return await message.send(
+			`_Join requests: ${participants.length}_\n\n` +
+				participants.map(p => `@${p.split('@')[0]}`).join('\n'),
+			{
+				mentions: participants,
+			},
+		);
+	},
+});
+
+Command({
+	name: 'approve',
+	fromMe: false,
+	isGroup: true,
+	desc: 'Approve a group join request',
+	type: 'group',
+	function: async message => {
+		const requests = await message.client.groupRequestParticipantsList(
+			message.jid,
+		);
+		if (!requests || requests.length === 0) {
+			return message.send('_No join requests found_');
+		}
+		const participants = requests.map(p => p.id);
+		await message.client.groupRequestParticipantsUpdate(
+			message.jid,
+			participants,
+			'approve',
+		);
+		return await message.send(
+			`_Approved members: ${participants.map(p => `@${p.split('@')[0]}`).join(', ')}_`,
+			{
+				mentions: participants,
+			},
+		);
+	},
+});
+
+Command({
+	name: 'reject',
+	fromMe: false,
+	isGroup: true,
+	desc: 'Reject all group join requests',
+	type: 'group',
+	function: async message => {
+		if (!(await adminCheck(message))) return;
+		const requests = await message.client.groupRequestParticipantsList(
+			message.jid,
+		);
+		if (!requests || requests.length === 0) {
+			return message.send('_No join requests found_');
+		}
+		const participants = requests.map(p => p.id);
+		await message.client.groupRequestParticipantsUpdate(
+			message.jid,
+			participants,
+			'reject',
+		);
+		return await message.send(
+			`_Rejected members: ${participants.map(p => `@${p.split('@')[0]}`).join(', ')}_`,
+			{
+				mentions: participants,
+			},
+		);
 	},
 });
