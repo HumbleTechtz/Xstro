@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { Command } from '../messaging/plugin.ts';
-import { fetch, isUrl, urlBuffer, lyrics, uploadFile } from '../utils/index.ts';
+import { fetch, isUrl, urlBuffer, lyrics, upload } from '../utils/index.ts';
 import { cwd } from 'node:process';
 import path from 'node:path';
 
@@ -86,7 +86,7 @@ Command({
 		const msg = message.quoted;
 		if (!msg || !msg.image) return message.send('Reply to an image');
 		const buffer = await msg.downloadM();
-		const url = await uploadFile(buffer);
+		const url = await upload(buffer);
 		return await message.client.sendMessage(message.jid, {
 			image: { url: `https://bk9.fun/tools/enhance?url=${url}` },
 			caption: 'Here is your enhanced image',

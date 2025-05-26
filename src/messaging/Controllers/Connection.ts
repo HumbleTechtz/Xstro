@@ -94,7 +94,17 @@ export default class Connection {
 		if (userId) {
 			const availableCommands = commands.filter(cmd => !cmd.dontAddCommandList);
 			await this.client.sendMessage(userId, {
-				text: `\`\`\`Established Connection\nOwner: ${userName}\nCommands: ${availableCommands.length}\`\`\``.trim(),
+				text: `\`\`\`Bot Connected\nOwner: ${userName}\nCommands: ${availableCommands.length}\`\`\``.trim(),
+				contextInfo: {
+					isForwarded: true,
+					forwardingScore: 999,
+					forwardedNewsletterMessageInfo: {
+						newsletterJid: '120363420960001579@newsletter',
+						newsletterName: 'χѕтяσ ωнαтѕαρρ вσт',
+						contentType: 2,
+						accessibilityText: 'נσιи αи∂ fσℓℓσω fσя υρ∂αтєѕ',
+					},
+				},
 			});
 		}
 
