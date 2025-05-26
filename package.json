@@ -36,7 +36,8 @@
 		"link-preview-js": "^3.0.15",
 		"node-webpmux": "^3.2.1",
 		"quantava": "^1.0.1",
-		"sharp": "^0.34.2"
+		"sharp": "^0.34.2",
+		"tsx": "^4.19.4"
 	},
 	"devDependencies": {
 		"@types/node": "^22.15.21",

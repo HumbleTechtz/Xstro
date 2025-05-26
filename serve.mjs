@@ -7,7 +7,7 @@ import { spawn } from 'node:child_process';
  */
 function runProc(scriptPath) {
 	return new Promise(resolve => {
-		const proc = spawn('node', [scriptPath], {
+		const proc = spawn('tsx', [scriptPath], {
 			stdio: 'inherit',
 		});
 

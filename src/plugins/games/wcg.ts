@@ -1,5 +1,7 @@
 import { Command } from '../../messaging/plugin.ts';
 import Message from '../../messaging/Messages/Message.ts';
+import { updateLeaderboard } from '../../models/leaderboard.ts';
+import { isLidUser } from 'baileys';
 
 const games = new Map<string, Wcg>();
 const pending = new Map<string, { jids: string[]; timers: NodeJS.Timeout[] }>();
@@ -14,7 +16,7 @@ Command({
 		const jid = message.jid;
 
 		if (match === 'end' && games.has(jid)) {
-			const ev = games.get(jid)!.endGame(jid);
+			const ev = await games.get(jid)!.endGame(jid);
 			return message.send(ev);
 		}
 
@@ -237,7 +239,7 @@ class Wcg {
 		this.players = this.players.filter(p => p !== jid);
 		if (this.currentIndex >= this.players.length) this.currentIndex = 0;
 		if (this.players.length <= 1) {
-			const endMsg: string = this.endGame(this.message.jid);
+			const endMsg: string = await this.endGame(this.message.jid);
 			await this.message.send(`${msg}\n\n${endMsg}`, {
 				mentions: [jid, ...this.originalPlayers],
 			});
@@ -301,7 +303,7 @@ class Wcg {
 		}
 		this.inactivityTimeout = setTimeout(async () => {
 			if (this.active) {
-				const endMsg: string = this.forceEndGame(this.message.jid);
+				const endMsg: string = await this.forceEndGame(this.message.jid);
 				await this.message.send(endMsg, {
 					mentions: this.players.length ? this.originalPlayers : [],
 				});
@@ -309,7 +311,7 @@ class Wcg {
 		}, 60000);
 	}
 
-	public endGame(jid: string): string {
+	public async endGame(jid: string): Promise<string> {
 		const scoreArray: [string, number][] = this.originalPlayers.map(p => [
 			p,
 			this.scores.get(p) || 0,
@@ -323,12 +325,21 @@ class Wcg {
 		const result: string = scoreArray[0]
 			? `\`\`\`@${scoreArray[0][0].split('@')[0]} claims victory in this Match with ${scoreArray[0][1]} points!\n\nRankings:\n${scoreText}\`\`\``
 			: `\`\`\`The Word Chain Game has concluded!\n\nRankings:\n${scoreText}\`\`\``;
+		const validPlayers = this.originalPlayers.filter(userId =>
+			isLidUser(userId),
+		);
+		await updateLeaderboard(
+			validPlayers.map(userId => ({
+				userId,
+				score: this.scores.get(userId) || 0,
+			})),
+		);
 
 		this.cleanup(jid);
 		return result;
 	}
 
-	private forceEndGame(jid: string): string {
+	private async forceEndGame(jid: string): Promise<string> {
 		const scoreArray: [string, number][] = this.originalPlayers.map(p => [
 			p,
 			this.scores.get(p) || 0,
@@ -342,6 +353,15 @@ class Wcg {
 		const result: string = scoreArray[0]
 			? `\`\`\`@${scoreArray[0][0].split('@')[0]} claims victory in the Word Chain Game with ${scoreArray[0][1]} points due to inactivity!\n\nRankings:\n${scoreText}\`\`\``
 			: `\`\`\`The Word Chain Game has concluded due to inactivity!\n\nRankings:\n${scoreText}\`\`\``;
+		const validPlayers = this.originalPlayers.filter(userId =>
+			isLidUser(userId),
+		);
+		await updateLeaderboard(
+			validPlayers.map(userId => ({
+				userId,
+				score: this.scores.get(userId) || 0,
+			})),
+		);
 
 		this.cleanup(jid);
 		return result;
