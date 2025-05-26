@@ -140,22 +140,25 @@ async function resetLeaderboard() {
 	await leaderboard.update({ score: 0, rank: 'bronze' }, { where: {} });
 }
 
-async function getLeaderboard(): Promise<{
-    userId: string;
-    score: number;
-    rank: string;
-}[]> {
+async function getLeaderboard(): Promise<
+	{
+		userId: string;
+		score: number;
+		rank: string;
+	}[]
+> {
 	const leaderboardEntries = await leaderboard.findAll();
 	return leaderboardEntries
 		.map(u => ({
 			userId: String(u.userId ?? ''),
 			score: Number(u.score ?? 0),
-			rank: String(u.rank ?? 'bronze')
+			rank: String(u.rank ?? 'bronze'),
 		}))
 		.sort(
 			(a, b) =>
-				((typeof b.score === 'number' ? b.score : 0) - (typeof a.score === 'number' ? a.score : 0)) ||
-				String(a.userId).localeCompare(String(b.userId))
+				(typeof b.score === 'number' ? b.score : 0) -
+					(typeof a.score === 'number' ? a.score : 0) ||
+				String(a.userId).localeCompare(String(b.userId)),
 		);
 }
 
