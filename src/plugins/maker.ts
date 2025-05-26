@@ -1,5 +1,5 @@
 import { Command } from '../messaging/plugin.ts';
-import { uploadFile, urlBuffer } from '../utils/fetch.mts';
+import { upload, urlBuffer } from '../utils/fetch.mts';
 
 type LogoType =
 	| 'wasted'
@@ -13,7 +13,7 @@ type LogoType =
 
 async function meme(image: Buffer, type: LogoType) {
 	try {
-		const url = await uploadFile(image);
+		const url = await upload(image);
 		if (!url) return;
 		return await urlBuffer(
 			`https://bk9.fun/maker/${type}?url=${encodeURIComponent(url)}`,

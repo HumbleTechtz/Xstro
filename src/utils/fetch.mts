@@ -2,6 +2,8 @@ import got, { type Options as gotOps } from 'got';
 import { Boom } from '@hapi/boom';
 import FormData from 'form-data';
 
+import { fileTypeFromBuffer } from 'file-type';
+
 export const fetch = async function (
 	url: string,
 	options?: gotOps,
@@ -119,18 +121,30 @@ export function isUrl(text: string): boolean {
 	return urlRegex.test(text);
 }
 
-export async function uploadFile(file: Buffer): Promise<string | undefined> {
-	try {
-		const form = new FormData();
-		form.append('file', file, crypto.randomUUID());
-		const response = await got.post('https://0x0.st', {
-			body: form,
-			headers: form.getHeaders(),
-			responseType: 'text',
-			followRedirect: true,
-		});
-		return response.body.trim();
-	} catch (err) {
-		console.error(`Error uploading file: ${err}`);
+const MAX_FILE_SIZE_MB = 200;
+
+export const upload = async (buffer: Buffer): Promise<string> => {
+	const fileSizeMB = buffer.length / (1024 * 1024);
+	if (fileSizeMB > MAX_FILE_SIZE_MB) {
+		throw new Error(`File size exceeds the limit of ${MAX_FILE_SIZE_MB}MB.`);
 	}
-}
+
+	const type = await fileTypeFromBuffer(buffer);
+	const ext = type ? type.ext : 'bin';
+
+	const bodyForm = new FormData();
+	bodyForm.append('fileToUpload', buffer, `file.${ext}`);
+	bodyForm.append('reqtype', 'fileupload');
+
+	const res = await got.post('https://catbox.moe/user/api.php', {
+		body: bodyForm,
+		headers: bodyForm.getHeaders(),
+	});
+
+	const mediaUrl = res.body;
+	if (!mediaUrl.startsWith('http')) {
+		throw new Error('Invalid response from server.');
+	}
+
+	return mediaUrl;
+};
