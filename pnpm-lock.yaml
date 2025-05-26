@@ -16,7 +16,7 @@ importers:
         version: 10.0.1
       baileys:
         specifier: github:WhiskeySockets/Baileys
-        version: https://codeload.github.com/WhiskeySockets/Baileys/tar.gz/7288a4a89ed8d7e99812e5be17c63e397726be8b(eslint@9.27.0(jiti@2.4.2))(link-preview-js@3.0.15)(sharp@0.34.2)(typescript@5.8.3)
+        version: https://codeload.github.com/WhiskeySockets/Baileys/tar.gz/7288a4a89ed8d7e99812e5be17c63e397726be8b(eslint@9.27.0(jiti@2.4.2))(link-preview-js@3.1.0)(sharp@0.34.2)(typescript@5.8.3)
       cheerio:
         specifier: ^1.0.0
         version: 1.0.0
@@ -24,8 +24,8 @@ importers:
         specifier: ^16.5.0
         version: 16.5.0
       file-type:
-        specifier: 20.5.0
-        version: 20.5.0
+        specifier: 21.0.0
+        version: 21.0.0
       form-data:
         specifier: ^4.0.2
         version: 4.0.2
@@ -37,7 +37,7 @@ importers:
         version: 7.0.6
       link-preview-js:
         specifier: ^3.0.15
-        version: 3.0.15
+        version: 3.1.0
       node-webpmux:
         specifier: ^3.2.1
         version: 3.2.1
@@ -760,9 +760,9 @@ packages:
     resolution: {integrity: sha512-/yFHK0aGjFEgDJjEKP0pWCplsPFPhwyfwevf/pVxiN0tmE4L9LmwWxWukdJSHdoCli4VgQLehjJtwQBnqmsKcw==}
     engines: {node: '>=10'}
 
-  file-type@20.5.0:
-    resolution: {integrity: sha512-BfHZtG/l9iMm4Ecianu7P8HRD2tBHLtjXinm4X62XBOYzi7CYA7jyqfJzOvXHqzVrVPYqBo2/GvbARMaaJkKVg==}
-    engines: {node: '>=18'}
+  file-type@21.0.0:
+    resolution: {integrity: sha512-ek5xNX2YBYlXhiUXui3D/BXa3LdqPmoLJ7rqEx2bKJ7EAUEfmXgW0Das7Dc6Nr9MvqaOnIqiPV0mZk/r/UpNAg==}
+    engines: {node: '>=20'}
 
   fill-range@7.1.1:
     resolution: {integrity: sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg==}
@@ -942,8 +942,8 @@ packages:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
     engines: {node: '>= 0.8.0'}
 
-  link-preview-js@3.0.15:
-    resolution: {integrity: sha512-KoyIfU93kLVb6S1XzCXewPkscvveNDO7142WanhJ9z2UdR0F6udhTrOmZVNBZWoy6ewFmxi6ssyRokba/rPK0A==}
+  link-preview-js@3.1.0:
+    resolution: {integrity: sha512-hSvdHCy7tZJ8ohdgN5WcTBKaubpX7saYBzrSmNDDHnC7P6q+F4we+dwXuEr9LuplnkiGxkD4SaO4rrschfCZ2A==}
     engines: {node: '>=18'}
 
   locate-path@6.0.0:
@@ -1691,7 +1691,7 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  baileys@https://codeload.github.com/WhiskeySockets/Baileys/tar.gz/7288a4a89ed8d7e99812e5be17c63e397726be8b(eslint@9.27.0(jiti@2.4.2))(link-preview-js@3.0.15)(sharp@0.34.2)(typescript@5.8.3):
+  baileys@https://codeload.github.com/WhiskeySockets/Baileys/tar.gz/7288a4a89ed8d7e99812e5be17c63e397726be8b(eslint@9.27.0(jiti@2.4.2))(link-preview-js@3.1.0)(sharp@0.34.2)(typescript@5.8.3):
     dependencies:
       '@cacheable/node-cache': 1.5.5
       '@hapi/boom': 9.1.4
@@ -1705,7 +1705,7 @@ snapshots:
       protobufjs: 7.4.0
       ws: 8.18.2
     optionalDependencies:
-      link-preview-js: 3.0.15
+      link-preview-js: 3.1.0
       sharp: 0.34.2
     transitivePeerDependencies:
       - bufferutil
@@ -2036,7 +2036,7 @@ snapshots:
       strtok3: 6.3.0
       token-types: 4.2.1
 
-  file-type@20.5.0:
+  file-type@21.0.0:
     dependencies:
       '@tokenizer/inflate': 0.2.7
       strtok3: 10.2.2
@@ -2223,7 +2223,7 @@ snapshots:
       prelude-ls: 1.2.1
       type-check: 0.4.0
 
-  link-preview-js@3.0.15:
+  link-preview-js@3.1.0:
     dependencies:
       cheerio: 1.0.0-rc.11
       url: 0.11.0
