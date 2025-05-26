@@ -21,6 +21,22 @@ export async function cachedGroupMetadata(jid: string) {
 	return JSON.parse(metadata!.data as string) as GroupMetadata;
 }
 
+export async function cachedGroupMetadataAll(): Promise<{
+	[_: string]: GroupMetadata;
+}> {
+	const metadata = await Metadata.findAll();
+	return metadata
+		? Object.fromEntries(
+				metadata.map(m => [
+					m.jid,
+					JSON.parse(
+						typeof m.data === 'string' ? m.data : JSON.stringify(m.data),
+					),
+				]),
+			)
+		: {};
+}
+
 export async function updateMetaGroup(jid: string, data: GroupMetadata) {
 	if (!jid || !data) return;
 	const exists = await Metadata.findOne({ where: { jid } });

@@ -172,3 +172,99 @@ export const adminCheck = (message: Message): Promise<boolean> => {
 		resolve(true);
 	});
 };
+
+export /**
+ * Converts 12-hour time (e.g., "5:30pm") to a timestamp (ms since epoch) for today.
+ */
+function timeStringToTimestamp(timeStr: string): number | null {
+	const match = timeStr
+		.trim()
+		.toLowerCase()
+		.match(/^(\d{1,2}):(\d{2})(am|pm)$/);
+	if (!match) return null;
+
+	let [_, hours, minutes, period] = match;
+	let h = parseInt(hours, 10);
+	const m = parseInt(minutes, 10);
+
+	if (h < 1 || h > 12 || m < 0 || m > 59) return null;
+
+	if (period === 'pm' && h !== 12) h += 12;
+	if (period === 'am' && h === 12) h = 0;
+
+	const now = new Date();
+	const result = new Date(
+		now.getFullYear(),
+		now.getMonth(),
+		now.getDate(),
+		h,
+		m,
+		0,
+		0,
+	);
+	return result.getTime();
+}
+export function isValidTimeString(timeStr: string): boolean {
+	const match = timeStr
+		.trim()
+		.toLowerCase()
+		.match(/^(\d{1,2}):(\d{2})(am|pm)$/);
+	if (!match) return false;
+
+	const [_, hours, minutes, period] = match;
+	const h = parseInt(hours, 10);
+	const m = parseInt(minutes, 10);
+
+	return (
+		h >= 1 &&
+		h <= 12 &&
+		m >= 0 &&
+		m <= 59 &&
+		(period === 'am' || period === 'pm')
+	);
+}
+
+export function getCurrentTimeString(): string {
+	const now = new Date();
+	let hours = now.getHours();
+	const minutes = now.getMinutes();
+	const period = hours >= 12 ? 'pm' : 'am';
+
+	if (hours === 0) hours = 12;
+	else if (hours > 12) hours -= 12;
+
+	return `${hours}:${minutes.toString().padStart(2, '0')}${period}`;
+}
+
+/**
+ * Runs the provided callback exactly at the start of every minute
+ */
+export function startClockAlignedScheduler(callback: () => void) {
+	const now = new Date();
+	const msUntilNextMinute =
+		(60 - now.getSeconds()) * 1000 - now.getMilliseconds();
+
+	// Wait until the next minute hits
+	setTimeout(() => {
+		callback(); // Run immediately at start of minute
+		setInterval(callback, 60 * 1000); // Then run every full minute
+	}, msUntilNextMinute);
+}
+
+export function isValidUrl(url: string): boolean {
+	try {
+		new URL(url);
+		return true;
+	} catch {
+		return false;
+	}
+}
+/**
+ * Extracts the first valid URL from a string, or returns null if none found.
+ */
+export function extractUrl(text: string): string | null {
+	if (typeof text !== 'string') return null;
+	const urlRegex = /https?:\/\/[^\s/$.?#].[^\s]*/gi;
+	const matches = text.match(urlRegex);
+	return matches && matches.length > 0 ? matches[0] : null;
+}

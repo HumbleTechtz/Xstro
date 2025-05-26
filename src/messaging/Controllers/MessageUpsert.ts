@@ -13,7 +13,6 @@ export default class MessageUpsert {
 		this.data = upserts;
 	}
 
-	/** Process upserted messages */
 	async create(): Promise<void> {
 		const msg = this.data.messages[0];
 		const cloned = structuredClone(JSON.parse(JSON.stringify(msg)));

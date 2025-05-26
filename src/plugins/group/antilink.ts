@@ -1,7 +1,11 @@
 import { type WASocket } from 'baileys';
-import { Command } from '../messaging/plugin.ts';
-import { delAntilink, getAntilink, setAntilink } from '../models/antilink.ts';
-import { isAdmin, isBotAdmin } from '../utils/constants.ts';
+import { Command } from '../../messaging/plugin.ts';
+import {
+	delAntilink,
+	getAntilink,
+	setAntilink,
+} from '../../models/antilink.ts';
+import { isAdmin, isBotAdmin } from '../../utils/constants.ts';
 
 Command({
 	name: 'antilink',

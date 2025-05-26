@@ -1,6 +1,6 @@
-import { Command } from '../messaging/plugin.ts';
-import { cachedGroupMetadata } from '../models/group.ts';
-import { adminCheck } from '../utils/constants.ts';
+import { Command } from '../../messaging/plugin.ts';
+import { cachedGroupMetadata } from '../../models/group.ts';
+import { adminCheck } from '../../utils/constants.ts';
 
 Command({
 	name: 'add',

@@ -82,6 +82,12 @@ export default class Message {
 		this.quoted = quoted
 			? new ReplyMessage(data.quoted, this.client)
 			: undefined;
+
+		Object.defineProperty(this, 'client', {
+			enumerable: false,
+			writable: true,
+			value: props,
+		});
 	}
 
 	async send(

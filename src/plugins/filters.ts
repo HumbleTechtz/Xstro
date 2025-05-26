@@ -5,7 +5,7 @@ import {
 	delFilter,
 	getAllFilters,
 } from '../models/filter.ts';
-import { escapeRegex } from './antiword.ts';
+import { escapeRegex } from './group/antiword.ts';
 
 Command({
 	name: 'filter',

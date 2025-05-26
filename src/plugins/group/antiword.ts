@@ -1,7 +1,7 @@
 import { type WASocket } from 'baileys';
-import { Command } from '../messaging/plugin.ts';
-import { setAntiWord, getAntiword } from '../models/antiword.ts';
-import { isAdmin, isBotAdmin } from '../utils/constants.ts';
+import { Command } from '../../messaging/plugin.ts';
+import { setAntiWord, getAntiword } from '../../models/antiword.ts';
+import { isAdmin, isBotAdmin } from '../../utils/constants.ts';
 
 Command({
 	name: 'antiword',
