@@ -8,7 +8,7 @@ Command({
 	name: 'update',
 	fromMe: true,
 	isGroup: false,
-	desc: 'Update the bot',
+	desc: 'Update the bot and dependencies',
 	type: 'utilities',
 	function: async (message, match) => {
 		const prefix = message.prefix[0];
