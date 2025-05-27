@@ -19,6 +19,7 @@
 		"lint:check": "eslint",
 		"prettier": "prettier --write .",
 		"prettier:check": "prettier --check .",
+		"prestart": "pnpm install",
 		"start": "node serve.mjs",
 		"test": "node ./tests/index.ts"
 	},
