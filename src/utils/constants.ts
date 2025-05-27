@@ -163,11 +163,15 @@ export const adminCheck = (message: Message): Promise<boolean> => {
 	return new Promise(async resolve => {
 		const { jid, client, sender } = message;
 		if (!(await isAdmin(jid, sender))) {
-			await message.send(`_@${sender.split('@')[0]} You are not Admin_`, {mentions: [sender]});
+			await message.send(`_@${sender.split('@')[0]} You are not Admin_`, {
+				mentions: [sender],
+			});
 			return resolve(false);
 		}
 		if (!(await isBotAdmin(client as any, jid))) {
-			await message.send(`_@${sender.split('@')[0]} I am not an Admin_`, {mentions: [sender]});
+			await message.send(`_@${sender.split('@')[0]} I am not an Admin_`, {
+				mentions: [sender],
+			});
 		}
 		resolve(true);
 	});
