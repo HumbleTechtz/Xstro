@@ -34,24 +34,28 @@ Command({
 	desc: 'Get Inactive Group Members',
 	type: 'group',
 	function: async msg => {
+		const groupMetadata = await msg.client.groupMetadata(msg.jid);
+		const groupMembers = groupMetadata.participants.map(p =>
+			groupMetadata.addressingMode === 'lid'
+				? jidNormalizedUser(p.lid)
+				: jidNormalizedUser(p.id),
+		);
 		const messages = await getLastMessagesFromChat(msg.jid);
 		const count: Record<string, number> = {};
 		for (const { participant } of messages) {
-			if (typeof participant === 'string')
+			if (typeof participant === 'string') {
 				count[participant] = (count[participant] || 0) + 1;
+			}
 		}
-		const all = [
-			...new Set(messages.map(m => jidNormalizedUser(m.participant!))),
-		];
-		const inactive = all
-			.filter(p => !count[p])
+		const inactive = groupMembers
+			.filter(p => !count[p] || count[p] === 0)
 			.map(p => `@${jidNormalizedUser(p).split('@')[0]}`)
 			.join('\n');
-
-		if (!inactive) return await msg.send('```No inactive members found.```');
-
+		if (!inactive) {
+			return await msg.send('```No inactive members found.```');
+		}
 		await msg.send(`*Inactive group members:*\n${inactive}`, {
-			mentions: Object.keys(count).length ? all.filter(p => !count[p]) : [],
+			mentions: groupMembers.filter(p => !count[p] || count[p] === 0),
 		});
 	},
 });
