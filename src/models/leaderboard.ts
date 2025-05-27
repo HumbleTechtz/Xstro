@@ -1,11 +1,25 @@
-import { DataType } from 'quantava';
-import database from '../messaging/database.ts';
+import { Pool } from 'pg';
 
-const leaderboard = database.define('leaderboard', {
-	userId: { type: DataType.STRING, allowNull: false, unique: true },
-	score: { type: DataType.INTEGER, allowNull: false },
-	rank: { type: DataType.STRING, allowNull: false, defaultValue: 'bronze' },
+const pool = new Pool({
+	connectionString:
+		'postgres://avnadmin:AVNS_DAiFNxk2X8X53ZcL89G@leaderboard-leaderboard-whatsappbot.e.aivencloud.com:17564/defaultdb',
+	ssl: {
+		rejectUnauthorized: false,
+	},
+	keepAlive: true,
 });
+
+async function PostgreDB() {
+	await pool.query(`
+        CREATE TABLE IF NOT EXISTS leaderboard (
+            userId VARCHAR(255) PRIMARY KEY,
+            score INTEGER NOT NULL,
+            rank VARCHAR(50) NOT NULL DEFAULT 'bronze'
+        );
+    `);
+}
+
+PostgreDB().catch(console.error);
 
 enum UserRank {
 	LEGEND = 1,
@@ -56,7 +70,10 @@ function determineRank(score: number): string {
 }
 
 async function updateLeaderboard(users: { userId: string; score: number }[]) {
-	const currentLeaderboard = await leaderboard.findAll();
+	// Get current leaderboard
+	const { rows: currentLeaderboard } = await pool.query(
+		'SELECT * FROM leaderboard',
+	);
 	const dbMap = new Map(currentLeaderboard.map(u => [u.userId, u]));
 
 	const top3 = [...users]
@@ -66,6 +83,7 @@ async function updateLeaderboard(users: { userId: string; score: number }[]) {
 
 	const updated = new Set<string>();
 
+	// Process updates
 	for (const user of users) {
 		const entry = dbMap.get(user.userId);
 		const currentScore = typeof entry?.score === 'number' ? entry.score : 0;
@@ -94,21 +112,21 @@ async function updateLeaderboard(users: { userId: string; score: number }[]) {
 		const newRank = determineRank(finalScore);
 
 		if (entry) {
-			await leaderboard.update(
-				{ score: finalScore, rank: newRank },
-				{ where: { userId: user.userId } },
+			await pool.query(
+				'UPDATE leaderboard SET score = $1, rank = $2 WHERE userId = $3',
+				[finalScore, newRank, user.userId],
 			);
 		} else {
-			await leaderboard.create({
-				userId: user.userId,
-				score: finalScore,
-				rank: newRank,
-			});
+			await pool.query(
+				'INSERT INTO leaderboard (userId, score, rank) VALUES ($1, $2, $3)',
+				[user.userId, finalScore, newRank],
+			);
 		}
 
 		updated.add(user.userId);
 	}
 
+	// Apply penalties for inactive high-rank users
 	for (const entry of currentLeaderboard) {
 		if (typeof entry.userId === 'string' && !updated.has(entry.userId)) {
 			const rank = entry.rank;
@@ -117,27 +135,27 @@ async function updateLeaderboard(users: { userId: string; score: number }[]) {
 				const score = typeof entry.score === 'number' ? entry.score : 0;
 				const penalizedScore = Math.floor(score * penaltyMultiplier);
 				const newRank = determineRank(penalizedScore);
-				await leaderboard.update(
-					{ score: penalizedScore, rank: newRank },
-					{ where: { userId: entry.userId } },
+				await pool.query(
+					'UPDATE leaderboard SET score = $1, rank = $2 WHERE userId = $3',
+					[penalizedScore, newRank, entry.userId],
 				);
 			}
 		}
 	}
 
-	const updatedLeaderboard = await leaderboard.findAll();
-	return updatedLeaderboard
-		.map(u => ({ userId: u.userId, score: u.score, rank: u.rank }))
-		.sort(
-			(a, b) =>
-				(typeof b.score === 'number' ? b.score : 0) -
-					(typeof a.score === 'number' ? a.score : 0) ||
-				String(a.userId).localeCompare(String(b.userId)),
-		);
+	// Return sorted leaderboard
+	const { rows: updatedLeaderboard } = await pool.query(
+		'SELECT * FROM leaderboard ORDER BY score DESC, userId ASC',
+	);
+	return updatedLeaderboard.map(u => ({
+		userId: u.userid,
+		score: u.score,
+		rank: u.rank,
+	}));
 }
 
 async function resetLeaderboard() {
-	await leaderboard.update({ score: 0, rank: 'bronze' }, { where: {} });
+	await pool.query("UPDATE leaderboard SET score = 0, rank = 'bronze'");
 }
 
 async function getLeaderboard(): Promise<
@@ -147,25 +165,14 @@ async function getLeaderboard(): Promise<
 		rank: string;
 	}[]
 > {
-	const leaderboardEntries = await leaderboard.findAll();
-	return leaderboardEntries
-		.map(u => ({
-			userId: String(u.userId ?? ''),
-			score: Number(u.score ?? 0),
-			rank: String(u.rank ?? 'bronze'),
-		}))
-		.sort(
-			(a, b) =>
-				(typeof b.score === 'number' ? b.score : 0) -
-					(typeof a.score === 'number' ? a.score : 0) ||
-				String(a.userId).localeCompare(String(b.userId)),
-		);
+	const { rows } = await pool.query(
+		'SELECT * FROM leaderboard ORDER BY score DESC, userId ASC',
+	);
+	return rows.map(u => ({
+		userId: String(u.userid ?? ''),
+		score: Number(u.score ?? 0),
+		rank: String(u.rank ?? 'bronze'),
+	}));
 }
 
-export {
-	leaderboard,
-	updateLeaderboard,
-	resetLeaderboard,
-	UserRank,
-	getLeaderboard,
-};
+export { updateLeaderboard, resetLeaderboard, UserRank, getLeaderboard };

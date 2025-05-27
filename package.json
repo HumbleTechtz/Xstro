@@ -27,6 +27,7 @@
 	"dependencies": {
 		"@cacheable/node-cache": "^1.5.5",
 		"@hapi/boom": "^10.0.1",
+		"@types/pg": "^8.15.2",
 		"baileys": "github:WhiskeySockets/Baileys",
 		"cheerio": "^1.0.0",
 		"dotenv": "^16.5.0",
@@ -37,6 +38,7 @@
 		"https-proxy-agent": "^7.0.6",
 		"link-preview-js": "^3.1.0",
 		"node-webpmux": "^3.2.1",
+		"pg": "^8.16.0",
 		"quantava": "^1.0.2",
 		"sharp": "^0.34.2"
 	},
