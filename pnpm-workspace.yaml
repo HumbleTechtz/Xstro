@@ -1,5 +1,0 @@
-onlyBuiltDependencies:
-  - baileys
-  - esbuild
-  - protobufjs
-  - sharp

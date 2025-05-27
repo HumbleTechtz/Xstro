@@ -51,3 +51,37 @@ export const setSettings = async (
 
 	return null;
 };
+
+export const setPrefix = async (prefix: string[]) => {
+	const db = (await config.findOne({ where: { settings: 'prefix' } })) as {
+		settings: string;
+		value: string;
+	} | null;
+
+	if (db) {
+		const payload = JSON.stringify(Array.from(new Set(...prefix, ...db.value)));
+		return await config.update(
+			{ value: payload },
+			{ where: { settings: 'prefix' } },
+		);
+	}
+
+	return null;
+};
+
+export const setSudo = async (sudo: string[]) => {
+	const db = (await config.findOne({ where: { settings: 'sudo' } })) as {
+		settings: string;
+		value: string;
+	} | null;
+
+	if (db) {
+		const payload = JSON.stringify(Array.from(new Set(...sudo, ...db.value)));
+		return await config.update(
+			{ value: payload },
+			{ where: { settings: 'sudo' } },
+		);
+	}
+
+	return null;
+};
