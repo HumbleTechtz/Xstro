@@ -8,7 +8,7 @@
 
 FROM node:24
 RUN apt-get update && apt-get install -y git ffmpeg && rm -rf /var/lib/apt/lists/*
-RUN git clone https://github.com/AstroXTeam/whatsapp-bot /whatsapp-bo
+RUN git clone https://github.com/AstroXTeam/whatsapp-bot /whatsapp-bot
 WORKDIR /whatsapp-bot
 RUN npm i -g pnpm
 RUN pnpm install
