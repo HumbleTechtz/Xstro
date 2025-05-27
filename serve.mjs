@@ -1,22 +1,21 @@
-import { spawn } from 'node:child_process';
+import { execa } from 'execa';
 
 /**
  * Executes a Node.js script in a new process and returns a promise that resolves with the exit code
  * @param {string} scriptPath - The path to the Node.js script to execute
  * @returns {Promise<number>} A promise that resolves with the process exit code (0 for success, 1 for error)
  */
-function runProc(scriptPath) {
-	return new Promise(resolve => {
-		const proc = spawn('tsx', [scriptPath], {
+async function runProc(scriptPath) {
+	try {
+		const subprocess = execa('tsx', [scriptPath], {
 			stdio: 'inherit',
 		});
-
-		proc.on('close', code => resolve(code ?? 0));
-		proc.on('error', err => {
-			console.error('Process error:', err.message);
-			resolve(1);
-		});
-	});
+		await subprocess;
+		return 0;
+	} catch (err) {
+		console.error('Process error:', err instanceof Error ? err.message : err);
+		return 1;
+	}
 }
 
 /**
@@ -27,21 +26,19 @@ function runProc(scriptPath) {
  * @returns {Promise<void>} Resolves when processes complete successfully, rejects with error otherwise
  * @throws {Error} If any process fails or encounters an error during execution
  */
-function run() {
-	return new Promise(async (resolve, reject) => {
-		try {
-			const sock = await runProc('./src/messaging/client.ts');
-			if (sock === 0) {
-				/** If we received an exit signal of 0 then we restart the process else we terminate it completely */
-				setTimeout(() => run().then(resolve).catch(reject), 1000);
-			} else {
-				process.exit(sock);
-			}
-		} catch (e) {
-			console.error('Run error:', e);
-			process.exit(1);
+async function run() {
+	try {
+		const sock = await runProc('./src/messaging/client.ts');
+		if (sock === 0) {
+			// Restart after 1 second
+			setTimeout(() => run(), 1000);
+		} else {
+			process.exit(sock);
 		}
-	});
+	} catch (e) {
+		console.error('Run error:', e);
+		process.exit(1);
+	}
 }
 
 run();
