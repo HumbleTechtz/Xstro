@@ -6,10 +6,11 @@
 # We clone the repository and install dependencies using pnpm
 # Finally, we start the application using pnpm
 
-FROM node:24
+FROM node:24.1.0
 RUN apt-get update && apt-get install -y git ffmpeg && rm -rf /var/lib/apt/lists/*
 RUN git clone https://github.com/AstroXTeam/whatsapp-bot /whatsapp-bot
 WORKDIR /whatsapp-bot
-RUN npm i -g pnpm
+RUN npm install -g npm@latest
+RUN npm install -g pnpm@latest
 RUN pnpm install
 CMD ["pnpm", "start"]
