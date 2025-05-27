@@ -34,12 +34,10 @@ export async function loadMesage(
 		: undefined;
 }
 
-export async function getLastMessagesFromChat(
-	jid: string,
-): Promise<WAMessage[] | undefined> {
-	const msgs = (await messageDb.findAll()) as { message: string }[];
-	const filtered = msgs
-		.map(m => JSON.parse(m.message) as WAMessage)
-		.filter(m => m.key?.remoteJid === jid);
-	return filtered.length ? filtered : undefined;
+export async function getLastMessagesFromChat(jid: string) {
+	const records = await messageDb.findAll();
+	const msg = records.map((m: any) => JSON.parse(m.messages as string));
+	return msg
+		.filter(m => m.key.remoteJid === jid)
+		.map((m: any) => WAProto.WebMessageInfo.fromObject(m));
 }
