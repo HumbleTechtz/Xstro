@@ -1,6 +1,7 @@
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import { Command } from '../messaging/plugin.ts';
+import { delay } from 'baileys';
 
 const execPromise = promisify(exec);
 
@@ -32,17 +33,13 @@ Command({
 				await execPromise('git pull origin stable');
 
 				await message.send('Installing new dependencies...');
-				await new Promise((resolve, reject) => {
-					const install = exec('pnpm install', err => {
-						if (err) return reject(err);
-						resolve(null);
-					});
-					install.stdout?.pipe(process.stdout);
-					install.stderr?.pipe(process.stderr);
-				});
-
+				const installation = await execPromise('pnpm install');
+				await message.send(
+					`\`\`\`'Dependencies updated'\n${installation.stdout}\`\`\``,
+				);
+				await delay(2000);
 				await message.send('Restarting...');
-				process.exit(0); // Exit after successful install
+				process.exit(0);
 			} else {
 				if (commits.length === 0) {
 					return await message.send(
