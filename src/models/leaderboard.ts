@@ -12,7 +12,7 @@ const pool = new Pool({
 async function PostgreDB() {
 	await pool.query(`
         CREATE TABLE IF NOT EXISTS leaderboard (
-            userId VARCHAR(255) PRIMARY KEY,
+            userid VARCHAR(255) PRIMARY KEY,
             score INTEGER NOT NULL,
             rank VARCHAR(50) NOT NULL DEFAULT 'bronze'
         );
@@ -70,11 +70,10 @@ function determineRank(score: number): string {
 }
 
 async function updateLeaderboard(users: { userId: string; score: number }[]) {
-	// Get current leaderboard
 	const { rows: currentLeaderboard } = await pool.query(
-		'SELECT * FROM leaderboard',
+		'SELECT userid, score, rank FROM leaderboard',
 	);
-	const dbMap = new Map(currentLeaderboard.map(u => [u.userId, u]));
+	const dbMap = new Map(currentLeaderboard.map(u => [u.userid, u]));
 
 	const top3 = [...users]
 		.sort((a, b) => b.score - a.score)
@@ -83,7 +82,6 @@ async function updateLeaderboard(users: { userId: string; score: number }[]) {
 
 	const updated = new Set<string>();
 
-	// Process updates
 	for (const user of users) {
 		const entry = dbMap.get(user.userId);
 		const currentScore = typeof entry?.score === 'number' ? entry.score : 0;
@@ -113,12 +111,12 @@ async function updateLeaderboard(users: { userId: string; score: number }[]) {
 
 		if (entry) {
 			await pool.query(
-				'UPDATE leaderboard SET score = $1, rank = $2 WHERE userId = $3',
+				'UPDATE leaderboard SET score = $1, rank = $2 WHERE userid = $3',
 				[finalScore, newRank, user.userId],
 			);
 		} else {
 			await pool.query(
-				'INSERT INTO leaderboard (userId, score, rank) VALUES ($1, $2, $3)',
+				'INSERT INTO leaderboard (userid, score, rank) VALUES ($1, $2, $3)',
 				[user.userId, finalScore, newRank],
 			);
 		}
@@ -126,9 +124,8 @@ async function updateLeaderboard(users: { userId: string; score: number }[]) {
 		updated.add(user.userId);
 	}
 
-	// Apply penalties for inactive high-rank users
 	for (const entry of currentLeaderboard) {
-		if (typeof entry.userId === 'string' && !updated.has(entry.userId)) {
+		if (typeof entry.userid === 'string' && !updated.has(entry.userid)) {
 			const rank = entry.rank;
 			if (['legend', 'master', 'diamond'].includes(String(rank))) {
 				const penaltyMultiplier = 0.75;
@@ -136,16 +133,15 @@ async function updateLeaderboard(users: { userId: string; score: number }[]) {
 				const penalizedScore = Math.floor(score * penaltyMultiplier);
 				const newRank = determineRank(penalizedScore);
 				await pool.query(
-					'UPDATE leaderboard SET score = $1, rank = $2 WHERE userId = $3',
-					[penalizedScore, newRank, entry.userId],
+					'UPDATE leaderboard SET score = $1, rank = $2 WHERE userid = $3',
+					[penalizedScore, newRank, entry.userid],
 				);
 			}
 		}
 	}
 
-	// Return sorted leaderboard
 	const { rows: updatedLeaderboard } = await pool.query(
-		'SELECT * FROM leaderboard ORDER BY score DESC, userId ASC',
+		'SELECT userid, score, rank FROM leaderboard ORDER BY score DESC, userid ASC',
 	);
 	return updatedLeaderboard.map(u => ({
 		userId: u.userid,
@@ -166,7 +162,7 @@ async function getLeaderboard(): Promise<
 	}[]
 > {
 	const { rows } = await pool.query(
-		'SELECT * FROM leaderboard ORDER BY score DESC, userId ASC',
+		'SELECT userid, score, rank FROM leaderboard ORDER BY score DESC, userid ASC',
 	);
 	return rows.map(u => ({
 		userId: String(u.userid ?? ''),
