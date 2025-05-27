@@ -29,8 +29,8 @@ Command({
 				commitMessages.forEach((message, index) => {
 					changes += `${index + 1}. ${message}\n`;
 				});
-				changes += `\nUse, ${prefix}update now`;
-				await message.send(changes);
+				changes += 'To apply the update, use: ' + prefix + 'update now';
+				await message.send('```' + changes + '```');
 				break;
 			case 'updated':
 				await message.send('Updating...');
