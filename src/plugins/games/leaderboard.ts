@@ -75,6 +75,6 @@ Command({
 
 		const userIds = lbEntries.map(entry => entry.userId);
 
-		await msg.send(formatted, { mentions: userIds });
+		await msg.send('```' + formatted + '```', { mentions: userIds });
 	},
 });
