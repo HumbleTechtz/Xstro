@@ -16,10 +16,7 @@
 	},
 	"scripts": {
 		"lint": "eslint --fix",
-		"lint:check": "eslint",
-		"prettier": "prettier --write .",
-		"prettier:check": "prettier --check .",
-		"prestart": "pnpm install",
+		"prestart": "node entrypoint.mjs",
 		"start": "node serve.mjs",
 		"test": "node ./tests/index.ts"
 	},
