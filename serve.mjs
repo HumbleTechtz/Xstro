@@ -1,14 +1,22 @@
 import { spawn } from 'node:child_process';
+import { platform } from 'node:os';
+import path from 'node:path';
+
+const isWindows = platform() === 'win32';
+const pnpmCmd = isWindows ? 'pnpm.cmd' : 'pnpm';
 
 /**
- * Executes a Node.js script in a new process and returns a promise that resolves with the exit code
- * @param {string} scriptPath - The path to the Node.js script to execute
- * @returns {Promise<number>} A promise that resolves with the process exit code (0 for success, 1 for error)
+ * Executes a Node.js script in a new process via `pnpm exec tsx`
+ * @param {string} scriptPath
+ * @returns {Promise<number>}
  */
 function runProc(scriptPath) {
 	return new Promise(resolve => {
-		const proc = spawn('tsx', [scriptPath], {
-			stdio: 'inherit',
+		const fullPath = path.resolve(scriptPath);
+		const cmdString = `${pnpmCmd} exec tsx "${fullPath}"`;
+		const proc = spawn(cmdString, {
+			stdio:'inherit',
+			shell: true,
 		});
 
 		proc.on('close', code => resolve(code ?? 0));
@@ -27,7 +35,7 @@ function runProc(scriptPath) {
  * @returns {Promise<void>} Resolves when processes complete successfully, rejects with error otherwise
  * @throws {Error} If any process fails or encounters an error during execution
  */
-function run() {
+(function run() {
 	return new Promise(async (resolve, reject) => {
 		try {
 			const sock = await runProc('./src/messaging/client.ts');
@@ -42,6 +50,4 @@ function run() {
 			process.exit(1);
 		}
 	});
-}
-
-run();
+})();
