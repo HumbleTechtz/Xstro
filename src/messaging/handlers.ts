@@ -1,8 +1,8 @@
-import { Message } from './Messages/index.ts';
-import lang from '../utils/lang.ts';
-import { commands } from './plugin.ts';
-import { getStickerCmd } from '../models/sticker.ts';
-import { canProceed, resetIfExpired } from '../models/ratelimter.ts';
+import { Message } from "./Messages/index.ts";
+import lang from "../utils/lang.ts";
+import { commands } from "./plugin.ts";
+import { getStickerCmd } from "../models/sticker.ts";
+import { canProceed, resetIfExpired } from "../models/ratelimter.ts";
 
 export default async function (message: Message) {
 	const { sudo, sender, prefix, text, mode, isGroup, send } = message;
@@ -23,7 +23,7 @@ export default async function (message: Message) {
 			try {
 				if (!text) return;
 				for (const cmd of commands) {
-					const handler = prefix.find(p => text.startsWith(p)) ?? '';
+					const handler = prefix.find(p => text.startsWith(p)) ?? "";
 					const match = text
 						.slice(handler.length)
 						.match(cmd.name as string | RegExp);
@@ -47,10 +47,10 @@ export default async function (message: Message) {
 						continue;
 					}
 
-					await message.react('⏳');
+					await message.react("⏳");
 
 					try {
-						await cmd.function(message, match[2] ?? '');
+						await cmd.function(message, match[2] ?? "");
 					} catch (e) {
 						await message.send(
 							`\`\`\`An error occured while running ${cmd.name?.toString().toLowerCase().split(/\W+/)[2]} command\`\`\``,
@@ -59,7 +59,7 @@ export default async function (message: Message) {
 					}
 				}
 			} catch (e) {
-				console.error('Command Error: ' + (e as Error).stack);
+				console.error("Command Error: " + (e as Error).stack);
 			}
 		})(),
 
@@ -72,10 +72,10 @@ export default async function (message: Message) {
 					lottieStickerMessage?.message?.stickerMessage?.fileSha256;
 
 				const filesha256 = fileSha256
-					? Buffer.from(new Uint8Array(fileSha256)).toString('base64')
+					? Buffer.from(new Uint8Array(fileSha256)).toString("base64")
 					: undefined;
 
-				const sticker = await getStickerCmd(filesha256 ?? '');
+				const sticker = await getStickerCmd(filesha256 ?? "");
 				if (!sticker) return;
 
 				for (const cmd of commands) {
@@ -94,10 +94,10 @@ export default async function (message: Message) {
 						continue;
 					}
 
-					await cmd.function(message, match[2] ?? '');
+					await cmd.function(message, match[2] ?? "");
 				}
 			} catch (err) {
-				console.error('Sticker command error: ' + (err as Error).stack);
+				console.error("Sticker command error: " + (err as Error).stack);
 			}
 		})(),
 
@@ -107,7 +107,7 @@ export default async function (message: Message) {
 					await cmd.function(message);
 				}
 			} catch (err) {
-				console.error('On-listener error: ' + (err as Error).stack);
+				console.error("On-listener error: " + (err as Error).stack);
 			}
 		})(),
 	]);

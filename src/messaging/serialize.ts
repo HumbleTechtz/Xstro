@@ -3,14 +3,14 @@ import {
 	isJidGroup,
 	jidNormalizedUser,
 	normalizeMessageContent,
-} from 'baileys';
-import { getSettings } from '../models/index.ts';
+} from "baileys";
+import { getSettings } from "../models/index.ts";
 import {
 	getMessageContent,
 	getQuotedContent,
 	parseId,
-} from '../utils/index.ts';
-import type { WAMessage, WASocket } from 'baileys';
+} from "../utils/index.ts";
+import type { WAMessage, WASocket } from "baileys";
 
 export async function serialize(client: WASocket, WAMessage: WAMessage) {
 	const normalizedMessages = {
@@ -22,7 +22,7 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 	const { prefix, mode, banned, disablecmd, disablegc, disabledm, sudo } =
 		settings;
 
-	const jid = key.remoteJid ?? '';
+	const jid = key.remoteJid ?? "";
 	const isGroup = isJidGroup(key.remoteJid!);
 	const jidOwner = jidNormalizedUser(client?.user?.id);
 	const lidOwner = jidNormalizedUser(client?.user?.lid);
@@ -37,7 +37,7 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 	const quoted = getQuotedContent(message, key, [jidOwner, lidOwner]);
 
 	const isSudoUser = (user?: string) =>
-		sudo.includes(user ?? '') || user === jidOwner || user === lidOwner;
+		sudo.includes(user ?? "") || user === jidOwner || user === lidOwner;
 
 	key.fromMe = [jidOwner, lidOwner].includes(sender);
 	return {
@@ -54,7 +54,7 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 		broadcast,
 		owner: jidOwner,
 		mention: quoted?.mentionedJid,
-		device: getDevice(key?.id ?? ''),
+		device: getDevice(key?.id ?? ""),
 		sudo: isSudoUser(sender),
 		...content,
 		...messages,
@@ -65,7 +65,7 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 				}
 			: undefined,
 		user: async function (id?: string): Promise<string | undefined> {
-			if (id?.startsWith('@')) {
+			if (id?.startsWith("@")) {
 				return await parseId(id, jid);
 			}
 			if (quoted?.sender) return quoted.sender;

@@ -1,6 +1,6 @@
 /** @format */
 
-import got from 'got';
+import got from "got";
 
 type ApiResponse = {
 	response?: string;
@@ -16,14 +16,14 @@ const AI = {
 				.get(
 					`https://nikka-api.vercel.app/ai/gemini?q=${encodeURIComponent(query)}&apiKey=nikka`,
 					{
-						responseType: 'json',
+						responseType: "json",
 					},
 				)
 				.json<ApiResponse>();
-			return data.response ?? 'No response from Gemini.';
+			return data.response ?? "No response from Gemini.";
 		} catch (error: any) {
-			console.error('Error fetching Gemini API response:', error.message);
-			return 'An error occurred while fetching the response.';
+			console.error("Error fetching Gemini API response:", error.message);
+			return "An error occurred while fetching the response.";
 		}
 	},
 
@@ -33,7 +33,7 @@ const AI = {
 				.get(
 					`https://nikka-api.vercel.app/ai/groq?q=${encodeURIComponent(query)}&apiKey=nikka`,
 					{
-						responseType: 'json',
+						responseType: "json",
 					},
 				)
 				.json<ApiResponse>();
@@ -48,7 +48,7 @@ const AI = {
 		try {
 			const data = await got
 				.get(`https://bk9.fun/ai/llama?q=${encodeURIComponent(query)}`, {
-					responseType: 'json',
+					responseType: "json",
 				})
 				.json<ApiResponse>();
 			return data.BK9;
@@ -64,7 +64,7 @@ const AI = {
 				.get(
 					`https://apii.ambalzz.biz.id/api/openai/meta-ai?ask=${encodeURIComponent(query)}`,
 					{
-						responseType: 'json',
+						responseType: "json",
 					},
 				)
 				.json<ApiResponse>();
@@ -80,7 +80,7 @@ const AI = {
 			return `https://bk9.fun/ai/magicstudio?prompt=${encodeURIComponent(prompt)}`;
 		} catch (error) {
 			console.error(error);
-			return 'An error occurred generating the image.';
+			return "An error occurred generating the image.";
 		}
 	},
 
@@ -90,7 +90,7 @@ const AI = {
 				.get(
 					`https://bk9.fun/ai/GPT4o?q=${encodeURIComponent(query)}&userId=${userId}`,
 					{
-						responseType: 'json',
+						responseType: "json",
 					},
 				)
 				.json<ApiResponse>();
@@ -107,7 +107,7 @@ const AI = {
 				.get(
 					`https://bk9.fun/ai/Claude-Opus?q=${encodeURIComponent(query)}&userId=${userId}`,
 					{
-						responseType: 'json',
+						responseType: "json",
 					},
 				)
 				.json<ApiResponse>();
@@ -124,7 +124,7 @@ const AI = {
 				.get(
 					`https://bk9.fun/ai/Claude-Haiku?q=${encodeURIComponent(query)}&userId=${userId}`,
 					{
-						responseType: 'json',
+						responseType: "json",
 					},
 				)
 				.json<ApiResponse>();
@@ -139,7 +139,7 @@ const AI = {
 		try {
 			const data = await got
 				.get(`https://bk9.fun/ai/chataibot?q=${encodeURIComponent(query)}`, {
-					responseType: 'json',
+					responseType: "json",
 				})
 				.json<ApiResponse>();
 			return data.BK9;
@@ -155,7 +155,7 @@ const AI = {
 				.get(
 					`https://nikka-api.vercel.app/ai/nikka?q=${encodeURIComponent(query)}`,
 					{
-						responseType: 'json',
+						responseType: "json",
 					},
 				)
 				.json<ApiResponse>();
@@ -170,7 +170,7 @@ const AI = {
 		try {
 			const data = await got
 				.get(`https://bk9.fun/ai/jeeves-chat?q=${encodeURIComponent(query)}`, {
-					responseType: 'json',
+					responseType: "json",
 				})
 				.json<ApiResponse>();
 			return data.BK9;
@@ -184,7 +184,7 @@ const AI = {
 		try {
 			const data = await got
 				.get(`https://bk9.fun/ai/mathssolve?q=${encodeURIComponent(query)}`, {
-					responseType: 'json',
+					responseType: "json",
 				})
 				.json<ApiResponse>();
 			return data.BK9;
@@ -198,7 +198,7 @@ const AI = {
 		try {
 			const data = await got
 				.get(`https://bk9.fun/ai/fluximg?q=${encodeURIComponent(query)}`, {
-					responseType: 'json',
+					responseType: "json",
 				})
 				.json<ApiResponse>();
 			return data.BK9?.[0];
@@ -212,7 +212,7 @@ const AI = {
 		try {
 			const data = await got
 				.get(`https://bk9.fun/ai/blackbox?q=${encodeURIComponent(query)}`, {
-					responseType: 'json',
+					responseType: "json",
 				})
 				.json<ApiResponse>();
 			return data.BK9;
@@ -226,7 +226,7 @@ const AI = {
 		try {
 			const data = await got
 				.get(`https://bk9.fun/ai/you?q=${encodeURIComponent(query)}`, {
-					responseType: 'json',
+					responseType: "json",
 				})
 				.json<ApiResponse>();
 			return data.BK9;

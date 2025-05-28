@@ -1,20 +1,20 @@
-import { DataType } from 'quantava';
-import database from '../messaging/database.ts';
+import { DataType } from "quantava";
+import database from "../messaging/database.ts";
 
 const Antidelete = database.define(
-	'antidelete',
+	"antidelete",
 	{
 		mode: {
 			type: DataType.STRING,
 			allowNull: true,
-			defaultValue: 'all',
+			defaultValue: "all",
 			primaryKey: true,
 		},
 	},
 	{ timestamps: false },
 );
 
-export const setAntidelete = async (mode: 'gc' | 'dm' | 'global' | null) => {
+export const setAntidelete = async (mode: "gc" | "dm" | "global" | null) => {
 	const record = await Antidelete.findOne();
 
 	if (!record) {

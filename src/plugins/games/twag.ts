@@ -1,7 +1,7 @@
-import { Command } from '../../messaging/plugin.ts';
-import Message from '../../messaging/Messages/Message.ts';
-import { updateLeaderboard } from '../../models/leaderboard.ts';
-import { isLidUser } from 'baileys';
+import { Command } from "../../messaging/plugin.ts";
+import Message from "../../messaging/Messages/Message.ts";
+import { updateLeaderboard } from "../../models/leaderboard.ts";
+import { isLidUser } from "baileys";
 
 const twagGames = new Map<string, Twag>();
 const twagPending = new Map<
@@ -11,191 +11,191 @@ const twagPending = new Map<
 
 const TOPICS: Record<string, string[]> = {
 	government: [
-		'president',
-		'senate',
-		'vote',
-		'law',
-		'tax',
-		'policy',
-		'minister',
-		'congress',
-		'bill',
-		'election',
-		'constitution',
-		'governor',
-		'parliament',
-		'democracy',
-		'campaign',
-		'citizen',
-		'diplomacy',
+		"president",
+		"senate",
+		"vote",
+		"law",
+		"tax",
+		"policy",
+		"minister",
+		"congress",
+		"bill",
+		"election",
+		"constitution",
+		"governor",
+		"parliament",
+		"democracy",
+		"campaign",
+		"citizen",
+		"diplomacy",
 	],
 	technology: [
-		'computer',
-		'software',
-		'internet',
-		'algorithm',
-		'database',
-		'network',
-		'program',
-		'code',
-		'hardware',
-		'ai',
-		'blockchain',
-		'cloud',
-		'cybersecurity',
-		'robotics',
-		'data',
-		'virtual',
-		'quantum',
+		"computer",
+		"software",
+		"internet",
+		"algorithm",
+		"database",
+		"network",
+		"program",
+		"code",
+		"hardware",
+		"ai",
+		"blockchain",
+		"cloud",
+		"cybersecurity",
+		"robotics",
+		"data",
+		"virtual",
+		"quantum",
 	],
 	sports: [
-		'football',
-		'basketball',
-		'tennis',
-		'stadium',
-		'player',
-		'coach',
-		'team',
-		'match',
-		'goal',
-		'olympics',
-		'referee',
-		'championship',
-		'medal',
-		'league',
-		'fans',
-		'training',
-		'athlete',
+		"football",
+		"basketball",
+		"tennis",
+		"stadium",
+		"player",
+		"coach",
+		"team",
+		"match",
+		"goal",
+		"olympics",
+		"referee",
+		"championship",
+		"medal",
+		"league",
+		"fans",
+		"training",
+		"athlete",
 	],
 	music: [
-		'guitar',
-		'piano',
-		'concert',
-		'album',
-		'song',
-		'lyrics',
-		'band',
-		'singer',
-		'rhythm',
-		'melody',
-		'chorus',
-		'harmony',
-		'microphone',
-		'genre',
-		'composer',
-		'orchestra',
-		'beat',
+		"guitar",
+		"piano",
+		"concert",
+		"album",
+		"song",
+		"lyrics",
+		"band",
+		"singer",
+		"rhythm",
+		"melody",
+		"chorus",
+		"harmony",
+		"microphone",
+		"genre",
+		"composer",
+		"orchestra",
+		"beat",
 	],
 	science: [
-		'biology',
-		'chemistry',
-		'physics',
-		'experiment',
-		'theory',
-		'research',
-		'lab',
-		'scientist',
-		'discovery',
-		'microscope',
-		'genetics',
-		'atom',
-		'neutron',
-		'quantum',
-		'telescope',
-		'evolution',
-		'molecule',
+		"biology",
+		"chemistry",
+		"physics",
+		"experiment",
+		"theory",
+		"research",
+		"lab",
+		"scientist",
+		"discovery",
+		"microscope",
+		"genetics",
+		"atom",
+		"neutron",
+		"quantum",
+		"telescope",
+		"evolution",
+		"molecule",
 	],
 	health: [
-		'doctor',
-		'nurse',
-		'hospital',
-		'medicine',
-		'disease',
-		'vaccine',
-		'symptom',
-		'therapy',
-		'nutrition',
-		'fitness',
-		'mental',
-		'infection',
-		'diet',
-		'recovery',
-		'clinic',
-		'hygiene',
+		"doctor",
+		"nurse",
+		"hospital",
+		"medicine",
+		"disease",
+		"vaccine",
+		"symptom",
+		"therapy",
+		"nutrition",
+		"fitness",
+		"mental",
+		"infection",
+		"diet",
+		"recovery",
+		"clinic",
+		"hygiene",
 	],
 	education: [
-		'school',
-		'teacher',
-		'student',
-		'university',
-		'lesson',
-		'homework',
-		'exam',
-		'curriculum',
-		'subject',
-		'degree',
-		'textbook',
-		'classroom',
-		'lecture',
-		'graduate',
-		'scholarship',
-		'academic',
+		"school",
+		"teacher",
+		"student",
+		"university",
+		"lesson",
+		"homework",
+		"exam",
+		"curriculum",
+		"subject",
+		"degree",
+		"textbook",
+		"classroom",
+		"lecture",
+		"graduate",
+		"scholarship",
+		"academic",
 	],
 	finance: [
-		'money',
-		'bank',
-		'loan',
-		'credit',
-		'investment',
-		'budget',
-		'income',
-		'savings',
-		'tax',
-		'currency',
-		'interest',
-		'account',
-		'economy',
-		'debt',
-		'stock',
-		'profit',
+		"money",
+		"bank",
+		"loan",
+		"credit",
+		"investment",
+		"budget",
+		"income",
+		"savings",
+		"tax",
+		"currency",
+		"interest",
+		"account",
+		"economy",
+		"debt",
+		"stock",
+		"profit",
 	],
 	environment: [
-		'climate',
-		'pollution',
-		'recycling',
-		'energy',
-		'conservation',
-		'ecosystem',
-		'deforestation',
-		'greenhouse',
-		'carbon',
-		'wildlife',
-		'nature',
-		'global',
-		'sustainability',
-		'weather',
-		'earth',
+		"climate",
+		"pollution",
+		"recycling",
+		"energy",
+		"conservation",
+		"ecosystem",
+		"deforestation",
+		"greenhouse",
+		"carbon",
+		"wildlife",
+		"nature",
+		"global",
+		"sustainability",
+		"weather",
+		"earth",
 	],
 };
 
 Command({
-	name: 'twag',
+	name: "twag",
 	fromMe: false,
 	isGroup: false,
-	desc: 'Play Topic Word Association Game',
-	type: 'games',
+	desc: "Play Topic Word Association Game",
+	type: "games",
 	function: async (message, match) => {
 		const jid = message.jid;
 
-		if (match === 'end' && twagGames.has(jid)) {
+		if (match === "end" && twagGames.has(jid)) {
 			const ev = await twagGames.get(jid)!.endGame(jid);
 			return message.send(ev);
 		}
 
 		if (twagGames.has(jid))
-			return message.send('```A game is already in progress.```');
+			return message.send("```A game is already in progress.```");
 		if (twagPending.has(jid))
-			return message.send('```Game is gathering challengers.```');
+			return message.send("```Game is gathering challengers.```");
 
 		twagPending.set(jid, { jids: [], timers: [] });
 		await message.send(
@@ -223,7 +223,7 @@ Command({
 			if (result) return message.send(result);
 
 			twagGames.set(jid, game);
-			const playersText = p.jids.map(id => `@${id.split('@')[0]}`).join(', ');
+			const playersText = p.jids.map(id => `@${id.split("@")[0]}`).join(", ");
 			await message.send(`\`\`\`Game started! Players: ${playersText}\`\`\``, {
 				mentions: p.jids,
 			});
@@ -241,18 +241,18 @@ Command({
 		if (!text) return;
 
 		if (
-			text.includes('game started!') ||
-			text.includes('topic word') ||
+			text.includes("game started!") ||
+			text.includes("topic word") ||
 			!message.sender
 		)
 			return;
 
-		if (text === 'join' && twagPending.has(jid)) {
+		if (text === "join" && twagPending.has(jid)) {
 			const p = twagPending.get(jid)!;
 			if (!p.jids.includes(message.sender)) {
 				p.jids.push(message.sender);
 				return message.send(
-					`\`\`\`@${message.sender.split('@')[0]} joined.\`\`\``,
+					`\`\`\`@${message.sender.split("@")[0]} joined.\`\`\``,
 					{ mentions: [message.sender] },
 				);
 			}
@@ -280,7 +280,7 @@ class Twag {
 	private timer: NodeJS.Timeout | null = null;
 	private turnNumber = 0;
 	private currentTimeout = 30000;
-	private currentTopic = '';
+	private currentTopic = "";
 	private usedWords: string[] = [];
 	private wordsInCurrentTopic = 0;
 	private topicKeys = Object.keys(TOPICS);
@@ -297,13 +297,13 @@ class Twag {
 			return `\`\`\`Need at least 2 players.\`\`\``;
 		}
 		setTimeout(() => this.beginGame(jid), 1000);
-		return '';
+		return "";
 	}
 
 	private async beginGame(jid: string): Promise<void> {
 		if (this.players.length < 2) {
 			this.cleanup(jid);
-			await this.message.send('```Need at least 2 players.```');
+			await this.message.send("```Need at least 2 players.```");
 			return;
 		}
 		this.currentIndex = 0;
@@ -332,10 +332,10 @@ class Twag {
 	}
 
 	async playWord(input: string, from: string): Promise<string> {
-		if (!this.active) return '';
+		if (!this.active) return "";
 		const jid = this.players[this.currentIndex];
-		if (from !== jid) return '';
-		const name = jid.split('@')[0];
+		if (from !== jid) return "";
+		const name = jid.split("@")[0];
 		const word = input.toLowerCase().trim();
 
 		const basePoints = 5 + Math.floor(word.length / 2);
@@ -355,7 +355,7 @@ class Twag {
 			}
 
 			this.scheduleNextTurn(this.message.jid);
-			const nextPlayer = this.players[this.currentIndex].split('@')[0];
+			const nextPlayer = this.players[this.currentIndex].split("@")[0];
 			return `\`\`\`@${name} scores ${points} points for "${word}"!\n\n@${nextPlayer}: ${this.getTurnPrompt()}\`\`\``;
 		} else {
 			return this.eliminate(
@@ -379,11 +379,11 @@ class Twag {
 			await this.message.send(`${msg}\n\n${endMsg}`, {
 				mentions: [jid, ...this.originalPlayers],
 			});
-			return '';
+			return "";
 		}
 
 		this.scheduleNextTurn(this.message.jid);
-		const nextPlayer = this.players[this.currentIndex].split('@')[0];
+		const nextPlayer = this.players[this.currentIndex].split("@")[0];
 		return `${msg}\n\n\`\`\`@${nextPlayer}: ${this.getTurnPrompt()}\`\`\``;
 	}
 
@@ -396,7 +396,7 @@ class Twag {
 		this.timer = setTimeout(async () => {
 			if (this.active && this.players.length) {
 				const playerJid = this.players[this.currentIndex];
-				const name = playerJid.split('@')[0];
+				const name = playerJid.split("@")[0];
 				const message = `\`\`\`@${name}, eliminated (timeout).\`\`\``;
 				const out = await this.eliminate(playerJid, message, [...this.players]);
 				if (out)
@@ -419,11 +419,11 @@ class Twag {
 	async endGame(jid: string): Promise<string> {
 		const scoreArray = [...this.scores.entries()].sort((a, b) => b[1] - a[1]);
 		const scoreText = scoreArray
-			.map(([p, s]) => `@${p.split('@')[0]}: ${s}`)
-			.join('\n');
+			.map(([p, s]) => `@${p.split("@")[0]}: ${s}`)
+			.join("\n");
 
 		const result = scoreArray[0]
-			? `\`\`\`@${scoreArray[0][0].split('@')[0]} wins with ${scoreArray[0][1]} points!\n\nRankings:\n${scoreText}\`\`\``
+			? `\`\`\`@${scoreArray[0][0].split("@")[0]} wins with ${scoreArray[0][1]} points!\n\nRankings:\n${scoreText}\`\`\``
 			: `\`\`\`Game ended!\n\nRankings:\n${scoreText}\`\`\``;
 
 		const validPlayers = this.originalPlayers.filter(isLidUser);
@@ -444,7 +444,7 @@ class Twag {
 		this.scores.clear();
 		this.currentIndex = 0;
 		this.turnNumber = 0;
-		this.currentTopic = '';
+		this.currentTopic = "";
 		this.usedWords = [];
 		this.wordsInCurrentTopic = 0;
 		this.clearTimer();
@@ -452,17 +452,17 @@ class Twag {
 	}
 
 	getTurnPrompt(): string {
-		if (!this.active || !this.players.length) return '';
+		if (!this.active || !this.players.length) return "";
 		const jid = this.players[this.currentIndex];
-		const name = jid.split('@')[0];
+		const name = jid.split("@")[0];
 		return `Topic: ${this.currentTopic.toUpperCase()}\nWords: ${this.wordsInCurrentTopic}/10\n@${name}, your turn!`;
 	}
 
 	getCurrentPlayer(): string {
-		return this.players[this.currentIndex] || '';
+		return this.players[this.currentIndex] || "";
 	}
 
 	getNextPlayer(): string {
-		return this.players[(this.currentIndex + 1) % this.players.length] || '';
+		return this.players[(this.currentIndex + 1) % this.players.length] || "";
 	}
 }

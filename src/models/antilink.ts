@@ -1,7 +1,7 @@
-import { DataType } from 'quantava';
-import database from '../messaging/database.ts';
+import { DataType } from "quantava";
+import database from "../messaging/database.ts";
 
-const Antilink = database.define('antilink', {
+const Antilink = database.define("antilink", {
 	jid: { type: DataType.STRING, allowNull: false, unique: true },
 	mode: { type: DataType.BOOLEAN, allowNull: true },
 	links: { type: DataType.JSON, allowNull: true },
@@ -26,7 +26,7 @@ export const getAntilink = async function (jid: string) {
 	if (!record) return null;
 
 	return {
-		jid: typeof record.jid !== 'string' ? String(record.jid) : record.jid,
+		jid: typeof record.jid !== "string" ? String(record.jid) : record.jid,
 		mode: Boolean(record.mode),
 		links: record.links ? (JSON.parse(record.links as string) as string[]) : [],
 	};

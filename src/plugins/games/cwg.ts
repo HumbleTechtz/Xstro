@@ -1,7 +1,7 @@
-import { Command } from '../../messaging/plugin.ts';
-import Message from '../../messaging/Messages/Message.ts';
-import { updateLeaderboard } from '../../models/leaderboard.ts';
-import { isLidUser } from 'baileys';
+import { Command } from "../../messaging/plugin.ts";
+import Message from "../../messaging/Messages/Message.ts";
+import { updateLeaderboard } from "../../models/leaderboard.ts";
+import { isLidUser } from "baileys";
 
 const cwgGames = new Map<string, Cwg>();
 const cwgPending = new Map<
@@ -10,26 +10,26 @@ const cwgPending = new Map<
 >();
 
 Command({
-	name: 'cwg',
+	name: "cwg",
 	fromMe: false,
 	isGroup: false,
-	desc: 'Play Complete or Fill in the Gap Game',
-	type: 'games',
+	desc: "Play Complete or Fill in the Gap Game",
+	type: "games",
 	function: async (message, match) => {
 		const jid = message.jid;
 
-		if (match === 'end' && cwgGames.has(jid)) {
+		if (match === "end" && cwgGames.has(jid)) {
 			const ev = await cwgGames.get(jid)!.endGame(jid);
 			return message.send(ev);
 		}
 
 		if (cwgGames.has(jid))
 			return message.send(
-				'```A Complete or Fill in the Gap Game is already in progress.```',
+				"```A Complete or Fill in the Gap Game is already in progress.```",
 			);
 		if (cwgPending.has(jid))
 			return message.send(
-				'```A Complete or Fill in the Gap Game is already gathering challengers.```',
+				"```A Complete or Fill in the Gap Game is already gathering challengers.```",
 			);
 
 		cwgPending.set(jid, { jids: [], timers: [] });
@@ -61,7 +61,7 @@ Command({
 			if (result) return message.send(result);
 
 			cwgGames.set(jid, game);
-			const playersText = p.jids.map(id => `@${id.split('@')[0]}`).join(', ');
+			const playersText = p.jids.map(id => `@${id.split("@")[0]}`).join(", ");
 			await message.send(
 				`\`\`\`Complete or Fill in the Gap Game started! Challengers: ${playersText}\`\`\``,
 				{ mentions: p.jids },
@@ -80,18 +80,18 @@ Command({
 		if (!text) return;
 
 		if (
-			text.includes('game started!') ||
-			text.includes('complete or fill in the gap') ||
+			text.includes("game started!") ||
+			text.includes("complete or fill in the gap") ||
 			!message.sender
 		)
 			return;
 
-		if (text === 'join' && cwgPending.has(jid)) {
+		if (text === "join" && cwgPending.has(jid)) {
 			const p = cwgPending.get(jid)!;
 			if (!p.jids.includes(message.sender)) {
 				p.jids.push(message.sender);
 				return message.send(
-					`\`\`\`@${message.sender.split('@')[0]} joined the Match.\`\`\``,
+					`\`\`\`@${message.sender.split("@")[0]} joined the Match.\`\`\``,
 					{ mentions: [message.sender] },
 				);
 			}
@@ -127,9 +127,9 @@ class Cwg {
 	private startCountdown: NodeJS.Timeout | null = null;
 	private inactivityTimeout: NodeJS.Timeout | null = null;
 	private currentTimeout: number = 0;
-	private currentWord: string = '';
-	private currentDefinition: string = '';
-	private currentIncomplete: string = '';
+	private currentWord: string = "";
+	private currentDefinition: string = "";
+	private currentIncomplete: string = "";
 	private difficultyLevel: number = 1;
 
 	constructor(message: Message) {
@@ -145,14 +145,14 @@ class Cwg {
 			return `\`\`\`Insufficient challengers to begin the Complete or Fill in the Gap Game! At least 2 players are required.\`\`\``;
 		}
 		this.startCountdown = setTimeout(() => this.beginGame(jid), 1000);
-		return '';
+		return "";
 	}
 
 	private async beginGame(jid: string): Promise<void> {
 		if (this.players.length < 2) {
 			this.cleanup(jid);
 			await this.message.send(
-				'```Insufficient challengers to begin the Complete or Fill in the Gap Game! At least 2 players are required.```',
+				"```Insufficient challengers to begin the Complete or Fill in the Gap Game! At least 2 players are required.```",
 			);
 			return;
 		}
@@ -174,7 +174,7 @@ class Cwg {
 		try {
 			// Fetch random word from API
 			const wordResponse = await fetch(
-				'https://random-word-api.herokuapp.com/word',
+				"https://random-word-api.herokuapp.com/word",
 			);
 			const [randomWord] = await wordResponse.json();
 
@@ -196,7 +196,7 @@ class Cwg {
 			const definitionData = await definitionResponse.json();
 
 			// Get the first definition available
-			let definition = '';
+			let definition = "";
 			if (definitionData[0]?.meanings?.[0]?.definitions?.[0]?.definition) {
 				definition = definitionData[0].meanings[0].definitions[0].definition;
 			} else {
@@ -210,14 +210,12 @@ class Cwg {
 
 			// Calculate how many letters to hide based on difficulty
 			const lettersToHide = Math.min(
-				Math.floor(
-					this.currentWord.length * (0.2 + this.difficultyLevel * 0.1),
-				),
+				Math.floor(this.currentWord.length * (0.2 + this.difficultyLevel * 0.1)),
 				this.currentWord.length - 1,
 			);
 
 			// Create incomplete word with gaps
-			const wordChars = this.currentWord.split('');
+			const wordChars = this.currentWord.split("");
 			const hiddenIndices: number[] = [];
 
 			while (hiddenIndices.length < lettersToHide) {
@@ -228,31 +226,28 @@ class Cwg {
 			}
 
 			this.currentIncomplete = wordChars
-				.map((char, index) => (hiddenIndices.includes(index) ? '_' : char))
-				.join(' ');
+				.map((char, index) => (hiddenIndices.includes(index) ? "_" : char))
+				.join(" ");
 		} catch (error) {
-			console.error('Error fetching word:', error);
+			console.error("Error fetching word:", error);
 			// Fallback to a default word if API fails
-			this.currentWord = 'example';
-			this.currentDefinition = 'a representative form or pattern';
-			this.currentIncomplete = 'e _ a m _ _ e';
+			this.currentWord = "example";
+			this.currentDefinition = "a representative form or pattern";
+			this.currentIncomplete = "e _ a m _ _ e";
 		}
 	}
 
 	public async playWord(input: string, from: string): Promise<string> {
-		if (!this.active) return '';
+		if (!this.active) return "";
 		const jid: string = this.players[this.currentIndex];
-		if (from !== jid) return '';
-		const name: string = jid.split('@')[0];
+		if (from !== jid) return "";
+		const name: string = jid.split("@")[0];
 		const word: string = input.toLowerCase().trim();
 
 		// Calculate points based on difficulty and word length
 		const basePoints = 5 + Math.floor(this.currentWord.length / 2);
 		const difficultyMultiplier = 1 + this.difficultyLevel * 0.2;
-		const maxPoints = Math.min(
-			80,
-			Math.floor(basePoints * difficultyMultiplier),
-		);
+		const maxPoints = Math.min(80, Math.floor(basePoints * difficultyMultiplier));
 
 		if (word === this.currentWord) {
 			// Correct answer
@@ -270,7 +265,7 @@ class Cwg {
 			await this.prepareNewWord();
 			this.scheduleNextTurn(this.message.jid);
 
-			const nextPlayer: string = this.players[this.currentIndex].split('@')[0];
+			const nextPlayer: string = this.players[this.currentIndex].split("@")[0];
 			return `\`\`\`@${name} scores ${maxPoints} points for correctly completing the word "${this.currentWord}"!\n\n@${nextPlayer}, your challenge awaits:\n${this.getTurnPrompt()}\`\`\``;
 		} else {
 			// Incorrect answer
@@ -295,14 +290,14 @@ class Cwg {
 			await this.message.send(`${msg}\n\n${endMsg}`, {
 				mentions: [jid, ...this.originalPlayers],
 			});
-			return '';
+			return "";
 		}
 
 		await this.prepareNewWord();
 		this.scheduleNextTurn(this.message.jid);
 
 		const nextPlayer: string = this.players[this.currentIndex];
-		const nextPlayerName: string = nextPlayer.split('@')[0];
+		const nextPlayerName: string = nextPlayer.split("@")[0];
 		return `${msg}\n\n\`\`\`@${nextPlayerName}, your challenge awaits:\n${this.getTurnPrompt()}\`\`\``;
 	}
 
@@ -322,16 +317,14 @@ class Cwg {
 		this.timer = setTimeout(async () => {
 			if (this.active && this.players.length) {
 				const playerJid: string = this.players[this.currentIndex];
-				const name: string = playerJid.split('@')[0];
+				const name: string = playerJid.split("@")[0];
 				const message: string = `\`\`\`@${name}, you've been eliminated from the Complete or Fill in the Gap Game!\nYou ran out of time to submit an answer.\`\`\``;
 				const out: string = await this.eliminate(playerJid, message, [
 					...this.players,
 				]);
 				if (out) {
 					await this.message.send(out, {
-						mentions: this.players.length
-							? [this.players[this.currentIndex]]
-							: [],
+						mentions: this.players.length ? [this.players[this.currentIndex]] : [],
 					});
 				}
 			} else {
@@ -369,15 +362,13 @@ class Cwg {
 		scoreArray.sort((a, b) => b[1] - a[1]);
 
 		const scoreText: string = scoreArray
-			.map(([p, s]) => `@${p.split('@')[0]}: ${s} points`)
-			.join('\n');
+			.map(([p, s]) => `@${p.split("@")[0]}: ${s} points`)
+			.join("\n");
 
 		const result: string = scoreArray[0]
-			? `\`\`\`@${scoreArray[0][0].split('@')[0]} claims victory in this Match with ${scoreArray[0][1]} points!\n\nRankings:\n${scoreText}\`\`\``
+			? `\`\`\`@${scoreArray[0][0].split("@")[0]} claims victory in this Match with ${scoreArray[0][1]} points!\n\nRankings:\n${scoreText}\`\`\``
 			: `\`\`\`The Complete or Fill in the Gap Game has concluded!\n\nRankings:\n${scoreText}\`\`\``;
-		const validPlayers = this.originalPlayers.filter(userId =>
-			isLidUser(userId),
-		);
+		const validPlayers = this.originalPlayers.filter(userId => isLidUser(userId));
 		await updateLeaderboard(
 			validPlayers.map(userId => ({
 				userId,
@@ -397,15 +388,13 @@ class Cwg {
 		scoreArray.sort((a, b) => b[1] - a[1]);
 
 		const scoreText: string = scoreArray
-			.map(([p, s]) => `@${p.split('@')[0]}: ${s} points`)
-			.join('\n');
+			.map(([p, s]) => `@${p.split("@")[0]}: ${s} points`)
+			.join("\n");
 
 		const result: string = scoreArray[0]
-			? `\`\`\`@${scoreArray[0][0].split('@')[0]} claims victory in the Complete or Fill in the Gap Game with ${scoreArray[0][1]} points due to inactivity!\n\nRankings:\n${scoreText}\`\`\``
+			? `\`\`\`@${scoreArray[0][0].split("@")[0]} claims victory in the Complete or Fill in the Gap Game with ${scoreArray[0][1]} points due to inactivity!\n\nRankings:\n${scoreText}\`\`\``
 			: `\`\`\`The Complete or Fill in the Gap Game has concluded due to inactivity!\n\nRankings:\n${scoreText}\`\`\``;
-		const validPlayers = this.originalPlayers.filter(userId =>
-			isLidUser(userId),
-		);
+		const validPlayers = this.originalPlayers.filter(userId => isLidUser(userId));
 		await updateLeaderboard(
 			validPlayers.map(userId => ({
 				userId,
@@ -436,25 +425,25 @@ class Cwg {
 		this.history = [];
 		this.currentTimeout = 0;
 		this.difficultyLevel = 1;
-		this.currentWord = '';
-		this.currentDefinition = '';
-		this.currentIncomplete = '';
+		this.currentWord = "";
+		this.currentDefinition = "";
+		this.currentIncomplete = "";
 		cwgGames.delete(jid);
 	}
 
 	getTurnPrompt(): string {
-		if (!this.active || !this.players.length) return '';
+		if (!this.active || !this.players.length) return "";
 		const jid: string = this.players[this.currentIndex];
-		const name: string = jid.split('@')[0];
+		const name: string = jid.split("@")[0];
 
 		return `Complete the word:\n${this.currentIncomplete}\n\nDefinition: ${this.currentDefinition}\n\nDifficulty: Level ${this.difficultyLevel}\nYou have ${this.currentTimeout / 1000} seconds to respond!`;
 	}
 
 	getCurrentPlayer(): string {
-		return this.players[this.currentIndex] || '';
+		return this.players[this.currentIndex] || "";
 	}
 
 	getNextPlayer(): string {
-		return this.players[(this.currentIndex + 1) % this.players.length] || '';
+		return this.players[(this.currentIndex + 1) % this.players.length] || "";
 	}
 }

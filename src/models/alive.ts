@@ -1,10 +1,10 @@
-import { DataType } from 'quantava';
-import database from '../messaging/database.ts';
-import config from '../../config.mjs';
-import Message from '../messaging/Messages/Message.ts';
+import { DataType } from "quantava";
+import database from "../messaging/database.ts";
+import config from "../../config.mjs";
+import Message from "../messaging/Messages/Message.ts";
 
 const Alive = database.define(
-	'alive',
+	"alive",
 	{
 		id: {
 			type: DataType.INTEGER,
@@ -36,11 +36,11 @@ export const getAlive = async (client?: Message) => {
 	const now = new Date().toLocaleString();
 	let message = msg.message;
 
-	message = message.replace(/@user/g, client?.pushName ?? 'Unknown');
-	message = message.replace(/@owner/g, `@${client?.owner.split('@')[0]}`);
+	message = message.replace(/@user/g, client?.pushName ?? "Unknown");
+	message = message.replace(/@owner/g, `@${client?.owner.split("@")[0]}`);
 	message = message.replace(/@time/g, now);
 	message = message.replace(/@botname/g, config?.BOT_NAME ?? `χѕтяσ`);
-	message = message.replace(/@quotes/g, '');
+	message = message.replace(/@quotes/g, "");
 	return message;
 };
 

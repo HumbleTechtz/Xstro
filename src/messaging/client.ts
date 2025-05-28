@@ -3,15 +3,15 @@ import {
 	makeCacheableSignalKeyStore,
 	Browsers,
 	fetchLatestBaileysVersion,
-} from 'baileys';
-import { HttpsProxyAgent } from 'https-proxy-agent';
-import NodeCache from '@cacheable/node-cache';
+} from "baileys";
+import { HttpsProxyAgent } from "https-proxy-agent";
+import NodeCache from "@cacheable/node-cache";
 
-import config from '../../config.mjs';
-import events from './events.ts';
-import hooks from './hooks.ts';
-import useSqliteAuthState from '../utils/useSqliteAuthState.ts';
-import { getMessage, cachedGroupMetadata } from '../models/index.ts';
+import config from "../../config.mjs";
+import events from "./events.ts";
+import hooks from "./hooks.ts";
+import useSqliteAuthState from "../utils/useSqliteAuthState.ts";
+import { getMessage, cachedGroupMetadata } from "../models/index.ts";
 
 (async () => {
 	const { state, saveCreds } = await useSqliteAuthState();
@@ -26,7 +26,7 @@ import { getMessage, cachedGroupMetadata } from '../models/index.ts';
 		agent: config.PROXY ? new HttpsProxyAgent(config.PROXY) : undefined,
 		version,
 		keepAliveIntervalMs: 2000,
-		browser: Browsers.windows('chrome'),
+		browser: Browsers.windows("chrome"),
 		syncFullHistory: true,
 		emitOwnEvents: true,
 		generateHighQualityLinkPreview: true,
@@ -40,9 +40,9 @@ import { getMessage, cachedGroupMetadata } from '../models/index.ts';
 	});
 
 	if (!sock.authState?.creds?.registered) {
-		const phoneNumber = config.USER_NUMBER?.replace(/[^0-9]/g, '') ?? '';
+		const phoneNumber = config.USER_NUMBER?.replace(/[^0-9]/g, "") ?? "";
 		if (phoneNumber.length < 11) {
-			console.error('Please input a valid number');
+			console.error("Please input a valid number");
 			process.exit(1);
 		}
 		await new Promise(resolve => setTimeout(resolve, 2000));

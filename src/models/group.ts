@@ -1,9 +1,9 @@
-import { DataType } from 'quantava';
-import database from '../messaging/database.ts';
-import type { GroupMetadata } from 'baileys';
+import { DataType } from "quantava";
+import database from "../messaging/database.ts";
+import type { GroupMetadata } from "baileys";
 
 const Metadata = database.define(
-	'group_metadata',
+	"group_metadata",
 	{
 		jid: {
 			type: DataType.STRING,
@@ -29,9 +29,7 @@ export async function cachedGroupMetadataAll(): Promise<{
 		? Object.fromEntries(
 				metadata.map(m => [
 					m.jid,
-					JSON.parse(
-						typeof m.data === 'string' ? m.data : JSON.stringify(m.data),
-					),
+					JSON.parse(typeof m.data === "string" ? m.data : JSON.stringify(m.data)),
 				]),
 			)
 		: {};

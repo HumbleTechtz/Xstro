@@ -1,6 +1,6 @@
-import { fileTypeFromBuffer } from 'file-type';
-import { isPath, isText } from './constants.ts';
-import { extractStringfromMessage } from './extractor.ts';
+import { fileTypeFromBuffer } from "file-type";
+import { isPath, isText } from "./constants.ts";
+import { extractStringfromMessage } from "./extractor.ts";
 import {
 	isJidBroadcast,
 	isJidGroup,
@@ -10,23 +10,23 @@ import {
 	type WAMessageContent,
 	type WAMessageKey,
 	type WAMessage,
-} from 'baileys';
-import type { ContentTypeResult } from '../types/index.ts';
+} from "baileys";
+import type { ContentTypeResult } from "../types/index.ts";
 
 export const getContentType = async (
 	content: unknown,
 ): Promise<ContentTypeResult> => {
 	try {
-		if (typeof content === 'string' && isPath(content)) {
+		if (typeof content === "string" && isPath(content)) {
 			return { isPath: true, path: content };
 		}
-		if (typeof content === 'string' && isText(content)) {
+		if (typeof content === "string" && isText(content)) {
 			return content;
 		}
 		let buffer: Buffer;
 		if (Buffer.isBuffer(content)) {
 			buffer = content;
-		} else if (typeof content === 'string') {
+		} else if (typeof content === "string") {
 			buffer = Buffer.from(content);
 		} else {
 			return undefined;
@@ -42,46 +42,46 @@ export const getContentType = async (
 export const getDataType = async (
 	content: Buffer | string,
 ): Promise<{
-	contentType: 'text' | 'audio' | 'image' | 'video' | 'sticker' | 'document';
+	contentType: "text" | "audio" | "image" | "video" | "sticker" | "document";
 	mimeType: string;
 }> => {
-	if (typeof content === 'string') content = Buffer.from(content);
+	if (typeof content === "string") content = Buffer.from(content);
 	const data = await fileTypeFromBuffer(content);
 	if (!data) {
 		try {
-			content.toString('utf8');
-			return { contentType: 'text', mimeType: 'text/plain' };
+			content.toString("utf8");
+			return { contentType: "text", mimeType: "text/plain" };
 		} catch {
 			return {
-				contentType: 'document',
-				mimeType: 'application/octet-stream',
+				contentType: "document",
+				mimeType: "application/octet-stream",
 			};
 		}
 	}
 	const mimeType = data.mime;
-	if (mimeType.startsWith('text/')) {
-		return { contentType: 'text', mimeType };
-	} else if (mimeType.startsWith('image/')) {
-		return { contentType: 'image', mimeType };
-	} else if (mimeType.startsWith('video/')) {
-		return { contentType: 'video', mimeType };
-	} else if (mimeType.startsWith('audio/')) {
-		return { contentType: 'audio', mimeType };
+	if (mimeType.startsWith("text/")) {
+		return { contentType: "text", mimeType };
+	} else if (mimeType.startsWith("image/")) {
+		return { contentType: "image", mimeType };
+	} else if (mimeType.startsWith("video/")) {
+		return { contentType: "video", mimeType };
+	} else if (mimeType.startsWith("audio/")) {
+		return { contentType: "audio", mimeType };
 	} else {
-		return { contentType: 'document', mimeType };
+		return { contentType: "document", mimeType };
 	}
 };
 
 export const isMediaMessage = (message: WAMessage): boolean => {
 	const mediaMessageTypes = [
-		'imageMessage',
-		'videoMessage',
-		'audioMessage',
-		'documentMessage',
+		"imageMessage",
+		"videoMessage",
+		"audioMessage",
+		"documentMessage",
 	] as const;
 	const content = contentType(message?.message || {});
 	return (
-		typeof content === 'string' &&
+		typeof content === "string" &&
 		mediaMessageTypes.includes(content as (typeof mediaMessageTypes)[number])
 	);
 };
@@ -99,11 +99,11 @@ export function getMessageContent(message?: WAMessageContent) {
 export function hasContextInfo(
 	msg: unknown,
 ): msg is { contextInfo: WAContextInfo } {
-	if (!msg || typeof msg !== 'object' || msg === null) return false;
+	if (!msg || typeof msg !== "object" || msg === null) return false;
 	return (
-		'contextInfo' in msg &&
+		"contextInfo" in msg &&
 		msg.contextInfo !== null &&
-		typeof msg.contextInfo === 'object'
+		typeof msg.contextInfo === "object"
 	);
 }
 

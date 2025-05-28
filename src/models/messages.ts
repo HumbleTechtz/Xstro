@@ -1,10 +1,10 @@
-import database from '../messaging/database.ts';
-import { WAProto } from 'baileys';
-import { DataType } from 'quantava';
-import type { WAMessage, WAMessageContent, WAMessageKey } from 'baileys';
+import database from "../messaging/database.ts";
+import { WAProto } from "baileys";
+import { DataType } from "quantava";
+import type { WAMessage, WAMessageContent, WAMessageKey } from "baileys";
 
 export const messageDb = database.define(
-	'messages',
+	"messages",
 	{
 		id: { type: DataType.STRING },
 		messages: { type: DataType.JSON, allowNull: true },

@@ -1,35 +1,35 @@
-import { Command } from '../messaging/plugin.ts';
+import { Command } from "../messaging/plugin.ts";
 
 Command({
-	name: 'chatpin',
+	name: "chatpin",
 	fromMe: true,
 	isGroup: false,
-	desc: 'Pin a chat',
-	type: 'chats',
+	desc: "Pin a chat",
+	type: "chats",
 	function: async message => {
 		await message.client.chatModify({ pin: true }, message.jid);
-		return message.send('Pined.');
+		return message.send("Pined.");
 	},
 });
 
 Command({
-	name: 'chatunpin',
+	name: "chatunpin",
 	fromMe: true,
 	isGroup: false,
-	desc: 'Unpin a chat',
-	type: 'chats',
+	desc: "Unpin a chat",
+	type: "chats",
 	function: async message => {
 		await message.client.chatModify({ pin: false }, message.jid);
-		return message.send('Unpined.');
+		return message.send("Unpined.");
 	},
 });
 
 Command({
-	name: 'archive',
+	name: "archive",
 	fromMe: true,
 	isGroup: false,
-	desc: 'Archive a chat',
-	type: 'chats',
+	desc: "Archive a chat",
+	type: "chats",
 	function: async message => {
 		await message.client.chatModify(
 			{
@@ -40,16 +40,16 @@ Command({
 			},
 			message.jid,
 		);
-		return message.send('Archived.');
+		return message.send("Archived.");
 	},
 });
 
 Command({
-	name: 'unarchive',
+	name: "unarchive",
 	fromMe: true,
 	isGroup: false,
-	desc: 'Unarchive a chat',
-	type: 'chats',
+	desc: "Unarchive a chat",
+	type: "chats",
 	function: async message => {
 		await message.client.chatModify(
 			{
@@ -60,16 +60,16 @@ Command({
 			},
 			message.jid,
 		);
-		return message.send('Unarchived.');
+		return message.send("Unarchived.");
 	},
 });
 
 Command({
-	name: 'clear',
+	name: "clear",
 	fromMe: true,
 	isGroup: false,
-	desc: 'Clear a chat',
-	type: 'chats',
+	desc: "Clear a chat",
+	type: "chats",
 	function: async message => {
 		await message.client.chatModify(
 			{
@@ -80,16 +80,16 @@ Command({
 			},
 			message.jid,
 		);
-		return message.send('Cleared.');
+		return message.send("Cleared.");
 	},
 });
 
 Command({
-	name: 'delete',
+	name: "delete",
 	fromMe: true,
 	isGroup: false,
-	desc: 'Delete a chat',
-	type: 'chats',
+	desc: "Delete a chat",
+	type: "chats",
 	function: async message => {
 		return await message.client.chatModify(
 			{
@@ -104,14 +104,14 @@ Command({
 });
 
 Command({
-	name: 'star',
+	name: "star",
 	fromMe: true,
 	isGroup: false,
-	desc: 'Star a message',
-	type: 'chats',
+	desc: "Star a message",
+	type: "chats",
 	function: async msg => {
 		if (!msg.quoted) {
-			return msg.send('Reply a message to star');
+			return msg.send("Reply a message to star");
 		}
 		const { id, fromMe } = msg.quoted.key as { id: string; fromMe: boolean };
 
@@ -124,19 +124,19 @@ Command({
 			},
 			msg.jid,
 		);
-		return msg.send('Starred.');
+		return msg.send("Starred.");
 	},
 });
 
 Command({
-	name: 'unstar',
+	name: "unstar",
 	fromMe: true,
 	isGroup: false,
-	desc: 'Unstar a message',
-	type: 'chats',
+	desc: "Unstar a message",
+	type: "chats",
 	function: async msg => {
 		if (!msg.quoted) {
-			return msg.send('Reply a message to unstar');
+			return msg.send("Reply a message to unstar");
 		}
 		const { id, fromMe } = msg.quoted.key as { id: string; fromMe: boolean };
 
@@ -149,19 +149,19 @@ Command({
 			},
 			msg.jid,
 		);
-		return msg.send('Unstarred.');
+		return msg.send("Unstarred.");
 	},
 });
 
 Command({
-	name: 'pin',
+	name: "pin",
 	fromMe: false,
 	isGroup: false,
-	desc: 'Pin a message',
-	type: 'chats',
+	desc: "Pin a message",
+	type: "chats",
 	function: async message => {
 		if (!message.quoted) {
-			return message.send('Reply a message to pin it.');
+			return message.send("Reply a message to pin it.");
 		}
 		return await message.client.sendMessage(message.jid, {
 			pin: message.quoted.key,
@@ -172,14 +172,14 @@ Command({
 });
 
 Command({
-	name: 'unpin',
+	name: "unpin",
 	fromMe: false,
 	isGroup: false,
-	desc: 'Unpin a message',
-	type: 'chats',
+	desc: "Unpin a message",
+	type: "chats",
 	function: async message => {
 		if (!message.quoted) {
-			return message.send('Reply a message to pin it.');
+			return message.send("Reply a message to pin it.");
 		}
 		return await message.client.sendMessage(message.jid, {
 			pin: message.quoted.key,

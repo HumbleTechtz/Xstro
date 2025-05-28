@@ -1,3 +1,3 @@
-import './ai.ts';
-import './authstate.ts';
-import './wcg.ts';
+import "./ai.ts";
+import "./authstate.ts";
+import "./wcg.ts";

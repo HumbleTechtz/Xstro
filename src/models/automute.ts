@@ -1,7 +1,7 @@
-import { DataType } from 'quantava';
-import database from '../messaging/database.ts';
+import { DataType } from "quantava";
+import database from "../messaging/database.ts";
 
-const AutoMute = database.define('automute', {
+const AutoMute = database.define("automute", {
 	jid: { type: DataType.STRING, allowNull: false, primaryKey: true },
 	startTime: { type: DataType.STRING, allowNull: true },
 	endTime: { type: DataType.STRING, allowNull: true },

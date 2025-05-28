@@ -1,18 +1,18 @@
-import { type WASocket } from 'baileys';
-import { Command } from '../../messaging/plugin.ts';
+import { type WASocket } from "baileys";
+import { Command } from "../../messaging/plugin.ts";
 import {
 	delAntilink,
 	getAntilink,
 	setAntilink,
-} from '../../models/antilink.ts';
-import { isAdmin, isBotAdmin } from '../../utils/constants.ts';
+} from "../../models/antilink.ts";
+import { isAdmin, isBotAdmin } from "../../utils/constants.ts";
 
 Command({
-	name: 'antilink',
+	name: "antilink",
 	fromMe: false,
 	isGroup: true,
-	desc: 'Setup Antilink for Group Chat',
-	type: 'group',
+	desc: "Setup Antilink for Group Chat",
+	type: "group",
 	function: async (msg, args) => {
 		const { prefix, jid } = msg;
 		if (!args) {
@@ -27,32 +27,30 @@ ${prefix}antilink set chat.whatsapp.com,google.com\`\`\``,
 		}
 
 		args = args.toLowerCase().trim();
-		const choice = args.split(' ');
-		if (choice[0] === 'on') {
+		const choice = args.split(" ");
+		if (choice[0] === "on") {
 			await setAntilink(jid, true);
-			return await msg.send('_Antilink turned on_');
+			return await msg.send("_Antilink turned on_");
 		}
-		if (choice[0] === 'off') {
+		if (choice[0] === "off") {
 			await delAntilink(jid);
-			return await msg.send('_Antilink turned off_');
+			return await msg.send("_Antilink turned off_");
 		}
 
-		if (choice[0] === 'mode') {
-			if (choice[1] !== 'kick' && choice[1] !== 'delete')
+		if (choice[0] === "mode") {
+			if (choice[1] !== "kick" && choice[1] !== "delete")
 				return await msg.send(
 					`\`\`\`Usage:\n${prefix}antilink mode kick\nOR\n${prefix}antilink mode delete\`\`\``,
 				);
-			await setAntilink(jid, choice[1] === 'kick' ? true : false);
+			await setAntilink(jid, choice[1] === "kick" ? true : false);
 			return await msg.send(
-				'_Antilink mode is now set to ' + choice[1] + ' participant_',
+				"_Antilink mode is now set to " + choice[1] + " participant_",
 			);
 		}
 
-		if (choice[0] === 'set') {
+		if (choice[0] === "set") {
 			if (!choice?.[1])
-				return await msg.send(
-					'_You need to add some specific links to prohibit_',
-				);
+				return await msg.send("_You need to add some specific links to prohibit_");
 			await setAntilink(jid, true, choice.slice(1));
 			return await msg.send(
 				`_Antilink set to handle ${choice.slice(1).length} links_`,
@@ -93,17 +91,13 @@ Command({
 		await msg.delete();
 
 		if (antilink.mode === true) {
-			await msg.client.groupParticipantsUpdate(
-				msg.jid,
-				[msg.sender!],
-				'remove',
-			);
+			await msg.client.groupParticipantsUpdate(msg.jid, [msg.sender!], "remove");
 			await msg.send(
-				`_@${msg.sender!.split('@')[0]} was removed for sending a prohibited link_`,
+				`_@${msg.sender!.split("@")[0]} was removed for sending a prohibited link_`,
 				{ mentions: [msg.sender!] },
 			);
 		} else {
-			await msg.send('_Links are not allowed here_');
+			await msg.send("_Links are not allowed here_");
 		}
 	},
 });

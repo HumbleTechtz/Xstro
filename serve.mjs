@@ -1,4 +1,4 @@
-import { execa } from 'execa';
+import { execa } from "execa";
 
 /**
  * Executes a Node.js script in a new process and returns a promise that resolves with the exit code
@@ -7,13 +7,13 @@ import { execa } from 'execa';
  */
 async function runProc(scriptPath) {
 	try {
-		const subprocess = execa('tsx', [scriptPath], {
-			stdio: 'inherit',
+		const subprocess = execa("tsx", [scriptPath], {
+			stdio: "inherit",
 		});
 		await subprocess;
 		return 0;
 	} catch (err) {
-		console.error('Process error:', err instanceof Error ? err.message : err);
+		console.error("Process error:", err instanceof Error ? err.message : err);
 		return 1;
 	}
 }
@@ -28,7 +28,7 @@ async function runProc(scriptPath) {
  */
 async function run() {
 	try {
-		const sock = await runProc('./src/messaging/client.ts');
+		const sock = await runProc("./src/messaging/client.ts");
 		if (sock === 0) {
 			// Restart after 1 second
 			setTimeout(() => run(), 1000);
@@ -36,7 +36,7 @@ async function run() {
 			process.exit(sock);
 		}
 	} catch (e) {
-		console.error('Run error:', e);
+		console.error("Run error:", e);
 		process.exit(1);
 	}
 }

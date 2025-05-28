@@ -1,14 +1,14 @@
-import { DataType } from 'quantava';
-import database from '../messaging/database.ts';
+import { DataType } from "quantava";
+import database from "../messaging/database.ts";
 
-const ratelimiter = database.define('ratelimiter', {
+const ratelimiter = database.define("ratelimiter", {
 	sender: { type: DataType.STRING, allowNull: false, primaryKey: true },
 	request_count: { type: DataType.INTEGER, allowNull: false, defaultValue: 0 },
 	last_request_date: { type: DataType.STRING, allowNull: false },
 });
 
 function getTodayDate() {
-	return new Date().toISOString().split('T')[0];
+	return new Date().toISOString().split("T")[0];
 }
 
 export async function canProceed(sender: string): Promise<boolean> {

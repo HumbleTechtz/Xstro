@@ -1,41 +1,41 @@
-import { Command } from '../messaging/plugin.ts';
-import { voxnews, wabetanews, technews } from '../utils/scraper.mts';
+import { Command } from "../messaging/plugin.ts";
+import { voxnews, wabetanews, technews } from "../utils/scraper.mts";
 
 Command({
-	name: 'news',
+	name: "news",
 	fromMe: false,
 	isGroup: false,
-	desc: 'Get News from Vox',
-	type: 'news',
+	desc: "Get News from Vox",
+	type: "news",
 	function: async message => {
 		const news = await voxnews();
-		if (!news) return message.send('_No news avaliable_');
+		if (!news) return message.send("_No news avaliable_");
 		return await message.send(news);
 	},
 });
 
 Command({
-	name: 'wabeta',
+	name: "wabeta",
 	fromMe: false,
 	isGroup: false,
-	desc: 'Get WABeta News',
-	type: 'news',
+	desc: "Get WABeta News",
+	type: "news",
 	function: async message => {
 		const wabetaInfo = await wabetanews();
-		if (!wabetaInfo) return message.send('_No WA updates avaliable_');
+		if (!wabetaInfo) return message.send("_No WA updates avaliable_");
 		return await message.send(wabetaInfo);
 	},
 });
 
 Command({
-	name: 'technews',
+	name: "technews",
 	fromMe: false,
 	isGroup: false,
-	desc: 'Get Tech News',
-	type: 'news',
+	desc: "Get Tech News",
+	type: "news",
 	function: async message => {
 		const techInfo = await technews();
-		if (!techInfo) return message.send('_No tech news updates!_');
+		if (!techInfo) return message.send("_No tech news updates!_");
 		return await message.send(techInfo);
 	},
 });

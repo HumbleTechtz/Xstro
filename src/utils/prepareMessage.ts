@@ -1,7 +1,7 @@
-import { Boom } from '@hapi/boom';
-import { getDataType } from './content.ts';
-import type { MessageMisc } from '../types/index.ts';
-import type { AnyMessageContent, WASocket } from 'baileys';
+import { Boom } from "@hapi/boom";
+import { getDataType } from "./content.ts";
+import type { MessageMisc } from "../types/index.ts";
+import type { AnyMessageContent, WASocket } from "baileys";
 
 function isValidUrl(str: string): boolean {
 	try {
@@ -17,13 +17,13 @@ async function fetchUrlContent(
 ): Promise<{ buffer: Buffer; mimeType: string }> {
 	const response = await fetch(url);
 	if (!response.ok) {
-		throw new Boom('Failed to fetch URL content', {
+		throw new Boom("Failed to fetch URL content", {
 			statusCode: response.status,
 		});
 	}
 	const buffer = Buffer.from(await response.arrayBuffer());
 	const mimeType =
-		response.headers.get('content-type') || 'application/octet-stream';
+		response.headers.get("content-type") || "application/octet-stream";
 	return { buffer, mimeType };
 }
 
@@ -32,13 +32,13 @@ export async function prepareMessage(
 	content: string | Buffer,
 	options?: MessageMisc & Partial<AnyMessageContent>,
 ) {
-	const jid = options?.jid ?? ' ';
+	const jid = options?.jid ?? " ";
 	const explicitType = options?.type;
 	let messageContent: AnyMessageContent;
 	let buffer: Buffer;
 	let mimeType: string | undefined;
 
-	if (typeof content === 'string') {
+	if (typeof content === "string") {
 		if (isValidUrl(content)) {
 			try {
 				const fetched = await fetchUrlContent(content);
@@ -61,32 +61,32 @@ export async function prepareMessage(
 
 	const type = explicitType || (await getDataType(buffer)).contentType;
 
-	if (type === 'text') {
+	if (type === "text") {
 		messageContent = { text: buffer.toString(), ...options };
-	} else if (type === 'image') {
+	} else if (type === "image") {
 		messageContent = {
-			image: typeof content === 'string' ? { url: content } : buffer,
+			image: typeof content === "string" ? { url: content } : buffer,
 			...options,
 		};
-	} else if (type === 'audio') {
+	} else if (type === "audio") {
 		messageContent = {
-			audio: typeof content === 'string' ? { url: content } : buffer,
+			audio: typeof content === "string" ? { url: content } : buffer,
 			...options,
 		};
-	} else if (type === 'video') {
+	} else if (type === "video") {
 		messageContent = {
-			video: typeof content === 'string' ? { url: content } : buffer,
+			video: typeof content === "string" ? { url: content } : buffer,
 			...options,
 		};
-	} else if (type === 'sticker') {
+	} else if (type === "sticker") {
 		messageContent = {
-			sticker: typeof content === 'string' ? { url: content } : buffer,
+			sticker: typeof content === "string" ? { url: content } : buffer,
 			...options,
 		};
-	} else if (type === 'document') {
+	} else if (type === "document") {
 		messageContent = {
-			document: typeof content === 'string' ? { url: content } : buffer,
-			mimetype: mimeType || 'application/octet-stream',
+			document: typeof content === "string" ? { url: content } : buffer,
+			mimetype: mimeType || "application/octet-stream",
 			...options,
 		};
 	} else {

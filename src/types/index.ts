@@ -1,7 +1,7 @@
-import type { WAContextInfo, WAMessage, WAMessageContent } from 'baileys';
-import type { FileTypeResult } from 'file-type';
-import type { serialize } from '../messaging/serialize.ts';
-import { Message } from '../messaging/Messages/index.ts';
+import type { WAContextInfo, WAMessage, WAMessageContent } from "baileys";
+import type { FileTypeResult } from "file-type";
+import type { serialize } from "../messaging/serialize.ts";
+import { Message } from "../messaging/Messages/index.ts";
 
 export interface Commands {
 	name?: string | RegExp;
@@ -11,26 +11,26 @@ export interface Commands {
 	isGroup?: boolean;
 	desc?: string;
 	type?:
-		| 'ai'
-		| 'misc'
-		| 'system'
-		| 'settings'
-		| 'tools'
-		| 'whatsapp'
-		| 'group'
-		| 'fun'
-		| 'filter'
-		| 'news'
-		| 'chats'
-		| 'download'
-		| 'media'
-		| 'utilities'
-		| 'user'
-		| 'privacy'
-		| 'games'
-		| 'maker'
-		| 'schedule'
-		| 'muting';
+		| "ai"
+		| "misc"
+		| "system"
+		| "settings"
+		| "tools"
+		| "whatsapp"
+		| "group"
+		| "fun"
+		| "filter"
+		| "news"
+		| "chats"
+		| "download"
+		| "media"
+		| "utilities"
+		| "user"
+		| "privacy"
+		| "games"
+		| "maker"
+		| "schedule"
+		| "muting";
 	dontAddCommandList?: boolean;
 }
 
@@ -40,7 +40,7 @@ export type Serialize =
 export type MessageMisc = {
 	jid?: string;
 	mimetype?: string;
-	type?: 'text' | 'audio' | 'image' | 'video' | 'sticker' | 'document';
+	type?: "text" | "audio" | "image" | "video" | "sticker" | "document";
 	quoted?: WAMessage;
 };
 

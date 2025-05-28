@@ -23,6 +23,7 @@ Participation in this project requires adherence to our [Code of Conduct](CODE_O
 ## Getting Started
 
 1. **Fork and Clone**
+
    - Fork this repository on GitHub and clone your fork to your local machine:
      ```bash
      git clone https://github.com/<your-username>/whatsapp-bot.git
@@ -30,6 +31,7 @@ Participation in this project requires adherence to our [Code of Conduct](CODE_O
      ```
 
 2. **Set Up the Environment**
+
    - Install dependencies using [pnpm](https://pnpm.io/):
      ```bash
      pnpm install
@@ -71,16 +73,19 @@ You may contribute in the following ways:
 ## Development Workflow
 
 1. **Create a Branch**
+
    - Create a branch for your feature or fix:
      ```bash
      git checkout -b feature/your-feature
      ```
 
 2. **Implement Changes**
+
    - Write your code, following the standards outlined below.
    - Update or add tests as appropriate.
 
 3. **Test Locally**
+
    - Run linting and tests before committing:
      ```bash
      pnpm lint
@@ -88,10 +93,12 @@ You may contribute in the following ways:
      ```
 
 4. **Commit Changes**
+
    - Use clear and descriptive commit messages.
    - Example: `fix(plugin): resolve issue with group join events handling`
 
 5. **Push and Open a Pull Request**
+
    - Push your branch to your fork and open a Pull Request (PR) against the `stable` branch.
    - Complete the PR template and clearly describe your changes.
 

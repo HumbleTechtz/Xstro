@@ -1,13 +1,13 @@
-import { Command } from '../messaging/plugin.ts';
-import { getAntidelete, setAntidelete } from '../models/antidelete.ts';
-import { loadMesage } from '../models/messages.ts';
+import { Command } from "../messaging/plugin.ts";
+import { getAntidelete, setAntidelete } from "../models/antidelete.ts";
+import { loadMesage } from "../models/messages.ts";
 
 Command({
-	name: 'antidelete',
+	name: "antidelete",
 	fromMe: true,
 	isGroup: false,
-	desc: 'Recover deleted messages',
-	type: 'misc',
+	desc: "Recover deleted messages",
+	type: "misc",
 	function: async (message, match) => {
 		const p = message.prefix[0];
 		if (!match) {
@@ -16,32 +16,30 @@ Command({
 			);
 		}
 
-		const [cmd, mode] = match.split(' ').map(lt => lt.toLowerCase());
+		const [cmd, mode] = match.split(" ").map(lt => lt.toLowerCase());
 
-		if (cmd === 'on') {
-			const rec = await setAntidelete('global');
+		if (cmd === "on") {
+			const rec = await setAntidelete("global");
 			return rec
-				? message.send('_Antidelete is now enabled_')
-				: message.send('_Antidelete was already enabled_');
+				? message.send("_Antidelete is now enabled_")
+				: message.send("_Antidelete was already enabled_");
 		}
 
-		if (cmd === 'off') {
+		if (cmd === "off") {
 			const rec = await setAntidelete(null);
 			return rec
-				? message.send('_Antidelete turned off_')
-				: message.send('_Antidelete was already disabled_');
+				? message.send("_Antidelete turned off_")
+				: message.send("_Antidelete was already disabled_");
 		}
 
-		if (cmd === 'set' && mode === 'gc') {
-			await setAntidelete('gc');
-			return message.send('_Antidelete is now enabled for only group chats_');
+		if (cmd === "set" && mode === "gc") {
+			await setAntidelete("gc");
+			return message.send("_Antidelete is now enabled for only group chats_");
 		}
 
-		if (cmd === 'set' && mode === 'dm') {
-			await setAntidelete('dm');
-			return message.send(
-				'_Antidelete is now enabled for only personal chats_',
-			);
+		if (cmd === "set" && mode === "dm") {
+			await setAntidelete("dm");
+			return message.send("_Antidelete is now enabled for only personal chats_");
 		}
 
 		return message.send(
@@ -59,8 +57,7 @@ Command({
 
 		const mode = status[0]?.mode ?? null;
 
-		if ((mode === 'gc' && !msg.isGroup) || (mode === 'dm' && msg.isGroup))
-			return;
+		if ((mode === "gc" && !msg.isGroup) || (mode === "dm" && msg.isGroup)) return;
 
 		const protocolMessage = msg?.message?.protocolMessage;
 		if (!protocolMessage || protocolMessage.type !== 0) return;

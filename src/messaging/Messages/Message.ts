@@ -1,9 +1,9 @@
-import ReplyMessage from './ReplyMessage.ts';
+import ReplyMessage from "./ReplyMessage.ts";
 import {
 	isBotAdmin,
 	isMediaMessage,
 	prepareMessage,
-} from '../../utils/index.ts';
+} from "../../utils/index.ts";
 import {
 	downloadMediaMessage,
 	type WAContextInfo,
@@ -12,13 +12,13 @@ import {
 	type WAMessageKey,
 	type WAMessageContent,
 	type WAMessage,
-} from 'baileys';
-import type { Serialize, MessageMisc } from '../../types/index.ts';
+} from "baileys";
+import type { Serialize, MessageMisc } from "../../types/index.ts";
 
 export default class Message {
 	client: Omit<
 		WASocket,
-		'logger' | 'ws' | 'ev' | 'authState' | 'signalRepository'
+		"logger" | "ws" | "ev" | "authState" | "signalRepository"
 	>;
 	key: WAMessageKey;
 	jid: string;
@@ -72,18 +72,16 @@ export default class Message {
 		this.owner = owner;
 		this.pushName = pushName;
 		this.mention = mention;
-		this.image = mtype === 'imageMessage';
-		this.video = mtype === 'videoMessage';
-		this.audio = mtype === 'audioMessage';
+		this.image = mtype === "imageMessage";
+		this.video = mtype === "videoMessage";
+		this.audio = mtype === "audioMessage";
 		this.mode = mode;
 		this.messageTimestamp = messageTimestamp;
 		this.text = text;
 		this.user = user;
-		this.quoted = quoted
-			? new ReplyMessage(data.quoted, this.client)
-			: undefined;
+		this.quoted = quoted ? new ReplyMessage(data.quoted, this.client) : undefined;
 
-		Object.defineProperty(this, 'client', {
+		Object.defineProperty(this, "client", {
 			enumerable: false,
 			writable: true,
 			value: props,
@@ -98,9 +96,7 @@ export default class Message {
 		const jid = options?.jid ?? this.jid;
 		const msg = await prepareMessage(client, content, { ...options, jid });
 		return new Message(
-			await (
-				await import('../serialize.ts')
-			).serialize(client, msg as WAMessage),
+			await (await import("../serialize.ts")).serialize(client, msg as WAMessage),
 			client,
 		);
 	}
@@ -139,7 +135,7 @@ export default class Message {
 	}
 
 	async downloadM() {
-		return await downloadMediaMessage(this, 'buffer', {});
+		return await downloadMediaMessage(this, "buffer", {});
 	}
 
 	async forward(jid: string, options?: WAContextInfo & { quoted: WAMessage }) {

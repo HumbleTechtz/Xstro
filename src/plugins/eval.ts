@@ -1,5 +1,5 @@
-import util from 'util';
-import { Command } from '../messaging/plugin.ts';
+import util from "util";
+import { Command } from "../messaging/plugin.ts";
 
 Command({
 	on: true,
@@ -7,7 +7,7 @@ Command({
 	function: async message => {
 		if (!message.sudo) return;
 		const text = message.text;
-		if (!text?.startsWith('$ ')) return;
+		if (!text?.startsWith("$ ")) return;
 
 		const code = text.slice(2);
 

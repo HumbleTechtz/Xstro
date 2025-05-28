@@ -1,27 +1,27 @@
-import { Command } from '../../messaging/plugin.ts';
+import { Command } from "../../messaging/plugin.ts";
 import {
 	setAutoMute,
 	delAutoMute,
 	getAutoMute,
-} from '../../models/automute.ts';
-import { isValidTimeString } from '../../utils/constants.ts';
+} from "../../models/automute.ts";
+import { isValidTimeString } from "../../utils/constants.ts";
 
 Command({
-	name: 'amute',
+	name: "amute",
 	fromMe: false,
 	isGroup: true,
-	desc: 'Automatically mute at a specific time',
-	type: 'muting',
+	desc: "Automatically mute at a specific time",
+	type: "muting",
 	function: async (msg, args) => {
 		const { prefix, jid } = msg;
 		if (!args || args.length < 1) {
-			return await msg.send('```Usage: ' + prefix[0] + 'amute 5:30pm```');
+			return await msg.send("```Usage: " + prefix[0] + "amute 5:30pm```");
 		}
 
 		const startTime = args.trim().toLowerCase();
 		if (!isValidTimeString(startTime)) {
 			return await msg.send(
-				'Invalid time format. Use format like `5:30pm` or `7:00am`.',
+				"Invalid time format. Use format like `5:30pm` or `7:00am`.",
 			);
 		}
 
@@ -33,21 +33,21 @@ Command({
 });
 
 Command({
-	name: 'aunmute',
+	name: "aunmute",
 	fromMe: false,
 	isGroup: true,
-	desc: 'Automatically unmute at a specific time',
-	type: 'muting',
+	desc: "Automatically unmute at a specific time",
+	type: "muting",
 	function: async (msg, args) => {
 		const { prefix, jid } = msg;
 		if (!args || args.length < 1) {
-			return await msg.send('```Usage: ' + prefix[0] + 'aunmute 6:30am```');
+			return await msg.send("```Usage: " + prefix[0] + "aunmute 6:30am```");
 		}
 
 		const endTime = args.trim().toLowerCase();
 		if (!isValidTimeString(endTime)) {
 			return await msg.send(
-				'Invalid time format. Use format like `6:30am` or `8:00pm`.',
+				"Invalid time format. Use format like `6:30am` or `8:00pm`.",
 			);
 		}
 
@@ -62,34 +62,34 @@ Command({
 });
 
 Command({
-	name: 'delmute',
+	name: "delmute",
 	fromMe: false,
 	isGroup: true,
-	desc: 'Delete automute setting for the group',
-	type: 'muting',
+	desc: "Delete automute setting for the group",
+	type: "muting",
 	function: async msg => {
 		const { jid } = msg;
 		await delAutoMute(jid);
-		return await msg.send('_Automute setting deleted for this group._');
+		return await msg.send("_Automute setting deleted for this group._");
 	},
 });
 
 Command({
-	name: 'getmute',
+	name: "getmute",
 	fromMe: false,
 	isGroup: true,
-	desc: 'Get current automute setting for the group',
-	type: 'muting',
+	desc: "Get current automute setting for the group",
+	type: "muting",
 	function: async msg => {
 		const { jid } = msg;
 		const automute = await getAutoMute(jid);
 		if (!automute) {
-			return await msg.send('_No automute setting found for this group._');
+			return await msg.send("_No automute setting found for this group._");
 		}
 
 		const { startTime, endTime } = automute;
 		return await msg.send(
-			`_Automute is currently set${startTime ? ` from ${startTime}` : ''}${endTime ? ` to ${endTime}` : ''}._`,
+			`_Automute is currently set${startTime ? ` from ${startTime}` : ""}${endTime ? ` to ${endTime}` : ""}._`,
 		);
 	},
 });

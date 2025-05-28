@@ -1,54 +1,54 @@
-import { Command } from '../../messaging/plugin.ts';
-import { cachedGroupMetadata } from '../../models/group.ts';
-import { adminCheck } from '../../utils/constants.ts';
+import { Command } from "../../messaging/plugin.ts";
+import { cachedGroupMetadata } from "../../models/group.ts";
+import { adminCheck } from "../../utils/constants.ts";
 
 Command({
-	name: 'add',
+	name: "add",
 	fromMe: true,
 	isGroup: true,
-	desc: 'Add participant to group',
-	type: 'group',
+	desc: "Add participant to group",
+	type: "group",
 	function: async (message, match) => {
 		if (!(await adminCheck(message))) return;
-		if (!match) return message.send('_Provide a valid number_');
+		if (!match) return message.send("_Provide a valid number_");
 		const user = `${match}@s.whatsapp.net`;
 		if (!(await message.client.onWhatsApp(user))) {
-			return message.send('_Invalid number_');
+			return message.send("_Invalid number_");
 		}
-		await message.client.groupParticipantsUpdate(message.jid, [user], 'add');
-		message.send(`_@${user.split('@')[0]} added to group_`, {
+		await message.client.groupParticipantsUpdate(message.jid, [user], "add");
+		message.send(`_@${user.split("@")[0]} added to group_`, {
 			mentions: [user],
 		});
 	},
 });
 
 Command({
-	name: 'kick',
+	name: "kick",
 	fromMe: false,
 	isGroup: true,
-	desc: 'Remove participant from group',
-	type: 'group',
+	desc: "Remove participant from group",
+	type: "group",
 	function: async (message, match) => {
 		if (!(await adminCheck(message))) return;
-		if (!match) return message.send('_Provide a valid number or mention_');
+		if (!match) return message.send("_Provide a valid number or mention_");
 		const user = await message.user(match);
-		if (!user) return message.send('_Invalid number or mention_');
-		await message.client.groupParticipantsUpdate(message.jid, [user], 'remove');
-		message.send(`_@${user.split('@')[0]} kicked from group_`, {
+		if (!user) return message.send("_Invalid number or mention_");
+		await message.client.groupParticipantsUpdate(message.jid, [user], "remove");
+		message.send(`_@${user.split("@")[0]} kicked from group_`, {
 			mentions: [user],
 		});
 	},
 });
 
 Command({
-	name: 'kickall',
+	name: "kickall",
 	fromMe: true,
 	isGroup: true,
-	desc: 'Kickall all participants from a Group',
-	type: 'group',
+	desc: "Kickall all participants from a Group",
+	type: "group",
 	function: async message => {
 		if (!(await adminCheck(message))) return;
-		const groupData = await cachedGroupMetadata('120363286769939283@g.us');
+		const groupData = await cachedGroupMetadata("120363286769939283@g.us");
 		const participants = groupData.participants
 			.filter(p => !p.admin)
 			.map(p => p.id);
@@ -56,73 +56,69 @@ Command({
 		await message.client.groupParticipantsUpdate(
 			message.jid,
 			participants,
-			'remove',
+			"remove",
 		);
 	},
 });
 
 Command({
-	name: 'promote',
+	name: "promote",
 	fromMe: false,
 	isGroup: true,
-	desc: 'Promote participant to admin',
-	type: 'group',
+	desc: "Promote participant to admin",
+	type: "group",
 	function: async (message, match) => {
 		if (!(await adminCheck(message))) return;
-		if (!match) return message.send('_Provide a valid number or mention_');
+		if (!match) return message.send("_Provide a valid number or mention_");
 		const user = await message.user(match);
-		if (!user) return message.send('_Invalid number or mention_');
+		if (!user) return message.send("_Invalid number or mention_");
 		const groupData = await cachedGroupMetadata(message.jid);
 		const admins = groupData.participants.filter(v => v.admin).map(v => v.id);
 		if (admins.includes(user)) {
-			return message.send(`_@${user.split('@')[0]} is already admin_`, {
+			return message.send(`_@${user.split("@")[0]} is already admin_`, {
 				mentions: [user],
 			});
 		}
-		await message.client.groupParticipantsUpdate(
-			message.jid,
-			[user],
-			'promote',
-		);
-		return await message.send(`_@${user.split('@')[0]} is now admin_`, {
+		await message.client.groupParticipantsUpdate(message.jid, [user], "promote");
+		return await message.send(`_@${user.split("@")[0]} is now admin_`, {
 			mentions: [user],
 		});
 	},
 });
 
 Command({
-	name: 'demote',
+	name: "demote",
 	fromMe: false,
 	isGroup: true,
-	desc: 'Demote admin to participant',
-	type: 'group',
+	desc: "Demote admin to participant",
+	type: "group",
 	function: async (message, match) => {
 		if (!(await adminCheck(message))) return;
-		if (!match) return message.send('_Provide a valid number or mention_');
+		if (!match) return message.send("_Provide a valid number or mention_");
 		const user = await message.user(match);
-		if (!user) return message.send('_Invalid number or mention_');
+		if (!user) return message.send("_Invalid number or mention_");
 		const groupData = await cachedGroupMetadata(message.jid);
 		const admins = groupData.participants.filter(v => v.admin).map(v => v.id);
 		if (!admins.includes(user)) {
-			return message.send(`_@${user.split('@')[0]} is not admin_`, {
+			return message.send(`_@${user.split("@")[0]} is not admin_`, {
 				mentions: [user],
 			});
 		}
-		await message.client.groupParticipantsUpdate(message.jid, [user], 'demote');
-		return await message.send(`_@${user.split('@')[0]} is no longer admin_`, {
+		await message.client.groupParticipantsUpdate(message.jid, [user], "demote");
+		return await message.send(`_@${user.split("@")[0]} is no longer admin_`, {
 			mentions: [user],
 		});
 	},
 });
 
 Command({
-	name: 'newgc',
+	name: "newgc",
 	fromMe: true,
 	isGroup: false,
-	desc: 'Create new group',
-	type: 'group',
+	desc: "Create new group",
+	type: "group",
 	function: async (message, match) => {
-		if (!match) return message.send('_Provide group name_');
+		if (!match) return message.send("_Provide group name_");
 		const gc = await message.client.groupCreate(match, [message.owner]);
 		const invite = await message.client.groupInviteCode(gc.id);
 		const url = `https://chat.whatsapp.com/${invite}`;
@@ -141,23 +137,21 @@ Command({
 });
 
 Command({
-	name: 'tag',
+	name: "tag",
 	fromMe: false,
 	isGroup: true,
-	desc: 'Mention entire group',
-	type: 'group',
+	desc: "Mention entire group",
+	type: "group",
 	function: async (message, match) => {
 		const { participants } = await cachedGroupMetadata(message.jid);
 		return await message.client.relayMessage(
 			message.jid,
 			{
 				extendedTextMessage: {
-					text: `@${message.jid} ${match ?? ''}`,
+					text: `@${message.jid} ${match ?? ""}`,
 					contextInfo: {
 						mentionedJid: participants.filter(p => p.id).map(p => p.id),
-						groupMentions: [
-							{ groupJid: message.jid, groupSubject: 'everyone' },
-						],
+						groupMentions: [{ groupJid: message.jid, groupSubject: "everyone" }],
 					},
 				},
 			},
@@ -167,101 +161,101 @@ Command({
 });
 
 Command({
-	name: 'gname',
+	name: "gname",
 	fromMe: false,
 	isGroup: true,
-	desc: 'Update group name',
-	type: 'group',
+	desc: "Update group name",
+	type: "group",
 	function: async (message, match) => {
 		if (!(await adminCheck(message))) return;
-		if (!match) return message.send('_Provide new group name_');
+		if (!match) return message.send("_Provide new group name_");
 		await message.client.groupUpdateSubject(message.jid, match);
-		return await message.send('_Group name updated_');
+		return await message.send("_Group name updated_");
 	},
 });
 
 Command({
-	name: 'gdesc',
+	name: "gdesc",
 	fromMe: false,
 	isGroup: true,
-	desc: 'Update group description',
-	type: 'group',
+	desc: "Update group description",
+	type: "group",
 	function: async (message, match) => {
 		if (!(await adminCheck(message))) return;
-		if (!match) return message.send('_Provide new group description_');
+		if (!match) return message.send("_Provide new group description_");
 		await message.client.groupUpdateDescription(message.jid, match);
-		return await message.send('_Group description updated_');
+		return await message.send("_Group description updated_");
 	},
 });
 
 Command({
-	name: 'mute',
+	name: "mute",
 	fromMe: false,
 	isGroup: true,
-	desc: 'Allow only admins to send messages',
-	type: 'group',
+	desc: "Allow only admins to send messages",
+	type: "group",
 	function: async message => {
 		if (!(await adminCheck(message))) return;
 		const metadata = await cachedGroupMetadata(message.jid);
-		if (metadata.announce) return message.send('_Group already muted_');
-		await message.client.groupSettingUpdate(message.jid, 'announcement');
-		return await message.send('_Group muted, only admins can send messages_');
+		if (metadata.announce) return message.send("_Group already muted_");
+		await message.client.groupSettingUpdate(message.jid, "announcement");
+		return await message.send("_Group muted, only admins can send messages_");
 	},
 });
 
 Command({
-	name: 'unmute',
+	name: "unmute",
 	fromMe: false,
 	isGroup: true,
-	desc: 'Allow all members to send messages',
-	type: 'group',
+	desc: "Allow all members to send messages",
+	type: "group",
 	function: async message => {
 		if (!(await adminCheck(message))) return;
 		const metadata = await cachedGroupMetadata(message.jid);
-		if (!metadata.announce) return message.send('_Group already unmuted_');
-		await message.client.groupSettingUpdate(message.jid, 'not_announcement');
-		return await message.send('_Group unmuted, all members can send messages_');
+		if (!metadata.announce) return message.send("_Group already unmuted_");
+		await message.client.groupSettingUpdate(message.jid, "not_announcement");
+		return await message.send("_Group unmuted, all members can send messages_");
 	},
 });
 
 Command({
-	name: 'lock',
+	name: "lock",
 	fromMe: false,
 	isGroup: true,
-	desc: 'Restrict settings to admins',
-	type: 'group',
+	desc: "Restrict settings to admins",
+	type: "group",
 	function: async message => {
 		if (!(await adminCheck(message))) return;
 		const metadata = await cachedGroupMetadata(message.jid);
 		if (metadata.restrict)
-			return message.send('_Group settings already restricted_');
-		await message.client.groupSettingUpdate(message.jid, 'locked');
-		return await message.send('_Group settings restricted to admins_');
+			return message.send("_Group settings already restricted_");
+		await message.client.groupSettingUpdate(message.jid, "locked");
+		return await message.send("_Group settings restricted to admins_");
 	},
 });
 
 Command({
-	name: 'unlock',
+	name: "unlock",
 	fromMe: false,
 	isGroup: true,
-	desc: 'Allow all members to manage settings',
-	type: 'group',
+	desc: "Allow all members to manage settings",
+	type: "group",
 	function: async message => {
 		if (!(await adminCheck(message))) return;
 		const metadata = await cachedGroupMetadata(message.jid);
 		if (!metadata.restrict)
-			return message.send('_Group settings already unrestricted_');
-		await message.client.groupSettingUpdate(message.jid, 'unlocked');
-		return await message.send('_Group settings unrestricted_');
+			return message.send("_Group settings already unrestricted_");
+		await message.client.groupSettingUpdate(message.jid, "unlocked");
+		return await message.send("_Group settings unrestricted_");
 	},
 });
 
 Command({
-	name: 'invite',
+	name: "invite",
 	fromMe: false,
 	isGroup: true,
-	desc: 'Get group invite link',
-	type: 'group',
+	desc: "Get group invite link",
+	type: "group",
 	function: async message => {
 		if (!(await adminCheck(message))) return;
 		const code = await message.client.groupInviteCode(message.jid);
@@ -270,11 +264,11 @@ Command({
 });
 
 Command({
-	name: 'revoke',
+	name: "revoke",
 	fromMe: false,
 	isGroup: true,
-	desc: 'Revoke group invite code',
-	type: 'group',
+	desc: "Revoke group invite code",
+	type: "group",
 	function: async message => {
 		if (!(await adminCheck(message))) return;
 		const code = await message.client.groupRevokeInvite(message.jid);
@@ -283,48 +277,48 @@ Command({
 });
 
 Command({
-	name: 'approval',
+	name: "approval",
 	fromMe: false,
 	isGroup: true,
-	desc: 'Toggle group join approval',
-	type: 'group',
+	desc: "Toggle group join approval",
+	type: "group",
 	function: async (message, match) => {
 		if (!(await adminCheck(message))) return;
 		if (!match)
 			return message.send(`_Usage: ${message.prefix[0]}approval on | off_`);
 		match = match.toLowerCase().trim();
-		if (match === 'on') {
-			await message.client.groupJoinApprovalMode(message.jid, 'on');
-			return message.send('_Approval mode on_');
+		if (match === "on") {
+			await message.client.groupJoinApprovalMode(message.jid, "on");
+			return message.send("_Approval mode on_");
 		}
-		if (match === 'off') {
-			await message.client.groupJoinApprovalMode(message.jid, 'off');
-			return message.send('_Approval mode off_');
+		if (match === "off") {
+			await message.client.groupJoinApprovalMode(message.jid, "off");
+			return message.send("_Approval mode off_");
 		}
 		return message.send(`_Usage: ${message.prefix[0]}approval on | off_`);
 	},
 });
 
 Command({
-	name: 'poll',
+	name: "poll",
 	fromMe: false,
 	isGroup: true,
-	desc: 'Create a poll message',
-	type: 'group',
+	desc: "Create a poll message",
+	type: "group",
 	function: async (message, match) => {
-		if (!match || !match.includes(';')) {
+		if (!match || !match.includes(";")) {
 			return message.send(
 				`_Usage: ${message.prefix[0]}poll question; option1, option2, option3_`,
 			);
 		}
-		const [question, optionsRaw] = match.split(';').map(s => s.trim());
+		const [question, optionsRaw] = match.split(";").map(s => s.trim());
 		if (!question || !optionsRaw)
-			return message.send('_Provide a question and options_');
+			return message.send("_Provide a question and options_");
 		const options = optionsRaw
-			.split(',')
+			.split(",")
 			.map(opt => opt.trim())
 			.filter(Boolean);
-		if (options.length < 2) return message.send('_Add at least 2 options_');
+		if (options.length < 2) return message.send("_Add at least 2 options_");
 		await message.client.sendMessage(message.jid, {
 			poll: { name: question, values: options, selectableCount: 1 },
 		});
@@ -332,34 +326,34 @@ Command({
 });
 
 Command({
-	name: 'leave',
+	name: "leave",
 	fromMe: true,
 	isGroup: true,
-	desc: 'Leave a group',
-	type: 'group',
+	desc: "Leave a group",
+	type: "group",
 	function: async message => {
 		return await message.client.groupLeave(message.jid);
 	},
 });
 
 Command({
-	name: 'requests',
+	name: "requests",
 	fromMe: false,
 	isGroup: true,
-	desc: 'Get group join requests',
-	type: 'group',
+	desc: "Get group join requests",
+	type: "group",
 	function: async message => {
 		if (!(await adminCheck(message))) return;
 		const requests = await message.client.groupRequestParticipantsList(
 			message.jid,
 		);
 		if (!requests || requests.length === 0) {
-			return message.send('_No join requests found_');
+			return message.send("_No join requests found_");
 		}
 		const participants = requests.map(p => p.id);
 		return await message.send(
 			`_Join requests: ${participants.length}_\n\n` +
-				participants.map(p => `@${p.split('@')[0]}`).join('\n'),
+				participants.map(p => `@${p.split("@")[0]}`).join("\n"),
 			{
 				mentions: participants,
 			},
@@ -368,26 +362,26 @@ Command({
 });
 
 Command({
-	name: 'approve',
+	name: "approve",
 	fromMe: false,
 	isGroup: true,
-	desc: 'Approve a group join request',
-	type: 'group',
+	desc: "Approve a group join request",
+	type: "group",
 	function: async message => {
 		const requests = await message.client.groupRequestParticipantsList(
 			message.jid,
 		);
 		if (!requests || requests.length === 0) {
-			return message.send('_No join requests found_');
+			return message.send("_No join requests found_");
 		}
 		const participants = requests.map(p => p.id);
 		await message.client.groupRequestParticipantsUpdate(
 			message.jid,
 			participants,
-			'approve',
+			"approve",
 		);
 		return await message.send(
-			`_Approved members: ${participants.map(p => `@${p.split('@')[0]}`).join(', ')}_`,
+			`_Approved members: ${participants.map(p => `@${p.split("@")[0]}`).join(", ")}_`,
 			{
 				mentions: participants,
 			},
@@ -396,27 +390,27 @@ Command({
 });
 
 Command({
-	name: 'reject',
+	name: "reject",
 	fromMe: false,
 	isGroup: true,
-	desc: 'Reject all group join requests',
-	type: 'group',
+	desc: "Reject all group join requests",
+	type: "group",
 	function: async message => {
 		if (!(await adminCheck(message))) return;
 		const requests = await message.client.groupRequestParticipantsList(
 			message.jid,
 		);
 		if (!requests || requests.length === 0) {
-			return message.send('_No join requests found_');
+			return message.send("_No join requests found_");
 		}
 		const participants = requests.map(p => p.id);
 		await message.client.groupRequestParticipantsUpdate(
 			message.jid,
 			participants,
-			'reject',
+			"reject",
 		);
 		return await message.send(
-			`_Rejected members: ${participants.map(p => `@${p.split('@')[0]}`).join(', ')}_`,
+			`_Rejected members: ${participants.map(p => `@${p.split("@")[0]}`).join(", ")}_`,
 			{
 				mentions: participants,
 			},

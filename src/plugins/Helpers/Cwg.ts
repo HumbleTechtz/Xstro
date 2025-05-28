@@ -6,9 +6,9 @@ interface Player {
 }
 
 export default class Cwg {
-	private currentWord = '';
-	private obscuredWord = '';
-	private currentDefinition = '';
+	private currentWord = "";
+	private obscuredWord = "";
+	private currentDefinition = "";
 	private usedWords = new Set<string>();
 	private isGameOver = false;
 	private players: Player[] = [];
@@ -21,9 +21,9 @@ export default class Cwg {
 	private timeoutId: NodeJS.Timeout | null = null;
 
 	async startGame(playerNames: string[]): Promise<string> {
-		this.currentWord = '';
-		this.obscuredWord = '';
-		this.currentDefinition = '';
+		this.currentWord = "";
+		this.obscuredWord = "";
+		this.currentDefinition = "";
 		this.usedWords.clear();
 		this.isGameOver = false;
 		this.roundCount = 0;
@@ -40,8 +40,8 @@ export default class Cwg {
 		this.currentPlayerIndex = 0;
 		await this.generateNewWord();
 		const playerList = this.players
-			.map(p => `@${p.name.split('@')[0]}`)
-			.join('\n');
+			.map(p => `@${p.name.split("@")[0]}`)
+			.join("\n");
 		return `\`\`\`Complete the Word Game Started\n\nPlayers:\n${playerList}\n\n${this.getTurnPrompt()}\`\`\``;
 	}
 
@@ -59,10 +59,10 @@ export default class Cwg {
 			player.wrongAttempts++;
 			if (player.wrongAttempts >= 2) {
 				this.removePlayer();
-				return `\`\`\`Sorry, "${word}" is incorrect. @${player.name.split('@')[0]} has no attempts left and is kicked out!\n\n${this.getTurnPrompt()}\`\`\``;
+				return `\`\`\`Sorry, "${word}" is incorrect. @${player.name.split("@")[0]} has no attempts left and is kicked out!\n\n${this.getTurnPrompt()}\`\`\``;
 			}
 			this.advanceTurn();
-			return `\`\`\`Sorry, "${word}" is incorrect. @${player.name.split('@')[0]} has ${2 - player.wrongAttempts} attempt(s) left.\n\n${this.getTurnPrompt()}\`\`\``;
+			return `\`\`\`Sorry, "${word}" is incorrect. @${player.name.split("@")[0]} has ${2 - player.wrongAttempts} attempt(s) left.\n\n${this.getTurnPrompt()}\`\`\``;
 		}
 
 		player.score += 1;
@@ -74,10 +74,10 @@ export default class Cwg {
 
 		const activePlayers = this.players.filter(p => p.isActive);
 		if (activePlayers.length === 1) {
-			return `\`\`\`Correct! @${player.name.split('@')[0]} scores 1 point (total: ${player.score}).\n\nCongratulations, @${activePlayers[0].name.split('@')[0]} is the winner with a score of ${activePlayers[0].score}!\n\n${this.getRankings()}\`\`\``;
+			return `\`\`\`Correct! @${player.name.split("@")[0]} scores 1 point (total: ${player.score}).\n\nCongratulations, @${activePlayers[0].name.split("@")[0]} is the winner with a score of ${activePlayers[0].score}!\n\n${this.getRankings()}\`\`\``;
 		}
 
-		return `\`\`\`Correct! @${player.name.split('@')[0]} scores 1 point (total: ${player.score}).\n\n${this.getTurnPrompt()}\`\`\``;
+		return `\`\`\`Correct! @${player.name.split("@")[0]} scores 1 point (total: ${player.score}).\n\n${this.getTurnPrompt()}\`\`\``;
 	}
 
 	startTurnTimer(): Promise<string> {
@@ -87,11 +87,11 @@ export default class Cwg {
 				player.wrongAttempts++;
 				if (player.wrongAttempts >= 2) {
 					this.removePlayer();
-					const message = `\`\`\`@${player.name.split('@')[0]}, your time is up! You have no attempts left and are kicked out.\n\n${this.getTurnPrompt()}\`\`\``;
+					const message = `\`\`\`@${player.name.split("@")[0]}, your time is up! You have no attempts left and are kicked out.\n\n${this.getTurnPrompt()}\`\`\``;
 					resolve(message);
 				} else {
 					this.advanceTurn();
-					const message = `\`\`\`@${player.name.split('@')[0]}, your time is up! You have ${2 - player.wrongAttempts} attempt(s) left.\n\n${this.getTurnPrompt()}\`\`\``;
+					const message = `\`\`\`@${player.name.split("@")[0]}, your time is up! You have ${2 - player.wrongAttempts} attempt(s) left.\n\n${this.getTurnPrompt()}\`\`\``;
 					resolve(message);
 				}
 			}, this.timeLimit * 1000);
@@ -128,12 +128,12 @@ export default class Cwg {
 			this.timeLimit = 25;
 		}
 
-		let word = '';
-		let definition = '';
+		let word = "";
+		let definition = "";
 		while (!word || this.usedWords.has(word) || !definition) {
 			try {
 				const response = await fetch(
-					`https://api.datamuse.com/words?sp=${'?'.repeat(this.minLength + Math.floor(Math.random() * (this.maxLength - this.minLength + 1)))}&md=d&max=100`,
+					`https://api.datamuse.com/words?sp=${"?".repeat(this.minLength + Math.floor(Math.random() * (this.maxLength - this.minLength + 1)))}&md=d&max=100`,
 				);
 				const data = await response.json();
 				if (data.length > 0) {
@@ -141,12 +141,12 @@ export default class Cwg {
 					word = selected.word;
 					definition =
 						selected.defs && selected.defs.length > 0
-							? selected.defs[0].replace(/^[a-z]+\t/, '')
-							: '';
+							? selected.defs[0].replace(/^[a-z]+\t/, "")
+							: "";
 				}
 			} catch {
-				word = '';
-				definition = '';
+				word = "";
+				definition = "";
 			}
 		}
 		this.currentWord = word;
@@ -166,9 +166,9 @@ export default class Cwg {
 			missingIndices.push(randomIndex);
 		}
 		return word
-			.split('')
-			.map((char, i) => (missingIndices.includes(i) ? '_' : char))
-			.join('');
+			.split("")
+			.map((char, i) => (missingIndices.includes(i) ? "_" : char))
+			.join("");
 	}
 
 	private async isValidWord(word: string): Promise<boolean> {
@@ -184,8 +184,7 @@ export default class Cwg {
 	}
 
 	private advanceTurn(): void {
-		this.currentPlayerIndex =
-			(this.currentPlayerIndex + 1) % this.players.length;
+		this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
 		while (
 			!this.players[this.currentPlayerIndex].isActive &&
 			this.players.filter(p => p.isActive).length > 0
@@ -209,20 +208,19 @@ export default class Cwg {
 		if (activePlayers.length === 0)
 			return `Game over! No players left.\n\n${this.getRankings()}`;
 		if (activePlayers.length === 1) {
-			return `Congratulations, @${activePlayers[0].name.split('@')[0]} is the winner with a score of ${activePlayers[0].score}!\n\n${this.getRankings()}`;
+			return `Congratulations, @${activePlayers[0].name.split("@")[0]} is the winner with a score of ${activePlayers[0].score}!\n\n${this.getRankings()}`;
 		}
 		const nextPlayer = this.players[this.currentPlayerIndex].name;
-		return `@${nextPlayer.split('@')[0]}'s Turn! Complete the word: ${this.obscuredWord} (${this.minLength}-${this.maxLength} letters).\nHint: ${this.currentDefinition}\nYou have ${this.timeLimit} secs and ${2 - this.players[this.currentPlayerIndex].wrongAttempts} attempt(s) left.`;
+		return `@${nextPlayer.split("@")[0]}'s Turn! Complete the word: ${this.obscuredWord} (${this.minLength}-${this.maxLength} letters).\nHint: ${this.currentDefinition}\nYou have ${this.timeLimit} secs and ${2 - this.players[this.currentPlayerIndex].wrongAttempts} attempt(s) left.`;
 	}
 
 	private getRankings(): string {
 		const sortedPlayers = [...this.players].sort((a, b) => b.score - a.score);
 		return `Final Rankings:\n${sortedPlayers
 			.map(
-				(p, index) =>
-					`${index + 1}. @${p.name.split('@')[0]}: ${p.score} points`,
+				(p, index) => `${index + 1}. @${p.name.split("@")[0]}: ${p.score} points`,
 			)
-			.join('\n')}`;
+			.join("\n")}`;
 	}
 
 	status(): string {
@@ -230,7 +228,7 @@ export default class Cwg {
 		if (activePlayers.length === 0)
 			return `\`\`\`Game over! No players left.\n\n${this.getRankings()}\`\`\``;
 		if (activePlayers.length === 1) {
-			return `\`\`\`Congratulations, @${activePlayers[0].name.split('@')[0]} is the winner with a score of ${activePlayers[0].score}!\n\n${this.getRankings()}\`\`\``;
+			return `\`\`\`Congratulations, @${activePlayers[0].name.split("@")[0]} is the winner with a score of ${activePlayers[0].score}!\n\n${this.getRankings()}\`\`\``;
 		}
 		return `\`\`\`${activePlayers.length} active players. Current turn: ${this.getTurnPrompt()}\`\`\``;
 	}

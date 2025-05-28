@@ -1,8 +1,8 @@
-import { Pool } from 'pg';
+import { Pool } from "pg";
 
 const pool = new Pool({
 	connectionString:
-		'postgres://avnadmin:AVNS_DAiFNxk2X8X53ZcL89G@leaderboard-leaderboard-whatsappbot.e.aivencloud.com:17564/defaultdb',
+		"postgres://avnadmin:AVNS_DAiFNxk2X8X53ZcL89G@leaderboard-leaderboard-whatsappbot.e.aivencloud.com:17564/defaultdb",
 	ssl: {
 		rejectUnauthorized: false,
 	},
@@ -42,13 +42,13 @@ const SCORE_THRESHOLDS = {
 };
 
 const RANK_STRINGS: { [key in UserRank]: string } = {
-	[UserRank.LEGEND]: 'legend',
-	[UserRank.MASTER]: 'master',
-	[UserRank.DIAMOND]: 'diamond',
-	[UserRank.PLATINUM]: 'platinum',
-	[UserRank.GOLD]: 'gold',
-	[UserRank.SILVER]: 'silver',
-	[UserRank.BRONZE]: 'bronze',
+	[UserRank.LEGEND]: "legend",
+	[UserRank.MASTER]: "master",
+	[UserRank.DIAMOND]: "diamond",
+	[UserRank.PLATINUM]: "platinum",
+	[UserRank.GOLD]: "gold",
+	[UserRank.SILVER]: "silver",
+	[UserRank.BRONZE]: "bronze",
 };
 
 function rankToEnum(rank: string): UserRank {
@@ -60,18 +60,18 @@ function rankToEnum(rank: string): UserRank {
 }
 
 function determineRank(score: number): string {
-	if (score >= SCORE_THRESHOLDS.LEGEND) return 'legend';
-	if (score >= SCORE_THRESHOLDS.MASTER) return 'master';
-	if (score >= SCORE_THRESHOLDS.DIAMOND) return 'diamond';
-	if (score >= SCORE_THRESHOLDS.PLATINUM) return 'platinum';
-	if (score >= SCORE_THRESHOLDS.GOLD) return 'gold';
-	if (score >= SCORE_THRESHOLDS.SILVER) return 'silver';
-	return 'bronze';
+	if (score >= SCORE_THRESHOLDS.LEGEND) return "legend";
+	if (score >= SCORE_THRESHOLDS.MASTER) return "master";
+	if (score >= SCORE_THRESHOLDS.DIAMOND) return "diamond";
+	if (score >= SCORE_THRESHOLDS.PLATINUM) return "platinum";
+	if (score >= SCORE_THRESHOLDS.GOLD) return "gold";
+	if (score >= SCORE_THRESHOLDS.SILVER) return "silver";
+	return "bronze";
 }
 
 async function updateLeaderboard(users: { userId: string; score: number }[]) {
 	const { rows: currentLeaderboard } = await pool.query(
-		'SELECT userid, score, rank FROM leaderboard',
+		"SELECT userid, score, rank FROM leaderboard",
 	);
 	const dbMap = new Map(currentLeaderboard.map(u => [u.userid, u]));
 
@@ -84,8 +84,8 @@ async function updateLeaderboard(users: { userId: string; score: number }[]) {
 
 	for (const user of users) {
 		const entry = dbMap.get(user.userId);
-		const currentScore = typeof entry?.score === 'number' ? entry.score : 0;
-		const currentRank = entry?.rank || 'bronze';
+		const currentScore = typeof entry?.score === "number" ? entry.score : 0;
+		const currentRank = entry?.rank || "bronze";
 
 		let roundScore = user.score;
 
@@ -94,7 +94,7 @@ async function updateLeaderboard(users: { userId: string; score: number }[]) {
 			console.log(`Top 3 boost applied to ${user.userId}: +2%`);
 		}
 
-		if (['legend', 'master', 'diamond'].includes(String(currentRank))) {
+		if (["legend", "master", "diamond"].includes(String(currentRank))) {
 			roundScore *= 1.05;
 			console.log(`High-rank boost applied to ${user.userId}: +5%`);
 		}
@@ -111,12 +111,12 @@ async function updateLeaderboard(users: { userId: string; score: number }[]) {
 
 		if (entry) {
 			await pool.query(
-				'UPDATE leaderboard SET score = $1, rank = $2 WHERE userid = $3',
+				"UPDATE leaderboard SET score = $1, rank = $2 WHERE userid = $3",
 				[finalScore, newRank, user.userId],
 			);
 		} else {
 			await pool.query(
-				'INSERT INTO leaderboard (userid, score, rank) VALUES ($1, $2, $3)',
+				"INSERT INTO leaderboard (userid, score, rank) VALUES ($1, $2, $3)",
 				[user.userId, finalScore, newRank],
 			);
 		}
@@ -125,15 +125,15 @@ async function updateLeaderboard(users: { userId: string; score: number }[]) {
 	}
 
 	for (const entry of currentLeaderboard) {
-		if (typeof entry.userid === 'string' && !updated.has(entry.userid)) {
+		if (typeof entry.userid === "string" && !updated.has(entry.userid)) {
 			const rank = entry.rank;
-			if (['legend', 'master', 'diamond'].includes(String(rank))) {
+			if (["legend", "master", "diamond"].includes(String(rank))) {
 				const penaltyMultiplier = 0.75;
-				const score = typeof entry.score === 'number' ? entry.score : 0;
+				const score = typeof entry.score === "number" ? entry.score : 0;
 				const penalizedScore = Math.floor(score * penaltyMultiplier);
 				const newRank = determineRank(penalizedScore);
 				await pool.query(
-					'UPDATE leaderboard SET score = $1, rank = $2 WHERE userid = $3',
+					"UPDATE leaderboard SET score = $1, rank = $2 WHERE userid = $3",
 					[penalizedScore, newRank, entry.userid],
 				);
 			}
@@ -141,7 +141,7 @@ async function updateLeaderboard(users: { userId: string; score: number }[]) {
 	}
 
 	const { rows: updatedLeaderboard } = await pool.query(
-		'SELECT userid, score, rank FROM leaderboard ORDER BY score DESC, userid ASC',
+		"SELECT userid, score, rank FROM leaderboard ORDER BY score DESC, userid ASC",
 	);
 	return updatedLeaderboard.map(u => ({
 		userId: u.userid,
@@ -162,12 +162,12 @@ async function getLeaderboard(): Promise<
 	}[]
 > {
 	const { rows } = await pool.query(
-		'SELECT userid, score, rank FROM leaderboard ORDER BY score DESC, userid ASC',
+		"SELECT userid, score, rank FROM leaderboard ORDER BY score DESC, userid ASC",
 	);
 	return rows.map(u => ({
-		userId: String(u.userid ?? ''),
+		userId: String(u.userid ?? ""),
 		score: Number(u.score ?? 0),
-		rank: String(u.rank ?? 'bronze'),
+		rank: String(u.rank ?? "bronze"),
 	}));
 }
 

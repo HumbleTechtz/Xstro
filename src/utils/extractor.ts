@@ -1,4 +1,4 @@
-import type { WAMessageContent } from 'baileys';
+import type { WAMessageContent } from "baileys";
 
 export function extractStringfromMessage(message?: WAMessageContent) {
 	if (!message) return undefined;
@@ -7,7 +7,7 @@ export function extractStringfromMessage(message?: WAMessageContent) {
 	if (message?.videoMessage?.caption) return message.videoMessage.caption;
 	if (message?.extendedTextMessage) return message.extendedTextMessage.text;
 	if (message?.eventMessage) {
-		return `${message?.eventMessage?.name ?? ''}\n${message?.eventMessage?.description ?? ''}`;
+		return `${message?.eventMessage?.name ?? ""}\n${message?.eventMessage?.description ?? ""}`;
 	}
 	if (message?.pollCreationMessageV3) {
 		return `${message?.pollCreationMessageV3?.name}\n${message?.pollCreationMessageV3?.options?.map(opt => opt.optionName).toString()}`;

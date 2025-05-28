@@ -1,7 +1,7 @@
-import { pathToFileURL, fileURLToPath } from 'node:url';
-import { join, extname, dirname } from 'node:path';
-import { readdir, stat } from 'node:fs/promises';
-import type { Commands } from '../types/index.ts';
+import { pathToFileURL, fileURLToPath } from "node:url";
+import { join, extname, dirname } from "node:path";
+import { readdir, stat } from "node:fs/promises";
+import type { Commands } from "../types/index.ts";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -10,14 +10,14 @@ export const commands: Commands[] = [];
 export function Command(cmd: Commands) {
 	const _cmds = {
 		...cmd,
-		name: new RegExp(`^\\s*(${cmd.name})(?:\\s+([\\s\\S]+))?$`, 'i'),
+		name: new RegExp(`^\\s*(${cmd.name})(?:\\s+([\\s\\S]+))?$`, "i"),
 	};
 	return commands.push(_cmds);
 }
 
 export async function syncPlugins(
 	plugin: string,
-	extensions: string[] = ['.ts'],
+	extensions: string[] = [".ts"],
 ): Promise<void> {
 	const plugins = join(__dirname, plugin);
 

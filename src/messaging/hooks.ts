@@ -1,11 +1,11 @@
-import { updateMetaGroup, cachedGroupMetadataAll } from '../models/group.ts';
-import { getAutoMute } from '../models/automute.ts';
+import { updateMetaGroup, cachedGroupMetadataAll } from "../models/group.ts";
+import { getAutoMute } from "../models/automute.ts";
 import {
 	getCurrentTimeString,
 	startClockAlignedScheduler,
-} from '../utils/constants.ts';
-import type { WASocket } from 'baileys';
-import lang from '../utils/lang.ts';
+} from "../utils/constants.ts";
+import type { WASocket } from "baileys";
+import lang from "../utils/lang.ts";
 
 export default function (sock: WASocket) {
 	const fetchAndUpdateGroups = async () => {
@@ -44,7 +44,7 @@ async function groupAutoMute(client: WASocket) {
 			await client.sendMessage(jid, {
 				text: lang.GROUP_NOW_AUTO_MUTED,
 			});
-			await client.groupSettingUpdate(jid, 'announcement');
+			await client.groupSettingUpdate(jid, "announcement");
 			continue;
 		}
 
@@ -56,7 +56,7 @@ async function groupAutoMute(client: WASocket) {
 			await client.sendMessage(jid, {
 				text: lang.GROUP_NOW_AUTO_UNMUTED,
 			});
-			await client.groupSettingUpdate(jid, 'not_announcement');
+			await client.groupSettingUpdate(jid, "not_announcement");
 			continue;
 		}
 	}

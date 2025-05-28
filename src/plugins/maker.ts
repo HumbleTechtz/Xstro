@@ -1,15 +1,15 @@
-import { Command } from '../messaging/plugin.ts';
-import { upload, urlBuffer } from '../utils/fetch.mts';
+import { Command } from "../messaging/plugin.ts";
+import { upload, urlBuffer } from "../utils/fetch.mts";
 
 type LogoType =
-	| 'wasted'
-	| 'wanted'
-	| 'trigger'
-	| 'rainbow'
-	| 'pixelate'
-	| 'invert'
-	| 'facepalm'
-	| 'darkness';
+	| "wasted"
+	| "wanted"
+	| "trigger"
+	| "rainbow"
+	| "pixelate"
+	| "invert"
+	| "facepalm"
+	| "darkness";
 
 async function meme(image: Buffer, type: LogoType) {
 	try {
@@ -24,121 +24,121 @@ async function meme(image: Buffer, type: LogoType) {
 }
 
 Command({
-	name: 'wasted',
+	name: "wasted",
 	fromMe: false,
 	isGroup: false,
-	desc: 'Wasted logo',
-	type: 'maker',
+	desc: "Wasted logo",
+	type: "maker",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg || !msg.image) return message.send('Reply to an image');
-		const buffer = await meme(await msg.downloadM(), 'wasted');
-		if (!buffer) return message.send('Failed to generate image.');
+		if (!msg || !msg.image) return message.send("Reply to an image");
+		const buffer = await meme(await msg.downloadM(), "wasted");
+		if (!buffer) return message.send("Failed to generate image.");
 		return await message.send(buffer);
 	},
 });
 
 Command({
-	name: 'wanted',
+	name: "wanted",
 	fromMe: false,
 	isGroup: false,
-	desc: 'Wanted logo',
-	type: 'maker',
+	desc: "Wanted logo",
+	type: "maker",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg || !msg.image) return message.send('Reply to an image');
-		const buffer = await meme(await msg.downloadM(), 'wanted');
-		if (!buffer) return message.send('Failed to generate image.');
+		if (!msg || !msg.image) return message.send("Reply to an image");
+		const buffer = await meme(await msg.downloadM(), "wanted");
+		if (!buffer) return message.send("Failed to generate image.");
 		return await message.send(buffer);
 	},
 });
 
 Command({
-	name: 'trigger',
+	name: "trigger",
 	fromMe: false,
 	isGroup: false,
-	desc: 'Trigger logo',
-	type: 'maker',
+	desc: "Trigger logo",
+	type: "maker",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg || !msg.image) return message.send('Reply to an image');
-		const buffer = await meme(await msg.downloadM(), 'trigger');
-		if (!buffer) return message.send('Failed to generate image.');
+		if (!msg || !msg.image) return message.send("Reply to an image");
+		const buffer = await meme(await msg.downloadM(), "trigger");
+		if (!buffer) return message.send("Failed to generate image.");
 		return await message.send(buffer);
 	},
 });
 
 Command({
-	name: 'rainbow',
+	name: "rainbow",
 	fromMe: false,
 	isGroup: false,
-	desc: 'Rainbow logo',
-	type: 'maker',
+	desc: "Rainbow logo",
+	type: "maker",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg || !msg.image) return message.send('Reply to an image');
-		const buffer = await meme(await msg.downloadM(), 'rainbow');
-		if (!buffer) return message.send('Failed to generate image.');
+		if (!msg || !msg.image) return message.send("Reply to an image");
+		const buffer = await meme(await msg.downloadM(), "rainbow");
+		if (!buffer) return message.send("Failed to generate image.");
 		return await message.send(buffer);
 	},
 });
 
 Command({
-	name: 'pixelate',
+	name: "pixelate",
 	fromMe: false,
 	isGroup: false,
-	desc: 'Pixelate logo',
-	type: 'maker',
+	desc: "Pixelate logo",
+	type: "maker",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg || !msg.image) return message.send('Reply to an image');
-		const buffer = await meme(await msg.downloadM(), 'pixelate');
-		if (!buffer) return message.send('Failed to generate image.');
+		if (!msg || !msg.image) return message.send("Reply to an image");
+		const buffer = await meme(await msg.downloadM(), "pixelate");
+		if (!buffer) return message.send("Failed to generate image.");
 		return await message.send(buffer);
 	},
 });
 
 Command({
-	name: 'invert',
+	name: "invert",
 	fromMe: false,
 	isGroup: false,
-	desc: 'Invert logo',
-	type: 'maker',
+	desc: "Invert logo",
+	type: "maker",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg || !msg.image) return message.send('Reply to an image');
-		const buffer = await meme(await msg.downloadM(), 'invert');
-		if (!buffer) return message.send('Failed to generate image.');
+		if (!msg || !msg.image) return message.send("Reply to an image");
+		const buffer = await meme(await msg.downloadM(), "invert");
+		if (!buffer) return message.send("Failed to generate image.");
 		return await message.send(buffer);
 	},
 });
 
 Command({
-	name: 'facepalm',
+	name: "facepalm",
 	fromMe: false,
 	isGroup: false,
-	desc: 'Facepalm logo',
-	type: 'maker',
+	desc: "Facepalm logo",
+	type: "maker",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg || !msg.image) return message.send('Reply to an image');
-		const buffer = await meme(await msg.downloadM(), 'facepalm');
-		if (!buffer) return message.send('Failed to generate image.');
+		if (!msg || !msg.image) return message.send("Reply to an image");
+		const buffer = await meme(await msg.downloadM(), "facepalm");
+		if (!buffer) return message.send("Failed to generate image.");
 		return await message.send(buffer);
 	},
 });
 
 Command({
-	name: 'darkness',
+	name: "darkness",
 	fromMe: false,
 	isGroup: false,
-	desc: 'Darkness logo',
-	type: 'maker',
+	desc: "Darkness logo",
+	type: "maker",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg || !msg.image) return message.send('Reply to an image');
-		const buffer = await meme(await msg.downloadM(), 'darkness');
-		if (!buffer) return message.send('Failed to generate image.');
+		if (!msg || !msg.image) return message.send("Reply to an image");
+		const buffer = await meme(await msg.downloadM(), "darkness");
+		if (!buffer) return message.send("Failed to generate image.");
 		return await message.send(buffer);
 	},
 });

@@ -4,12 +4,12 @@ import {
 	WAProto,
 	type AuthenticationCreds,
 	type SignalDataTypeMap,
-} from 'baileys';
-import database from '../messaging/database.ts';
-import { DataType } from 'quantava';
+} from "baileys";
+import database from "../messaging/database.ts";
+import { DataType } from "quantava";
 
 export const auth = database.define(
-	'auth',
+	"auth",
 	{
 		name: { type: DataType.STRING, allowNull: true, primaryKey: true },
 		data: { type: DataType.JSON, allowNull: true },
@@ -32,7 +32,7 @@ export default async function () {
 		};
 		return exists
 			? JSON.parse(
-					typeof exists?.data === 'object'
+					typeof exists?.data === "object"
 						? JSON.stringify(exists.data)
 						: exists.data,
 					BufferJSON.reviver,
@@ -45,21 +45,18 @@ export default async function () {
 	};
 
 	const creds: AuthenticationCreds =
-		(await readData('creds')) || initAuthCreds();
+		(await readData("creds")) || initAuthCreds();
 
 	return {
 		state: {
 			creds,
 			keys: {
-				get: async <T extends keyof SignalDataTypeMap>(
-					type: T,
-					ids: string[],
-				) => {
+				get: async <T extends keyof SignalDataTypeMap>(type: T, ids: string[]) => {
 					const data: { [id: string]: SignalDataTypeMap[T] } = {} as any;
 					await Promise.all(
 						ids.map(async id => {
 							let value = await readData(`${type}-${id}`);
-							if (type === 'app-state-sync-key' && value) {
+							if (type === "app-state-sync-key" && value) {
 								try {
 									value = WAProto.Message.AppStateSyncKeyData.fromObject(value);
 								} catch (e) {
@@ -88,7 +85,7 @@ export default async function () {
 			},
 		},
 		saveCreds: async () => {
-			return (await writeData(creds, 'creds')) as unknown as void;
+			return (await writeData(creds, "creds")) as unknown as void;
 		},
 	};
 }

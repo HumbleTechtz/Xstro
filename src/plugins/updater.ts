@@ -1,43 +1,43 @@
-import { Command } from '../messaging/plugin.ts';
-import { update } from '../utils/updater.ts';
+import { Command } from "../messaging/plugin.ts";
+import { update } from "../utils/updater.ts";
 
 Command({
-	name: 'update',
+	name: "update",
 	fromMe: true,
 	isGroup: false,
-	desc: 'Update the bot and dependencies',
-	type: 'utilities',
+	desc: "Update the bot and dependencies",
+	type: "utilities",
 	function: async (message, match) => {
 		const prefix = message.prefix[0];
-		const result = await update(match === 'now');
+		const result = await update(match === "now");
 
 		switch (result.status) {
-			case 'up-to-date':
-				await message.send('```You are on the latest version```');
+			case "up-to-date":
+				await message.send("```You are on the latest version```");
 				break;
-			case 'updates-available':
+			case "updates-available":
 				const commitMessages = result
 					?.commits!.map(commit => {
-						const lines = commit.split('\n');
-						const messageLine = lines.find(line => line.startsWith('    '));
-						return messageLine ? messageLine.trim() : '';
+						const lines = commit.split("\n");
+						const messageLine = lines.find(line => line.startsWith("    "));
+						return messageLine ? messageLine.trim() : "";
 					})
 					.filter(Boolean);
 
-				let changes = 'New update available\n\n';
+				let changes = "New update available\n\n";
 				changes += `Fixes: ${commitMessages.length}\nDetails:\n`;
 				commitMessages.forEach((message, index) => {
 					changes += `${index + 1}. ${message}\n`;
 				});
-				changes += 'To apply the update, use: ' + prefix + 'update now';
-				await message.send('```' + changes + '```');
+				changes += "To apply the update, use: " + prefix + "update now";
+				await message.send("```" + changes + "```");
 				break;
-			case 'updated':
-				await message.send('Updating...');
+			case "updated":
+				await message.send("Updating...");
 				process.exit(0);
 				break;
-			case 'error':
-				await message.send('Update failed:\n```' + result.error + '```');
+			case "error":
+				await message.send("Update failed:\n```" + result.error + "```");
 				break;
 		}
 	},

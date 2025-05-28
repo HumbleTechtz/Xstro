@@ -1,12 +1,12 @@
-import useSqliteAuthState from '../src/utils/useSqliteAuthState.ts';
-import { randomBytes, randomUUID } from 'node:crypto';
-import { performance } from 'node:perf_hooks';
+import useSqliteAuthState from "../src/utils/useSqliteAuthState.ts";
+import { randomBytes, randomUUID } from "node:crypto";
+import { performance } from "node:perf_hooks";
 
 const delay = (ms: number): Promise<void> =>
 	new Promise(resolve => setTimeout(resolve, ms));
 
 const generateRandomData = (size: number): string =>
-	randomBytes(size).toString('base64');
+	randomBytes(size).toString("base64");
 const generateRandomId = (): string => randomUUID();
 
 interface Metrics {
@@ -34,14 +34,14 @@ const logMetric = (
 
 (async (): Promise<void> => {
 	console.log(
-		'Starting Extreme useSqliteAuthState Stress Test Suite at ' +
+		"Starting Extreme useSqliteAuthState Stress Test Suite at " +
 			new Date().toISOString(),
 	);
 	const startTime = performance.now();
 
 	const { state, saveCreds } = await useSqliteAuthState();
 	console.log(
-		'Successfully initialized authentication state at ' +
+		"Successfully initialized authentication state at " +
 			new Date().toISOString(),
 	);
 
@@ -55,8 +55,8 @@ const logMetric = (
 	): Record<string, Record<string, any>> => {
 		const dataset: Record<string, Record<string, any>> = {
 			session: {},
-			'pre-key': {},
-			'app-state': {},
+			"pre-key": {},
+			"app-state": {},
 			nested: {},
 		};
 
@@ -68,12 +68,12 @@ const logMetric = (
 				timestamp: Date.now(),
 				valid: Math.random() > 0.5,
 			};
-			dataset['pre-key'][id] = {
+			dataset["pre-key"][id] = {
 				id,
 				preKey: generateRandomData(LARGE_DATA_SIZE / 2),
 				valid: Math.random() > 0.5,
 			};
-			dataset['app-state'][id] = {
+			dataset["app-state"][id] = {
 				keyData: generateRandomData(256),
 				fingerprint: Math.floor(Math.random() * 10000),
 			};
@@ -97,40 +97,40 @@ const logMetric = (
 	};
 
 	console.log(
-		'Test 1: Initiating bulk data insertion of ' +
+		"Test 1: Initiating bulk data insertion of " +
 			BATCH_SIZE +
-			' records at ' +
+			" records at " +
 			new Date().toISOString(),
 	);
 	const bulkData = generateLargeDataset(BATCH_SIZE);
 	const bulkStart = performance.now();
 	try {
 		await state.keys.set(bulkData);
-		logMetric('Bulk Insert', bulkStart, true);
+		logMetric("Bulk Insert", bulkStart, true);
 		console.log(
-			'Successfully inserted ' +
+			"Successfully inserted " +
 				BATCH_SIZE +
-				' records in ' +
+				" records in " +
 				(performance.now() - bulkStart).toFixed(2) +
-				'ms at ' +
+				"ms at " +
 				new Date().toISOString(),
 		);
 	} catch (error: unknown) {
 		const errorMessage = error instanceof Error ? error.message : String(error);
-		logMetric('Bulk Insert', bulkStart, false, errorMessage);
+		logMetric("Bulk Insert", bulkStart, false, errorMessage);
 		console.error(
-			'Bulk insertion failed with error: ' +
+			"Bulk insertion failed with error: " +
 				errorMessage +
-				' at ' +
+				" at " +
 				new Date().toISOString(),
 		);
 	}
 	await delay(100);
 
 	console.log(
-		'Test 2: Initiating ' +
+		"Test 2: Initiating " +
 			CONCURRENT_OPERATIONS +
-			' concurrent read operations at ' +
+			" concurrent read operations at " +
 			new Date().toISOString(),
 	);
 	const readPromises: Promise<void>[] = [];
@@ -140,7 +140,7 @@ const logMetric = (
 		readPromises.push(
 			(async () => {
 				try {
-					const result = await state.keys.get('session', [
+					const result = await state.keys.get("session", [
 						readIds[i % readIds.length],
 					]);
 					const expected = JSON.stringify(
@@ -150,23 +150,23 @@ const logMetric = (
 					if (expected === actual) {
 						logMetric(`Concurrent Read ${i}`, start, true);
 						console.log(
-							'Concurrent read ' +
+							"Concurrent read " +
 								i +
-								' for ID ' +
+								" for ID " +
 								readIds[i % readIds.length] +
-								' succeeded in ' +
+								" succeeded in " +
 								(performance.now() - start).toFixed(2) +
-								'ms at ' +
+								"ms at " +
 								new Date().toISOString(),
 						);
 					} else {
-						logMetric(`Concurrent Read ${i}`, start, false, 'Data mismatch');
+						logMetric(`Concurrent Read ${i}`, start, false, "Data mismatch");
 						console.error(
-							'Concurrent read ' +
+							"Concurrent read " +
 								i +
-								' for ID ' +
+								" for ID " +
 								readIds[i % readIds.length] +
-								' failed due to data mismatch at ' +
+								" failed due to data mismatch at " +
 								new Date().toISOString(),
 						);
 					}
@@ -175,11 +175,11 @@ const logMetric = (
 						error instanceof Error ? error.message : String(error);
 					logMetric(`Concurrent Read ${i}`, start, false, errorMessage);
 					console.error(
-						'Concurrent read ' +
+						"Concurrent read " +
 							i +
-							' failed with error: ' +
+							" failed with error: " +
 							errorMessage +
-							' at ' +
+							" at " +
 							new Date().toISOString(),
 					);
 				}
@@ -188,17 +188,17 @@ const logMetric = (
 	}
 	await Promise.all(readPromises);
 	console.log(
-		'Completed ' +
+		"Completed " +
 			CONCURRENT_OPERATIONS +
-			' concurrent read operations at ' +
+			" concurrent read operations at " +
 			new Date().toISOString(),
 	);
 	await delay(100);
 
 	console.log(
-		'Test 3: Initiating ' +
+		"Test 3: Initiating " +
 			CONCURRENT_OPERATIONS +
-			' concurrent update operations at ' +
+			" concurrent update operations at " +
 			new Date().toISOString(),
 	);
 	const updatePromises: Promise<void>[] = [];
@@ -218,32 +218,27 @@ const logMetric = (
 						},
 					};
 					await state.keys.set(newData);
-					const result = await state.keys.get('session', [id]);
+					const result = await state.keys.get("session", [id]);
 					if (result[id].session === newData.session[id].session) {
 						logMetric(`Concurrent Update ${i}`, start, true);
 						console.log(
-							'Concurrent update ' +
+							"Concurrent update " +
 								i +
-								' for ID ' +
+								" for ID " +
 								id +
-								' succeeded in ' +
+								" succeeded in " +
 								(performance.now() - start).toFixed(2) +
-								'ms at ' +
+								"ms at " +
 								new Date().toISOString(),
 						);
 					} else {
-						logMetric(
-							`Concurrent Update ${i}`,
-							start,
-							false,
-							'Update mismatch',
-						);
+						logMetric(`Concurrent Update ${i}`, start, false, "Update mismatch");
 						console.error(
-							'Concurrent update ' +
+							"Concurrent update " +
 								i +
-								' for ID ' +
+								" for ID " +
 								id +
-								' failed due to update mismatch at ' +
+								" failed due to update mismatch at " +
 								new Date().toISOString(),
 						);
 					}
@@ -252,11 +247,11 @@ const logMetric = (
 						error instanceof Error ? error.message : String(error);
 					logMetric(`Concurrent Update ${i}`, start, false, errorMessage);
 					console.error(
-						'Concurrent update ' +
+						"Concurrent update " +
 							i +
-							' failed with error: ' +
+							" failed with error: " +
 							errorMessage +
-							' at ' +
+							" at " +
 							new Date().toISOString(),
 					);
 				}
@@ -265,17 +260,17 @@ const logMetric = (
 	}
 	await Promise.all(updatePromises);
 	console.log(
-		'Completed ' +
+		"Completed " +
 			CONCURRENT_OPERATIONS +
-			' concurrent update operations at ' +
+			" concurrent update operations at " +
 			new Date().toISOString(),
 	);
 	await delay(100);
 
 	console.log(
-		'Test 4: Initiating stress test loop for approximately ' +
+		"Test 4: Initiating stress test loop for approximately " +
 			TEST_DURATION / 1000 +
-			' seconds at ' +
+			" seconds at " +
 			new Date().toISOString(),
 	);
 	const stressStart = performance.now();
@@ -286,33 +281,27 @@ const logMetric = (
 		try {
 			await state.keys.set(batchData);
 			const randomId = Object.keys(batchData.session)[0];
-			await state.keys.get('session', [randomId]);
+			await state.keys.get("session", [randomId]);
 			await state.keys.set({ session: { [randomId]: null } });
 			logMetric(`Stress Operation ${operationCount}`, start, true);
 			operationCount++;
 			if (operationCount % 100 === 0) {
 				console.log(
-					'Stress test loop progress: Completed ' +
+					"Stress test loop progress: Completed " +
 						operationCount +
-						' operations at ' +
+						" operations at " +
 						new Date().toISOString(),
 				);
 			}
 		} catch (error: unknown) {
-			const errorMessage =
-				error instanceof Error ? error.message : String(error);
-			logMetric(
-				`Stress Operation ${operationCount}`,
-				start,
-				false,
-				errorMessage,
-			);
+			const errorMessage = error instanceof Error ? error.message : String(error);
+			logMetric(`Stress Operation ${operationCount}`, start, false, errorMessage);
 			console.error(
-				'Stress operation ' +
+				"Stress operation " +
 					operationCount +
-					' failed with error: ' +
+					" failed with error: " +
 					errorMessage +
-					' at ' +
+					" at " +
 					new Date().toISOString(),
 			);
 			operationCount++;
@@ -320,64 +309,61 @@ const logMetric = (
 		await delay(10);
 	}
 	console.log(
-		'Completed ' +
+		"Completed " +
 			operationCount +
-			' stress test operations at ' +
+			" stress test operations at " +
 			new Date().toISOString(),
 	);
 
 	console.log(
-		'Test 5: Initiating credentials save/load stress test with 100 iterations at ' +
+		"Test 5: Initiating credentials save/load stress test with 100 iterations at " +
 			new Date().toISOString(),
 	);
 	const credsStart = performance.now();
 	try {
 		for (let i = 0; i < 100; i++) {
 			await saveCreds();
-			const creds = await state.keys.get('creds', ['']);
-			if (creds['']) {
+			const creds = await state.keys.get("creds", [""]);
+			if (creds[""]) {
 				logMetric(`Credentials Operation ${i}`, credsStart, true);
 				console.log(
-					'Credentials operation ' +
-						i +
-						' succeeded at ' +
-						new Date().toISOString(),
+					"Credentials operation " + i + " succeeded at " + new Date().toISOString(),
 				);
 			} else {
 				logMetric(
 					`Credentials Operation ${i}`,
 					credsStart,
 					false,
-					'Credentials not found',
+					"Credentials not found",
 				);
 				console.error(
-					'Credentials operation ' +
+					"Credentials operation " +
 						i +
-						' failed: Credentials not found at ' +
+						" failed: Credentials not found at " +
 						new Date().toISOString(),
 				);
 			}
 		}
 		console.log(
-			'Completed credentials stress test at ' + new Date().toISOString(),
+			"Completed credentials stress test at " + new Date().toISOString(),
 		);
 	} catch (error: unknown) {
 		const errorMessage = error instanceof Error ? error.message : String(error);
-		logMetric('Credentials Stress', credsStart, false, errorMessage);
+		logMetric("Credentials Stress", credsStart, false, errorMessage);
 		console.error(
-			'Credentials stress test failed with error: ' +
+			"Credentials stress test failed with error: " +
 				errorMessage +
-				' at ' +
+				" at " +
 				new Date().toISOString(),
 		);
 	}
 
 	console.log(
-		'Test 6: Initiating edge case testing at ' + new Date().toISOString(),
+		"Test 6: Initiating edge case testing at " + new Date().toISOString(),
 	);
 	const edgeCases = [
-		{ category: 'session', id: '', data: { id: '', session: '' } },
-		{ category: 'session', id: generateRandomId(), data: null },
+		{ category: "session", id: "", data: { id: "", session: "" } },
+		{ category: "session", id: generateRandomId(), data: null },
 		{
 			category: generateRandomData(256),
 			id: generateRandomId(),
@@ -391,34 +377,33 @@ const logMetric = (
 			const result = await state.keys.get(category, [id]);
 			logMetric(`Edge Case ${category}:${id}`, start, true);
 			console.log(
-				'Edge case test for category ' +
+				"Edge case test for category " +
 					category +
-					' and ID ' +
+					" and ID " +
 					id +
-					' succeeded in ' +
+					" succeeded in " +
 					(performance.now() - start).toFixed(2) +
-					'ms at ' +
+					"ms at " +
 					new Date().toISOString(),
 			);
 		} catch (error: unknown) {
-			const errorMessage =
-				error instanceof Error ? error.message : String(error);
+			const errorMessage = error instanceof Error ? error.message : String(error);
 			logMetric(`Edge Case ${category}:${id}`, start, false, errorMessage);
 			console.error(
-				'Edge case test for category ' +
+				"Edge case test for category " +
 					category +
-					' and ID ' +
+					" and ID " +
 					id +
-					' failed with error: ' +
+					" failed with error: " +
 					errorMessage +
-					' at ' +
+					" at " +
 					new Date().toISOString(),
 			);
 		}
 	}
-	console.log('Completed edge case testing at ' + new Date().toISOString());
+	console.log("Completed edge case testing at " + new Date().toISOString());
 
-	console.log('Generating Performance Report at ' + new Date().toISOString());
+	console.log("Generating Performance Report at " + new Date().toISOString());
 	const totalDuration = (performance.now() - startTime) / 1000;
 	const successRate =
 		(metrics.filter(m => m.success).length / metrics.length) * 100;
@@ -426,50 +411,48 @@ const logMetric = (
 		metrics.reduce((sum, m) => sum + m.duration, 0) / metrics.length / 1000;
 
 	console.log(
-		'Performance Report - Total Duration: ' +
+		"Performance Report - Total Duration: " +
 			totalDuration.toFixed(2) +
-			' seconds',
+			" seconds",
 	);
-	console.log('Performance Report - Total Operations: ' + metrics.length);
+	console.log("Performance Report - Total Operations: " + metrics.length);
 	console.log(
-		'Performance Report - Success Rate: ' + successRate.toFixed(2) + '%',
+		"Performance Report - Success Rate: " + successRate.toFixed(2) + "%",
 	);
 	console.log(
-		'Performance Report - Average Operation Time: ' +
+		"Performance Report - Average Operation Time: " +
 			avgDuration.toFixed(2) +
-			' seconds',
+			" seconds",
 	);
 
 	const operations = Array.from(
-		new Set(metrics.map(m => m.operation.split(' ')[0])),
+		new Set(metrics.map(m => m.operation.split(" ")[0])),
 	);
 	for (const op of operations) {
 		const opMetrics = metrics.filter(m => m.operation.startsWith(op));
 		const opSuccess =
 			(opMetrics.filter(m => m.success).length / opMetrics.length) * 100;
 		const opAvg =
-			opMetrics.reduce((sum, m) => sum + m.duration, 0) /
-			opMetrics.length /
-			1000;
-		console.log('Performance Report - ' + op + ' Operations:');
+			opMetrics.reduce((sum, m) => sum + m.duration, 0) / opMetrics.length / 1000;
+		console.log("Performance Report - " + op + " Operations:");
 		console.log(
-			'Performance Report - ' + op + ' Operations - Count: ' + opMetrics.length,
+			"Performance Report - " + op + " Operations - Count: " + opMetrics.length,
 		);
 		console.log(
-			'Performance Report - ' +
+			"Performance Report - " +
 				op +
-				' Operations - Success Rate: ' +
+				" Operations - Success Rate: " +
 				opSuccess.toFixed(2) +
-				'%',
+				"%",
 		);
 		console.log(
-			'Performance Report - ' +
+			"Performance Report - " +
 				op +
-				' Operations - Average Time: ' +
+				" Operations - Average Time: " +
 				opAvg.toFixed(2) +
-				' seconds',
+				" seconds",
 		);
 	}
 
-	console.log('Stress Test Suite Completed at ' + new Date().toISOString());
+	console.log("Stress Test Suite Completed at " + new Date().toISOString());
 })();

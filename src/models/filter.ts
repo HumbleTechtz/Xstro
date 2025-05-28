@@ -1,7 +1,7 @@
-import { DataType } from 'quantava';
-import database from '../messaging/database.ts';
+import { DataType } from "quantava";
+import database from "../messaging/database.ts";
 
-export const Filters = database.define('filters', {
+export const Filters = database.define("filters", {
 	name: { type: DataType.STRING, allowNull: false, unique: true },
 	response: { type: DataType.STRING, allowNull: true },
 	status: { type: DataType.BOOLEAN, defaultValue: false },
@@ -19,7 +19,7 @@ export const setFilter = async (
 		name,
 		response,
 		status: parseBooleanToInteger(status),
-		isGroup: typeof isGroup === 'boolean' && isGroup === true ? 1 : 0,
+		isGroup: typeof isGroup === "boolean" && isGroup === true ? 1 : 0,
 	};
 
 	if (exists) {
@@ -59,8 +59,8 @@ export const delFilter = async (name: string) => {
 };
 
 function parseBooleanToInteger(value: boolean): number {
-	if (typeof value !== 'boolean') {
-		throw new Error('Expected a boolean value');
+	if (typeof value !== "boolean") {
+		throw new Error("Expected a boolean value");
 	}
 	return value ? 1 : 0;
 }
