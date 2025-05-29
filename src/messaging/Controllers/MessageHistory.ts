@@ -38,9 +38,7 @@ export default class MessageHistory {
 			for (const message of messages) {
 				await messageDb.create({
 					id: message.key.id,
-					messages: message,
-					type: message.messageStubType,
-					requestId: null,
+					message: message,
 				});
 			}
 		}
