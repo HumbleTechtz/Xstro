@@ -146,22 +146,6 @@ For more usage examples and advanced options, see [`docs/USAGE.md`](docs/USAGE.m
 
 > **Note:** Feature set may evolve over time. See the project source and workflow status for updates.
 
-## Development
-
-### Project Structure
-
-```
-.
-├── src/           # Core source code and handlers
-├── docs/          # Documentation
-└── ...
-```
-
-### Scripts
-
-- `pnpm start` – Start the bot
-- `pnpm test` – Run test, for advanced users
-
 ## Contributing
 
 We welcome and appreciate contributions from the community!  
