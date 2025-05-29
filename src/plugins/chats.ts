@@ -7,7 +7,7 @@ Command({
 	desc: "Pin a chat",
 	type: "chats",
 	function: async message => {
-		await message.client.chatModify({ pin: true }, message.jid);
+		await message.chatModify({ pin: true }, message.jid);
 		return message.send("Pined.");
 	},
 });
@@ -19,7 +19,7 @@ Command({
 	desc: "Unpin a chat",
 	type: "chats",
 	function: async message => {
-		await message.client.chatModify({ pin: false }, message.jid);
+		await message.chatModify({ pin: false }, message.jid);
 		return message.send("Unpined.");
 	},
 });
@@ -31,7 +31,7 @@ Command({
 	desc: "Archive a chat",
 	type: "chats",
 	function: async message => {
-		await message.client.chatModify(
+		await message.chatModify(
 			{
 				archive: true,
 				lastMessages: [
@@ -51,7 +51,7 @@ Command({
 	desc: "Unarchive a chat",
 	type: "chats",
 	function: async message => {
-		await message.client.chatModify(
+		await message.chatModify(
 			{
 				archive: false,
 				lastMessages: [
@@ -71,7 +71,7 @@ Command({
 	desc: "Clear a chat",
 	type: "chats",
 	function: async message => {
-		await message.client.chatModify(
+		await message.chatModify(
 			{
 				delete: true,
 				lastMessages: [
@@ -91,7 +91,7 @@ Command({
 	desc: "Delete a chat",
 	type: "chats",
 	function: async message => {
-		return await message.client.chatModify(
+		return await message.chatModify(
 			{
 				delete: true,
 				lastMessages: [
@@ -115,7 +115,7 @@ Command({
 		}
 		const { id, fromMe } = msg.quoted.key as { id: string; fromMe: boolean };
 
-		await msg.client.chatModify(
+		await msg.chatModify(
 			{
 				star: {
 					messages: [{ id, fromMe }],
@@ -140,7 +140,7 @@ Command({
 		}
 		const { id, fromMe } = msg.quoted.key as { id: string; fromMe: boolean };
 
-		await msg.client.chatModify(
+		await msg.chatModify(
 			{
 				star: {
 					messages: [{ id, fromMe }],
@@ -163,7 +163,7 @@ Command({
 		if (!message.quoted) {
 			return message.send("Reply a message to pin it.");
 		}
-		return await message.client.sendMessage(message.jid, {
+		return await message.sendMessage(message.jid, {
 			pin: message.quoted.key,
 			type: 1,
 			time: 604800,
@@ -181,7 +181,7 @@ Command({
 		if (!message.quoted) {
 			return message.send("Reply a message to pin it.");
 		}
-		return await message.client.sendMessage(message.jid, {
+		return await message.sendMessage(message.jid, {
 			pin: message.quoted.key,
 			type: 2,
 			time: undefined,

@@ -60,7 +60,7 @@ Command({
 		if (!msg.isGroup || !msg?.text) return;
 		if (msg.key.fromMe || msg.sudo) return;
 		if (
-			!(await isBotAdmin(msg.client as WASocket, msg.jid)) ||
+			!(await isBotAdmin(msg as WASocket, msg.jid)) ||
 			(await isAdmin(msg.jid, msg.sender))
 		)
 			return;

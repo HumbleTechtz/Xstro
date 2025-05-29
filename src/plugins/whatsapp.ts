@@ -8,7 +8,7 @@ Command({
 	type: "whatsapp",
 	function: async (message, match) => {
 		if (!match) return message.send("No bio text provided");
-		await message.client.updateProfileStatus(match);
+		await message.updateProfileStatus(match);
 		return message.send("Bio updated successfully");
 	},
 });
@@ -21,7 +21,7 @@ Command({
 	type: "whatsapp",
 	function: async (message, match) => {
 		if (!match) return message.send("No name provided");
-		await message.client.updateProfileName(match);
+		await message.updateProfileName(match);
 		return message.send("Name updated successfully");
 	},
 });
@@ -33,12 +33,12 @@ Command({
 	desc: "Block a user from Messaging you",
 	type: "whatsapp",
 	function: async (message, match) => {
-		const jid = await message.user(match);
+		const jid = await message.parseId(match);
 		if (!jid) return message.send("No user specified to block");
-		if (!(await message.client.onWhatsApp(jid)))
+		if (!(await message.onWhatsApp(jid)))
 			return message.send("User is not on WhatsApp");
 		await message.send("User blocked successfully");
-		return message.client.updateBlockStatus(jid, "block");
+		return message.updateBlockStatus(jid, "block");
 	},
 });
 
@@ -49,10 +49,10 @@ Command({
 	desc: "Unblock a user to allow Messaging",
 	type: "whatsapp",
 	function: async (message, match) => {
-		const jid = await message.user(match);
+		const jid = await message.parseId(match);
 		if (!jid) return message.send("No user specified to unblock");
 		await message.send("User unblocked successfully");
-		return message.client.updateBlockStatus(jid, "unblock");
+		return message.updateBlockStatus(jid, "unblock");
 	},
 });
 
@@ -64,10 +64,11 @@ Command({
 	type: "whatsapp",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg || !msg.image) return message.send("No image replied to");
-		const media = await msg.downloadM();
+		if (!msg || !(msg.type === "imageMessage"))
+			return message.send("No image replied to");
+		const media = await message.downloadM();
 		if (!media) return message.send("Failed to download image");
-		await message.client.updateProfilePicture(message.owner, media);
+		await message.updateProfilePicture(message.owner.jid, media);
 		return message.send("Profile picture updated successfully");
 	},
 });
@@ -80,14 +81,14 @@ Command({
 	type: "whatsapp",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg || !msg.viewonce) return message.send("_Reply a viewOnce message_");
+		if (!msg || !msg.viewOnce) return message.send("_Reply a viewOnce message_");
 		if (msg.message) {
 			const mediaType = msg.type as
 				| "imageMessage"
 				| "videoMessage"
 				| "audioMessage";
 			msg.message[mediaType]!.viewOnce = false;
-			return await msg.forward(message.jid, { quoted: message });
+			return await message.forward(message.jid, { quoted: message });
 		}
 	},
 });
@@ -100,15 +101,17 @@ Command({
 	type: "whatsapp",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg || (!msg.image && !msg.audio && !msg.video))
-			return message.send("_Reply a media message_");
+		const isMedia = msg?.type?.includes(
+			"imageMessage" ?? "videoMessage" ?? "audioMessage",
+		);
+		if (!msg || !isMedia) return message.send("_Reply a media message_");
 		if (msg.message) {
 			const mediaType = msg.type as
 				| "imageMessage"
 				| "videoMessage"
 				| "audioMessage";
 			msg.message[mediaType]!.viewOnce = true;
-			return await msg.forward(message.jid, { quoted: message });
+			return await message.forward(message.jid, { quoted: message });
 		}
 	},
 });
@@ -124,7 +127,7 @@ Command({
 		if (!msg || !msg?.key.fromMe)
 			return message.send("Reply a message from you.");
 		if (!match) return message.send(`Usage: $${message.prefix[0]}edit Hello.`);
-		return await msg.edit(match);
+		return await message.editM(match);
 	},
 });
 
@@ -137,7 +140,7 @@ Command({
 	function: async message => {
 		const msg = message.quoted;
 		if (!msg) return message.send("No message quoted to delete");
-		return await msg.delete();
+		return await message.deleteM(msg.key);
 	},
 });
 
@@ -148,7 +151,7 @@ Command({
 	desc: "Get all the list of numbers you have blocked",
 	type: "whatsapp",
 	function: async message => {
-		const users = await message.client.fetchBlocklist();
+		const users = await message.fetchBlocklist();
 		if (!users) return message.send("No blocked users found");
 		return await message.send(
 			users.map((nums: string) => `\n@${nums.split("@")[0]}`).join(""),
@@ -168,7 +171,7 @@ Command({
 	function: async message => {
 		const msg = message.quoted;
 		if (!msg?.broadcast) return message.send("No status replied to");
-		await msg.forward(message.owner);
+		await message.forward(message.owner.jid);
 		return message.send("Status saved!");
 	},
 });
@@ -182,11 +185,11 @@ Command({
 	function: async (message, match) => {
 		const msg = message.quoted;
 		if (!msg) return message.send("No message quoted to forward");
-		const jid = await message.user(match);
+		const jid = await message.parseId(match);
 		if (!jid) return message.send("No user specified to forward");
-		if (!(await message.client.onWhatsApp(jid)))
+		if (!(await message.onWhatsApp(jid)))
 			return message.send("User is not on WhatsApp");
-		await msg.forward(jid);
+		await message.forward(jid);
 		return message.send("Message forwarded successfully");
 	},
 });

@@ -21,7 +21,7 @@ Command({
 		if (!msg?.audio && !msg?.video)
 			return message.send("_Reply a video or audio message_");
 		const audio = await toPTT(await msg.downloadM());
-		return await message.client.sendMessage(message.jid, {
+		return await message.sendMessage(message.jid, {
 			audio,
 			ptt: true,
 			mimetype: "audio/ogg; codecs=opus",
@@ -40,7 +40,7 @@ Command({
 		if (!msg?.audio && !msg?.video)
 			return message.send("_Reply a video or audio message_");
 		const audio = await convertToMp3(await msg.downloadM());
-		return await message.client.sendMessage(message.jid, {
+		return await message.sendMessage(message.jid, {
 			audio,
 			ptt: false,
 			mimetype: "audio/mpeg",
@@ -59,7 +59,7 @@ Command({
 		if (!msg?.video && !msg?.audio)
 			return message.send("_Reply a video or audio message_");
 		const video = await toVideo(await msg.downloadM());
-		return await message.client.sendMessage(message.jid, {
+		return await message.sendMessage(message.jid, {
 			video,
 			mimetype: "video/mp4",
 		});
@@ -76,7 +76,7 @@ Command({
 		const msg = message.quoted;
 		if (!msg?.audio) return message.send("_Reply an audio message_");
 		const video = await audioToBlackVideo(await msg.downloadM());
-		return await message.client.sendMessage(message.jid, {
+		return await message.sendMessage(message.jid, {
 			video,
 			mimetype: "video/mp4",
 		});
@@ -111,7 +111,7 @@ Command({
 		const msg = message.quoted;
 		if (!msg?.image) return message.send("_Reply an image message_");
 		const image = await cropToCircle(await msg.downloadM());
-		return await message.client.sendMessage(message.jid, {
+		return await message.sendMessage(message.jid, {
 			image,
 			mimetype: "image/webp",
 		});
@@ -139,7 +139,7 @@ Command({
 			author?.trim() || "Astro",
 			packname?.trim() || "Xstro",
 		);
-		return await message.client.sendMessage(message.jid, {
+		return await message.sendMessage(message.jid, {
 			sticker,
 			mimetype: "image/webp",
 		});

@@ -1,12 +1,11 @@
 import type { WAContextInfo, WAMessage, WAMessageContent } from "baileys";
 import type { FileTypeResult } from "file-type";
 import type { serialize } from "../messaging/serialize.ts";
-import { Message } from "../messaging/Messages/index.ts";
 
 export interface Commands {
 	name?: string | RegExp;
 	on?: string | boolean;
-	function: (message: Message, match?: string) => Promise<unknown>;
+	function: (message: Serialize, match?: string) => Promise<unknown>;
 	fromMe?: boolean;
 	isGroup?: boolean;
 	desc?: string;

@@ -68,13 +68,6 @@ Command({
 		const m = await loadMesage(messageKey);
 		if (!m) return;
 
-		await msg.client.sendMessage(
-			msg.isGroup ? msg.jid : msg.owner,
-			{
-				forward: m,
-				contextInfo: { isForwarded: false, forwardingScore: 0 },
-			},
-			{ quoted: m },
-		);
+		await msg.forward(msg.isGroup ? msg.jid : msg.owner.jid, { quoted: msg });
 	},
 });

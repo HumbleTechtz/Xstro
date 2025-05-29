@@ -1,7 +1,7 @@
 import { Command } from "../../messaging/plugin.ts";
-import Message from "../../messaging/Messages/Message.ts";
 import { updateLeaderboard } from "../../models/leaderboard.ts";
 import { isLidUser } from "baileys";
+import type { Serialize } from "../../types/index.ts";
 
 const twagGames = new Map<string, Twag>();
 const twagPending = new Map<
@@ -235,7 +235,7 @@ Command({
 
 Command({
 	on: true,
-	function: async (message: Message) => {
+	function: async message => {
 		const jid = message.jid;
 		const text = message.text?.trim().toLowerCase();
 		if (!text) return;
@@ -271,7 +271,7 @@ Command({
 });
 
 class Twag {
-	private message: Message;
+	private message: Serialize;
 	private originalPlayers: string[] = [];
 	private players: string[] = [];
 	private currentIndex = 0;
@@ -285,7 +285,7 @@ class Twag {
 	private wordsInCurrentTopic = 0;
 	private topicKeys = Object.keys(TOPICS);
 
-	constructor(message: Message) {
+	constructor(message: Serialize) {
 		this.message = message;
 	}
 

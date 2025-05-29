@@ -1,7 +1,7 @@
 import { DataType } from "quantava";
 import database from "../messaging/database.ts";
 import config from "../../config.mjs";
-import Message from "../messaging/Messages/Message.ts";
+import type { Serialize } from "../types/index.ts";
 
 const Alive = database.define(
 	"alive",
@@ -26,7 +26,7 @@ export const setAlive = async (message: string) => {
 	}
 };
 
-export const getAlive = async (client?: Message) => {
+export const getAlive = async (client?: Serialize) => {
 	const msg = (await Alive.findByPk(1)) as
 		| { id: number; message: string }
 		| undefined;
@@ -37,7 +37,7 @@ export const getAlive = async (client?: Message) => {
 	let message = msg.message;
 
 	message = message.replace(/@user/g, client?.pushName ?? "Unknown");
-	message = message.replace(/@owner/g, `@${client?.owner.split("@")[0]}`);
+	message = message.replace(/@owner/g, `@${client?.owner.jid.split("@")[0]}`);
 	message = message.replace(/@time/g, now);
 	message = message.replace(/@botname/g, config?.BOT_NAME ?? `χѕтяσ`);
 	message = message.replace(/@quotes/g, "");

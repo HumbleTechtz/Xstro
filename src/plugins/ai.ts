@@ -1,7 +1,7 @@
 import { chatGpt } from "../utils/ai.ts";
 import { Command } from "../messaging/plugin.ts";
 import { fetch } from "../utils/fetch.mts";
-import AI from "./Helpers/ai.ts";
+import AI from "./tools/ai.ts";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { cwd } from "node:process";
@@ -81,7 +81,7 @@ Command({
 			},
 			quoted: message,
 		};
-		return await message.client.sendMessage(message.jid, messageContent, {
+		return await message.sendMessage(message.jid, messageContent, {
 			quoted: message,
 		});
 	},
@@ -113,7 +113,7 @@ Command({
 				},
 			},
 		};
-		return await message.client.sendMessage(message.jid, messageContent, {
+		return await message.sendMessage(message.jid, messageContent, {
 			quoted: message,
 		});
 	},

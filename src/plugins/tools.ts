@@ -26,7 +26,7 @@ Command({
 	function: async (message, match) => {
 		const user = await message.user(match);
 		if (!user) return message.send("Provide someone number");
-		const profilePic = await message.client.profilePictureUrl(user, "image");
+		const profilePic = await message.profilePictureUrl(user, "image");
 		if (!profilePic)
 			return message.send(
 				"User has no profile picture, or maybe their settings is prevent the bot from seeing it.",
@@ -67,7 +67,7 @@ Command({
 			`https://bk9.fun/maker/carbonimg?q=${match}`,
 		);
 
-		await message.client.sendMessage(message.jid, {
+		await message.sendMessage(message.jid, {
 			caption: "Here is your carbon image",
 			image: response,
 			mimetype: "image/png",
@@ -86,7 +86,7 @@ Command({
 		if (!msg || !msg.image) return message.send("Reply to an image");
 		const buffer = await msg.downloadM();
 		const url = await upload(buffer);
-		return await message.client.sendMessage(message.jid, {
+		return await message.sendMessage(message.jid, {
 			image: { url: `https://bk9.fun/tools/enhance?url=${url}` },
 			caption: "Here is your enhanced image",
 			mimetype: "image/jpeg",

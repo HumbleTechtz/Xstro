@@ -1,6 +1,6 @@
 import { jidNormalizedUser, type WASocket } from "baileys";
 import { cachedGroupMetadata } from "../models/group.ts";
-import Message from "../messaging/Messages/Message.ts";
+import type { Serialize } from "../types/index.ts";
 
 export function isPath(text: string): boolean {
 	if (typeof text !== "string" || text.trim() === "") return false;
@@ -126,49 +126,27 @@ export async function isAdmin(jid: string, participant: string) {
 	return allAdmins.includes(participant);
 }
 
-export async function isBotAdmin(client: WASocket, groupJid: string) {
-	const jid = jidNormalizedUser(client.user?.id);
-	const lid = jidNormalizedUser(client?.user?.lid);
-	const metadata = await cachedGroupMetadata(groupJid);
+export async function isBotAdmin(data: Serialize) {
+	const { owner, jid } = data;
+	const metadata = await cachedGroupMetadata(jid);
 	if (!metadata) return false;
 	const allAdmins = metadata.participants
 		.filter(v => v.admin !== null)
 		.map(v => v.id);
-	if (metadata.addressingMode === "lid") return allAdmins.includes(lid);
-	return allAdmins.includes(jid);
+	if (metadata.addressingMode === "lid") return allAdmins.includes(owner.lid);
+	return allAdmins.includes(owner.jid);
 }
 
-export async function parseId(id: string, jid: string) {
-	const groupInfo = await cachedGroupMetadata(jid);
-	if (!groupInfo) return undefined;
-
-	if (groupInfo.addressingMode === "lid") {
-		if (id.startsWith("@")) {
-			return `${id.split("@")[1]}@lid`;
-		}
-		return jidNormalizedUser(id);
-	} else if (groupInfo.addressingMode === "pn") {
-		if (id.startsWith("@")) {
-			return `${id.split("@")[1]}@s.whatsapp.net`;
-		}
-		if (!id.endsWith("@s.whatsapp.net")) {
-			return `${id}@s.whatsapp.net`;
-		}
-		return id;
-	}
-	return;
-}
-
-export const adminCheck = (message: Message): Promise<boolean> => {
+export const adminCheck = (message: Serialize): Promise<boolean> => {
 	return new Promise(async resolve => {
-		const { jid, client, sender } = message;
+		const { jid, sender } = message;
 		if (!(await isAdmin(jid, sender))) {
 			await message.send(`_@${sender?.split("@")[0]} You are not Admin_`, {
 				mentions: [sender],
 			});
 			return resolve(false);
 		}
-		if (!(await isBotAdmin(client as any, jid))) {
+		if (!(await isBotAdmin(message))) {
 			await message.send(`_@${sender.split("@")[0]} I am not an Admin_`, {
 				mentions: [sender],
 			});
@@ -176,11 +154,10 @@ export const adminCheck = (message: Message): Promise<boolean> => {
 		resolve(true);
 	});
 };
-
-export /**
+/**
  * Converts 12-hour time (e.g., "5:30pm") to a timestamp (ms since epoch) for today.
  */
-function timeStringToTimestamp(timeStr: string): number | null {
+export function timeStringToTimestamp(timeStr: string): number | null {
 	const match = timeStr
 		.trim()
 		.toLowerCase()
@@ -267,4 +244,17 @@ export function extractUrl(text: string): string | null {
 	const urlRegex = /https?:\/\/[^\s/$.?#].[^\s]*/gi;
 	const matches = text.match(urlRegex);
 	return matches && matches.length > 0 ? matches[0] : null;
+}
+
+export function stripCircularRefs(obj: any) {
+	const seen = new WeakSet();
+	return JSON.parse(
+		JSON.stringify(obj, (key, value) => {
+			if (typeof value === "object" && value !== null) {
+				if (seen.has(value)) return; // Omit circular
+				seen.add(value);
+			}
+			return value;
+		}),
+	);
 }

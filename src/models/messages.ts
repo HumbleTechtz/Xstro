@@ -2,17 +2,21 @@ import database from "../messaging/database.ts";
 import { WAProto } from "baileys";
 import { DataType } from "quantava";
 import type { WAMessage, WAMessageContent, WAMessageKey } from "baileys";
+import type { Serialize } from "../types/index.ts";
+import { stripCircularRefs } from "../utils/constants.ts";
 
-export const messageDb = database.define(
-	"messages",
-	{
-		id: { type: DataType.STRING },
-		messages: { type: DataType.JSON, allowNull: true },
-		type: { type: DataType.STRING, allowNull: true },
-		requestId: { type: DataType.STRING, allowNull: true },
-	},
-	{ timestamps: false },
-);
+export const messageDb = database.define("messages", {
+	id: { type: DataType.STRING },
+	message: { type: DataType.JSON, allowNull: true },
+});
+
+export async function saveMsg(msg: Serialize) {
+	const safeMsg = stripCircularRefs(msg);
+	return await messageDb.create({
+		id: msg.key.id,
+		message: safeMsg,
+	});
+}
 
 export async function getMessage(
 	key: WAMessageKey,

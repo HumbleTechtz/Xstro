@@ -1,6 +1,6 @@
 import test, { beforeEach, describe } from "node:test";
 import assert from "node:assert/strict";
-import Wcg from "../src/plugins/Helpers/Wcg.ts";
+import Wcg from "../src/plugins/tools/Wcg.ts";
 
 const originalFetch = global.fetch;
 beforeEach(() => {
