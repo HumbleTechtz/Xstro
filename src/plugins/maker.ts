@@ -16,7 +16,7 @@ async function meme(image: Buffer, type: LogoType) {
 		const url = await upload(image);
 		if (!url) return;
 		return await urlBuffer(
-			`https://bk9.fun/maker/${type}?url=${encodeURIComponent(url)}`
+			`https://bk9.fun/maker/${type}?url=${encodeURIComponent(url)}`,
 		);
 	} catch (err) {
 		console.error(`Error in meme function: ${err}`);
@@ -29,7 +29,7 @@ Command({
 	isGroup: false,
 	desc: "Wasted logo",
 	type: "maker",
-	function: async (message) => {
+	function: async message => {
 		const msg = message.quoted;
 		if (!msg || !(msg.type === "imageMessage"))
 			return message.send("Reply to an image");
@@ -45,7 +45,7 @@ Command({
 	isGroup: false,
 	desc: "Wanted logo",
 	type: "maker",
-	function: async (message) => {
+	function: async message => {
 		const msg = message.quoted;
 		if (!msg || !(msg.type === "imageMessage"))
 			return message.send("Reply to an image");
@@ -61,7 +61,7 @@ Command({
 	isGroup: false,
 	desc: "Trigger logo",
 	type: "maker",
-	function: async (message) => {
+	function: async message => {
 		const msg = message.quoted;
 		if (!msg || !(msg.type === "imageMessage"))
 			return message.send("Reply to an image");
@@ -77,7 +77,7 @@ Command({
 	isGroup: false,
 	desc: "Rainbow logo",
 	type: "maker",
-	function: async (message) => {
+	function: async message => {
 		const msg = message.quoted;
 		if (!msg || !(msg.type === "imageMessage"))
 			return message.send("Reply to an image");
@@ -93,7 +93,7 @@ Command({
 	isGroup: false,
 	desc: "Pixelate logo",
 	type: "maker",
-	function: async (message) => {
+	function: async message => {
 		const msg = message.quoted;
 		if (!msg || !(msg.type === "imageMessage"))
 			return message.send("Reply to an image");
@@ -109,7 +109,7 @@ Command({
 	isGroup: false,
 	desc: "Invert logo",
 	type: "maker",
-	function: async (message) => {
+	function: async message => {
 		const msg = message.quoted;
 		if (!msg || !(msg.type === "imageMessage"))
 			return message.send("Reply to an image");
@@ -125,7 +125,7 @@ Command({
 	isGroup: false,
 	desc: "Facepalm logo",
 	type: "maker",
-	function: async (message) => {
+	function: async message => {
 		const msg = message.quoted;
 		if (!msg || !(msg.type === "imageMessage"))
 			return message.send("Reply to an image");
@@ -141,7 +141,7 @@ Command({
 	isGroup: false,
 	desc: "Darkness logo",
 	type: "maker",
-	function: async (message) => {
+	function: async message => {
 		const msg = message.quoted;
 		if (!msg || !(msg.type === "imageMessage"))
 			return message.send("Reply to an image");

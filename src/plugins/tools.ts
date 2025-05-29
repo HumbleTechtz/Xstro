@@ -24,7 +24,7 @@ Command({
 	desc: "Get the profile picture of any person or group",
 	type: "tools",
 	function: async (message, match) => {
-		const user = await message.user(match);
+		const user = await message.parseId(match);
 		if (!user) return message.send("Provide someone number");
 		const profilePic = await message.profilePictureUrl(user, "image");
 		if (!profilePic)
@@ -83,8 +83,9 @@ Command({
 	type: "tools",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg || !msg.image) return message.send("Reply to an image");
-		const buffer = await msg.downloadM();
+		if (!msg || msg.type !== "imageMessage")
+			return message.send("Reply to an image");
+		const buffer = await message.downloadM(msg);
 		const url = await upload(buffer);
 		return await message.sendMessage(message.jid, {
 			image: { url: `https://bk9.fun/tools/enhance?url=${url}` },
@@ -118,7 +119,7 @@ Command({
 	type: "group",
 	function: async m => {
 		const logo = await readFile(path.join(cwd(), "src", "media", "social.jpg"));
-		return await m.client.sendMessage(m.jid, {
+		return await m.sendMessage(m.jid, {
 			text: "```Source Code\nhttps://github.com/AstroXTeam/whatsapp-bot```",
 			contextInfo: {
 				externalAdReply: {

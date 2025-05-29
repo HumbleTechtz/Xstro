@@ -54,7 +54,7 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 	return {
 		send: async function (
 			content: string | Buffer,
-			options?: MessageMisc & Partial<AnyMessageContent>
+			options?: MessageMisc & Partial<AnyMessageContent>,
 		) {
 			const message = await prepareMessage(client, content, {
 				jid: this.jid,
@@ -67,7 +67,7 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 		},
 		forward: async function (
 			jid: string,
-			options?: WAContextInfo & { quoted: WAMessage }
+			options?: WAContextInfo & { quoted: WAMessage },
 		) {
 			return await forwardM(client, jid, { key, message, ...content }, options);
 		},
@@ -76,14 +76,14 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 				react: { text: emoji, key: this.key },
 			});
 		},
-		editM: async function (text: string) {
+		editM: async function (text: string, msg?: WAMessage) {
 			if (isMediaMessage(this)) {
-				const media = await this.downloadM();
+				const media = await this.downloadM(msg ?? this);
 				return await client.sendMessage(
 					this.jid,
 					this.mtype === "imageMessage"
-						? { image: media, caption: text, edit: this.key }
-						: { video: media, caption: text, edit: this.key }
+						? { image: media, caption: text, edit: msg?.key ?? this.key }
+						: { video: media, caption: text, edit: msg?.key ?? this.key },
 				);
 			}
 			return await client.sendMessage(this.jid, { text, edit: this.key });
@@ -101,7 +101,7 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 							timestamp: Date.now(),
 						},
 					},
-					this.jid
+					this.jid,
 				);
 			}
 			return await client.sendMessage(this.jid, { delete: key });

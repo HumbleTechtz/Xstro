@@ -31,7 +31,7 @@ Command({
 	function: async (message, match) => {
 		if (!(await adminCheck(message))) return;
 		if (!match) return message.send("_Provide a valid number or mention_");
-		const user = await message.user(match);
+		const user = await message.parseId(match);
 		if (!user) return message.send("_Invalid number or mention_");
 		await message.groupParticipantsUpdate(message.jid, [user], "remove");
 		message.send(`_@${user.split("@")[0]} kicked from group_`, {
@@ -66,7 +66,7 @@ Command({
 	function: async (message, match) => {
 		if (!(await adminCheck(message))) return;
 		if (!match) return message.send("_Provide a valid number or mention_");
-		const user = await message.user(match);
+		const user = await message.parseId(match);
 		if (!user) return message.send("_Invalid number or mention_");
 		const groupData = await cachedGroupMetadata(message.jid);
 		const admins = groupData.participants.filter(v => v.admin).map(v => v.id);
@@ -91,7 +91,7 @@ Command({
 	function: async (message, match) => {
 		if (!(await adminCheck(message))) return;
 		if (!match) return message.send("_Provide a valid number or mention_");
-		const user = await message.user(match);
+		const user = await message.parseId(match);
 		if (!user) return message.send("_Invalid number or mention_");
 		const groupData = await cachedGroupMetadata(message.jid);
 		const admins = groupData.participants.filter(v => v.admin).map(v => v.id);
@@ -115,7 +115,7 @@ Command({
 	type: "group",
 	function: async (message, match) => {
 		if (!match) return message.send("_Provide group name_");
-		const gc = await message.groupCreate(match, [message.owner]);
+		const gc = await message.groupCreate(match, [message.owner.jid]);
 		const invite = await message.groupInviteCode(gc.id);
 		const url = `https://chat.whatsapp.com/${invite}`;
 		return await message.send(url, {
