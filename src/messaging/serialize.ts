@@ -67,9 +67,10 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 		},
 		forward: async function (
 			jid: string,
+			message: WAMessage,
 			options?: WAContextInfo & { quoted: WAMessage },
 		) {
-			return await forwardM(client, jid, { key, message, ...content }, options);
+			return await forwardM(client, jid, message, options);
 		},
 		react: async function (emoji?: string) {
 			return await client.sendMessage(this.jid, {
@@ -136,9 +137,9 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 		sudo: isSudoUser(sender),
 		quoted: quoted
 			? {
-					sudo: isSudoUser(quoted.sender),
-					...quoted,
-				}
+				sudo: isSudoUser(quoted.sender),
+				...quoted,
+			}
 			: undefined,
 		...content,
 		...messages,

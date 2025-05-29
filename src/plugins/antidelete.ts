@@ -68,6 +68,6 @@ Command({
 		const m = await loadMesage(messageKey);
 		if (!m) return;
 
-		await msg.forward(msg.isGroup ? msg.jid : msg.owner.jid, { quoted: msg });
+		await msg.forward(msg.isGroup ? msg.jid : msg.owner.jid, m, { quoted: msg });
 	},
 });

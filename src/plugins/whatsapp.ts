@@ -88,7 +88,7 @@ Command({
 				| "videoMessage"
 				| "audioMessage";
 			msg.message[mediaType]!.viewOnce = false;
-			return await message.forward(message.jid, { quoted: message });
+			return await message.forward(message.jid, msg, { quoted: message });
 		}
 	},
 });
@@ -101,17 +101,25 @@ Command({
 	type: "whatsapp",
 	function: async message => {
 		const msg = message.quoted;
-		const isMedia = msg?.type?.includes(
-			"imageMessage" ?? "videoMessage" ?? "audioMessage",
-		);
-		if (!msg || !isMedia) return message.send("_Reply a media message_");
-		if (msg.message) {
-			const mediaType = msg.type as
-				| "imageMessage"
-				| "videoMessage"
-				| "audioMessage";
-			msg.message[mediaType]!.viewOnce = true;
-			return await message.forward(message.jid, { quoted: message });
+
+		const isMedia =
+			msg &&
+			["imageMessage", "videoMessage", "audioMessage"].some(type =>
+				msg.type?.includes(type),
+			);
+
+		if (!msg || !isMedia) {
+			return message.send("_Reply to a media message_");
+		}
+
+		const mediaType = msg.type as
+			| "imageMessage"
+			| "videoMessage"
+			| "audioMessage";
+
+		if (msg.message?.[mediaType]) {
+			msg.message[mediaType].viewOnce = true;
+			return await message.forward(message.jid, msg, { quoted: message });
 		}
 	},
 });
@@ -171,7 +179,7 @@ Command({
 	function: async message => {
 		const msg = message.quoted;
 		if (!msg?.broadcast) return message.send("No status replied to");
-		await message.forward(message.owner.jid);
+		await message.forward(message.owner.jid, msg, { quoted: msg });
 		return message.send("Status saved!");
 	},
 });
@@ -189,7 +197,7 @@ Command({
 		if (!jid) return message.send("No user specified to forward");
 		if (!(await message.onWhatsApp(jid)))
 			return message.send("User is not on WhatsApp");
-		await message.forward(jid);
+		await message.forward(jid, msg, { isForwarded: true, forwardingScore: 999, quoted: message });
 		return message.send("Message forwarded successfully");
 	},
 });
