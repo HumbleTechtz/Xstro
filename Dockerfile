@@ -8,6 +8,7 @@ RUN git clone https://github.com/AstroXTeam/whatsapp-bot /whatsapp-bot
 
 WORKDIR /whatsapp-bot
 
-RUN npm install -g npm@latest pnpm@latest pnpm install
+RUN npm install -g npm@latest pnpm@latest
+RUN pnpm install
 
 CMD ["pnpm", "start"]
