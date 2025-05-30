@@ -1,4 +1,3 @@
-import { chatGpt } from "../utils/ai.ts";
 import { Command } from "../messaging/plugin.ts";
 import { fetch } from "../utils/fetch.mts";
 import AI from "./tools/ai.ts";
@@ -18,7 +17,7 @@ Command({
 		if (!match) {
 			return message.send(`_${pushName ?? ""} How can I help You?_`);
 		}
-		return await message.send(await chatGpt(match));
+		return await message.send(await AI.gpt(match, message.sender));
 	},
 });
 
