@@ -1,11 +1,16 @@
-import { updateMetaGroup, cachedGroupMetadataAll } from "../models/group.ts";
+import {
+	updateMetaGroup,
+	cachedGroupMetadataAll,
+	cachedGroupMetadata,
+} from "../models/group.ts";
 import { getAutoMute } from "../models/automute.ts";
 import {
 	getCurrentTimeString,
 	startClockAlignedScheduler,
 } from "../utils/constants.ts";
-import type { WASocket } from "baileys";
 import lang from "../utils/lang.ts";
+import { getAutoKick } from "../models/autokick.ts";
+import type { WASocket } from "baileys";
 
 export default function (sock: WASocket) {
 	const fetchAndUpdateGroups = async () => {
@@ -22,6 +27,7 @@ export default function (sock: WASocket) {
 
 	setTimeout(() => {
 		fetchAndUpdateGroups();
+		autoKick(sock);
 		setInterval(fetchAndUpdateGroups, 45 * 1000);
 		startClockAlignedScheduler(() => groupAutoMute(sock));
 	}, 5000);
@@ -60,4 +66,25 @@ async function groupAutoMute(client: WASocket) {
 			continue;
 		}
 	}
+}
+
+export async function autoKick(client: WASocket) {
+	client.ev.on("group-participants.update", async update => {
+		const groupJid = update.id;
+		const groupInfo = await cachedGroupMetadata(groupJid);
+		const addedParticipants = update.participants ?? [];
+
+		const useLid = groupInfo.addressingMode === "lid";
+
+		const autoKickList = await getAutoKick(groupJid);
+
+		if (!autoKickList.length) return;
+
+		for (const user of addedParticipants) {
+			const identifier = useLid ? user.split(":")[1] : user;
+			if (autoKickList.includes(identifier)) {
+				await client.groupParticipantsUpdate(groupJid, [user], "remove");
+			}
+		}
+	});
 }

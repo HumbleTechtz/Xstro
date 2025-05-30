@@ -108,17 +108,15 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 			return await client.sendMessage(this.jid, { delete: key });
 		},
 		parseId: async function (id: any) {
+			if (typeof id !== "string") return null;
 			if (id.includes(":")) return jidNormalizedUser(id);
-
-			if (typeof id === "object") return null;
-			if (Array.isArray(id)) id = id[0];
-			if (id.startsWith("@")) id = id.split("@")[1];
-
-			id = id.replace(/[^0-9]+/g, "");
-
-			const isUserReal = await client.onWhatsApp(`${id}@s.whatsapp.net`);
-			if (isUserReal?.[0].exists) return isUserReal[0].jid;
-			if (!isUserReal) return `${id}@lid`;
+			if (id.endsWith("@lid")) return id;
+			if (id.startsWith("@")) id = id.slice(1);
+			id = id.replace(/\D+/g, "");
+			id = `${id}@s.whatsapp.net`;
+			const p = await client.onWhatsApp(id);
+			if (p?.[0]?.exists) return p[0].jid;
+			return `${id}@lid`;
 		},
 		key,
 		jid,

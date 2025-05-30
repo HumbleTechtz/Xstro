@@ -30,7 +30,12 @@ export default class MessageHistory {
 		if (contacts) {
 			for (const contact of contacts) {
 				if (!isJidUser(contact?.id) && !isLidUser(contact?.lid)) return;
-				await contactsDb.create({ ...contact });
+				const exists = await contactsDb.findOne({ where: { id: contact.id } })
+				if (exists) {
+					await contactsDb.update({ ...contact }, { where: { id: contact.id } })
+				} else {
+					await contactsDb.create({ ...contact })
+				}
 			}
 		}
 
@@ -39,7 +44,7 @@ export default class MessageHistory {
 				await messageDb.create({
 					id: message.key.id,
 					message: message,
-				});
+				})
 			}
 		}
 	}
