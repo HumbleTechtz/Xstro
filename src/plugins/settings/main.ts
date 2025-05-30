@@ -1,5 +1,5 @@
-import { Command } from "../messaging/plugin.ts";
-import { setSettings } from "../models/settings.ts";
+import { Command } from "../../messaging/plugin.ts";
+import { setSettings } from "../../models/settings.ts";
 
 Command({
 	name: "setprefix",

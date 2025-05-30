@@ -1,11 +1,11 @@
-import { Command } from "../messaging/plugin.ts";
+import { Command } from "../../messaging/plugin.ts";
 import {
 	Filters,
 	setFilter,
 	delFilter,
 	getAllFilters,
-} from "../models/filter.ts";
-import { escapeRegex } from "./group/antiword.ts";
+} from "../../models/filter.ts";
+import { escapeRegex } from "../group/antiword.ts";
 
 Command({
 	name: "filter",
@@ -107,7 +107,12 @@ Command({
 
 		if (keyword.isGroup) {
 			if (!msg.isGroup) return;
-			if (!msg.mention?.includes(msg.owner) || msg.key.fromMe) return;
+			if (
+				!msg.mention?.includes(msg.owner.jid) ||
+				!msg.mention.includes(msg.owner.lid) ||
+				msg.key.fromMe
+			)
+				return;
 		}
 
 		return await msg.send(keyword.response);

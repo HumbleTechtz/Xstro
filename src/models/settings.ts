@@ -90,7 +90,12 @@ export const setSudo = async (sudo: string[]) => {
 };
 
 export async function getSudo() {
-	return await config.findOne({ where: { settings: "sudo" } });
+	const exsting = (await config.findOne({ where: { settings: "sudo" } })) as {
+		settings: string;
+		value: string;
+	};
+	if (!exsting) return [];
+	return JSON.parse(exsting.value) as string[];
 }
 
 export async function delsudo(users: string[]) {
@@ -102,5 +107,57 @@ export async function delsudo(users: string[]) {
 	existingUsers = JSON.parse(existing.value);
 	const sudos = existingUsers.filter(u => u && !users.includes(u));
 	await setSudo(sudos);
+	return true;
+}
+
+export async function getMode() {
+	const { mode } = await getSettings();
+	return Boolean(Number(mode));
+}
+
+export async function setMode(value: boolean) {
+	const { mode } = await getSettings();
+	if (Boolean(Number(mode)) === value) return false;
+	await setSettings("mode", value ? JSON.stringify(1) : JSON.stringify(0));
+	return true;
+}
+
+export const setBan = async (bans: string[]) => {
+	const db = (await config.findOne({ where: { settings: "banned" } })) as {
+		settings: string;
+		value: string;
+	} | null;
+
+	if (db) {
+		const existingBans = JSON.parse(db.value) as string[];
+		const payload = JSON.stringify(
+			Array.from(new Set([...bans, ...existingBans])),
+		);
+		return await config.update(
+			{ value: payload },
+			{ where: { settings: "banned" } },
+		);
+	}
+
+	return null;
+};
+
+export async function getBan() {
+	const existing = (await config.findOne({ where: { settings: "banned" } })) as {
+		settings: string;
+		value: string;
+	};
+	if (!existing) return [];
+	return JSON.parse(existing.value) as string[];
+}
+
+export async function delBan(users: string[]) {
+	const existing = (await config.findOne({ where: { settings: "banned" } })) as {
+		settings: string;
+		value: string;
+	};
+	const bannedUsers = JSON.parse(existing.value) as string[];
+	const updated = bannedUsers.filter(u => u && !users.includes(u));
+	await setSettings("banned", JSON.stringify(updated));
 	return true;
 }

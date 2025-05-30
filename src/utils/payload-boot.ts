@@ -6,15 +6,17 @@ export async function sendPayloadBootMsg(client: WASocket): Promise<void> {
 	const availableCommands = commands.filter(cmd => !cmd.dontAddCommandList);
 
 	await client.sendMessage(client?.user?.id!, {
-		text: `Bot Connected\nOwner: ${userName}\nCommands: ${availableCommands.length}`,
+		text: `\`\`\`
+вσт ¢σииє¢тє∂
+σωиєя: ${userName}
+ρℓυgιиѕ: ${availableCommands.length}
+\`\`\``.trim(),
 		contextInfo: {
 			isForwarded: true,
 			forwardingScore: 999,
 			forwardedNewsletterMessageInfo: {
 				newsletterJid: "120363420960001579@newsletter",
-				newsletterName: "Xstro WhatsApp Bot",
-				contentType: 2,
-				accessibilityText: "Join and follow for updates",
+				newsletterName: "χѕтяσ ωнαтѕαρρ вσт",
 			},
 		},
 	});

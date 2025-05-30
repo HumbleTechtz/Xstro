@@ -1,4 +1,4 @@
-import { Command } from "../messaging/plugin.ts";
+import { Command } from "../../messaging/plugin.ts";
 import {
 	convertToMp3,
 	toPTT,
@@ -8,7 +8,7 @@ import {
 	cropToCircle,
 	createSticker,
 	trimVideo,
-} from "../utils/ffmpeg.mts";
+} from "../../utils/ffmpeg.mts";
 
 Command({
 	name: "ptt",
@@ -128,8 +128,16 @@ Command({
 	type: "media",
 	function: async (message, args) => {
 		const msg = message.quoted;
-		if (msg?.type !== "videoMessage" && msg?.type !== "imageMessage")
-			return message.send("_Reply a video or image message_");
+		if (
+			msg?.type !== "videoMessage" &&
+			msg?.type !== "imageMessage" &&
+			msg?.type !== "stickerMessage"
+		)
+			return message.send(
+				"_Reply a video, image or sticker_\n_" +
+					message.prefix[0] +
+					"sticker Astro|Xstro_",
+			);
 
 		let packname, author;
 

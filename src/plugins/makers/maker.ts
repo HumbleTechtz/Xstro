@@ -1,5 +1,5 @@
-import { Command } from "../messaging/plugin.ts";
-import { upload, urlBuffer } from "../utils/fetch.mts";
+import { Command } from "../../messaging/plugin.ts";
+import { upload, urlBuffer } from "../../utils/fetch.mts";
 
 type LogoType =
 	| "wasted"

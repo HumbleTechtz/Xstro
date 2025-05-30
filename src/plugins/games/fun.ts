@@ -1,5 +1,5 @@
-import { fetch } from "../utils/fetch.mts";
-import { Command } from "../messaging/plugin.ts";
+import { fetch } from "../../utils/fetch.mts";
+import { Command } from "../../messaging/plugin.ts";
 
 Command({
 	name: "rizz",

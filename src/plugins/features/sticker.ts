@@ -1,5 +1,5 @@
-import { Command, commands } from "../messaging/plugin.ts";
-import { removeStickerCmd, setStickerCmd } from "../models/sticker.ts";
+import { Command, commands } from "../../messaging/plugin.ts";
+import { removeStickerCmd, setStickerCmd } from "../../models/sticker.ts";
 
 Command({
 	name: "setcmd",
@@ -9,7 +9,7 @@ Command({
 	type: "misc",
 	function: async (message, match) => {
 		const msg = message?.quoted;
-		if (!msg || !msg.sticker) {
+		if (!msg || msg.type !== "stickerMessage") {
 			return await message.send("_Reply to a sticker message_");
 		}
 		if (!match) {

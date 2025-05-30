@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
-import { Command } from "../messaging/plugin.ts";
-import { fetch, isUrl, urlBuffer, lyrics, upload } from "../utils/index.ts";
+import { Command } from "../../messaging/plugin.ts";
+import { fetch, isUrl, urlBuffer, lyrics, upload } from "../../utils/index.ts";
 import { cwd } from "node:process";
 import path from "node:path";
 

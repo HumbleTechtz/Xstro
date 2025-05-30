@@ -1,5 +1,5 @@
 import { Boom } from "@hapi/boom";
-import { DisconnectReason } from "baileys";
+import { DisconnectReason, jidNormalizedUser } from "baileys";
 import { syncPlugins } from "../plugin.ts";
 import { setSudo } from "../../models/index.ts";
 import { auth } from "../../utils/index.ts";
@@ -88,6 +88,9 @@ export default class Connection {
 	private async handleOpen() {
 		console.info("Connected to WhatsApp");
 		await sendPayloadBootMsg(this.client);
-		await setSudo([this.client?.user?.id!, this.client?.user?.lid!]);
+		await setSudo([
+			jidNormalizedUser(this.client?.user?.id),
+			jidNormalizedUser(this.client?.user?.lid),
+		]);
 	}
 }
