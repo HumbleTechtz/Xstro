@@ -45,7 +45,7 @@ Deploy easily on these platforms, or use your own server:
 
 <div align="center">
 
-<a href="https://www.heroku.com/deploy?template=https://github.com/AstroX11/Xstro" target="_blank"><img src="https://img.shields.io/badge/-Heroku-black?style=for-the-badge&logo=heroku&logoColor=white" alt="Deploy to Heroku"></a>
+<a href="#heroku" target="_blank"><img src="https://img.shields.io/badge/-Heroku-black?style=for-the-badge&logo=heroku&logoColor=white" alt="Deploy to Heroku"></a>
 <a href="https://app.koyeb.com/deploy?name=xstro&repository=AstroX11%2FXstro&branch=stable&builder=dockerfile" target="_blank"><img src="https://img.shields.io/badge/-Koyeb-black?style=for-the-badge&logo=koyeb&logoColor=white" alt="Deploy to Koyeb"></a>
 <a href="https://render.com/deploy?repo=https://github.com/AstroX11/Xstro" target="_blank"><img src="https://img.shields.io/badge/-Render-black?style=for-the-badge&logo=render&logoColor=white" alt="Deploy to Render"></a>
 <a href="https://pterodactyl.io/" target="_blank"><img src="https://img.shields.io/badge/-Panel-black?style=for-the-badge&logo=pterodactyl&logoColor=white" alt="Deploy on Pterodactyl"></a>
@@ -53,11 +53,17 @@ Deploy easily on these platforms, or use your own server:
 
 </div>
 
+### Heroku
+
+1. Create an [Heroku Account](https://heroku.com) if you don't have one.
+2. Watch a Tutorial On how to [Deploy to heroku](https://github.com/AstroX11/deploy-videos/raw/refs/heads/main/heroku.mp4)
+3. [Click Here to Deploy](https://www.heroku.com/deploy?template=https://github.com/AstroX11/Xstro)
+
 ### Panel Pterodactyl Server
 
-1. Download the panel deployment file [here.](https://github.com/AstroX11/Pterodactyl-Deploy/raw/refs/heads/main/deploy.zip)
+1. Download the panel deployment file [here.](https://github.com/AstroX11/deploy-videos/raw/refs/heads/main/deploy.zip)
 2. Ensure you have created [Pterodactyl Account](https://pterodactyl.io/)
-3. Create your server and [Watch a Tutorial](https://github.com/AstroX11/Pterodactyl-Deploy/raw/refs/heads/main/help.mp4) if you don't know how to deploy on it.
+3. Create your server and [Watch a Tutorial](https://github.com/AstroX11/deploy-videos/raw/refs/heads/main/help.mp4) if you don't know how to deploy on it.
 
 ### Manual Start (VPS/Ubuntu/Windows)
 
