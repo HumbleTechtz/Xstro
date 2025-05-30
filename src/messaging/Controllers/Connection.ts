@@ -52,7 +52,7 @@ export default class Connection {
 
 		const resetWithClearStateReasons = [
 			DisconnectReason.loggedOut,
-			DisconnectReason.badSession,
+			// DisconnectReason.badSession,
 		];
 
 		if (resetReasons.includes(reason)) {
