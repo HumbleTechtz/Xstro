@@ -11,65 +11,35 @@
 
 <div align="center">
   <img src="https://avatars.githubusercontent.com/u/188756392?s=200&v=4" height="96" alt="xstro logo" />
-  <h3>Open Source WhatsApp Automation via Baileys Web API Client</h3>
+  <h4>Open Source WhatsApp Automation that has the ability to send, receive, manage, and process WhatsApp messages and events. It provides a reliable way to automate WhatsApp interactions for personal and small project usage.</h4>
   <p>
     <a href="https://github.com/AstroXTeam/whatsapp-bot/actions"><img src="https://img.shields.io/github/actions/workflow/status/AstroXTeam/whatsapp-bot/docker-image.yml?branch=stable&style=flat-square" alt="CI Status" /></a>
     <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="License" /></a>
     <a href="https://github.com/WhiskeySockets/Baileys"><img src="https://img.shields.io/badge/Baileys-Web%20API-orange?style=flat-square" alt="Powered by Baileys" /></a>
   </p>
-  <p>
-    <strong>Simple, open-source, and fast WhatsApp automation for developers and teams.</strong>
-  </p>
 </div>
-
-## Overview
-
-**xstro** is an open-source WhatsApp automation tool utilizing the [Baileys Web API Client](https://github.com/WhiskeySockets/Baileys) to send, receive, manage, and process WhatsApp messages and events.  
-It is designed to provide a straightforward and reliable way to automate WhatsApp interactions for personal and small project usage.
-
-- Written in TypeScript for reliability and maintainability.
-- No cloud or third-party accounts are required; you control your session and data.
-- MIT licensed.
-
-## Table of Contents
-
-- [Getting Started](#getting-started)
-- [Deployment](#deployment)
-- [Configuration](#configuration)
-- [Usage](#usage)
-- [Features](#features)
-- [Development](#development)
-- [Contributing](#contributing)
-- [Security Notice](#security-notice)
-- [License](#license)
-- [Acknowledgements](#acknowledgements)
 
 ## Getting Started
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (v23 or newer required)
-- [pnpm](https://pnpm.io/) and [yarn](https://yarnpkg.com/) (both required for dependency management)
-- [ffmpeg](https://ffmpeg.org/) (required for some media features)
+- [Node.js 24](https://nodejs.org/)
+- [Pnpm](https://pnpm.io/) and [Yarn](https://yarnpkg.com/)
+- [Ffmpeg](https://ffmpeg.org/)
 
 ### Installation
 
 ```bash
-# Install pnpm and yarn globally if you do not have them
 npm i -g pnpm yarn
-
-# Clone the repository (using the stable branch)
 git clone --branch stable https://github.com/AstroXTeam/whatsapp-bot.git
 cd whatsapp-bot
-
-# Install dependencies
 pnpm install
 ```
 
 ## Deployment
 
 > [!NOTE]
-> After deployment, a WhatsApp pairing code will appear in your logs or terminal. Scan it with your WhatsApp mobile app to link your session and activate the bot.
+> Before Deployment ensure you put in your Phone Number in the `USER_NUMBER` variable, once `pnpm` installation is complete, a pair code would appear and you will use it to connect your account to the robot.
 
 Deploy easily on these platforms, or use your own server:
 
