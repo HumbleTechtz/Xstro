@@ -1,10 +1,10 @@
-import { Message } from "./Messages/index.ts";
 import lang from "../utils/lang.ts";
 import { commands } from "./plugin.ts";
 import { getStickerCmd } from "../models/sticker.ts";
 import { canProceed, resetIfExpired } from "../models/ratelimter.ts";
+import type { Serialize } from "../types/index.ts";
 
-export default async function (message: Message) {
+export default async function (message: Serialize) {
 	const { sudo, sender, prefix, text, mode, isGroup, send } = message;
 
 	setInterval(

@@ -1,7 +1,7 @@
 import { Command } from "../../messaging/plugin.ts";
-import Message from "../../messaging/Messages/Message.ts";
 import { updateLeaderboard } from "../../models/leaderboard.ts";
 import { isLidUser } from "baileys";
+import type { Serialize } from "../../types/index.ts";
 
 const games = new Map<string, Wcg>();
 const pending = new Map<string, { jids: string[]; timers: NodeJS.Timeout[] }>();
@@ -69,7 +69,7 @@ Command({
 
 Command({
 	on: true,
-	function: async (message: Message) => {
+	function: async message => {
 		const jid = message.jid;
 		const text = message.text?.trim().toLowerCase();
 		if (!text) return;
@@ -106,7 +106,7 @@ Command({
 });
 
 class Wcg {
-	private message: Message;
+	private message: Serialize;
 	private originalPlayers: string[] = [];
 	private players: string[] = [];
 	private currentIndex: number = 0;
@@ -127,7 +127,7 @@ class Wcg {
 	private minLen: number = 3;
 	private readonly alphabet: string = "abcdefghijklmnopqrstuvwxyz";
 
-	constructor(message: Message) {
+	constructor(message: Serialize) {
 		this.message = message;
 	}
 

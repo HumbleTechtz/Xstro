@@ -18,10 +18,10 @@ Command({
 	type: "media",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg?.audio && !msg?.video)
+		if (msg?.type !== "audioMessage" && msg?.type !== "videoMessage")
 			return message.send("_Reply a video or audio message_");
-		const audio = await toPTT(await msg.downloadM());
-		return await message.client.sendMessage(message.jid, {
+		const audio = await toPTT(await message.downloadM(msg));
+		return await message.sendMessage(message.jid, {
 			audio,
 			ptt: true,
 			mimetype: "audio/ogg; codecs=opus",
@@ -37,10 +37,10 @@ Command({
 	type: "media",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg?.audio && !msg?.video)
+		if (msg?.type !== "audioMessage" && msg?.type !== "videoMessage")
 			return message.send("_Reply a video or audio message_");
-		const audio = await convertToMp3(await msg.downloadM());
-		return await message.client.sendMessage(message.jid, {
+		const audio = await convertToMp3(await message.downloadM(msg));
+		return await message.sendMessage(message.jid, {
 			audio,
 			ptt: false,
 			mimetype: "audio/mpeg",
@@ -56,10 +56,10 @@ Command({
 	type: "media",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg?.video && !msg?.audio)
+		if (msg?.type !== "audioMessage" && msg?.type !== "videoMessage")
 			return message.send("_Reply a video or audio message_");
-		const video = await toVideo(await msg.downloadM());
-		return await message.client.sendMessage(message.jid, {
+		const video = await toVideo(await message.downloadM(msg));
+		return await message.sendMessage(message.jid, {
 			video,
 			mimetype: "video/mp4",
 		});
@@ -74,9 +74,10 @@ Command({
 	type: "media",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg?.audio) return message.send("_Reply an audio message_");
-		const video = await audioToBlackVideo(await msg.downloadM());
-		return await message.client.sendMessage(message.jid, {
+		if (msg?.type !== "audioMessage" && msg?.type !== "videoMessage")
+			return message.send("_Reply a video or audio message_");
+		const video = await audioToBlackVideo(await message.downloadM(msg));
+		return await message.sendMessage(message.jid, {
 			video,
 			mimetype: "video/mp4",
 		});
@@ -91,12 +92,12 @@ Command({
 	type: "media",
 	function: async (message, args) => {
 		const msg = message.quoted;
-		if (!msg?.video && !msg?.image)
-			return message.send("_Reply an image or video message_");
+		if (msg?.type !== "audioMessage" && msg?.type !== "imageMessage")
+			return message.send("_Reply a video or image message_");
 		const choice = args?.toLowerCase();
 		if (!choice || !["left", "right", "vertical", "horizontal"].includes(choice))
 			return message.send("_Use: left, right, vertical, or horizontal_");
-		const flipped = await flipMedia(await msg.downloadM(), choice);
+		const flipped = await flipMedia(await message.downloadM(msg), choice);
 		return await message.send(flipped);
 	},
 });
@@ -109,9 +110,10 @@ Command({
 	type: "media",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg?.image) return message.send("_Reply an image message_");
-		const image = await cropToCircle(await msg.downloadM());
-		return await message.client.sendMessage(message.jid, {
+		if (msg?.type !== "imageMessage")
+			return message.send("_Reply an image message_");
+		const image = await cropToCircle(await message.downloadM(msg));
+		return await message.sendMessage(message.jid, {
 			image,
 			mimetype: "image/webp",
 		});
@@ -126,7 +128,7 @@ Command({
 	type: "media",
 	function: async (message, args) => {
 		const msg = message.quoted;
-		if (!msg?.image && !msg?.audio && !msg?.video)
+		if (msg?.type !== "videoMessage" && msg?.type !== "imageMessage")
 			return message.send("_Reply a video or image message_");
 
 		let packname, author;
@@ -135,11 +137,11 @@ Command({
 			[packname, author] = args.split("|");
 		}
 		const sticker = await createSticker(
-			await msg.downloadM(),
+			await message.downloadM(msg),
 			author?.trim() || "Astro",
 			packname?.trim() || "Xstro",
 		);
-		return await message.client.sendMessage(message.jid, {
+		return await message.sendMessage(message.jid, {
 			sticker,
 			mimetype: "image/webp",
 		});
@@ -154,14 +156,15 @@ Command({
 	type: "media",
 	function: async (message, match) => {
 		const msg = message.quoted;
-		if (!msg?.video) return message.send("_Reply a video message_");
+		if (msg?.type !== "videoMessage")
+			return message.send("_Reply a video message_");
 		if (!match)
 			return message.send(`Usage:\n${message.prefix}trim 00:00:05|00:01:08`);
 		const [startTime, endTime] = match.split("|");
 		if (!startTime || !endTime)
 			return message.send(`Usage:\n${message.prefix}trim 00:00:05|00:01:08`);
 		const trimmedVideo = await trimVideo(
-			await msg.downloadM(),
+			await message.downloadM(msg),
 			startTime,
 			endTime,
 		);

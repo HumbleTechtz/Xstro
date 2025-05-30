@@ -30,7 +30,7 @@ Command({
 		}
 		if (data.name && data.dllink) {
 			await msg.react("✅");
-			return await msg.client.sendMessage(msg.jid, {
+			return await msg.sendMessage(msg.jid, {
 				document: { url: data.dllink },
 				caption: data.name,
 				fileName: data.name.split(" ")[0],
@@ -134,7 +134,7 @@ Command({
 
 		try {
 			const url = new URL(args);
-			await msg.client.sendMessage(msg.jid, {
+			await msg.sendMessage(msg.jid, {
 				audio: { url },
 				ptt: false,
 				mimetype: "audio/mpeg",
@@ -163,7 +163,7 @@ Command({
 
 		try {
 			const url = new URL(args);
-			await msg.client.sendMessage(msg.jid, {
+			await msg.sendMessage(msg.jid, {
 				video: { url },
 				caption: "Here is your MP4 file.",
 			});
@@ -246,7 +246,7 @@ Command({
 			await urlBuffer(downloadUrl!),
 		);
 
-		await msg.client.sendMessage(msg.jid, {
+		await msg.sendMessage(msg.jid, {
 			audio: audio,
 			ptt: false,
 			mimetype: "audio/mpeg",

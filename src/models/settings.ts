@@ -6,7 +6,7 @@ export const config = database.define(
 	"config",
 	{
 		settings: { type: DataType.STRING, primaryKey: true },
-		value: { type: DataType.STRING },
+		value: { type: DataType.STRING, allowNull: true },
 	},
 	{ timestamps: false },
 );
@@ -15,10 +15,10 @@ export const getSettings = async () => {
 	const count = await config.count();
 	if (!count) {
 		const defaults = [
-			{ settings: "prefix", value: JSON.stringify(["."]) },
-			{ settings: "sudo", value: JSON.stringify([]) },
-			{ settings: "banned", value: JSON.stringify([""]) },
-			{ settings: "disablecmd", value: JSON.stringify([""]) },
+			{ settings: "prefix", value: ["."] },
+			{ settings: "sudo", value: [] },
+			{ settings: "banned", value: [] },
+			{ settings: "disablecmd", value: [] },
 			{ settings: "mode", value: JSON.stringify(1) },
 			{ settings: "disabledm", value: JSON.stringify(0) },
 			{ settings: "disablegc", value: JSON.stringify(0) },
@@ -76,7 +76,10 @@ export const setSudo = async (sudo: string[]) => {
 	} | null;
 
 	if (db) {
-		const payload = JSON.stringify(Array.from(new Set(...sudo, ...db.value)));
+		const existingUsers = JSON.parse(db.value) as string[];
+		const payload = JSON.stringify(
+			Array.from(new Set([...sudo, ...existingUsers])),
+		);
 		return await config.update(
 			{ value: payload },
 			{ where: { settings: "sudo" } },
@@ -85,3 +88,19 @@ export const setSudo = async (sudo: string[]) => {
 
 	return null;
 };
+
+export async function getSudo() {
+	return await config.findOne({ where: { settings: "sudo" } });
+}
+
+export async function delsudo(users: string[]) {
+	const existing = (await config.findOne({ where: { settings: "sudo" } })) as {
+		settings: string;
+		value: string;
+	};
+	let existingUsers: string[];
+	existingUsers = JSON.parse(existing.value);
+	const sudos = existingUsers.filter(u => u && !users.includes(u));
+	await setSudo(sudos);
+	return true;
+}

@@ -1,7 +1,12 @@
 import { Boom } from "@hapi/boom";
 import { getDataType } from "./content.ts";
 import type { MessageMisc } from "../types/index.ts";
-import type { AnyMessageContent, WASocket } from "baileys";
+import type {
+	AnyMessageContent,
+	WAContextInfo,
+	WAMessage,
+	WASocket,
+} from "baileys";
 
 function isValidUrl(str: string): boolean {
 	try {
@@ -95,4 +100,20 @@ export async function prepareMessage(
 	}
 
 	return await client.sendMessage(jid, messageContent, { ...options });
+}
+
+export async function forwardM(
+	client: WASocket,
+	jid: string,
+	message: WAMessage,
+	options?: WAContextInfo & { quoted: WAMessage },
+) {
+	return await client.sendMessage(
+		jid,
+		{
+			forward: message,
+			contextInfo: { ...options },
+		},
+		{ quoted: options?.quoted },
+	);
 }

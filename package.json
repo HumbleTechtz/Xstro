@@ -16,9 +16,7 @@
 	},
 	"scripts": {
 		"lint": "eslint --fix",
-		"prestart": "node entrypoint.mjs",
-		"start": "node serve.mjs",
-		"test": "node ./tests/index.ts"
+		"start": "node serve.mjs"
 	},
 	"packageManager": "pnpm@10.10.0",
 	"dependencies": {

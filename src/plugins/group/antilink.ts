@@ -66,7 +66,7 @@ Command({
 		if (!msg.isGroup || !msg?.text) return;
 		if (msg.key.fromMe || msg.sudo) return;
 		if (
-			!(await isBotAdmin(msg.client as WASocket, msg.jid)) ||
+			!(await isBotAdmin(msg as WASocket, msg.jid)) ||
 			(await isAdmin(msg.jid, msg.sender))
 		)
 			return;
@@ -91,7 +91,7 @@ Command({
 		await msg.delete();
 
 		if (antilink.mode === true) {
-			await msg.client.groupParticipantsUpdate(msg.jid, [msg.sender!], "remove");
+			await msg.groupParticipantsUpdate(msg.jid, [msg.sender!], "remove");
 			await msg.send(
 				`_@${msg.sender!.split("@")[0]} was removed for sending a prohibited link_`,
 				{ mentions: [msg.sender!] },

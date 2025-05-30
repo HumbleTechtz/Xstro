@@ -12,7 +12,7 @@ Command({
 		const start = Date.now();
 		const msg = await message.send("Pong!");
 		const end = Date.now();
-		return await msg.edit(`\`\`\`${end - start} ms\`\`\``);
+		return await msg.editM(`\`\`\`${end - start} ms\`\`\``);
 	},
 });
 

@@ -31,8 +31,9 @@ Command({
 	type: "maker",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg || !msg.image) return message.send("Reply to an image");
-		const buffer = await meme(await msg.downloadM(), "wasted");
+		if (!msg || !(msg.type === "imageMessage"))
+			return message.send("Reply to an image");
+		const buffer = await meme(await message.downloadM(msg), "wasted");
 		if (!buffer) return message.send("Failed to generate image.");
 		return await message.send(buffer);
 	},
@@ -46,8 +47,9 @@ Command({
 	type: "maker",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg || !msg.image) return message.send("Reply to an image");
-		const buffer = await meme(await msg.downloadM(), "wanted");
+		if (!msg || !(msg.type === "imageMessage"))
+			return message.send("Reply to an image");
+		const buffer = await meme(await message.downloadM(msg), "wanted");
 		if (!buffer) return message.send("Failed to generate image.");
 		return await message.send(buffer);
 	},
@@ -61,8 +63,9 @@ Command({
 	type: "maker",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg || !msg.image) return message.send("Reply to an image");
-		const buffer = await meme(await msg.downloadM(), "trigger");
+		if (!msg || !(msg.type === "imageMessage"))
+			return message.send("Reply to an image");
+		const buffer = await meme(await message.downloadM(msg), "trigger");
 		if (!buffer) return message.send("Failed to generate image.");
 		return await message.send(buffer);
 	},
@@ -76,8 +79,9 @@ Command({
 	type: "maker",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg || !msg.image) return message.send("Reply to an image");
-		const buffer = await meme(await msg.downloadM(), "rainbow");
+		if (!msg || !(msg.type === "imageMessage"))
+			return message.send("Reply to an image");
+		const buffer = await meme(await message.downloadM(msg), "rainbow");
 		if (!buffer) return message.send("Failed to generate image.");
 		return await message.send(buffer);
 	},
@@ -91,8 +95,9 @@ Command({
 	type: "maker",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg || !msg.image) return message.send("Reply to an image");
-		const buffer = await meme(await msg.downloadM(), "pixelate");
+		if (!msg || !(msg.type === "imageMessage"))
+			return message.send("Reply to an image");
+		const buffer = await meme(await message.downloadM(msg), "pixelate");
 		if (!buffer) return message.send("Failed to generate image.");
 		return await message.send(buffer);
 	},
@@ -106,8 +111,9 @@ Command({
 	type: "maker",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg || !msg.image) return message.send("Reply to an image");
-		const buffer = await meme(await msg.downloadM(), "invert");
+		if (!msg || !(msg.type === "imageMessage"))
+			return message.send("Reply to an image");
+		const buffer = await meme(await message.downloadM(msg), "invert");
 		if (!buffer) return message.send("Failed to generate image.");
 		return await message.send(buffer);
 	},
@@ -121,8 +127,9 @@ Command({
 	type: "maker",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg || !msg.image) return message.send("Reply to an image");
-		const buffer = await meme(await msg.downloadM(), "facepalm");
+		if (!msg || !(msg.type === "imageMessage"))
+			return message.send("Reply to an image");
+		const buffer = await meme(await message.downloadM(msg), "facepalm");
 		if (!buffer) return message.send("Failed to generate image.");
 		return await message.send(buffer);
 	},
@@ -136,8 +143,9 @@ Command({
 	type: "maker",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg || !msg.image) return message.send("Reply to an image");
-		const buffer = await meme(await msg.downloadM(), "darkness");
+		if (!msg || !(msg.type === "imageMessage"))
+			return message.send("Reply to an image");
+		const buffer = await meme(await message.downloadM(msg), "darkness");
 		if (!buffer) return message.send("Failed to generate image.");
 		return await message.send(buffer);
 	},

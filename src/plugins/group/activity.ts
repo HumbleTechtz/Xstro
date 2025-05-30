@@ -34,8 +34,8 @@ Command({
 	desc: "Get Inactive Group Members",
 	type: "group",
 	function: async msg => {
-		const groupMetadata = await msg.client.groupMetadata(msg.jid);
-		const groupMembers = groupMetadata.participants.map(p =>
+		const groupMetadata = await msg.groupMetadata(msg.jid);
+		const groupMembers = groupMetadata.participants.map((p: any) =>
 			groupMetadata.addressingMode === "lid"
 				? jidNormalizedUser(p.lid)
 				: jidNormalizedUser(p.id),
@@ -48,14 +48,14 @@ Command({
 			}
 		}
 		const inactive = groupMembers
-			.filter(p => !count[p] || count[p] === 0)
-			.map(p => `@${jidNormalizedUser(p).split("@")[0]}`)
+			.filter((p: any) => !count[p] || count[p] === 0)
+			.map((p: string) => `@${jidNormalizedUser(p).split("@")[0]}`)
 			.join("\n");
 		if (!inactive) {
 			return await msg.send("```No inactive members found.```");
 		}
 		await msg.send(`*Inactive group members:*\n${inactive}`, {
-			mentions: groupMembers.filter(p => !count[p] || count[p] === 0),
+			mentions: groupMembers.filter((p: any) => !count[p] || count[p] === 0),
 		});
 	},
 });

@@ -1,9 +1,10 @@
 import { Boom } from "@hapi/boom";
-import { DisconnectReason, jidNormalizedUser } from "baileys";
-import { commands, syncPlugins } from "../plugin.ts";
-import { getSettings, setSettings } from "../../models/index.ts";
+import { DisconnectReason } from "baileys";
+import { syncPlugins } from "../plugin.ts";
+import { setSudo } from "../../models/index.ts";
 import { auth } from "../../utils/index.ts";
 import type { BaileysEventMap, WASocket } from "baileys";
+import { sendPayloadBootMsg } from "../../utils/payload-boot.ts";
 
 export default class Connection {
 	private client: WASocket;
@@ -86,39 +87,7 @@ export default class Connection {
 
 	private async handleOpen() {
 		console.info("Connected to WhatsApp");
-
-		const userId = this.client?.user?.id;
-		const userLid = this.client?.user?.lid;
-		const userName = this.client?.user?.name ?? "Unknown";
-
-		if (userId) {
-			const availableCommands = commands.filter(cmd => !cmd.dontAddCommandList);
-			await this.client.sendMessage(userId, {
-				text:
-					`\`\`\`Bot Connected\nOwner: ${userName}\nCommands: ${availableCommands.length}\`\`\``.trim(),
-				contextInfo: {
-					isForwarded: true,
-					forwardingScore: 999,
-					forwardedNewsletterMessageInfo: {
-						newsletterJid: "120363420960001579@newsletter",
-						newsletterName: "χѕтяσ ωнαтѕαρρ вσт",
-						contentType: 2,
-						accessibilityText: "נσιи αи∂ fσℓℓσω fσя υρ∂αтєѕ",
-					},
-				},
-			});
-		}
-
-		/** Update sudo settings */
-		const existingSudo = await getSettings().then(s => s.sudo);
-		const owner = Array.from(
-			new Set([
-				jidNormalizedUser(userId),
-				jidNormalizedUser(userLid),
-				...existingSudo,
-			]),
-		);
-
-		await setSettings("sudo", owner);
+		await sendPayloadBootMsg(this.client);
+		await setSudo([this.client?.user?.id!, this.client?.user?.lid!]);
 	}
 }
