@@ -1,5 +1,5 @@
 run = "pnpm start"
-modules = ["nodejs-23", "typescript-language-server"]
+modules = ["nodejs-24", "typescript-language-server"]
 
 [nix]
 channel = "stable-24_05"
