@@ -1,58 +1,10 @@
 import { Command } from "../messaging/plugin.ts";
-import { fetch } from "../utils/fetch.mts";
 import AI from "./tools/ai.ts";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { cwd } from "node:process";
 
-Command({
-	name: "gpt",
-	fromMe: false,
-	isGroup: false,
-	desc: "Chat with Open Ai Gpt",
-	type: "ai",
-	function: async (message, match) => {
-		const { pushName } = message;
-
-		if (!match) {
-			return message.send(`_${pushName ?? ""} How can I help You?_`);
-		}
-		return await message.send(await AI.gpt(match, message.sender));
-	},
-});
-
-Command({
-	name: "gemini",
-	fromMe: false,
-	isGroup: false,
-	desc: "Chat with Open Ai Gemini",
-	type: "ai",
-	function: async (message, match) => {
-		const { pushName } = message;
-
-		if (!match) {
-			return message.send(`_${pushName ?? ""} How can I help You?_`);
-		}
-		return await message.send(
-			JSON.parse(await fetch(`https://bk9.fun/ai/gemini?q=${match}`)).BK9,
-		);
-	},
-});
-
-Command({
-	name: "genimg",
-	fromMe: false,
-	isGroup: false,
-	desc: "Generate an image with Ai",
-	type: "ai",
-	function: async (message, match) => {
-		if (!match) {
-			return message.send(`_Usage: ${message.prefix[0]}genimg <prompt>_`);
-		}
-		return await message.send(`https://bk9.fun/ai/magicstudio?prompt=${match}`);
-	},
-});
-
+// GROQ
 Command({
 	name: "groq",
 	fromMe: false,
@@ -60,10 +12,9 @@ Command({
 	desc: "grok ai interaction",
 	type: "ai",
 	function: async (message, match) => {
-		if (!match) return message.send(`_Usage: ${message.prefix[0]}grok <prompt>_`);
+		if (!match) return message.send(`_Usage: ${message.prefix[0]}groq <prompt>_`);
 		const res = await AI.groq(match);
 		const logo = await readFile(path.join(cwd(), "src", "media", "social.jpg"));
-
 		const messageContent = {
 			text: res.trim(),
 			contextInfo: {
@@ -86,6 +37,7 @@ Command({
 	},
 });
 
+// LLAMA
 Command({
 	name: "llama",
 	fromMe: false,
@@ -115,5 +67,75 @@ Command({
 		return await message.sendMessage(message.jid, messageContent, {
 			quoted: message,
 		});
+	},
+});
+
+// DALLE (genimg)
+Command({
+	name: "genimg",
+	fromMe: false,
+	isGroup: false,
+	desc: "Generate an image with AI",
+	type: "ai",
+	function: async (message, match) => {
+		if (!match) {
+			return message.send(`_Usage: ${message.prefix[0]}genimg <prompt>_`);
+		}
+		return await message.send(await AI.dalle(match));
+	},
+});
+
+// NIKKA
+Command({
+	name: "nikka",
+	fromMe: false,
+	isGroup: false,
+	desc: "Chat with Nikka AI",
+	type: "ai",
+	function: async (message, match) => {
+		if (!match)
+			return message.send(`_Usage: ${message.prefix[0]}nikka <prompt>_`);
+		return await message.send(await AI.nikka(match));
+	},
+});
+
+// JEEVS
+Command({
+	name: "jeevs",
+	fromMe: false,
+	isGroup: false,
+	desc: "Chat with Jeevs AI",
+	type: "ai",
+	function: async (message, match) => {
+		if (!match)
+			return message.send(`_Usage: ${message.prefix[0]}jeevs <prompt>_`);
+		return await message.send(await AI.jeevs(match));
+	},
+});
+
+// MATHS
+Command({
+	name: "maths",
+	fromMe: false,
+	isGroup: false,
+	desc: "Solve a math problem",
+	type: "ai",
+	function: async (message, match) => {
+		if (!match)
+			return message.send(`_Usage: ${message.prefix[0]}maths <equation>_`);
+		return await message.send(await AI.maths(match));
+	},
+});
+
+// FLUX
+Command({
+	name: "flux",
+	fromMe: false,
+	isGroup: false,
+	desc: "Flux image generation",
+	type: "ai",
+	function: async (message, match) => {
+		if (!match) return message.send(`_Usage: ${message.prefix[0]}flux <prompt>_`);
+		return await message.send(await AI.flux(match));
 	},
 });
