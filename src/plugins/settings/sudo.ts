@@ -1,4 +1,3 @@
-import { isJidGroup } from "baileys";
 import { Command } from "../../messaging/plugin.ts";
 import { delsudo, getSudo, setSudo } from "../../models/settings.ts";
 
@@ -10,7 +9,7 @@ Command({
 	type: "settings",
 	function: async (msg, args) => {
 		if (!args) return msg.send("_Provide number to sudo_");
-		if (msg.isGroup || isJidGroup(msg.jid))
+		if (msg.isGroup)
 			return msg.send(
 				`_${msg.sender.split("@")[0]} You cannot sudo inside a Group, Please this command should be used in Personal Chats_`,
 			);
