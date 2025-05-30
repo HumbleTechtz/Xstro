@@ -137,9 +137,9 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 		sudo: isSudoUser(sender),
 		quoted: quoted
 			? {
-				sudo: isSudoUser(quoted.sender),
-				...quoted,
-			}
+					sudo: isSudoUser(quoted.sender),
+					...quoted,
+				}
 			: undefined,
 		...content,
 		...messages,

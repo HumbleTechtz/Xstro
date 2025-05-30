@@ -197,7 +197,11 @@ Command({
 		if (!jid) return message.send("No user specified to forward");
 		if (!(await message.onWhatsApp(jid)))
 			return message.send("User is not on WhatsApp");
-		await message.forward(jid, msg, { isForwarded: true, forwardingScore: 999, quoted: message });
+		await message.forward(jid, msg, {
+			isForwarded: true,
+			forwardingScore: 999,
+			quoted: message,
+		});
 		return message.send("Message forwarded successfully");
 	},
 });
