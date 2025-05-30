@@ -111,10 +111,6 @@ export const urlBuffer = async function (
 	}
 };
 
-export const extractUrl = (str: string): string | false => {
-	const match = str.match(/https?:\/\/[^\s]+/);
-	return match ? match[0] : false;
-};
 
 export function isUrl(text: string): boolean {
 	const urlRegex = /\bhttps?:\/\/[^\s/$.?#].[^\s]*|www\.[^\s/$.?#].[^\s]*\b/gi;
