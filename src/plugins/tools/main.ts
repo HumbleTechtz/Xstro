@@ -24,13 +24,22 @@ Command({
 	desc: "Get the profile picture of any person or group",
 	type: "tools",
 	function: async (message, match) => {
+		console.log(match);
 		const user = await message.parseId(match);
+		console.log(user);
 		if (!user) return message.send("Provide someone number");
-		const profilePic = await message.profilePictureUrl(user, "image");
-		if (!profilePic)
+		let profilePic;
+		try {
+			profilePic = await message.profilePictureUrl(user, "image");
+			if (!profilePic)
+				return message.send(
+					"User has no profile picture, or maybe their settings is prevent the bot from seeing it.",
+				);
+		} catch {
 			return message.send(
-				"User has no profile picture, or maybe their settings is prevent the bot from seeing it.",
+				`_Unable to get Profile Picture, this may be that the user doesn't have one or their settings blocks the bot from accessing it, the user may be required to save your contact in order to extract their profile picture_`,
 			);
+		}
 		return await message.send(await urlBuffer(profilePic));
 	},
 });

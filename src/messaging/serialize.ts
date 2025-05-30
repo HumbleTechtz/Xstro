@@ -2,6 +2,8 @@ import {
 	downloadMediaMessage,
 	getDevice,
 	isJidGroup,
+	isJidUser,
+	isLidUser,
 	jidNormalizedUser,
 	normalizeMessageContent,
 } from "baileys";
@@ -108,15 +110,16 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 			return await client.sendMessage(this.jid, { delete: key });
 		},
 		parseId: async function (id: any) {
-			if (typeof id !== "string") return null;
-			if (id.includes(":")) return jidNormalizedUser(id);
-			if (id.endsWith("@lid")) return id;
-			if (id.startsWith("@")) id = id.slice(1);
+			if (isLidUser(id)) return id;
+			if (isJidUser(id)) return id;
 			id = id.replace(/\D+/g, "");
 			id = `${id}@s.whatsapp.net`;
-			const p = await client.onWhatsApp(id);
-			if (p?.[0]?.exists) return p[0].jid;
-			return `${id}@lid`;
+			try {
+				const { exists, jid } = await client.onWhatsApp(id).then(u => u!?.[0]);
+				if (exists) return jid;
+			} catch {
+				return `${id.split("@")[0]}@lid`;
+			}
 		},
 		key,
 		jid,
