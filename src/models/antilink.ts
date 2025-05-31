@@ -22,13 +22,17 @@ export const setAntilink = async function (
 };
 
 export const getAntilink = async function (jid: string) {
-	const record = await Antilink.findOne({ where: { jid } });
+	const record = (await Antilink.findOne({ where: { jid } })) as {
+		jid: string;
+		mode: number;
+		links: string;
+	};
 	if (!record) return null;
 
 	return {
-		jid: typeof record.jid !== "string" ? String(record.jid) : record.jid,
+		jid: record.jid,
 		mode: Boolean(record.mode),
-		links: record.links ? (JSON.parse(record.links as string) as string[]) : [],
+		links: record.links ? JSON.parse(record.links) : [],
 	};
 };
 

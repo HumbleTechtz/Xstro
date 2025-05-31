@@ -15,7 +15,7 @@ Command({
 	function: async (message, match) => {
 		const jid = message.jid;
 
-		if (match?.trim().toLowerCase() === "end") {
+		if (match === "end") {
 			if (games.has(jid)) {
 				const game = games.get(jid)!;
 				const ev = await game.endGame(jid, true);
@@ -40,17 +40,26 @@ Command({
 		);
 
 		let countdown = 30;
+		let lastCountdown = 30;
 
-		const countdownInterval = setInterval(() => {
-			if (countdown > 0) {
-				message.send(`\`\`\`Game starting in ${countdown} seconds.\`\`\``);
-				countdown -= 10;
-			} else {
+		const countdownInterval = setInterval(async () => {
+			if (countdown <= 0) {
 				clearInterval(countdownInterval);
+				return;
 			}
+
+			if (
+				countdown !== lastCountdown &&
+				(countdown === 30 || countdown === 20 || countdown === 10)
+			) {
+				await message.send(`\`\`\`Game starting in ${countdown} seconds.\`\`\``);
+				lastCountdown = countdown;
+			}
+			countdown -= 10;
 		}, 10000);
 
 		const startTimer = setTimeout(async () => {
+			clearInterval(countdownInterval);
 			const p = pending.get(jid)!;
 			pending.delete(jid);
 			p.timers.forEach(t => clearTimeout(t));
@@ -59,7 +68,7 @@ Command({
 
 			const game = new Wcg(message);
 			const result = await game.startGame(p.jids, jid);
-			if (result) return message.send(result);
+			if (result) return message.send(result, { mentions: p.jids });
 
 			games.set(jid, game);
 			const playersText = p.jids.map(id => `@${id.split("@")[0]}`).join(", ");
@@ -103,12 +112,8 @@ Command({
 		if (games.has(jid)) {
 			const game = games.get(jid)!;
 			const res = await game.playWord(text, message.sender);
-			if (res) {
-				const mentions = [game.getCurrentPlayer()];
-				if (res.includes("eliminated")) {
-					mentions.push(...game.originalPlayers);
-				}
-				return message.send(res, { mentions });
+			if (res.text) {
+				return message.send(res.text, { mentions: res.mentions });
 			}
 		}
 	},
@@ -134,7 +139,7 @@ class Wcg {
 	inactivityTimeout: NodeJS.Timeout | null = null;
 	currentTimeout: number = 0;
 	minLen: number = 3;
-	readonly alphabet: string = "abcdefghijklmnopqrstuvwxyz";
+	alphabet: string = "abcdefghijklmnopqrstuvwxyz";
 	endedByCommand: boolean = false;
 
 	constructor(message: Serialize) {
@@ -145,11 +150,12 @@ class Wcg {
 		if (this.startCountdown) clearTimeout(this.startCountdown);
 		this.originalPlayers = [...jids];
 		this.players = [...jids];
+
 		if (jids.length < 2) {
 			this.cleanup(jid);
 			return `\`\`\`Insufficient challengers to begin the Word Chain Game! At least 2 players are required.\`\`\``;
 		}
-		this.startCountdown = setTimeout(() => this.beginGame(jid), 1000);
+		this.beginGame(jid);
 		return "";
 	}
 
@@ -177,62 +183,80 @@ class Wcg {
 		});
 	}
 
-	async playWord(input: string, from: string): Promise<string> {
-		if (!this.active) return "";
-		const jid: string = this.players[this.currentIndex];
-		if (from !== jid) return "";
-		const name: string = jid.split("@")[0];
+	async playWord(
+		input: string,
+		from: string,
+	): Promise<{ text: string; mentions: string[] }> {
+		if (!this.active) return { text: "", mentions: [] };
+
+		const currentPlayerJid: string = this.players[this.currentIndex];
+		if (from !== currentPlayerJid) return { text: "", mentions: [] };
+
+		const currentPlayerName: string = currentPlayerJid.split("@")[0];
 		const word: string = input.toLowerCase().trim();
 
 		this.minLen = Math.floor(this.turnNumber / 5) + 3;
+
 		if (word.length < this.minLen) {
-			return this.eliminate(
-				jid,
-				`\`\`\`@${name}, you've been eliminated.\nYour word "${word}" is too short. Words must be at least ${this.minLen} letters long.\`\`\``,
-			);
+			const msg = `\`\`\`@${currentPlayerName}, you've been eliminated.\nYour word "${word}" is too short. Words must be at least ${this.minLen} letters long.\`\`\``;
+			return {
+				text: await this.eliminate(currentPlayerJid, msg),
+				mentions: this.originalPlayers,
+			};
 		}
 
 		if (this.lastLetter && word[0] !== this.lastLetter) {
-			return this.eliminate(
-				jid,
-				`\`\`\`@${name}, you've been eliminated.\nYour word "${word}" must start with "${this.lastLetter.toUpperCase()}".\`\`\``,
-			);
+			const msg = `\`\`\`@${currentPlayerName}, you've been eliminated.\nYour word "${word}" must start with "${this.lastLetter.toUpperCase()}".\`\`\``;
+			return {
+				text: await this.eliminate(currentPlayerJid, msg),
+				mentions: this.originalPlayers,
+			};
 		}
+
 		if (this.usedWords.has(word)) {
-			return this.eliminate(
-				jid,
-				`\`\`\`@${name}, you've been eliminated.\nThe word "${word}" has already been used in this challenge.\`\`\``,
-			);
+			const msg = `\`\`\`@${currentPlayerName}, you've been eliminated.\nThe word "${word}" has already been used in this challenge.\`\`\``;
+			return {
+				text: await this.eliminate(currentPlayerJid, msg),
+				mentions: this.originalPlayers,
+			};
 		}
 
 		const valid: boolean = await this.checkWord(word);
 		if (!valid) {
-			return this.eliminate(
-				jid,
-				`\`\`\`@${name}, you've been eliminated.\n"${word}" is an invalid word.\`\`\``,
-			);
+			const msg = `\`\`\`@${currentPlayerName}, you've been eliminated.\n"${word}" is an invalid word.\`\`\``;
+			return {
+				text: await this.eliminate(currentPlayerJid, msg),
+				mentions: this.originalPlayers,
+			};
 		}
 
 		this.clearTimer();
 		this.resetInactivityTimer();
 		this.usedWords.add(word);
 		const pts: number = word.length;
-		this.scores.set(jid, (this.scores.get(jid) || 0) + pts);
+		this.scores.set(
+			currentPlayerJid,
+			(this.scores.get(currentPlayerJid) || 0) + pts,
+		);
 		this.lastLetter = word[word.length - 1];
 		this.currentIndex = (this.currentIndex + 1) % this.players.length;
 		this.turnNumber++;
 		this.scheduleNextTurn(this.message.jid);
 
-		const nextPlayer: string = this.players[this.currentIndex].split("@")[0];
-		return `\`\`\`@${name} scores ${pts} points for "${word}" in the Game!\n\n@${nextPlayer}, your challenge awaits:\nSubmit a word starting with "${this.lastLetter.toUpperCase()}" (${this.minLen}+ letters).\nYou have ${this.currentTimeout / 1000} seconds to respond!\`\`\``;
+		const nextPlayerJid: string = this.players[this.currentIndex];
+		const nextPlayerName: string = nextPlayerJid.split("@")[0];
+
+		return {
+			text: `\`\`\`@${currentPlayerName} scores ${pts} points for "${word}" in the Game!\n\n@${nextPlayerName}, your challenge awaits:\nSubmit a word starting with "${this.lastLetter.toUpperCase()}" (${this.minLen}+ letters).\nYou have ${this.currentTimeout / 1000} seconds to respond!\`\`\``,
+			mentions: [currentPlayerJid, nextPlayerJid],
+		};
 	}
 
 	async checkWord(w: string): Promise<boolean> {
 		try {
 			const resp = await fetch(`https://api.datamuse.com/words?sp=${w}&max=1`);
 			const arr = await resp.json();
-			const isValid: boolean = arr.length > 0 && arr[0].word === w;
-			return isValid;
+			return arr.length > 0 && arr[0].word === w;
 		} catch {
 			return false;
 		}
@@ -244,12 +268,10 @@ class Wcg {
 		if (this.currentIndex >= this.players.length) this.currentIndex = 0;
 
 		if (this.players.length <= 1) {
-			const endMsg: string = await this.endGame(this.message.jid, false);
-			return `${msg}\n\n${endMsg}`;
+			return msg + "\n\n" + (await this.endGame(this.message.jid, false));
 		}
 
 		this.scheduleNextTurn(this.message.jid);
-
 		const nextPlayer: string = this.players[this.currentIndex];
 		const nextPlayerName: string = nextPlayer.split("@")[0];
 		return `${msg}\n\n\`\`\`@${nextPlayerName}, your challenge awaits:\nSubmit a word starting with "${this.lastLetter.toUpperCase()}" (${this.minLen}+ letters).\nYou have ${this.currentTimeout / 1000} seconds to respond!\`\`\``;

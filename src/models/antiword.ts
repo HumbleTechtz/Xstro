@@ -28,12 +28,16 @@ export async function delAntiword(jid: string) {
 }
 
 export async function getAntiword(jid: string) {
-	const record = await Antiword.findOne({ where: { jid } });
+	const record = (await Antiword.findOne({ where: { jid } })) as {
+		jid: string;
+		status: number;
+		words: string;
+	};
 	if (!record) return null;
 
 	return {
 		jid: record.jid,
 		status: Boolean(record.status),
-		words: record.words ? JSON.parse(record.words as string) : [],
+		words: record.words ? JSON.parse(record.words) : [],
 	};
 }

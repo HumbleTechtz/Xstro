@@ -43,7 +43,11 @@ export async function canProceed(sender: string): Promise<boolean> {
 
 export async function resetAllLimits(): Promise<void> {
 	const today = getTodayDate();
-	const users = await ratelimiter.findAll();
+	const users = (await ratelimiter.findAll()) as Array<{
+		request_count: number;
+		last_request_date: string;
+		sender: string;
+	}>;
 	for (const user of users) {
 		user.request_count = 0;
 		user.last_request_date = today;

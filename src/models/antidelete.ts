@@ -15,7 +15,7 @@ const Antidelete = database.define(
 );
 
 export const setAntidelete = async (mode: "gc" | "dm" | "global" | null) => {
-	const record = await Antidelete.findOne();
+	const record = (await Antidelete.findOne()) as { mode: string };
 
 	if (!record) {
 		await Antidelete.create({ mode });

@@ -1,5 +1,5 @@
 import { Command } from "../../messaging/plugin.ts";
-import { upload, urlBuffer } from "../../utils/fetch.mts";
+import { upload } from "../../utils/fetch.mts";
 
 type LogoType =
 	| "wasted"
@@ -12,15 +12,8 @@ type LogoType =
 	| "darkness";
 
 async function meme(image: Buffer, type: LogoType) {
-	try {
-		const url = await upload(image);
-		if (!url) return;
-		return await urlBuffer(
-			`https://bk9.fun/maker/${type}?url=${encodeURIComponent(url)}`,
-		);
-	} catch (err) {
-		console.error(`Error in meme function: ${err}`);
-	}
+	const url = await upload(image);
+	return `https://bk9.fun/maker/${type}?url=${url}`;
 }
 
 Command({
@@ -31,11 +24,9 @@ Command({
 	type: "maker",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg || !(msg.type === "imageMessage"))
-			return message.send("Reply to an image");
-		const buffer = await meme(await message.downloadM(msg), "wasted");
-		if (!buffer) return message.send("Failed to generate image.");
-		return await message.send(buffer);
+		if (!msg || !msg.image) return message.send("```Reply an Image```");
+		const image = await meme(await message.downloadM(msg), "wasted");
+		return await message.send(image);
 	},
 });
 
@@ -47,11 +38,9 @@ Command({
 	type: "maker",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg || !(msg.type === "imageMessage"))
-			return message.send("Reply to an image");
-		const buffer = await meme(await message.downloadM(msg), "wanted");
-		if (!buffer) return message.send("Failed to generate image.");
-		return await message.send(buffer);
+		if (!msg || !msg.image) return message.send("```Reply an Image```");
+		const url = await meme(await message.downloadM(msg), "wanted");
+		return await message.send(url);
 	},
 });
 
@@ -63,11 +52,9 @@ Command({
 	type: "maker",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg || !(msg.type === "imageMessage"))
-			return message.send("Reply to an image");
-		const buffer = await meme(await message.downloadM(msg), "trigger");
-		if (!buffer) return message.send("Failed to generate image.");
-		return await message.send(buffer);
+		if (!msg || !msg.image) return message.send("```Reply an Image```");
+		const url = await meme(await message.downloadM(msg), "trigger");
+		return await message.send(url);
 	},
 });
 
@@ -79,11 +66,9 @@ Command({
 	type: "maker",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg || !(msg.type === "imageMessage"))
-			return message.send("Reply to an image");
-		const buffer = await meme(await message.downloadM(msg), "rainbow");
-		if (!buffer) return message.send("Failed to generate image.");
-		return await message.send(buffer);
+		if (!msg || !msg.image) return message.send("```Reply an Image```");
+		const url = await meme(await message.downloadM(msg), "rainbow");
+		return await message.send(url);
 	},
 });
 
@@ -95,11 +80,9 @@ Command({
 	type: "maker",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg || !(msg.type === "imageMessage"))
-			return message.send("Reply to an image");
-		const buffer = await meme(await message.downloadM(msg), "pixelate");
-		if (!buffer) return message.send("Failed to generate image.");
-		return await message.send(buffer);
+		if (!msg || !msg.image) return message.send("```Reply an Image```");
+		const url = await meme(await message.downloadM(msg), "pixelate");
+		return await message.send(url);
 	},
 });
 
@@ -111,11 +94,9 @@ Command({
 	type: "maker",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg || !(msg.type === "imageMessage"))
-			return message.send("Reply to an image");
-		const buffer = await meme(await message.downloadM(msg), "invert");
-		if (!buffer) return message.send("Failed to generate image.");
-		return await message.send(buffer);
+		if (!msg || !msg.image) return message.send("```Reply an Image```");
+		const url = await meme(await message.downloadM(msg), "invert");
+		return await message.send(url);
 	},
 });
 
@@ -127,11 +108,9 @@ Command({
 	type: "maker",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg || !(msg.type === "imageMessage"))
-			return message.send("Reply to an image");
-		const buffer = await meme(await message.downloadM(msg), "facepalm");
-		if (!buffer) return message.send("Failed to generate image.");
-		return await message.send(buffer);
+		if (!msg || !msg.image) return message.send("```Reply an Image```");
+		const url = await meme(await message.downloadM(msg), "facepalm");
+		return await message.send(url);
 	},
 });
 
@@ -143,10 +122,8 @@ Command({
 	type: "maker",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg || !(msg.type === "imageMessage"))
-			return message.send("Reply to an image");
-		const buffer = await meme(await message.downloadM(msg), "darkness");
-		if (!buffer) return message.send("Failed to generate image.");
-		return await message.send(buffer);
+		if (!msg || !msg.image) return message.send("```Reply an Image```");
+		const url = await meme(await message.downloadM(msg), "darkness");
+		return await message.send(url);
 	},
 });

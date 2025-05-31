@@ -94,7 +94,7 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 		deleteM: async function (key: WAMessageKey) {
 			const canDeleteForAll =
 				this.key.fromMe || (this.isGroup && (await isBotAdmin(this)));
-
+			console.log(`Can delete message`, canDeleteForAll);
 			if (!canDeleteForAll) {
 				return await client.chatModify(
 					{
@@ -109,17 +109,32 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 			}
 			return await client.sendMessage(this.jid, { delete: key });
 		},
-		parseId: async function (id: any) {
-			if (isLidUser(id)) return id;
-			if (isJidUser(id)) return id;
-			id = id.replace(/\D+/g, "");
-			id = `${id}@s.whatsapp.net`;
-			try {
-				const { exists, jid } = await client.onWhatsApp(id).then(u => u!?.[0]);
-				if (exists) return jid;
-			} catch {
-				return `${id.split("@")[0]}@lid`;
+		parseId: async function (id?: any) {
+			if (id) {
+				if (isLidUser(id) || isJidUser(id)) return id;
+				id = id.replace(/\D+/g, "") + "@s.whatsapp.net";
+				try {
+					const result = await client.onWhatsApp(id);
+					if (result?.[0]?.exists) return result[0].jid;
+				} catch {
+					return `${id.split("@")[0]}@lid`;
+				}
 			}
+
+			if (this?.mention?.length! > 0) {
+				let mentionedId = this.mention?.[0];
+				if (isLidUser(mentionedId) || isJidUser(mentionedId)) return mentionedId;
+				mentionedId = mentionedId?.replace(/\D+/g, "") + "@s.whatsapp.net";
+				try {
+					const result = await client.onWhatsApp(mentionedId);
+					if (result?.[0]?.exists) return result[0].jid;
+				} catch {
+					return `${mentionedId.split("@")[0]}@lid`;
+				}
+			}
+			if (this.quoted?.sender) return this.quoted.sender;
+			if (!this.isGroup) return this.jid;
+			return undefined;
 		},
 		key,
 		jid,

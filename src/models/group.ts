@@ -17,21 +17,21 @@ const Metadata = database.define(
 );
 
 export async function cachedGroupMetadata(jid: string) {
-	const metadata = await Metadata.findOne({ where: { jid } });
-	return JSON.parse(metadata!.data as string) as GroupMetadata;
+	const metadata = (await Metadata.findOne({ where: { jid } })) as {
+		data: string;
+	};
+	return JSON.parse(metadata.data) as GroupMetadata;
 }
 
 export async function cachedGroupMetadataAll(): Promise<{
 	[_: string]: GroupMetadata;
 }> {
-	const metadata = await Metadata.findAll();
+	const metadata = (await Metadata.findAll()) as Array<{
+		jid: string;
+		data: string;
+	}>;
 	return metadata
-		? Object.fromEntries(
-				metadata.map(m => [
-					m.jid,
-					JSON.parse(typeof m.data === "string" ? m.data : JSON.stringify(m.data)),
-				]),
-			)
+		? Object.fromEntries(metadata.map(m => [m.jid, JSON.parse(m.data)]))
 		: {};
 }
 

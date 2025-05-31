@@ -93,6 +93,16 @@ export function getMessageContent(message?: WAMessageContent) {
 		message: normalizeMessageContent(message),
 		mtype,
 		text: message ? extractStringfromMessage(message) : undefined,
+		image: mtype === "imageMessage",
+		video: mtype === "videoMessage",
+		audio: mtype === "audioMessage",
+		document: mtype === "documentMessage",
+		media: [
+			"imageMessage",
+			"videoMessage",
+			"audioMessage",
+			"documentMessage",
+		].includes(mtype!),
 	};
 }
 
@@ -121,6 +131,7 @@ export function getQuotedContent(
 	const quotedM = Quoted
 		? normalizeMessageContent(Quoted.quotedMessage)
 		: undefined;
+	const type = contentType(quotedM);
 
 	return Quoted
 		? {
@@ -134,7 +145,7 @@ export function getQuotedContent(
 							: undefined,
 				},
 				message: quotedM ?? undefined,
-				type: contentType(quotedM),
+				type,
 				sender: Quoted.participant!,
 				text: extractStringfromMessage(quotedM),
 				viewOnce:
@@ -142,6 +153,16 @@ export function getQuotedContent(
 					quotedM?.videoMessage?.viewOnce ??
 					quotedM?.imageMessage?.viewOnce ??
 					undefined,
+				image: type === "imageMessage",
+				video: type === "videoMessage",
+				audio: type === "audioMessage",
+				document: type === "documentMessage",
+				media: [
+					"imageMessage",
+					"videoMessage",
+					"audioMessage",
+					"documentMessage",
+				].includes(type!),
 				broadcast: Boolean(Quoted?.remoteJid!),
 				mentions: Quoted.mentionedJid || [],
 				...(({ quotedMessage, stanzaId, remoteJid, ...rest }) => rest)(Quoted),
