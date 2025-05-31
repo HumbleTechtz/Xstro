@@ -10,8 +10,6 @@ const twagPending = new Map<
 	{ jids: string[]; timers: NodeJS.Timeout[] }
 >();
 
-
-
 Command({
 	name: "twag",
 	fromMe: false,
