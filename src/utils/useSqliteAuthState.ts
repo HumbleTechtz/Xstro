@@ -30,18 +30,15 @@ export default async function () {
 			name: string;
 			data: string;
 		};
-		return exists
-			? JSON.parse(
-					typeof exists?.data === "object"
-						? JSON.stringify(exists.data)
-						: exists.data,
-					BufferJSON.reviver,
-				)
-			: undefined;
+		try {
+			return JSON.parse(exists.data, BufferJSON.reviver);
+		} catch (e) {
+			return null;
+		}
 	};
 
 	const removeData = async (name: string) => {
-		return await auth.destroy({ where: { name } });
+		await auth.destroy({ where: { name } });
 	};
 
 	const creds: AuthenticationCreds =
@@ -85,7 +82,7 @@ export default async function () {
 			},
 		},
 		saveCreds: async () => {
-			return (await writeData(creds, "creds")) as unknown as void;
+			return (await writeData(creds, "creds")) as void;
 		},
 	};
 }

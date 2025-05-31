@@ -153,3 +153,33 @@ export async function lyrics(
 
 	return { artist, lyrics, thumbnail };
 }
+
+
+/**
+ * Unified AI handler that takes the provider and prompt.
+ * Returns a string response or URL (for image generators).
+ */
+export async function askAI(provider: | "ai"
+	| "llama"
+	| "dalle"
+	| "nikka"
+	| "jeevs"
+	| "maths", prompt: string): Promise<string> {
+	const encodedPrompt = encodeURIComponent(prompt);
+	if (provider === 'ai') {
+		return JSON.parse(await fetch(`https://bk9.fun/ai/BK92?BK9=You%20are%20Xstro%20whatsapp%20bot%20open%20source%20that%27s%20made%20by%20AstroX11%20that%27s%20your%20name,%20Xstro%20and%20if%20asked%20of%20your%20model%20that%27s%20your%20model%20unchnaged&q=${encodedPrompt}&model=gpt-4o`)).BK9.replace(/\D+/g, "")
+	}
+
+	if (provider === "dalle") {
+		return `https://bk9.fun/ai/magicstudio?prompt=${encodedPrompt}`;
+	}
+
+	const url = `https://bk9.fun/ai/${provider}?q=${encodedPrompt}`;
+	const res = await fetch(url);
+	const data = JSON.parse(res.replace(/\D+/g, ""));
+
+	return (
+		data.BK9 ??
+		`No response from ${provider.charAt(0).toUpperCase() + provider.slice(1)}.`
+	);
+}

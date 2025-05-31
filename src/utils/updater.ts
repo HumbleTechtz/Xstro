@@ -12,17 +12,11 @@ export async function update(applyUpdate = false) {
 		const commits = logOutput.trim().split("\n").filter(Boolean);
 
 		if (applyUpdate) {
-			if (commits.length === 0) {
-				return { status: "up-to-date" };
-			}
-
+			if (commits.length === 0) return { status: "up-to-date" };
 			await execPromise("git stash && git pull origin stable");
 			return { status: "updated" };
 		} else {
-			if (commits.length === 0) {
-				return { status: "up-to-date" };
-			}
-
+			if (commits.length === 0) return { status: "up-to-date" };
 			return { status: "updates-available", commits };
 		}
 	} catch (err) {

@@ -1,43 +1,18 @@
 import { Command } from "../messaging/plugin.ts";
-import AI from "./tools/ai.ts";
-import { readFile } from "node:fs/promises";
-import path from "node:path";
-import { cwd } from "node:process";
+import { askAI } from "../utils/scraper.mts";
 
-// GROQ
 Command({
-	name: "groq",
+	name: "ai",
 	fromMe: false,
 	isGroup: false,
-	desc: "grok ai interaction",
+	desc: "Chat with Ai",
 	type: "ai",
-	function: async (message, match) => {
-		if (!match) return message.send(`_Usage: ${message.prefix[0]}groq <prompt>_`);
-		const res = await AI.groq(match);
-		const logo = await readFile(path.join(cwd(), "src", "media", "social.jpg"));
-		const messageContent = {
-			text: res.trim(),
-			contextInfo: {
-				externalAdReply: {
-					title: "GROK-Ai",
-					body: message.pushName,
-					mediaType: 1,
-					thumbnail: logo,
-					sourceUrl: "https://github.com/AstroXTeam/whatsapp-bot",
-					thumbnailUrl: "https://github.com/AstroXTeam/whatsapp-bot",
-					renderLargerThumbnail: false,
-					showAdAttribution: true,
-				},
-			},
-			quoted: message,
-		};
-		return await message.sendMessage(message.jid, messageContent, {
-			quoted: message,
-		});
+	function: async (msg, match) => {
+		if (!match) return msg.send(`_Usage: ${msg.prefix[0]}ai <prompt>_`);
+		return await msg.send(await askAI("ai", match));
 	},
 });
 
-// LLAMA
 Command({
 	name: "llama",
 	fromMe: false,
@@ -47,30 +22,10 @@ Command({
 	function: async (message, match) => {
 		if (!match)
 			return message.send(`_Usage: ${message.prefix[0]}llama <prompt>_`);
-		const res = await AI.llama(match);
-		const logo = await readFile(path.join(cwd(), "src", "media", "social.jpg"));
-		const messageContent = {
-			text: res.trim(),
-			contextInfo: {
-				externalAdReply: {
-					title: "llama-Ai",
-					body: message.pushName,
-					mediaType: 1,
-					thumbnail: logo,
-					sourceUrl: "https://github.com/AstroXTeam/whatsapp-bot",
-					thumbnailUrl: "https://github.com/AstroXTeam/whatsapp-bot",
-					renderLargerThumbnail: false,
-					showAdAttribution: true,
-				},
-			},
-		};
-		return await message.sendMessage(message.jid, messageContent, {
-			quoted: message,
-		});
+		return await message.send(await askAI("llama", match));
 	},
 });
 
-// DALLE (genimg)
 Command({
 	name: "genimg",
 	fromMe: false,
@@ -78,14 +33,12 @@ Command({
 	desc: "Generate an image with AI",
 	type: "ai",
 	function: async (message, match) => {
-		if (!match) {
+		if (!match)
 			return message.send(`_Usage: ${message.prefix[0]}genimg <prompt>_`);
-		}
-		return await message.send(await AI.dalle(match));
+		return await message.send(await askAI("dalle", match));
 	},
 });
 
-// NIKKA
 Command({
 	name: "nikka",
 	fromMe: false,
@@ -95,11 +48,10 @@ Command({
 	function: async (message, match) => {
 		if (!match)
 			return message.send(`_Usage: ${message.prefix[0]}nikka <prompt>_`);
-		return await message.send(await AI.nikka(match));
+		return await message.send(await askAI("nikka", match));
 	},
 });
 
-// JEEVS
 Command({
 	name: "jeevs",
 	fromMe: false,
@@ -109,11 +61,10 @@ Command({
 	function: async (message, match) => {
 		if (!match)
 			return message.send(`_Usage: ${message.prefix[0]}jeevs <prompt>_`);
-		return await message.send(await AI.jeevs(match));
+		return await message.send(await askAI("jeevs", match));
 	},
 });
 
-// MATHS
 Command({
 	name: "maths",
 	fromMe: false,
@@ -123,19 +74,6 @@ Command({
 	function: async (message, match) => {
 		if (!match)
 			return message.send(`_Usage: ${message.prefix[0]}maths <equation>_`);
-		return await message.send(await AI.maths(match));
-	},
-});
-
-// FLUX
-Command({
-	name: "flux",
-	fromMe: false,
-	isGroup: false,
-	desc: "Flux image generation",
-	type: "ai",
-	function: async (message, match) => {
-		if (!match) return message.send(`_Usage: ${message.prefix[0]}flux <prompt>_`);
-		return await message.send(await AI.flux(match));
+		return await message.send(await askAI("maths", match));
 	},
 });

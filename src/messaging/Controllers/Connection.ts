@@ -2,9 +2,8 @@ import { Boom } from "@hapi/boom";
 import { DisconnectReason, jidNormalizedUser } from "baileys";
 import { syncPlugins } from "../plugin.ts";
 import { setSudo } from "../../models/index.ts";
-import { auth } from "../../utils/index.ts";
+import { auth, sendPayloadBootMsg } from "../../utils/index.ts";
 import type { BaileysEventMap, WASocket } from "baileys";
-import { sendPayloadBootMsg } from "../../utils/payload-boot.ts";
 
 export default class Connection {
 	private client: WASocket;

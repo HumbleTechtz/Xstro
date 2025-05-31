@@ -1,6 +1,5 @@
 import { fileTypeFromBuffer } from "file-type";
-import { isPath, isText } from "./constants.ts";
-import { extractStringfromMessage } from "./extractor.ts";
+import { extractStringfromMessage, isPath, isText } from "./constants.ts";
 import {
 	isJidBroadcast,
 	isJidGroup,
