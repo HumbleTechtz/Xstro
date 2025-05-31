@@ -124,11 +124,7 @@ export async function sendPayloadBootMsg(client: WASocket): Promise<void> {
 	const availableCommands = commands.filter(cmd => !cmd.dontAddCommandList);
 
 	await client.sendMessage(client?.user?.id!, {
-		text: `\`\`\`
-вσт ¢σииє¢тє∂
-σωиєя: ${userName}
-ρℓυgιиѕ: ${availableCommands.length}
-\`\`\``.trim(),
+		text: `\`\`\`вσт ¢σииє¢тє∂\nσωиєя: ${userName}\nρℓυgιиѕ: ${availableCommands.length}\`\`\``.trim(),
 		contextInfo: {
 			isForwarded: true,
 			forwardingScore: 999,
