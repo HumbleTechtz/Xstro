@@ -8,20 +8,23 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 export const commands: Commands[] = [];
 
 export function Command(cmd: Commands) {
-	const _cmds = {
+	const cmdRegex = {
 		...cmd,
 		name: new RegExp(`^\\s*(${cmd.name})(?:\\s+([\\s\\S]+))?$`, "i"),
 	};
-	return commands.push(_cmds);
+
+	if (!commands.some(existingCmd => existingCmd.name === cmdRegex.name)) {
+		commands.push(cmdRegex);
+	}
 }
 
 export async function syncPlugins(
-	plugin: string,
-	extensions: string[] = [".ts", ".js", ".mjs"],
+	pluginDir: string,
+	extensions: string[] = [".ts"],
 ): Promise<void> {
-	const plugins = join(__dirname, plugin);
+	const pluginsPath = join(__dirname, pluginDir);
 
-	async function loadDirectory(directory: string) {
+	async function loadDirectory(directory: string): Promise<void> {
 		const entries = await readdir(directory, { withFileTypes: true });
 
 		await Promise.all(
@@ -36,7 +39,9 @@ export async function syncPlugins(
 							const fileUrl = pathToFileURL(fullPath).href;
 							await import(fileUrl);
 						} catch (err) {
-							console.error(`${entry.name}: ${(err as Error).message}`);
+							console.error(
+								`Failed to load plugin ${entry.name}: ${(err as Error).message}`,
+							);
 						}
 					}
 				}
@@ -44,5 +49,6 @@ export async function syncPlugins(
 		);
 	}
 
-	await loadDirectory(plugins);
+	commands.length = 0;
+	await loadDirectory(pluginsPath);
 }

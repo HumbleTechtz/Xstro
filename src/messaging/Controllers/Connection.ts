@@ -31,7 +31,7 @@ export default class Connection {
 
 	private async handleConnecting() {
 		console.info("Connecting to WhatsApp...");
-		await syncPlugins("../plugins", [".ts"]);
+		await syncPlugins("../plugins", [".ts", ".js", ".mjs"]);
 		console.info("Plugins Synced");
 	}
 
