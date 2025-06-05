@@ -31,11 +31,16 @@ export const setFilter = async (
 
 export const getFilter = async (name: string) => {
 	name = name.trim().toLowerCase();
-	const rec = await Filters.findOne({ where: { name: name } });
+	const rec = (await Filters.findOne({ where: { name: name } })) as {
+		name: string;
+		response: string;
+		status: number;
+		isGroup: number;
+	};
 	return rec
 		? {
-				name: rec.name as string,
-				response: rec.response as string,
+				name: rec.name,
+				response: rec.response,
 				status: Boolean(rec.status),
 				isGroup: Boolean(rec.isGroup),
 			}
@@ -43,12 +48,12 @@ export const getFilter = async (name: string) => {
 };
 
 export const getAllFilters = async () => {
-	const recs = await Filters.findAll({
+	const recs = (await Filters.findAll({
 		where: { status: 1 },
-	});
+	})) as { name: string; response: string; status: number; isGroup: number }[];
 	return recs.map(rec => ({
-		name: rec.name as string,
-		response: rec.response as string,
+		name: rec.name,
+		response: rec.response,
 		status: Boolean(rec.status),
 		isGroup: Boolean(rec.isGroup),
 	}));

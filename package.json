@@ -3,7 +3,6 @@
 	"version": "20.0.0",
 	"description": "Simple WA bot.",
 	"type": "module",
-	"main": "serve.mjs",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
@@ -16,17 +15,18 @@
 	},
 	"scripts": {
 		"lint": "eslint --fix",
-		"start": "node serve.mjs"
+		"prestart": "tsc",
+		"start": "pm2 start ./lib/src/messaging/client.js --attach",
+		"restart": "pm2 delete all && pnpm start",
+		"dev": "tsx ./src/messaging/client.ts"
 	},
 	"packageManager": "pnpm@10.10.0",
 	"dependencies": {
 		"@cacheable/node-cache": "^1.5.5",
 		"@hapi/boom": "^10.0.1",
-		"@types/pg": "^8.15.2",
 		"baileys": "github:WhiskeySockets/Baileys",
 		"cheerio": "^1.0.0",
 		"dotenv": "^16.5.0",
-		"execa": "^9.6.0",
 		"file-type": "21.0.0",
 		"form-data": "^4.0.2",
 		"got": "^14.4.7",
@@ -34,15 +34,17 @@
 		"link-preview-js": "^3.1.0",
 		"node-webpmux": "^3.2.1",
 		"pg": "^8.16.0",
+		"pm2": "^6.0.6",
 		"quantava": "^1.2.2",
 		"sharp": "^0.34.2"
 	},
 	"devDependencies": {
 		"@types/node": "^22.15.29",
-		"@typescript-eslint/eslint-plugin": "^8.33.0",
-		"@typescript-eslint/parser": "^8.33.0",
-		"@typescript-eslint/utils": "^8.33.0",
-		"eslint": "^9.27.0",
+		"@types/pg": "^8.15.4",
+		"@typescript-eslint/eslint-plugin": "^8.33.1",
+		"@typescript-eslint/parser": "^8.33.1",
+		"@typescript-eslint/utils": "^8.33.1",
+		"eslint": "^9.28.0",
 		"eslint-config-prettier": "^10.1.5",
 		"eslint-plugin-prettier": "^5.4.1",
 		"jiti": "^2.4.2",

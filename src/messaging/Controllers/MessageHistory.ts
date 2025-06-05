@@ -1,19 +1,11 @@
-import {
-	isJidUser,
-	isLidUser,
-	type WASocket,
-	type BaileysEventMap,
-} from "baileys";
+import { isJidUser, isLidUser, type BaileysEventMap } from "baileys";
 import { ChatsDb } from "../../models/chats.ts";
 import { contactsDb } from "../../models/contact.ts";
 import { messageDb } from "../../models/messages.ts";
 
 export default class MessageHistory {
 	private update: BaileysEventMap["messaging-history.set"];
-	constructor(
-		update: BaileysEventMap["messaging-history.set"],
-		client?: WASocket,
-	) {
+	constructor(update: BaileysEventMap["messaging-history.set"]) {
 		this.update = update;
 	}
 	async create() {

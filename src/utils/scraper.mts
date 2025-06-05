@@ -1,30 +1,30 @@
-import * as cheerio from 'cheerio';
-import { Boom } from '@hapi/boom';
-import { fetch } from './fetch.mts';
+import * as cheerio from "cheerio";
+import { Boom } from "@hapi/boom";
+import { fetch } from "./fetch.mts";
 
 /** Under the permission of
  * https://www.vox.com/robots.txt
  */
 export async function voxnews(): Promise<string> {
 	try {
-		const html = await fetch('https://www.vox.com/');
+		const html = await fetch("https://www.vox.com/");
 		const $ = cheerio.load(html);
 		const newsItems: { title: string; url: string; description: string }[] = [];
 		const seenTitles = new Set<string>();
 		const seenUrls = new Set<string>();
 
-		$('a.qcd9z1').each((i, element: any) => {
+		$("a.qcd9z1").each((i, element: any) => {
 			const $element = $(element);
 			const title = $element.text().trim();
-			const url = $element.attr('href');
+			const url = $element.attr("href");
 			const absoluteUrl = url
-				? url.startsWith('http')
+				? url.startsWith("http")
 					? url
 					: `https://www.vox.com${url}`
-				: '';
-			const $parent = $element.closest('.c-entry-box--compact');
+				: "";
+			const $parent = $element.closest(".c-entry-box--compact");
 			const description = $parent
-				.find('p.c-entry-box--compact__dek')
+				.find("p.c-entry-box--compact__dek")
 				.text()
 				.trim();
 
@@ -42,7 +42,7 @@ export async function voxnews(): Promise<string> {
 
 		return newsItems
 			.map(data => `${data.title}\n${data.url}\n${data.description}\n`)
-			.join('\n');
+			.join("\n");
 	} catch (error) {
 		throw new Boom(error as Error);
 	}
@@ -53,17 +53,17 @@ export async function voxnews(): Promise<string> {
  */
 export const wabetanews = async (): Promise<string> => {
 	try {
-		const html = await fetch('https://wabetainfo.com/');
+		const html = await fetch("https://wabetainfo.com/");
 		const $ = cheerio.load(html);
 		const articles: { title: string; description: string; link: string }[] = [];
 
-		$('h2.entry-title.mb-half-gutter.last\\:mb-0').each((i, element: any) => {
+		$("h2.entry-title.mb-half-gutter.last\\:mb-0").each((i, element: any) => {
 			const $element = $(element);
-			const title = $element.find('a.link').text().trim();
-			const link = $element.find('a.link').attr('href') || '';
+			const title = $element.find("a.link").text().trim();
+			const link = $element.find("a.link").attr("href") || "";
 			const description = $element
 				.parent()
-				.find('div.entry-excerpt.mb-gutter.last\\:mb-0')
+				.find("div.entry-excerpt.mb-gutter.last\\:mb-0")
 				.text()
 				.trim();
 
@@ -76,7 +76,7 @@ export const wabetanews = async (): Promise<string> => {
 
 		return articles
 			.map(data => `${data.title}\n\n${data.description}\n\n${data.link}\n\n`)
-			.join('\n');
+			.join("\n");
 	} catch (error) {
 		throw new Boom(error as Error);
 	}
@@ -93,15 +93,15 @@ export const technews = async (): Promise<string> => {
 	}
 
 	try {
-		const html: string = await fetch('https://gizmodo.com/tech');
+		const html: string = await fetch("https://gizmodo.com/tech");
 		const $ = cheerio.load(html);
 		const newsItems: NewsItem[] = [];
 
-		$('a.block').each((index: number, element: any) => {
+		$("a.block").each((index: number, element: any) => {
 			const $article = $(element);
-			const title: string = $article.find('h2.font-bold').text().trim();
-			const description: string = $article.find('p.font-serif').text().trim();
-			const postLink: string = $article.attr('href') || '';
+			const title: string = $article.find("h2.font-bold").text().trim();
+			const description: string = $article.find("p.font-serif").text().trim();
+			const postLink: string = $article.attr("href") || "";
 
 			const newsItem: NewsItem = {
 				title,
@@ -119,7 +119,7 @@ export const technews = async (): Promise<string> => {
 				(posts: NewsItem) =>
 					`${posts.title}\n${posts.description}\n${posts.postLink}\n`,
 			)
-			.join('\n');
+			.join("\n");
 	} catch (error) {
 		throw new Error(error instanceof Error ? error.message : String(error));
 	}
@@ -139,13 +139,13 @@ export async function lyrics(
 	}
 
 	const $search = cheerio.load(searchHtml);
-	const artist = $search('.sec-lyric .lyric-meta-album-artist a')
+	const artist = $search(".sec-lyric .lyric-meta-album-artist a")
 		.first()
 		.text()
 		.trim();
-	const lyrics = $search('.sec-lyric .lyric-body').first().text().trim();
+	const lyrics = $search(".sec-lyric .lyric-body").first().text().trim();
 	const thumbnail =
-		$search('.sec-lyric .album-thumb img').first().attr('src') || undefined;
+		$search(".sec-lyric .album-thumb img").first().attr("src") || undefined;
 
 	if (!artist || !lyrics) {
 		return undefined;
@@ -154,20 +154,21 @@ export async function lyrics(
 	return { artist, lyrics, thumbnail };
 }
 
-
 /**
  * Unified AI handler that takes the provider and prompt.
  * Returns a string response or URL (for image generators).
  */
-export async function askAI(provider: | "ai"
-	| "llama"
-	| "dalle"
-	| "nikka"
-	| "jeevs"
-	| "maths", prompt: string): Promise<string> {
+export async function askAI(
+	provider: "ai" | "llama" | "dalle" | "nikka" | "jeevs" | "maths",
+	prompt: string,
+): Promise<string> {
 	const encodedPrompt = encodeURIComponent(prompt);
-	if (provider === 'ai') {
-		return JSON.parse(await fetch(`https://bk9.fun/ai/BK92?BK9=You%20are%20Xstro%20whatsapp%20bot%20open%20source%20that%27s%20made%20by%20AstroX11%20that%27s%20your%20name,%20Xstro%20and%20if%20asked%20of%20your%20model%20that%27s%20your%20model%20unchnaged&q=${encodedPrompt}&model=gpt-4o`)).BK9.replace(/\D+/g, "")
+	if (provider === "ai") {
+		return JSON.parse(
+			await fetch(
+				`https://bk9.fun/ai/BK92?BK9=You%20are%20Xstro%20whatsapp%20bot%20open%20source%20that%27s%20made%20by%20AstroX11%20that%27s%20your%20name,%20Xstro%20and%20if%20asked%20of%20your%20model%20that%27s%20your%20model%20unchnaged&q=${encodedPrompt}&model=gpt-4o`,
+			),
+		).BK9.replace(/\D+/g, "");
 	}
 
 	if (provider === "dalle") {

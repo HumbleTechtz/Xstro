@@ -16,6 +16,7 @@ Command({
 				count[participant] = (count[participant] || 0) + 1;
 		}
 		const active = Object.entries(count)
+			// eslint-disable-next-line
 			.filter(([_, c]) => c > 0)
 			.sort((a, b) => b[1] - a[1])
 			.map(([p, c]) => `@${jidNormalizedUser(p).split("@")[0]}: ${c}`)

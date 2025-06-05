@@ -32,7 +32,7 @@ export default async function () {
 		};
 		try {
 			return JSON.parse(exists.data, BufferJSON.reviver);
-		} catch (e) {
+		} catch {
 			return null;
 		}
 	};

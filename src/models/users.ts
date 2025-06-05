@@ -1,5 +1,5 @@
-import database from "../messaging/database.ts";
+// import database from "../messaging/database.ts";
 
-const users = database.define("users", {});
+// const users = database.define("users", {});
 
-// TODO cache user vaildatily
+// // TODO cache user vaildatily

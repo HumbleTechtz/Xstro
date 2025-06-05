@@ -7,7 +7,7 @@ Command({
 	desc: "Schedule a message in the group chat",
 	type: "schedule",
 	function: async (msg, args) => {
-		const { prefix, jid } = msg;
+		const { prefix } = msg;
 		if (!args) {
 			return await msg.send("Usage: " + prefix + "schedule <time> <message>");
 		}
@@ -24,7 +24,7 @@ Command({
 	desc: "Unschedule a message in the group chat",
 	type: "schedule",
 	function: async (msg, args) => {
-		const { prefix, jid } = msg;
+		const { prefix } = msg;
 		if (!args) {
 			return await msg.send("Usage: " + prefix + "unschedule <message_id>");
 		}
@@ -41,7 +41,6 @@ Command({
 	desc: "List all scheduled messages in the group chat",
 	type: "schedule",
 	function: async msg => {
-		const { jid } = msg;
 		return await msg.send(
 			`_This feature is not implemented yet. Please check back later._\n\nUsage: ${msg.prefix}scheduled`,
 		);

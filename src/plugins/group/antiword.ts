@@ -1,4 +1,3 @@
-import { type WASocket } from "baileys";
 import { Command } from "../../messaging/plugin.ts";
 import { setAntiWord, getAntiword } from "../../models/antiword.ts";
 import { isAdmin, isBotAdmin } from "../../utils/constants.ts";
@@ -59,11 +58,7 @@ Command({
 	function: async msg => {
 		if (!msg.isGroup || !msg?.text) return;
 		if (msg.key.fromMe || msg.sudo) return;
-		if (
-			!(await isBotAdmin(msg as WASocket, msg.jid)) ||
-			(await isAdmin(msg.jid, msg.sender))
-		)
-			return;
+		if (!(await isBotAdmin(msg)) || (await isAdmin(msg.jid, msg.sender))) return;
 
 		const record = await getAntiword(msg.jid);
 		if (!record?.status || !record.words?.length) return;
@@ -74,7 +69,7 @@ Command({
 		});
 
 		if (matched) {
-			await msg.delete();
+			await msg.deleteM(msg.key);
 			await msg.send(`_🚫 The word "${matched}" is not allowed here._`);
 		}
 	},

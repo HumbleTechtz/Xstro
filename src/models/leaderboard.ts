@@ -41,24 +41,6 @@ const SCORE_THRESHOLDS = {
 	BRONZE: 0,
 };
 
-const RANK_STRINGS: { [key in UserRank]: string } = {
-	[UserRank.LEGEND]: "legend",
-	[UserRank.MASTER]: "master",
-	[UserRank.DIAMOND]: "diamond",
-	[UserRank.PLATINUM]: "platinum",
-	[UserRank.GOLD]: "gold",
-	[UserRank.SILVER]: "silver",
-	[UserRank.BRONZE]: "bronze",
-};
-
-function rankToEnum(rank: string): UserRank {
-	return (
-		(Object.entries(RANK_STRINGS).find(
-			([, v]) => v === rank,
-		)?.[0] as unknown as UserRank) || UserRank.BRONZE
-	);
-}
-
 function determineRank(score: number): string {
 	if (score >= SCORE_THRESHOLDS.LEGEND) return "legend";
 	if (score >= SCORE_THRESHOLDS.MASTER) return "master";

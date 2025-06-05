@@ -1,17 +1,17 @@
-import fs from 'fs';
-import path from 'path';
-import os, { tmpdir } from 'os';
-import sharp from 'sharp';
-import { exec } from 'child_process';
-import { promisify } from 'util';
-import Crypto from 'crypto';
-import webp from 'node-webpmux';
-import { fileTypeFromBuffer } from 'file-type';
+import fs from "fs";
+import path from "path";
+import os, { tmpdir } from "os";
+import sharp from "sharp";
+import { exec } from "child_process";
+import { promisify } from "util";
+import Crypto from "crypto";
+import webp from "node-webpmux";
+import { fileTypeFromBuffer } from "file-type";
 
 const execAsync = promisify(exec);
 const { writeFileSync, existsSync, readFileSync, mkdirSync } = fs;
 
-const tempDir = path.join(os.tmpdir(), 'media-temp');
+const tempDir = path.join(os.tmpdir(), "media-temp");
 if (!existsSync(tempDir)) mkdirSync(tempDir, { recursive: true });
 
 function temp(ext: string): string {
@@ -20,7 +20,7 @@ function temp(ext: string): string {
 
 async function saveInputFile(buffer: Buffer): Promise<string> {
 	const fileType = await fileTypeFromBuffer(buffer);
-	if (!fileType) throw new Error('Unknown file type');
+	if (!fileType) throw new Error("Unknown file type");
 	const inputPath = temp(fileType.ext);
 	writeFileSync(inputPath, buffer);
 	return inputPath;
@@ -29,8 +29,8 @@ async function saveInputFile(buffer: Buffer): Promise<string> {
 export const GIFBufferToVideoBuffer = async (
 	image: Buffer,
 ): Promise<Buffer> => {
-	const gifPath = temp('gif');
-	const mp4Path = temp('mp4');
+	const gifPath = temp("gif");
+	const mp4Path = temp("mp4");
 	writeFileSync(gifPath, image);
 
 	try {
@@ -50,7 +50,7 @@ export const GIFBufferToVideoBuffer = async (
 
 export async function audioToBlackVideo(input: Buffer): Promise<Buffer> {
 	const inputFile = await saveInputFile(input);
-	const video = temp('mp4');
+	const video = temp("mp4");
 
 	try {
 		await execAsync(
@@ -76,10 +76,10 @@ export async function flipMedia(
 	const outputFile = temp(fileType?.ext!);
 
 	const validDirections: { [key: string]: string } = {
-		left: 'transpose=2',
-		right: 'transpose=1',
-		vertical: 'vflip',
-		horizontal: 'hflip',
+		left: "transpose=2",
+		right: "transpose=1",
+		vertical: "vflip",
+		horizontal: "hflip",
 	};
 
 	try {
@@ -98,8 +98,8 @@ export async function flipMedia(
 }
 
 export async function webpToImage(input: Buffer): Promise<Buffer> {
-	const inputFile = temp('webp');
-	const outputImage = temp('jpg');
+	const inputFile = temp("webp");
+	const outputImage = temp("jpg");
 	writeFileSync(inputFile, input);
 
 	try {
@@ -117,7 +117,7 @@ export async function webpToImage(input: Buffer): Promise<Buffer> {
 
 export async function convertToMp3(input: Buffer): Promise<Buffer> {
 	const inputFile = await saveInputFile(input);
-	const outputAudio = temp('mp3');
+	const outputAudio = temp("mp3");
 
 	try {
 		await execAsync(
@@ -136,7 +136,7 @@ export async function convertToMp3(input: Buffer): Promise<Buffer> {
 
 export async function toPTT(input: Buffer): Promise<Buffer> {
 	const inputFile = await saveInputFile(input);
-	const outputAudio = temp('opus');
+	const outputAudio = temp("opus");
 
 	try {
 		await execAsync(
@@ -155,7 +155,7 @@ export async function toPTT(input: Buffer): Promise<Buffer> {
 
 export async function toVideo(input: Buffer): Promise<Buffer> {
 	const inputFile = await saveInputFile(input);
-	const outputVideo = temp('mp4');
+	const outputVideo = temp("mp4");
 
 	try {
 		await execAsync(
@@ -183,12 +183,12 @@ export const cropToCircle = async (input: Buffer): Promise<Buffer> => {
 		);
 
 		const croppedImage = await image
-			.composite([{ input: circleMask, blend: 'dest-in' }])
-			.toFormat('webp', { quality: 50 })
+			.composite([{ input: circleMask, blend: "dest-in" }])
+			.toFormat("webp", { quality: 50 })
 			.toBuffer();
 		return croppedImage;
 	} catch (error) {
-		console.error('Error cropping image to circle:', error);
+		console.error("Error cropping image to circle:", error);
 		throw error;
 	}
 };
@@ -208,20 +208,20 @@ export const isAnimatedWebp = (filePath: Buffer): Promise<boolean> => {
 
 export async function convertWebPFile(media: Buffer): Promise<Buffer> {
 	try {
-		const tempDir = path.join('temp_frames');
-		const tempOutput = path.join(tempDir, 'output.webm');
+		const tempDir = path.join("temp_frames");
+		const tempOutput = path.join(tempDir, "output.webm");
 		await fs.promises.mkdir(tempDir, { recursive: true });
 		const metadata = await sharp(media).metadata();
-		if (!metadata.pages) throw new Error('Input file is not an animated WebP');
+		if (!metadata.pages) throw new Error("Input file is not an animated WebP");
 		const fps = metadata.delay ? 1000 / metadata.delay[0] : 15;
 		for (let i = 0; i < metadata.pages; i++) {
 			const frame = await sharp(media, { page: i }).png().toBuffer();
 			await fs.promises.writeFile(
-				path.join(tempDir, `frame_${String(i).padStart(5, '0')}.png`),
+				path.join(tempDir, `frame_${String(i).padStart(5, "0")}.png`),
 				frame,
 			);
 		}
-		const ffmpegCommand = `ffmpeg -r ${fps} -i "${path.join(tempDir, 'frame_%05d.png')}" \
+		const ffmpegCommand = `ffmpeg -r ${fps} -i "${path.join(tempDir, "frame_%05d.png")}" \
         -c:v libvpx-vp9 -pix_fmt yuva420p -b:v 500k -y "${tempOutput}"`;
 
 		await execAsync(ffmpegCommand);
@@ -232,11 +232,11 @@ export async function convertWebPFile(media: Buffer): Promise<Buffer> {
 		return buffer;
 	} catch (error) {
 		try {
-			await fs.promises.rm('temp_frames', { recursive: true, force: true });
+			await fs.promises.rm("temp_frames", { recursive: true, force: true });
 		} catch (cleanupError) {
-			console.error('Error during cleanup:', cleanupError);
+			console.error("Error during cleanup:", cleanupError);
 		}
-		console.error('Error during conversion:', error);
+		console.error("Error during conversion:", error);
 		throw error;
 	}
 }
@@ -257,7 +257,7 @@ async function imageToWebp(media: Buffer): Promise<Buffer> {
 
 	try {
 		const { stderr } = await execAsync(ffmpegCommand);
-		if (stderr) console.error('FFmpeg stderr:', stderr);
+		if (stderr) console.error("FFmpeg stderr:", stderr);
 
 		const buff = fs.readFileSync(tmpFileOut);
 		fs.unlinkSync(tmpFileOut);
@@ -286,7 +286,7 @@ async function videoToWebp(media: Buffer): Promise<Buffer> {
 
 	try {
 		const { stderr } = await execAsync(ffmpegCommand);
-		if (stderr) console.error('FFmpeg stderr:', stderr);
+		if (stderr) console.error("FFmpeg stderr:", stderr);
 
 		const buff = fs.readFileSync(tmpFileOut);
 		fs.unlinkSync(tmpFileOut);
@@ -320,16 +320,16 @@ async function writeExifImg(
 
 		if (metadata.packname || metadata.author) {
 			const json = {
-				'sticker-pack-id': `https://github.com/AstroX11/Xstro`,
-				'sticker-pack-name': metadata.packname,
-				'sticker-pack-publisher': metadata.author,
-				emojis: metadata.categories ? metadata.categories : [''],
+				"sticker-pack-id": `https://github.com/AstroX11/Xstro`,
+				"sticker-pack-name": metadata.packname,
+				"sticker-pack-publisher": metadata.author,
+				emojis: metadata.categories ? metadata.categories : [""],
 			};
 			const exifAttr = Buffer.from([
 				0x49, 0x49, 0x2a, 0x00, 0x08, 0x00, 0x00, 0x00, 0x01, 0x00, 0x41, 0x57,
 				0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x16, 0x00, 0x00, 0x00,
 			]);
-			const jsonBuff = Buffer.from(JSON.stringify(json), 'utf-8');
+			const jsonBuff = Buffer.from(JSON.stringify(json), "utf-8");
 			const exif = Buffer.concat([exifAttr, jsonBuff]);
 			exif.writeUIntLE(jsonBuff.length, 14, 4);
 			img.exif = exif;
@@ -368,16 +368,16 @@ async function writeExifVid(
 
 		if (metadata.packname || metadata.author) {
 			const json = {
-				'sticker-pack-id': `https://github.com/AstroX11/Xstro`,
-				'sticker-pack-name': metadata.packname,
-				'sticker-pack-publisher': metadata.author,
-				emojis: metadata.categories ? metadata.categories : [''],
+				"sticker-pack-id": `https://github.com/AstroX11/Xstro`,
+				"sticker-pack-name": metadata.packname,
+				"sticker-pack-publisher": metadata.author,
+				emojis: metadata.categories ? metadata.categories : [""],
 			};
 			const exifAttr = Buffer.from([
 				0x49, 0x49, 0x2a, 0x00, 0x08, 0x00, 0x00, 0x00, 0x01, 0x00, 0x41, 0x57,
 				0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x16, 0x00, 0x00, 0x00,
 			]);
-			const jsonBuff = Buffer.from(JSON.stringify(json), 'utf-8');
+			const jsonBuff = Buffer.from(JSON.stringify(json), "utf-8");
 			const exif = Buffer.concat([exifAttr, jsonBuff]);
 			exif.writeUIntLE(jsonBuff.length, 14, 4);
 			img.exif = exif;
@@ -403,12 +403,12 @@ export const createSticker = async (
 	const mime = await fileTypeFromBuffer(buffer);
 	let res: Buffer;
 	const options = {
-		packname: packname || 'Xstro',
-		author: author || 'Astro',
+		packname: packname || "Xstro",
+		author: author || "Astro",
 	};
 
 	if (
-		(await fileTypeFromBuffer(buffer))?.mime !== 'video/mp4' &&
+		(await fileTypeFromBuffer(buffer))?.mime !== "video/mp4" &&
 		(await isAnimatedWebp(buffer))
 	) {
 		const media = await convertWebPFile(buffer);
@@ -416,16 +416,16 @@ export const createSticker = async (
 	}
 
 	try {
-		if (mime?.mime.startsWith('image/')) {
+		if (mime?.mime.startsWith("image/")) {
 			res = await writeExifImg(buffer, options);
-		} else if (mime?.mime.startsWith('video/')) {
+		} else if (mime?.mime.startsWith("video/")) {
 			res = await writeExifVid(buffer, options);
 		} else {
-			throw new Error('Only images and videos are supported');
+			throw new Error("Only images and videos are supported");
 		}
 		return res;
 	} catch (error: any) {
-		console.error('Sticker creation error:', error);
+		console.error("Sticker creation error:", error);
 		throw new Error(`Sticker creation failed: ${error.message}`);
 	}
 };
@@ -436,7 +436,7 @@ export async function trimVideo(
 	endTime: string,
 ): Promise<Buffer> {
 	const inputFile = await saveInputFile(input);
-	const outputVideo = temp('mp4');
+	const outputVideo = temp("mp4");
 
 	try {
 		// The -ss parameter specifies the start time

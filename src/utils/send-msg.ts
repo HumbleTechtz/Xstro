@@ -50,7 +50,7 @@ export async function prepareMessage(
 				const fetched = await fetchUrlContent(content);
 				buffer = fetched.buffer;
 				mimeType = fetched.mimeType;
-			} catch (error) {
+			} catch {
 				messageContent = { text: content, ...options };
 				return await client.sendMessage(jid, messageContent, { ...options });
 			}
@@ -124,7 +124,8 @@ export async function sendPayloadBootMsg(client: WASocket): Promise<void> {
 	const availableCommands = commands.filter(cmd => !cmd.dontAddCommandList);
 
 	await client.sendMessage(client?.user?.id!, {
-		text: `\`\`\`вσт ¢σииє¢тє∂\nσωиєя: ${userName}\nρℓυgιиѕ: ${availableCommands.length}\`\`\``.trim(),
+		text:
+			`\`\`\`вσт ¢σииє¢тє∂\nσωиєя: ${userName}\nρℓυgιиѕ: ${availableCommands.length}\`\`\``.trim(),
 		contextInfo: {
 			isForwarded: true,
 			forwardingScore: 999,

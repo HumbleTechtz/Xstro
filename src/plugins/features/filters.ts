@@ -68,7 +68,7 @@ Command({
 	function: async msg => {
 		const data = await Filters.findAll({ attributes: ["name"] });
 		if (!data || data.length === 0) return await msg.send("No filters found");
-		const names = data.map(f => `_${f.name}_`).join(", ");
+		const names = data.map((f: any) => `_${f.name}_`).join(", ");
 		return await msg.send(`\`\`\`Filters:\n${names}\`\`\``);
 	},
 });

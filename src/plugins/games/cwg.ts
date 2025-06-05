@@ -272,16 +272,11 @@ class Cwg {
 			return this.eliminate(
 				jid,
 				`\`\`\`@${name}, you've been eliminated.\nYour answer "${word}" is incorrect.\nThe correct word was "${this.currentWord}".\`\`\``,
-				[...this.players],
 			);
 		}
 	}
 
-	private async eliminate(
-		jid: string,
-		msg: string,
-		players: string[],
-	): Promise<string> {
+	private async eliminate(jid: string, msg: string): Promise<string> {
 		this.clearTimer();
 		this.players = this.players.filter(p => p !== jid);
 		if (this.currentIndex >= this.players.length) this.currentIndex = 0;
@@ -319,9 +314,7 @@ class Cwg {
 				const playerJid: string = this.players[this.currentIndex];
 				const name: string = playerJid.split("@")[0];
 				const message: string = `\`\`\`@${name}, you've been eliminated from the Complete or Fill in the Gap Game!\nYou ran out of time to submit an answer.\`\`\``;
-				const out: string = await this.eliminate(playerJid, message, [
-					...this.players,
-				]);
+				const out: string = await this.eliminate(playerJid, message);
 				if (out) {
 					await this.message.send(out, {
 						mentions: this.players.length ? [this.players[this.currentIndex]] : [],
@@ -433,8 +426,6 @@ class Cwg {
 
 	getTurnPrompt(): string {
 		if (!this.active || !this.players.length) return "";
-		const jid: string = this.players[this.currentIndex];
-		const name: string = jid.split("@")[0];
 
 		return `Complete the word:\n${this.currentIncomplete}\n\nDefinition: ${this.currentDefinition}\n\nDifficulty: Level ${this.difficultyLevel}\nYou have ${this.currentTimeout / 1000} seconds to respond!`;
 	}

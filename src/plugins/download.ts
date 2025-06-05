@@ -198,23 +198,23 @@ Command({
 	},
 });
 
-Command({
-	name: "yts",
-	fromMe: false,
-	isGroup: false,
-	desc: "Search and download Youtube Media",
-	type: "download",
-	function: async (msg, args) => {},
-});
+// Command({
+// 	name: "yts",
+// 	fromMe: false,
+// 	isGroup: false,
+// 	desc: "Search and download Youtube Media",
+// 	type: "download",
+// 	function: async (msg, args) => {},
+// });
 
-Command({
-	name: "ytv",
-	fromMe: false,
-	isGroup: false,
-	desc: "Download Youtube Video Media",
-	type: "download",
-	function: async (msg, args) => {},
-});
+// Command({
+// 	name: "ytv",
+// 	fromMe: false,
+// 	isGroup: false,
+// 	desc: "Download Youtube Video Media",
+// 	type: "download",
+// 	function: async (msg, args) => {},
+// });
 
 Command({
 	name: "yta",
@@ -263,20 +263,20 @@ Command({
 	},
 });
 
-Command({
-	name: "reddit",
-	fromMe: false,
-	isGroup: false,
-	desc: "Download Reddit Media",
-	type: "download",
-	function: async (msg, args) => {},
-});
+// Command({
+// 	name: "reddit",
+// 	fromMe: false,
+// 	isGroup: false,
+// 	desc: "Download Reddit Media",
+// 	type: "download",
+// 	function: async (msg, args) => {},
+// });
 
-Command({
-	name: "rumble",
-	fromMe: false,
-	isGroup: false,
-	desc: "Download Rumble Media",
-	type: "download",
-	function: async (msg, args) => {},
-});
+// Command({
+// 	name: "rumble",
+// 	fromMe: false,
+// 	isGroup: false,
+// 	desc: "Download Rumble Media",
+// 	type: "download",
+// 	function: async (msg, args) => {},
+// });

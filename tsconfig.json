@@ -3,14 +3,17 @@
 		"target": "ESNext",
 		"module": "NodeNext",
 		"moduleResolution": "nodenext",
+		"outDir": "lib",
 		"rootDir": ".",
 		"allowJs": true,
 		"checkJs": true,
 		"strict": true,
-		"noEmit": true,
 		"skipLibCheck": true,
 		"noImplicitThis": true,
+		"rewriteRelativeImportExtensions": true,
 		"allowImportingTsExtensions": true,
 		"forceConsistentCasingInFileNames": true
-	}
+	},
+	"include": ["types", "src", "*.ts", "*.mts"],
+	"exclude": ["lib"]
 }

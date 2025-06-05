@@ -1,4 +1,3 @@
-import { type WASocket } from "baileys";
 import { Command } from "../../messaging/plugin.ts";
 import {
 	delAntilink,
@@ -65,11 +64,7 @@ Command({
 	function: async msg => {
 		if (!msg.isGroup || !msg?.text) return;
 		if (msg.key.fromMe || msg.sudo) return;
-		if (
-			!(await isBotAdmin(msg as WASocket, msg.jid)) ||
-			(await isAdmin(msg.jid, msg.sender))
-		)
-			return;
+		if (!(await isBotAdmin(msg)) || (await isAdmin(msg.jid, msg.sender))) return;
 
 		const antilink = await getAntilink(msg.jid);
 		if (!antilink) return;
@@ -78,7 +73,7 @@ Command({
 		let hasProhibitedLink = false;
 
 		if (antilink.links?.length) {
-			hasProhibitedLink = antilink.links.some(link =>
+			hasProhibitedLink = antilink.links.some((link: string) =>
 				text.includes(link.toLowerCase()),
 			);
 		} else {
@@ -88,7 +83,7 @@ Command({
 
 		if (!hasProhibitedLink) return;
 
-		await msg.delete();
+		await msg.deleteM(msg.key);
 
 		if (antilink.mode === true) {
 			await msg.groupParticipantsUpdate(msg.jid, [msg.sender!], "remove");

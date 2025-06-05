@@ -22,9 +22,11 @@ export async function getMessage(
 	key: WAMessageKey,
 ): Promise<WAMessageContent | undefined> {
 	if (!key?.id) return;
-	const record = await messageDb.findOne({ where: { id: key.id } });
+	const record = (await messageDb.findOne({ where: { id: key.id } })) as {
+		message: string;
+	};
 	return record?.message
-		? WAProto.Message.fromObject(JSON.parse(record.message as string).message)
+		? WAProto.Message.fromObject(JSON.parse(record.message).message)
 		: undefined;
 }
 
@@ -32,9 +34,11 @@ export async function loadMesage(
 	key: WAMessageKey,
 ): Promise<WAMessage | undefined> {
 	if (!key?.id) return;
-	const record = await messageDb.findOne({ where: { id: key.id } });
+	const record = (await messageDb.findOne({ where: { id: key.id } })) as {
+		message: string;
+	};
 	return record?.message
-		? WAProto.WebMessageInfo.fromObject(JSON.parse(record.message as string))
+		? WAProto.WebMessageInfo.fromObject(JSON.parse(record.message))
 		: undefined;
 }
 

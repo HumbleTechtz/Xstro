@@ -17,7 +17,7 @@ export function Command(cmd: Commands) {
 
 export async function syncPlugins(
 	plugin: string,
-	extensions: string[] = [".ts"],
+	extensions: string[] = [".ts", ".js", ".mjs"],
 ): Promise<void> {
 	const plugins = join(__dirname, plugin);
 

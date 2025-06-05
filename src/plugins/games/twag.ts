@@ -193,16 +193,11 @@ class Twag {
 			return this.eliminate(
 				jid,
 				`\`\`\`@${name}, eliminated. "${word}" is invalid.\`\`\``,
-				[...this.players],
 			);
 		}
 	}
 
-	private async eliminate(
-		jid: string,
-		msg: string,
-		players: string[],
-	): Promise<string> {
+	private async eliminate(jid: string, msg: string): Promise<string> {
 		this.clearTimer();
 		this.players = this.players.filter(p => p !== jid);
 		if (this.currentIndex >= this.players.length) this.currentIndex = 0;
@@ -230,7 +225,7 @@ class Twag {
 				const playerJid = this.players[this.currentIndex];
 				const name = playerJid.split("@")[0];
 				const message = `\`\`\`@${name}, eliminated (timeout).\`\`\``;
-				const out = await this.eliminate(playerJid, message, [...this.players]);
+				const out = await this.eliminate(playerJid, message);
 				if (out)
 					await this.message.send(out, {
 						mentions: [this.players[this.currentIndex]],

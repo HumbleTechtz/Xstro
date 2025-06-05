@@ -164,6 +164,7 @@ export function getQuotedContent(
 				].includes(type!),
 				broadcast: Boolean(Quoted?.remoteJid!),
 				mentions: Quoted.mentionedJid || [],
+				// eslint-disable-next-line
 				...(({ quotedMessage, stanzaId, remoteJid, ...rest }) => rest)(Quoted),
 			}
 		: undefined;

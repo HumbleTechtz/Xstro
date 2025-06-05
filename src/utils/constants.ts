@@ -164,6 +164,7 @@ export function timeStringToTimestamp(timeStr: string): number | null {
 		.match(/^(\d{1,2}):(\d{2})(am|pm)$/);
 	if (!match) return null;
 
+	// eslint-disable-next-line
 	let [_, hours, minutes, period] = match;
 	let h = parseInt(hours, 10);
 	const m = parseInt(minutes, 10);
@@ -192,6 +193,7 @@ export function isValidTimeString(timeStr: string): boolean {
 		.match(/^(\d{1,2}):(\d{2})(am|pm)$/);
 	if (!match) return false;
 
+	// eslint-disable-next-line
 	const [_, hours, minutes, period] = match;
 	const h = parseInt(hours, 10);
 	const m = parseInt(minutes, 10);

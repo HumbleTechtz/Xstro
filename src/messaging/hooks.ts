@@ -22,7 +22,7 @@ export default function (sock: WASocket) {
 				await updateMetaGroup(jid, metadata);
 			}
 			console.log(`Saved ${Object.keys(data).length} groups metadata.`);
-		} catch (e) {}
+		} catch {}
 	};
 
 	setTimeout(() => {
