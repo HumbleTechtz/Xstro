@@ -1,12 +1,12 @@
-import { DataType } from "quantava";
-import database from "../messaging/database.ts";
+import { DataTypes } from "quantava";
+import database from "../Core/database.ts";
 
 export const contactsDb = database.define("contacts", {
-	id: { type: DataType.STRING, primaryKey: true },
-	lid: { type: DataType.STRING, allowNull: true },
-	name: { type: DataType.STRING, allowNull: true },
-	notify: { type: DataType.STRING, allowNull: true },
-	verifiedName: { type: DataType.STRING, allowNull: true },
-	imgUrl: { type: DataType.STRING, allowNull: true },
-	status: { type: DataType.STRING, allowNull: true },
+	id: { type: DataTypes.STRING, primaryKey: true },
+	lid: { type: DataTypes.STRING, allowNull: true },
+	name: { type: DataTypes.STRING, allowNull: true },
+	notify: { type: DataTypes.STRING, allowNull: true },
+	verifiedName: { type: DataTypes.STRING, allowNull: true },
+	imgUrl: { type: DataTypes.STRING, allowNull: true },
+	status: { type: DataTypes.STRING, allowNull: true },
 });

@@ -1,7 +1,7 @@
 import { Boom } from "@hapi/boom";
 import { getDataType } from "./content.ts";
-import { commands } from "../messaging/plugin.ts";
-import type { MessageMisc } from "../types/index.ts";
+import { commands } from "../Core/plugin.ts";
+import type { MessageMisc } from "../Types/index.ts";
 import type {
 	AnyMessageContent,
 	WAContextInfo,
@@ -9,7 +9,7 @@ import type {
 	WASocket,
 } from "baileys";
 
-function isValidUrl(str: string): boolean {
+function isValidUrl(str: string) {
 	try {
 		new URL(str);
 		return true;
@@ -18,9 +18,7 @@ function isValidUrl(str: string): boolean {
 	}
 }
 
-async function fetchUrlContent(
-	url: string,
-): Promise<{ buffer: Buffer; mimeType: string }> {
+async function fetchUrlContent(url: string) {
 	const response = await fetch(url);
 	if (!response.ok) {
 		throw new Boom("Failed to fetch URL content", {
@@ -119,7 +117,7 @@ export async function forwardM(
 	);
 }
 
-export async function sendPayloadBootMsg(client: WASocket): Promise<void> {
+export async function sendStart(client: WASocket) {
 	const userName = client?.user?.name ?? "Unknown";
 	const availableCommands = commands.filter(cmd => !cmd.dontAddCommandList);
 

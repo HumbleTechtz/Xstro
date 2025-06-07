@@ -1,10 +1,10 @@
-import { DataType } from "quantava";
-import database from "../messaging/database.ts";
+import { DataTypes } from "quantava";
+import database from "../Core/database.ts";
 
 const AutoMute = database.define("automute", {
-	jid: { type: DataType.STRING, allowNull: false, primaryKey: true },
-	startTime: { type: DataType.STRING, allowNull: true },
-	endTime: { type: DataType.STRING, allowNull: true },
+	jid: { type: DataTypes.STRING, allowNull: false, primaryKey: true },
+	startTime: { type: DataTypes.STRING, allowNull: true },
+	endTime: { type: DataTypes.STRING, allowNull: true },
 });
 
 const setAutoMute = async (

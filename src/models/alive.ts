@@ -1,18 +1,18 @@
-import { DataType } from "quantava";
-import database from "../messaging/database.ts";
+import { DataTypes } from "quantava";
+import database from "../Core/database.ts";
 import config from "../../config.mjs";
-import type { Serialize } from "../types/index.ts";
+import type { Serialize } from "../Types/index.ts";
 
 const Alive = database.define(
 	"alive",
 	{
 		id: {
-			type: DataType.INTEGER,
+			type: DataTypes.INTEGER,
 			allowNull: false,
 			autoIncrement: false,
 			primaryKey: true,
 		},
-		message: { type: DataType.STRING, allowNull: true },
+		message: { type: DataTypes.STRING, allowNull: true },
 	},
 	{ timestamps: false },
 );

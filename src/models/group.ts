@@ -1,17 +1,17 @@
-import { DataType } from "quantava";
-import database from "../messaging/database.ts";
+import { DataTypes } from "quantava";
+import database from "../Core/database.ts";
 import type { GroupMetadata } from "baileys";
 
 const Metadata = database.define(
 	"group_metadata",
 	{
 		jid: {
-			type: DataType.STRING,
+			type: DataTypes.STRING,
 			allowNull: false,
 			primaryKey: true,
 			unique: true,
 		},
-		data: { type: DataType.JSON, allowNull: true },
+		data: { type: DataTypes.JSON, allowNull: true },
 	},
 	{ timestamps: false },
 );

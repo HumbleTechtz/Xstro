@@ -1,6 +1,6 @@
 import type { WAContextInfo, WAMessage, WAMessageContent } from "baileys";
 import type { FileTypeResult } from "file-type";
-import type { serialize } from "../messaging/serialize.ts";
+import type { serialize } from "../Core/serialize.ts";
 
 export interface Commands {
 	name?: string | RegExp;
@@ -29,7 +29,8 @@ export interface Commands {
 		| "games"
 		| "maker"
 		| "schedule"
-		| "muting";
+		| "muting"
+		| "search";
 	dontAddCommandList?: boolean;
 }
 

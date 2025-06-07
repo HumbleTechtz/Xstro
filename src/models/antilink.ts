@@ -1,10 +1,10 @@
-import { DataType } from "quantava";
-import database from "../messaging/database.ts";
+import { DataTypes } from "quantava";
+import database from "../Core/database.ts";
 
 const Antilink = database.define("antilink", {
-	jid: { type: DataType.STRING, allowNull: false, unique: true },
-	mode: { type: DataType.BOOLEAN, allowNull: true },
-	links: { type: DataType.JSON, allowNull: true },
+	jid: { type: DataTypes.STRING, allowNull: false, unique: true },
+	mode: { type: DataTypes.BOOLEAN, allowNull: true },
+	links: { type: DataTypes.JSON, allowNull: true },
 });
 
 export const setAntilink = async function (

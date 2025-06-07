@@ -1,7 +1,6 @@
 import got, { type Options as gotOps } from "got";
 import { Boom } from "@hapi/boom";
 import FormData from "form-data";
-
 import { fileTypeFromBuffer } from "file-type";
 
 export const fetch = async function (

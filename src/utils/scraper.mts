@@ -2,10 +2,7 @@ import * as cheerio from "cheerio";
 import { Boom } from "@hapi/boom";
 import { fetch } from "./fetch.mts";
 
-/** Under the permission of
- * https://www.vox.com/robots.txt
- */
-export async function voxnews(): Promise<string> {
+export async function voxnews() {
 	try {
 		const html = await fetch("https://www.vox.com/");
 		const $ = cheerio.load(html);
@@ -48,10 +45,7 @@ export async function voxnews(): Promise<string> {
 	}
 }
 
-/**
- * WaBetaInfo News
- */
-export const wabetanews = async (): Promise<string> => {
+export async function wabetanews() {
 	try {
 		const html = await fetch("https://wabetainfo.com/");
 		const $ = cheerio.load(html);
@@ -80,12 +74,9 @@ export const wabetanews = async (): Promise<string> => {
 	} catch (error) {
 		throw new Boom(error as Error);
 	}
-};
+}
 
-/**
- * Tech news gizmodo
- */
-export const technews = async (): Promise<string> => {
+export async function technews() {
 	interface NewsItem {
 		title: string;
 		description: string;
@@ -123,7 +114,8 @@ export const technews = async (): Promise<string> => {
 	} catch (error) {
 		throw new Error(error instanceof Error ? error.message : String(error));
 	}
-};
+}
+
 export async function lyrics(
 	song: string,
 ): Promise<
@@ -154,10 +146,6 @@ export async function lyrics(
 	return { artist, lyrics, thumbnail };
 }
 
-/**
- * Unified AI handler that takes the provider and prompt.
- * Returns a string response or URL (for image generators).
- */
 export async function askAI(
 	provider: "ai" | "llama" | "dalle" | "nikka" | "jeevs" | "maths",
 	prompt: string,

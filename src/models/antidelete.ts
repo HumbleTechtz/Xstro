@@ -1,11 +1,11 @@
-import { DataType } from "quantava";
-import database from "../messaging/database.ts";
+import { DataTypes } from "quantava";
+import database from "../Core/database.ts";
 
 const Antidelete = database.define(
 	"antidelete",
 	{
 		mode: {
-			type: DataType.STRING,
+			type: DataTypes.STRING,
 			allowNull: true,
 			defaultValue: "all",
 			primaryKey: true,

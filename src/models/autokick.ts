@@ -1,13 +1,13 @@
-import database from "../messaging/database.ts";
-import { DataType } from "quantava";
+import database from "../Core/database.ts";
+import { DataTypes } from "quantava";
 
 export const Autokick = database.define(
 	"autokick",
 	{
-		groupJid: { type: DataType.STRING, primaryKey: true },
-		jid: { type: DataType.STRING, allowNull: false },
-		lid: { type: DataType.STRING, allowNull: false },
-		users: { type: DataType.JSON, allowNull: false },
+		groupJid: { type: DataTypes.STRING, primaryKey: true },
+		jid: { type: DataTypes.STRING, allowNull: false },
+		lid: { type: DataTypes.STRING, allowNull: false },
+		users: { type: DataTypes.JSON, allowNull: false },
 	},
 	{ timestamps: false },
 );

@@ -1,12 +1,12 @@
-import database from "../messaging/database.ts";
-import { DataType } from "quantava";
-import type { BotSettings } from "../types/index.ts";
+import database from "../Core/database.ts";
+import { DataTypes } from "quantava";
+import type { BotSettings } from "../Types/index.ts";
 
 export const config = database.define(
 	"config",
 	{
-		settings: { type: DataType.STRING, primaryKey: true },
-		value: { type: DataType.STRING, allowNull: true },
+		settings: { type: DataTypes.STRING, primaryKey: true },
+		value: { type: DataTypes.STRING, allowNull: true },
 	},
 	{ timestamps: false },
 );

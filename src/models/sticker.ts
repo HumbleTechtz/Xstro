@@ -1,11 +1,11 @@
-import { DataType } from "quantava";
-import database from "../messaging/database.ts";
+import { DataTypes } from "quantava";
+import database from "../Core/database.ts";
 
 const StickerCMD = database.define(
 	"sticker_cmd",
 	{
-		filesha256: { type: DataType.STRING, primaryKey: true },
-		cmdname: { type: DataType.STRING },
+		filesha256: { type: DataTypes.STRING, primaryKey: true },
+		cmdname: { type: DataTypes.STRING },
 	},
 	{ timestamps: false },
 );

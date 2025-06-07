@@ -1,6 +1,6 @@
-import { cachedGroupMetadata } from "../models/group.ts";
+import { cachedGroupMetadata } from "../Models/group.ts";
 import type { WAMessageContent } from "baileys";
-import type { Serialize } from "../types/index.ts";
+import type { Serialize } from "../Types/index.ts";
 
 export function isPath(text: string): boolean {
 	if (typeof text !== "string" || text.trim() === "") return false;

@@ -1,11 +1,11 @@
-import { DataType } from "quantava";
-import database from "../messaging/database.ts";
+import { DataTypes } from "quantava";
+import database from "../Core/database.ts";
 
 export const Filters = database.define("filters", {
-	name: { type: DataType.STRING, allowNull: false, unique: true },
-	response: { type: DataType.STRING, allowNull: true },
-	status: { type: DataType.BOOLEAN, defaultValue: false },
-	isGroup: { type: DataType.BOOLEAN, allowNull: true },
+	name: { type: DataTypes.STRING, allowNull: false, unique: true },
+	response: { type: DataTypes.STRING, allowNull: true },
+	status: { type: DataTypes.BOOLEAN, defaultValue: false },
+	isGroup: { type: DataTypes.BOOLEAN, allowNull: true },
 });
 
 export const setFilter = async (

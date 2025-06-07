@@ -1,10 +1,10 @@
-import { DataType } from "quantava";
-import database from "../messaging/database.ts";
+import { DataTypes } from "quantava";
+import database from "../Core/database.ts";
 
 const ratelimiter = database.define("ratelimiter", {
-	sender: { type: DataType.STRING, allowNull: false, primaryKey: true },
-	request_count: { type: DataType.INTEGER, allowNull: false, defaultValue: 0 },
-	last_request_date: { type: DataType.STRING, allowNull: false },
+	sender: { type: DataTypes.STRING, allowNull: false, primaryKey: true },
+	request_count: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
+	last_request_date: { type: DataTypes.STRING, allowNull: false },
 });
 
 function getTodayDate() {

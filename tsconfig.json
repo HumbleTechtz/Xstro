@@ -14,6 +14,6 @@
 		"allowImportingTsExtensions": true,
 		"forceConsistentCasingInFileNames": true
 	},
-	"include": ["types", "src", "*.ts", "*.mts"],
-	"exclude": ["lib"]
+	"include": ["types", "src", "plugins", "*.ts", "*.mts"],
+	"exclude": ["lib", "eslint.config.ts"]
 }

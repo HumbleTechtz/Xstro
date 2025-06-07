@@ -1,10 +1,10 @@
-import { DataType } from "quantava";
-import database from "../messaging/database.ts";
+import { DataTypes } from "quantava";
+import database from "../Core/database.ts";
 
 const Antiword = database.define("antiword", {
-	jid: { type: DataType.STRING, allowNull: false, primaryKey: true },
-	status: { type: DataType.BOOLEAN, allowNull: true, defaultValue: null },
-	words: { type: DataType.JSON, allowNull: true },
+	jid: { type: DataTypes.STRING, allowNull: false, primaryKey: true },
+	status: { type: DataTypes.BOOLEAN, allowNull: true, defaultValue: null },
+	words: { type: DataTypes.JSON, allowNull: true },
 });
 
 export async function setAntiWord(

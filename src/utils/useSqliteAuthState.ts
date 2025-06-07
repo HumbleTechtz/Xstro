@@ -5,24 +5,24 @@ import {
 	type AuthenticationCreds,
 	type SignalDataTypeMap,
 } from "baileys";
-import database from "../messaging/database.ts";
-import { DataType } from "quantava";
+import database from "../Core/database.ts";
+import { DataTypes } from "quantava";
 
 export const auth = database.define(
 	"auth",
 	{
-		name: { type: DataType.STRING, allowNull: true, primaryKey: true },
-		data: { type: DataType.JSON, allowNull: true },
+		name: { type: DataTypes.STRING, allowNull: true, primaryKey: true },
+		data: { type: DataTypes.JSON, allowNull: true },
 	},
-	{ timestamps: false },
+	{ timestamps: false }
 );
 
 export default async function () {
 	const writeData = async (data: any, name: string) => {
-		return await auth.upsert({
+		return (await auth.upsert({
 			name,
 			data: JSON.parse(JSON.stringify(data ?? {})),
-		});
+		})) as unknown as void;
 	};
 
 	const readData = async (name: string) => {
@@ -48,7 +48,10 @@ export default async function () {
 		state: {
 			creds,
 			keys: {
-				get: async <T extends keyof SignalDataTypeMap>(type: T, ids: string[]) => {
+				get: async <T extends keyof SignalDataTypeMap>(
+					type: T,
+					ids: string[]
+				) => {
 					const data: { [id: string]: SignalDataTypeMap[T] } = {} as any;
 					await Promise.all(
 						ids.map(async id => {
@@ -59,12 +62,12 @@ export default async function () {
 								} catch (e) {
 									console.error(
 										`Failed to decode AppStateSyncKeyData for ID "${id}":`,
-										e,
+										e
 									);
 								}
 							}
 							data[id] = value as SignalDataTypeMap[T];
-						}),
+						})
 					);
 					return data;
 				},
@@ -74,15 +77,15 @@ export default async function () {
 							(value
 								? writeData(value, `${category}-${id}`)
 								: removeData(`${category}-${id}`)
-							).then(() => {}),
-						),
+							).then(() => {})
+						)
 					);
 					await Promise.all(tasks);
 				},
 			},
 		},
 		saveCreds: async () => {
-			return (await writeData(creds, "creds")) as void;
+			return await writeData(creds, "creds");
 		},
 	};
 }
