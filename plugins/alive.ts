@@ -1,5 +1,5 @@
 import { Command } from "../src/Core/plugin.ts";
-import { getAlive } from "../src/Models/alive.ts";
+import { getAlive, SetAlive } from "../src/Models/index.ts";
 
 Command({
 	name: "alive",
@@ -8,13 +8,9 @@ Command({
 	desc: "Get Alive message",
 	type: "misc",
 	function: async (msg, match) => {
-		if (!match) {
-			const m = await getAlive(msg);
-			if (!m) {
-				return await msg.send(`\`\`\`${msg.pushName} I am alive and running\`\`\``);
-			} else {
-				return await msg.send(m);
-			}
+		if (match) {
+			await SetAlive(match);
 		}
+		return await msg.send(await getAlive());
 	},
 });

@@ -3,7 +3,7 @@ import {
 	addAutoKick,
 	delAutoKick,
 	getAutoKick,
-} from "../../src/Models/autokick.ts";
+} from "../../src/Models/index.ts";
 
 Command({
 	name: "autokick",

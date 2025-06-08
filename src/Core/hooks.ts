@@ -19,7 +19,6 @@ export default function (sock: WASocket) {
 			for (const [jid, metadata] of Object.entries(data)) {
 				await updateMetaGroup(jid, metadata);
 			}
-			console.log(`Saved ${Object.keys(data).length} groups metadata.`);
 		} catch {}
 	};
 

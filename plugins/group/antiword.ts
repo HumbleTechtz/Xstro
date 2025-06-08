@@ -1,5 +1,5 @@
 import { Command } from "../../src/Core/plugin.ts";
-import { setAntiWord, getAntiword } from "../../src/Models/antiword.ts";
+import { setAntiWord, getAntiword } from "../../src/Models/index.ts";
 import { isAdmin, isBotAdmin } from "../../src/Utils/constants.ts";
 
 Command({

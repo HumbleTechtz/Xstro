@@ -171,23 +171,6 @@ Command({
 });
 
 Command({
-	name: "fortune",
-	fromMe: false,
-	isGroup: false,
-	desc: "Get your fortune cookie",
-	type: "fun",
-	function: async msg => {
-		const response = await fetch(
-			"https://fortunecookieapi.herokuapp.com/v1/cookie",
-		);
-		const data = JSON.parse(response) as Array<{
-			fortune: { message: string };
-		}>;
-		return await msg.send(`🥠 ${data[0].fortune.message}`);
-	},
-});
-
-Command({
 	name: "yes",
 	fromMe: false,
 	isGroup: false,
@@ -200,6 +183,10 @@ Command({
 			forced: boolean;
 			image: string;
 		};
-		return await msg.send(`${data.answer.toUpperCase()} 🎯\n\n${data.image}`);
+
+		return await msg.send(data.image, {
+			caption: `${data.answer.toUpperCase()} 🎯`,
+			type: "video",
+		});
 	},
 });

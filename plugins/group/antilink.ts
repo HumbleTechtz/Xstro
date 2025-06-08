@@ -3,7 +3,7 @@ import {
 	delAntilink,
 	getAntilink,
 	setAntilink,
-} from "../../src/Models/antilink.ts";
+} from "../../src/Models/index.ts";
 import { isAdmin, isBotAdmin } from "../../src/Utils/constants.ts";
 
 Command({

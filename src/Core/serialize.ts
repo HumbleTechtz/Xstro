@@ -89,7 +89,6 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 		deleteM: async function (key: WAMessageKey) {
 			const canDeleteForAll =
 				this.key.fromMe || (this.isGroup && (await isBotAdmin(this)));
-			console.log(`Can delete message`, canDeleteForAll);
 			if (!canDeleteForAll) {
 				return await client.chatModify(
 					{

@@ -1,5 +1,5 @@
 import { Command } from "../../src/Core/plugin.ts";
-import { delBan, getBan, setBan } from "../../src/Models/settings.ts";
+import { delBan, getBan, setBan } from "../../src/Models/index.ts";
 
 Command({
 	name: "ban",
@@ -17,7 +17,7 @@ Command({
 			return msg.send("_User is already banned_");
 
 		const { jid, lid } = await msg.onWhatsApp(userToBan).then(m => m![0]);
-		await setBan([jid, lid as string]);
+		await setBan(jid, lid as string);
 		return await msg.send(`_User banned from using the bot_`);
 	},
 });
@@ -35,8 +35,7 @@ Command({
 		if (!banned.includes(user)) {
 			return msg.send("_This user is not banned._");
 		}
-		const { jid, lid } = await msg.onWhatsApp(user).then(m => m![0]);
-		await delBan([jid, lid as string]);
+		await delBan(user);
 		return msg.send(`_@${user.split("@")[0]} has been unbanned_`, {
 			mentions: [user],
 		});

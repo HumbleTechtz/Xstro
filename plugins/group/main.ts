@@ -1,5 +1,5 @@
 import { Command } from "../../src/Core/plugin.ts";
-import { cachedGroupMetadata } from "../../src/Models/group.ts";
+import { cachedGroupMetadata } from "../../src/Models/index.ts";
 import { adminCheck } from "../../src/Utils/constants.ts";
 
 Command({

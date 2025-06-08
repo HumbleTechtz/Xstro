@@ -30,9 +30,7 @@ Command({
 	desc: "Get the profile picture of any person or group",
 	type: "tools",
 	function: async (message, match) => {
-		console.log(match);
 		const user = await message.parseId(match);
-		console.log(user);
 		if (!user) return message.send("Provide someone number");
 		let profilePic;
 		try {

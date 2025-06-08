@@ -1,5 +1,5 @@
 import { Command } from "../../src/Core/plugin.ts";
-import { delsudo, getSudo, setSudo } from "../../src/Models/settings.ts";
+import { SetSudo, delSudo, getSudo, isSudo } from "../../src/Models/index.ts";
 
 Command({
 	name: "setsudo",
@@ -13,13 +13,18 @@ Command({
 			return msg.send(
 				`_${msg.sender.split("@")[0]} You cannot sudo inside a Group, Please this command should be used in Personal Chats_`,
 			);
-		const sudoList = await getSudo();
+
 		const userToSudo = await msg.parseId(args);
-		if (!userToSudo) return msg.send(`_User is invaild_`);
-		if (sudoList.includes(userToSudo)) return msg.send("_Already a sudo user_");
-		const { jid, lid } = await msg.onWhatsApp(userToSudo).then(m => m![0]);
-		await setSudo([jid, lid as string]);
-		return await msg.send(`_Sudo list Updated_`);
+		if (!userToSudo) return msg.send(`_User is invalid_`);
+
+		if (await isSudo(userToSudo)) return msg.send("_Already a sudo user_");
+
+		const userInfo = await msg.onWhatsApp(userToSudo).then(m => m?.[0]);
+		if (!userInfo) return msg.send(`_User not found on WhatsApp_`);
+
+		const { jid, lid } = userInfo;
+		await SetSudo(jid, lid as string);
+		return msg.send(`_Sudo list updated_`);
 	},
 });
 
@@ -30,14 +35,16 @@ Command({
 	desc: "Remove a sudo user",
 	type: "settings",
 	function: async (msg, args) => {
+		if (!args) return msg.send(`_Provide number to remove from sudo_`);
+
 		const user = await msg.parseId(args);
-		if (!user) return msg.send(`_Provided User is Invalid_`);
-		const settings = await getSudo();
-		if (!settings.includes(user)) {
+		if (!user) return msg.send(`_Provided User is invalid_`);
+
+		if (!(await isSudo(user))) {
 			return msg.send("_This user is not in the sudo list._");
 		}
-		const { jid, lid } = await msg.onWhatsApp(user).then(m => m![0]);
-		await delsudo([jid, lid as string]);
+
+		await delSudo(user);
 		return msg.send(`_@${user.split("@")[0]} removed from sudo_`, {
 			mentions: [user],
 		});
@@ -51,10 +58,12 @@ Command({
 	desc: "Get list of sudo users",
 	type: "settings",
 	function: async msg => {
-		const settings = await getSudo();
-		if (!settings.length) return msg.send("_No sudo users found._");
+		const sudoList = await getSudo("jid");
+		if (!sudoList.length) return msg.send("_No sudo users found._");
 
-		const sudoList = settings.map(user => `@${user.split("@")[0]}`).join("\n");
-		return msg.send(`Sudo users:\n${sudoList}`, { mentions: settings });
+		const formattedList = sudoList
+			.map(user => `@${user.split("@")[0]}`)
+			.join("\n");
+		return msg.send(`Sudo users:\n${formattedList}`, { mentions: sudoList });
 	},
 });

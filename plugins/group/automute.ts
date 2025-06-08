@@ -3,7 +3,7 @@ import {
 	setAutoMute,
 	delAutoMute,
 	getAutoMute,
-} from "../../src/Models/automute.ts";
+} from "../../src/Models/index.ts";
 import { isValidTimeString } from "../../src/Utils/constants.ts";
 
 Command({

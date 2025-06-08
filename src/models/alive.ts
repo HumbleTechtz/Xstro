@@ -21,7 +21,7 @@ export const SetAlive = async (message: string) => {
 export const getAlive = async () => {
 	const exists = (await Alive.findByPk(1)) as { id?: number; message?: string };
 
-	return exists ? exists.message : `_I am alive_`;
+	return exists?.message ? exists.message : `_I am alive_`;
 };
 
 export const delAlive = async () => {
