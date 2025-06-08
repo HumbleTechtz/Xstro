@@ -6,7 +6,7 @@ export function isPath(text: string): boolean {
 	if (typeof text !== "string" || text.trim() === "") return false;
 
 	return /^(?:\.|\.\.|[a-zA-Z]:)?[\/\\]?[a-zA-Z0-9_\-.]+(?:[\/\\][a-zA-Z0-9_\-.]+)*(?:\.[a-zA-Z0-9]+)?$/.test(
-		text.trim()
+		text.trim(),
 	);
 }
 
@@ -182,7 +182,7 @@ export function timeStringToTimestamp(timeStr: string): number | null {
 		h,
 		m,
 		0,
-		0
+		0,
 	);
 	return result.getTime();
 }
@@ -199,11 +199,7 @@ export function isValidTimeString(timeStr: string): boolean {
 	const m = parseInt(minutes, 10);
 
 	return (
-		h >= 1 &&
-		h <= 12 &&
-		m >= 0 &&
-		m <= 59 &&
-		(period === "am" || period === "pm")
+		h >= 1 && h <= 12 && m >= 0 && m <= 59 && (period === "am" || period === "pm")
 	);
 }
 
@@ -261,7 +257,7 @@ export function stripCircularRefs(obj: any) {
 				seen.add(value);
 			}
 			return value;
-		})
+		}),
 	);
 }
 

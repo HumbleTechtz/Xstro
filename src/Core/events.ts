@@ -4,7 +4,7 @@ import type { WASocket } from "baileys";
 
 export default function (
 	clientSocket: WASocket,
-	{ saveCreds }: { saveCreds: () => Promise<void> }
+	{ saveCreds }: { saveCreds: () => Promise<void> },
 ) {
 	clientSocket.ev.process(async events => {
 		if (events["creds.update"]) await saveCreds();

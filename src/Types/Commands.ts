@@ -29,7 +29,7 @@ export interface Commands {
 /** These are sections that Appear on the Menu */
 /**
  * Represents the available categories for commands within the application.
- * 
+ *
  * Categories include:
  * - "ai": Artificial intelligence related commands.
  * - "misc": Miscellaneous commands.

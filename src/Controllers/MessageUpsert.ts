@@ -19,14 +19,14 @@ export default class MessageUpsert {
 	}
 
 	private async hookMessages(
-		messages: BaileysEventMap["messages.upsert"]["messages"]
+		messages: BaileysEventMap["messages.upsert"]["messages"],
 	) {
 		for (const message of messages) {
 			await handlers(
 				await serialize(
 					this.client,
-					structuredClone(JSON.parse(JSON.stringify(message)))
-				)
+					structuredClone(JSON.parse(JSON.stringify(message))),
+				),
 			);
 		}
 	}

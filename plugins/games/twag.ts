@@ -1,8 +1,8 @@
-import { Command } from "../../src/Core/plugin.ts";
-import { updateLeaderboard } from "../../src/Models/leaderboard.ts";
 import { isLidUser } from "baileys";
+import { Command } from "../../src/Core/plugin.ts";
+import { updateLeaderboard } from "../../src/Models/index.ts";
 import { TOPICS } from "./words.ts";
-import type { Serialize } from "../../src/Types/index.ts";
+import type { Serialize } from "../../src/Core/serialize.ts";
 
 const twagGames = new Map<string, Twag>();
 const twagPending = new Map<

@@ -13,7 +13,7 @@ const Metadata = database.define(
 		},
 		data: { type: DataTypes.JSON, allowNull: true },
 	},
-	{ timestamps: false }
+	{ timestamps: false },
 );
 
 export async function cachedGroupMetadata(jid: string) {

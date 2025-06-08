@@ -6,3 +6,4 @@ export * from "./GroupCache.ts";
 export * from "./AutoMute.ts";
 export * from "./RateLimiter.ts";
 export * from "./StickerCmd.ts";
+export * from "./LeaderBoard.ts";

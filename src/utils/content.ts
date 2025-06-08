@@ -13,7 +13,7 @@ import {
 import type { ContentTypeResult } from "../Types/index.ts";
 
 export const getContentType = async (
-	content: unknown
+	content: unknown,
 ): Promise<ContentTypeResult> => {
 	try {
 		if (typeof content === "string" && isPath(content)) {
@@ -39,7 +39,7 @@ export const getContentType = async (
 };
 
 export const getDataType = async (
-	content: Buffer | string
+	content: Buffer | string,
 ): Promise<{
 	contentType: "text" | "audio" | "image" | "video" | "sticker" | "document";
 	mimeType: string;
@@ -106,7 +106,7 @@ export function getMessageContent(message?: WAMessageContent) {
 }
 
 export function hasContextInfo(
-	msg: unknown
+	msg: unknown,
 ): msg is { contextInfo: WAContextInfo } {
 	if (!msg || typeof msg !== "object" || msg === null) return false;
 	return (
@@ -119,7 +119,7 @@ export function hasContextInfo(
 export function getQuotedContent(
 	message?: WAMessageContent,
 	key?: WAMessageKey,
-	owner?: string[]
+	owner?: string[],
 ) {
 	if (!message) return undefined;
 	const mtype = contentType(message);

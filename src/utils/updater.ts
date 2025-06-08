@@ -7,7 +7,7 @@ export async function update(applyUpdate = false) {
 	try {
 		await execPromise("git fetch");
 		const { stdout: logOutput } = await execPromise(
-			"git log stable..origin/stable"
+			"git log stable..origin/stable",
 		);
 		const commits = logOutput.trim().split("\n").filter(Boolean);
 

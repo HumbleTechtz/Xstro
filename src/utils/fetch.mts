@@ -5,7 +5,7 @@ import { fileTypeFromBuffer } from "file-type";
 
 export const fetch = async function (
 	url: string,
-	options?: gotOps
+	options?: gotOps,
 ): Promise<string> {
 	try {
 		const data = await got.get(url, {
@@ -35,7 +35,7 @@ export const postfetch = async function (
 		formData?: Record<string, any>;
 		jsonBody?: Record<string, any>;
 		headers?: Record<string, string>;
-	}
+	},
 ): Promise<string> {
 	try {
 		const defaultHeaders = {
@@ -85,7 +85,7 @@ export const postfetch = async function (
 
 export const urlBuffer = async function (
 	url: string,
-	options?: gotOps
+	options?: gotOps,
 ): Promise<Buffer> {
 	try {
 		const data = await got.get(url, {

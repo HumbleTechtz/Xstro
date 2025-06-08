@@ -7,7 +7,7 @@ const Alive = database.define(
 		id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
 		message: { type: DataTypes.STRING, allowNull: false },
 	},
-	{ timestamps: false }
+	{ timestamps: false },
 );
 
 export const SetAlive = async (message: string) => {

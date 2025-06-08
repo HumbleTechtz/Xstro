@@ -40,7 +40,7 @@ async function groupAutoMute(client: WASocket) {
 
 		const isGroupLocked = await client.groupMetadata(jid).then(
 			metadata => metadata?.announce === true,
-			() => false
+			() => false,
 		);
 
 		if (currentTime === automute.startTime.toLowerCase() && !isGroupLocked) {

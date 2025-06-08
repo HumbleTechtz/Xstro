@@ -36,7 +36,7 @@ export default class Connection {
 	}
 
 	private async handleClose(
-		lastDisconnect?: BaileysEventMap["connection.update"]["lastDisconnect"]
+		lastDisconnect?: BaileysEventMap["connection.update"]["lastDisconnect"],
 	) {
 		const error = lastDisconnect?.error as Boom;
 		const reason = error?.output?.statusCode;
@@ -75,7 +75,7 @@ export default class Connection {
 		await sendStart(this.client);
 		await SetSudo(
 			jidNormalizedUser(this.client?.user?.id),
-			jidNormalizedUser(this.client?.user?.lid)
+			jidNormalizedUser(this.client?.user?.lid),
 		);
 	}
 }

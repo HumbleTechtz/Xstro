@@ -34,7 +34,7 @@ async function fetchUrlContent(url: string) {
 export async function prepareMessage(
 	client: WASocket,
 	content: string | Buffer,
-	options?: MessageMisc & Partial<AnyMessageContent>
+	options?: MessageMisc & Partial<AnyMessageContent>,
 ) {
 	const jid = options?.jid ?? " ";
 	const explicitType = options?.type;
@@ -105,7 +105,7 @@ export async function forwardM(
 	client: WASocket,
 	jid: string,
 	message: WAMessage,
-	options?: WAContextInfo & { quoted: WAMessage }
+	options?: WAContextInfo & { quoted: WAMessage },
 ) {
 	return await client.sendMessage(
 		jid,
@@ -113,7 +113,7 @@ export async function forwardM(
 			forward: message,
 			contextInfo: { ...options },
 		},
-		{ quoted: options?.quoted }
+		{ quoted: options?.quoted },
 	);
 }
 
@@ -122,7 +122,8 @@ export async function sendStart(client: WASocket) {
 	const availableCommands = commands.filter(cmd => !cmd.dontAddCommandList);
 
 	await client.sendMessage(client?.user?.id!, {
-		text: `\`\`\`вσт ¢σииє¢тє∂\nσωиєя: ${userName}\nρℓυgιиѕ: ${availableCommands.length}\`\`\``.trim(),
+		text:
+			`\`\`\`вσт ¢σииє¢тє∂\nσωиєя: ${userName}\nρℓυgιиѕ: ${availableCommands.length}\`\`\``.trim(),
 		contextInfo: {
 			isForwarded: true,
 			forwardingScore: 999,

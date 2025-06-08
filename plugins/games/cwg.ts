@@ -1,7 +1,7 @@
 import { Command } from "../../src/Core/plugin.ts";
-import { updateLeaderboard } from "../../src/Models/leaderboard.ts";
+import { updateLeaderboard } from "../../src/Models/index.ts";
 import { isLidUser } from "baileys";
-import type { Serialize } from "../../src/Types/index.ts";
+import type { Serialize } from "../../src/Core/serialize.ts";
 
 const cwgGames = new Map<string, Cwg>();
 const cwgPending = new Map<

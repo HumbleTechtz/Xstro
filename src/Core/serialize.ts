@@ -51,7 +51,7 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 	return {
 		send: async function (
 			content: string | Buffer,
-			options?: MessageMisc & Partial<AnyMessageContent>
+			options?: MessageMisc & Partial<AnyMessageContent>,
 		) {
 			const message = await prepareMessage(client, content, {
 				jid: this.jid,
@@ -65,7 +65,7 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 		forward: async function (
 			jid: string,
 			message: WAMessage,
-			options?: WAContextInfo & { quoted: WAMessage }
+			options?: WAContextInfo & { quoted: WAMessage },
 		) {
 			return await forwardM(client, jid, message, options);
 		},
@@ -81,7 +81,7 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 					this.jid,
 					this.mtype === "imageMessage"
 						? { image: media, caption: text, edit: msg?.key ?? this.key }
-						: { video: media, caption: text, edit: msg?.key ?? this.key }
+						: { video: media, caption: text, edit: msg?.key ?? this.key },
 				);
 			}
 			return await client.sendMessage(this.jid, { text, edit: this.key });
@@ -99,7 +99,7 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 							timestamp: Date.now(),
 						},
 					},
-					this.jid
+					this.jid,
 				);
 			}
 			return await client.sendMessage(this.jid, { delete: key });
@@ -118,8 +118,7 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 
 			if (this?.mention?.length! > 0) {
 				let mentionedId = this.mention?.[0];
-				if (isLidUser(mentionedId) || isJidUser(mentionedId))
-					return mentionedId;
+				if (isLidUser(mentionedId) || isJidUser(mentionedId)) return mentionedId;
 				mentionedId = mentionedId?.replace(/\D+/g, "") + "@s.whatsapp.net";
 				try {
 					const result = await client.onWhatsApp(mentionedId);

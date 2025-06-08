@@ -1,8 +1,4 @@
-import type {
-	WAContextInfo,
-	WAMessage,
-	WAMessageContent,
-} from "baileys";
+import type { WAContextInfo, WAMessage, WAMessageContent } from "baileys";
 import type { MediaType } from "./MediaType.ts";
 
 export type sendMessageOptions = BaseOptions & {

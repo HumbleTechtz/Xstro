@@ -4,7 +4,7 @@ import { getStickerCmd, canProceed, resetIfExpired } from "../Models/index.ts";
 import type { Serialize } from "./serialize.ts";
 
 export default async function (message: Serialize) {
-	const { sudo, sender, prefix, text, mode, isGroup, send } = message;
+	const { sudo, sender, prefix, text, mode, isGroup } = message;
 
 	setInterval(
 		async () => {
@@ -14,7 +14,7 @@ export default async function (message: Serialize) {
 				console.error(e);
 			}
 		},
-		5 * 60 * 1000
+		5 * 60 * 1000,
 	);
 
 	await Promise.all([
@@ -37,7 +37,7 @@ export default async function (message: Serialize) {
 					}
 
 					if (cmd.isGroup && !isGroup) {
-						await send(lang.FOR_GROUPS_ONLY);
+						await message.send(lang.FOR_GROUPS_ONLY);
 						continue;
 					}
 
@@ -52,7 +52,7 @@ export default async function (message: Serialize) {
 						await cmd.function(message, match[2] ?? "");
 					} catch (e) {
 						await message.send(
-							`\`\`\`An error occured while running ${cmd.name?.toString().toLowerCase().split(/\W+/)[2]} command\`\`\``
+							`\`\`\`An error occured while running ${cmd.name?.toString().toLowerCase().split(/\W+/)[2]} command\`\`\``,
 						);
 						console.error(e);
 					}
@@ -84,12 +84,12 @@ export default async function (message: Serialize) {
 					if (mode && !sudo) continue;
 
 					if (cmd.fromMe && !sudo) {
-						await send(lang.FOR_SUDO_USERS);
+						await message.send(lang.FOR_SUDO_USERS);
 						continue;
 					}
 
 					if (cmd.isGroup && !isGroup) {
-						await send(lang.FOR_GROUPS_ONLY);
+						await message.send(lang.FOR_GROUPS_ONLY);
 						continue;
 					}
 

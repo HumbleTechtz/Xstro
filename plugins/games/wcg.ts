@@ -1,7 +1,7 @@
-import { Command } from "../../src/Core/plugin.ts";
-import { updateLeaderboard } from "../../src/Models/leaderboard.ts";
 import { isLidUser } from "baileys";
-import type { Serialize } from "../../src/Types/index.ts";
+import { Command } from "../../src/Core/plugin.ts";
+import { updateLeaderboard } from "../../src/Models/index.ts";
+import type { Serialize } from "../../src/Core/serialize.ts";
 
 const games = new Map<string, Wcg>();
 const pending = new Map<string, { jids: string[]; timers: NodeJS.Timeout[] }>();

@@ -5,7 +5,7 @@ const database = new Quantava({
 	journalMode: "wal",
 	walAutoCheckpoint: 10000000,
 	foreignKeys: true,
-	synchronous:'off'
+	synchronous: "off",
 });
 
 export default database;

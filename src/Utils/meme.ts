@@ -9,7 +9,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 function getAvailableTemplates(
-	mediaFolder: string = path.resolve(__dirname, "../media")
+	mediaFolder: string = path.resolve(__dirname, "../media"),
 ): string[] {
 	try {
 		const files = fs.readdirSync(mediaFolder);
@@ -24,14 +24,14 @@ function getAvailableTemplates(
 
 async function addTextToTweet(
 	inputText: string,
-	templateName: string
+	templateName: string,
 ): Promise<Buffer> {
 	const mediaFolder = path.resolve(__dirname, "../media");
 	const availableTemplates = getAvailableTemplates(mediaFolder);
 
 	if (!availableTemplates.includes(templateName)) {
 		throw new Error(
-			`Template "${templateName}" not found. Available templates: ${availableTemplates.join(", ")}`
+			`Template "${templateName}" not found. Available templates: ${availableTemplates.join(", ")}`,
 		);
 	}
 
@@ -58,7 +58,7 @@ async function addTextToTweet(
 		x: number,
 		y: number,
 		maxWidth: number,
-		lineHeight: number
+		lineHeight: number,
 	) {
 		const words = text.split(" ");
 		let line = "";

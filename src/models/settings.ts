@@ -1,5 +1,5 @@
-import Quantava, { DataTypes } from "quantava";
-const database = new Quantava({ filename: "test.db" });
+import { DataTypes } from "quantava";
+import database from "../Core/database.ts";
 
 const Settings = database.define("settings", {
 	id: { type: DataTypes.INTEGER, autoIncrement: false, primaryKey: true },

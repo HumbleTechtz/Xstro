@@ -10,7 +10,7 @@ const AutoMute = database.define("automute", {
 const setAutoMute = async (
 	jid: string,
 	startTime: string,
-	endTime?: string
+	endTime?: string,
 ) => {
 	return AutoMute.upsert({ jid, startTime, endTime });
 };
