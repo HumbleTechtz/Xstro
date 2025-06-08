@@ -54,8 +54,8 @@ importers:
         specifier: ^6.0.8
         version: 6.0.8
       quantava:
-        specifier: ^2.5.0
-        version: 2.5.0(better-sqlite3@11.10.0)
+        specifier: ^2.5.1
+        version: 2.5.1(better-sqlite3@11.10.0)
       sharp:
         specifier: ^0.34.2
         version: 0.34.2
@@ -1600,10 +1600,6 @@ packages:
     resolution: {integrity: sha512-ZI3LnwUv5nOGbQzD9c2iDG6toheuXSZP5esSHBjopsXH4dg19soufvpUGA3uohi5anFtGb2lhAVdHzH6R/Evvg==}
     engines: {node: '>=8'}
 
-  peek-readable@7.0.0:
-    resolution: {integrity: sha512-nri2TO5JE3/mRryik9LlHFT53cgHfRK0Lt0BAZQXku/AW3E6XLt2GaY8siWi7dvW/m1z0ecn+J+bpDa9ZN3IsQ==}
-    engines: {node: '>=18'}
-
   pg-cloudflare@1.2.5:
     resolution: {integrity: sha512-OOX22Vt0vOSRrdoUPKJ8Wi2OpE/o/h9T8X1s4qSkCedbNah9ei2W2765be8iMVxQUsvgT7zIAT2eIa9fs5+vtg==}
 
@@ -1755,8 +1751,8 @@ packages:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
 
-  quantava@2.5.0:
-    resolution: {integrity: sha512-WfWGHuiORRM9p/id3U+i/Moal4LoYkQOgFq2ACKeUwnsEtpxdVoxP9JaQy7/TPEJ3h5HWRrZ5E05irbdJCgcPw==}
+  quantava@2.5.1:
+    resolution: {integrity: sha512-GPSMFsmmPWdYnTok+M3BWIUirLxEdNKCv9fr2R9hWgBLw9nqaddYIshQ81MsLhv9r6fpO6eswxlXXJxaXrrn/A==}
     engines: {node: '>=v22.5.0'}
     peerDependencies:
       better-sqlite3: ^11.10.0
@@ -1933,8 +1929,8 @@ packages:
     resolution: {integrity: sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==}
     engines: {node: '>=8'}
 
-  strtok3@10.2.2:
-    resolution: {integrity: sha512-Xt18+h4s7Z8xyZ0tmBoRmzxcop97R4BAh+dXouUDCYn+Em+1P3qpkUfI5ueWLT8ynC5hZ+q4iPEmGG1urvQGBg==}
+  strtok3@10.3.1:
+    resolution: {integrity: sha512-3JWEZM6mfix/GCJBBUrkA8p2Id2pBkyTkVCJKto55w080QBKZ+8R171fGrbiSp+yMO/u6F8/yUh7K4V9K+YCnw==}
     engines: {node: '>=18'}
 
   strtok3@6.3.0:
@@ -3165,7 +3161,7 @@ snapshots:
   file-type@21.0.0:
     dependencies:
       '@tokenizer/inflate': 0.2.7
-      strtok3: 10.2.2
+      strtok3: 10.3.1
       token-types: 6.0.0
       uint8array-extras: 1.4.0
     transitivePeerDependencies:
@@ -3624,8 +3620,6 @@ snapshots:
 
   peek-readable@4.1.0: {}
 
-  peek-readable@7.0.0: {}
-
   pg-cloudflare@1.2.5:
     optional: true
 
@@ -3863,7 +3857,7 @@ snapshots:
 
   punycode@2.3.1: {}
 
-  quantava@2.5.0(better-sqlite3@11.10.0):
+  quantava@2.5.1(better-sqlite3@11.10.0):
     dependencies:
       '@types/node': 22.15.30
       better-sqlite3: 11.10.0
@@ -4050,10 +4044,9 @@ snapshots:
 
   strip-json-comments@3.1.1: {}
 
-  strtok3@10.2.2:
+  strtok3@10.3.1:
     dependencies:
       '@tokenizer/token': 0.3.0
-      peek-readable: 7.0.0
 
   strtok3@6.3.0:
     dependencies:

@@ -1,21 +1,33 @@
-import { serialize } from "../Core/serialize.ts";
 import handlers from "../Core/handlers.ts";
-import { saveMsg } from "../Models/messages.ts";
+import { serialize } from "../Core/serialize.ts";
+import { save_message } from "../Models/Messages.ts";
 import type { BaileysEventMap, WASocket } from "baileys";
 
 export default class MessageUpsert {
-	private client: WASocket;
-	private data: BaileysEventMap["messages.upsert"];
+	client: WASocket;
+	event: BaileysEventMap["messages.upsert"];
 
 	constructor(client: WASocket, upserts: BaileysEventMap["messages.upsert"]) {
 		this.client = client;
-		this.data = upserts;
+		this.event = upserts;
+		this.upsert();
 	}
 
-	async create(): Promise<void> {
-		const msg = this.data.messages[0];
-		const cloned = structuredClone(JSON.parse(JSON.stringify(msg)));
-		const serialized = await serialize(this.client, cloned);
-		await Promise.all([handlers(serialized), saveMsg(serialized)]);
+	private async upsert() {
+		const event = this.event;
+		await Promise.all([save_message(event), this.hookMessages(event.messages)]);
+	}
+
+	private async hookMessages(
+		messages: BaileysEventMap["messages.upsert"]["messages"]
+	) {
+		for (const message of messages) {
+			await handlers(
+				await serialize(
+					this.client,
+					structuredClone(JSON.parse(JSON.stringify(message)))
+				)
+			);
+		}
 	}
 }

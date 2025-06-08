@@ -17,8 +17,9 @@
 		"lint": "eslint --fix",
 		"prestart": "tsc",
 		"start": "pm2 start ./lib/src/Core/client.js --attach",
+		"stop": "pm2 delete all",
 		"restart": "pm2 delete all && pnpm start",
-		"dev": "tsx ./src/messaging/client.ts"
+		"dev": "tsx ./src/Core/client.ts"
 	},
 	"packageManager": "pnpm@10.10.0",
 	"dependencies": {
@@ -37,7 +38,7 @@
 		"pdfkit": "^0.17.1",
 		"pg": "^8.16.0",
 		"pm2": "^6.0.8",
-		"quantava": "^2.5.0",
+		"quantava": "^2.5.1",
 		"sharp": "^0.34.2"
 	},
 	"devDependencies": {

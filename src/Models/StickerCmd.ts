@@ -7,7 +7,7 @@ const StickerCMD = database.define(
 		filesha256: { type: DataTypes.STRING, primaryKey: true },
 		cmdname: { type: DataTypes.STRING },
 	},
-	{ timestamps: false },
+	{ timestamps: false }
 );
 
 export const getStickerCmd = async function (filesha256: string) {
@@ -20,13 +20,13 @@ export const getStickerCmd = async function (filesha256: string) {
 
 export const setStickerCmd = async function (
 	filesha256: string,
-	cmdname: string,
+	cmdname: string
 ) {
 	const doesexits = await StickerCMD.findOne({ where: { filesha256 } });
 	if (doesexits) {
 		return await StickerCMD.update(
 			{ filesha256, cmdname },
-			{ where: { filesha256, cmdname } },
+			{ where: { filesha256, cmdname } }
 		);
 	} else {
 		return await StickerCMD.create({ filesha256, cmdname });

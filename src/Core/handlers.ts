@@ -1,8 +1,7 @@
 import lang from "../Utils/lang.ts";
 import { commands } from "./plugin.ts";
-import { getStickerCmd } from "../Models/sticker.ts";
-import { canProceed, resetIfExpired } from "../Models/ratelimter.ts";
-import type { Serialize } from "../Types/index.ts";
+import { getStickerCmd, canProceed, resetIfExpired } from "../Models/index.ts";
+import type { Serialize } from "./serialize.ts";
 
 export default async function (message: Serialize) {
 	const { sudo, sender, prefix, text, mode, isGroup, send } = message;
@@ -15,7 +14,7 @@ export default async function (message: Serialize) {
 				console.error(e);
 			}
 		},
-		5 * 60 * 1000,
+		5 * 60 * 1000
 	);
 
 	await Promise.all([
@@ -53,7 +52,7 @@ export default async function (message: Serialize) {
 						await cmd.function(message, match[2] ?? "");
 					} catch (e) {
 						await message.send(
-							`\`\`\`An error occured while running ${cmd.name?.toString().toLowerCase().split(/\W+/)[2]} command\`\`\``,
+							`\`\`\`An error occured while running ${cmd.name?.toString().toLowerCase().split(/\W+/)[2]} command\`\`\``
 						);
 						console.error(e);
 					}

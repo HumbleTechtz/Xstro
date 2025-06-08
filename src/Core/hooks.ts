@@ -1,15 +1,13 @@
-import {
-	updateMetaGroup,
-	cachedGroupMetadataAll,
-	cachedGroupMetadata,
-} from "../Models/group.ts";
-import { getAutoMute } from "../Models/automute.ts";
+import lang from "../Utils/lang.ts";
 import {
 	getCurrentTimeString,
 	startClockAlignedScheduler,
 } from "../Utils/constants.ts";
-import lang from "../Utils/lang.ts";
-import { getAutoKick } from "../Models/autokick.ts";
+import {
+	updateMetaGroup,
+	cachedGroupMetadataAll,
+	getAutoMute,
+} from "../Models/index.ts";
 import type { WASocket } from "baileys";
 
 export default function (sock: WASocket) {
@@ -27,7 +25,6 @@ export default function (sock: WASocket) {
 
 	setTimeout(() => {
 		fetchAndUpdateGroups();
-		autoKick(sock);
 		setInterval(fetchAndUpdateGroups, 45 * 1000);
 		startClockAlignedScheduler(() => groupAutoMute(sock));
 	}, 5000);
@@ -43,7 +40,7 @@ async function groupAutoMute(client: WASocket) {
 
 		const isGroupLocked = await client.groupMetadata(jid).then(
 			metadata => metadata?.announce === true,
-			() => false,
+			() => false
 		);
 
 		if (currentTime === automute.startTime.toLowerCase() && !isGroupLocked) {
@@ -66,25 +63,4 @@ async function groupAutoMute(client: WASocket) {
 			continue;
 		}
 	}
-}
-
-export async function autoKick(client: WASocket) {
-	client.ev.on("group-participants.update", async update => {
-		const groupJid = update.id;
-		const groupInfo = await cachedGroupMetadata(groupJid);
-		const addedParticipants = update.participants ?? [];
-
-		const useLid = groupInfo.addressingMode === "lid";
-
-		const autoKickList = await getAutoKick(groupJid);
-
-		if (!autoKickList.length) return;
-
-		for (const user of addedParticipants) {
-			const identifier = useLid ? user.split(":")[1] : user;
-			if (autoKickList.includes(identifier)) {
-				await client.groupParticipantsUpdate(groupJid, [user], "remove");
-			}
-		}
-	});
 }

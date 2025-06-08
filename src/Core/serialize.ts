@@ -7,7 +7,6 @@ import {
 	jidNormalizedUser,
 	normalizeMessageContent,
 } from "baileys";
-import { getSettings } from "../Models/index.ts";
 import {
 	forwardM,
 	getMessageContent,
@@ -23,7 +22,9 @@ import type {
 	WAMessageKey,
 	WASocket,
 } from "baileys";
+import { isSudo } from "../Models/Sudo.ts";
 import type { MessageMisc } from "../Types/index.ts";
+import { getMode, getPrefix } from "../Models/Settings.ts";
 
 export async function serialize(client: WASocket, WAMessage: WAMessage) {
 	const normalizedMessages = {
@@ -31,9 +32,6 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 		message: normalizeMessageContent(WAMessage?.message),
 	};
 	const { key, message, broadcast, ...messages } = normalizedMessages;
-	const { prefix, mode, banned, disablecmd, disablegc, disabledm, sudo } =
-		await getSettings();
-
 	const jid = key.remoteJid as string;
 	const isGroup = isJidGroup(jid) as boolean;
 	const jidOwner = jidNormalizedUser(client?.user?.id);
@@ -48,15 +46,12 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 	const content = getMessageContent(message);
 	const quoted = getQuotedContent(message, key, [jidOwner, lidOwner]);
 
-	const isSudoUser = (user?: string) =>
-		sudo.includes(user ?? "") || user === jidOwner || user === lidOwner;
-
 	key.fromMe = [jidOwner, lidOwner].includes(sender);
 
 	return {
 		send: async function (
 			content: string | Buffer,
-			options?: MessageMisc & Partial<AnyMessageContent>,
+			options?: MessageMisc & Partial<AnyMessageContent>
 		) {
 			const message = await prepareMessage(client, content, {
 				jid: this.jid,
@@ -70,7 +65,7 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 		forward: async function (
 			jid: string,
 			message: WAMessage,
-			options?: WAContextInfo & { quoted: WAMessage },
+			options?: WAContextInfo & { quoted: WAMessage }
 		) {
 			return await forwardM(client, jid, message, options);
 		},
@@ -86,7 +81,7 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 					this.jid,
 					this.mtype === "imageMessage"
 						? { image: media, caption: text, edit: msg?.key ?? this.key }
-						: { video: media, caption: text, edit: msg?.key ?? this.key },
+						: { video: media, caption: text, edit: msg?.key ?? this.key }
 				);
 			}
 			return await client.sendMessage(this.jid, { text, edit: this.key });
@@ -104,7 +99,7 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 							timestamp: Date.now(),
 						},
 					},
-					this.jid,
+					this.jid
 				);
 			}
 			return await client.sendMessage(this.jid, { delete: key });
@@ -123,7 +118,8 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 
 			if (this?.mention?.length! > 0) {
 				let mentionedId = this.mention?.[0];
-				if (isLidUser(mentionedId) || isJidUser(mentionedId)) return mentionedId;
+				if (isLidUser(mentionedId) || isJidUser(mentionedId))
+					return mentionedId;
 				mentionedId = mentionedId?.replace(/\D+/g, "") + "@s.whatsapp.net";
 				try {
 					const result = await client.onWhatsApp(mentionedId);
@@ -139,21 +135,17 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 		key,
 		jid,
 		isGroup,
-		prefix,
+		prefix: await getPrefix(),
 		sender,
-		mode,
-		banned,
-		disablecmd,
-		disablegc,
-		disabledm,
+		mode: await getMode(),
 		broadcast,
 		owner: { jid: jidOwner, lid: lidOwner },
 		mention: quoted?.mentionedJid,
 		device: getDevice(key?.id ?? ""),
-		sudo: isSudoUser(sender),
+		sudo: await isSudo(sender),
 		quoted: quoted
 			? {
-					sudo: isSudoUser(quoted.sender),
+					sudo: await isSudo(quoted.sender),
 					...quoted,
 				}
 			: undefined,
@@ -162,3 +154,6 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 		...client,
 	};
 }
+
+export type Serialize =
+	ReturnType<typeof serialize> extends Promise<infer T> ? T : undefined;

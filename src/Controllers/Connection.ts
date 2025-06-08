@@ -1,7 +1,7 @@
 import { Boom } from "@hapi/boom";
 import { DisconnectReason, jidNormalizedUser } from "baileys";
 import { syncPlugins } from "../Core/plugin.ts";
-import { setSudo } from "../Models/index.ts";
+import { SetSudo } from "../Models/Sudo.ts";
 import { auth, sendStart } from "../Utils/index.ts";
 import type { BaileysEventMap, WASocket } from "baileys";
 
@@ -31,17 +31,16 @@ export default class Connection {
 
 	private async handleConnecting() {
 		console.info("Connecting to WhatsApp...");
-		await syncPlugins("../plugins", [".ts", ".js", ".mjs"]);
+		await syncPlugins("../../plugins", [".ts", ".js", ".mjs"]);
 		console.info("Plugins Synced");
 	}
 
 	private async handleClose(
-		lastDisconnect?: BaileysEventMap["connection.update"]["lastDisconnect"],
+		lastDisconnect?: BaileysEventMap["connection.update"]["lastDisconnect"]
 	) {
 		const error = lastDisconnect?.error as Boom;
 		const reason = error?.output?.statusCode;
 
-		/** List of disconnect reasons that warrant a safe exit */
 		const resetReasons = [
 			DisconnectReason.connectionClosed,
 			DisconnectReason.connectionLost,
@@ -55,41 +54,32 @@ export default class Connection {
 		];
 
 		if (resetReasons.includes(reason)) {
-			console.warn(`Disconnected: ${reason} — resetting`);
-			process.exit(0);
+			console.warn(`Disconnected: ${reason} — restarting`);
+			exit();
 		} else if (resetWithClearStateReasons.includes(reason)) {
-			console.warn(`Critical error: ${reason} — clearing state and exiting`);
-			/** Clean up memory */
-			this.client.ev.flush(true);
-			/** Close the websocket */
-			await this.client.ws.close();
-			/** Clear the authenication state */
+			console.error(`Critical error: ${reason} — clearing state and exiting`);
 			await auth.truncate();
-
-			console.log("Cleared auth state");
-			process.exit(1);
+			exit();
 		} else if (reason === DisconnectReason.restartRequired) {
 			console.info("Restart required — exiting to allow restart");
 			process.exit(0);
 		} else {
 			console.error("Unexpected disconnect reason:", reason);
-			try {
-				await auth.truncate();
-				console.log("Cleared auth state");
-			} catch (e) {
-				console.error("Failed to clear auth state:", e);
-			}
-			console.log("Please re-pair again");
-			process.exit(1);
+			await auth.truncate();
+			exit();
 		}
 	}
 
 	private async handleOpen() {
 		console.info("Connected to WhatsApp");
 		await sendStart(this.client);
-		await setSudo([
+		await SetSudo(
 			jidNormalizedUser(this.client?.user?.id),
-			jidNormalizedUser(this.client?.user?.lid),
-		]);
+			jidNormalizedUser(this.client?.user?.lid)
+		);
 	}
+}
+
+function exit() {
+	return process.exit();
 }
