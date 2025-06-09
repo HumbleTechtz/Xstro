@@ -14,9 +14,9 @@ Command({
 			);
 		}
 
-		await setPrefix([args]);
+		await setPrefix([...args.split("")]);
 		return await msg.send(
-			`_Bot prefix updated to "${args}"_\nUsage: ${args}ping`,
+			`_Bot prefix updated to "${args}"_\nUsage: ${args.split("")[0]}ping`,
 		);
 	},
 });

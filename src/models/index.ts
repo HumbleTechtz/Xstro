@@ -7,6 +7,8 @@ export * from "./AutoMute.ts";
 export * from "./Ban.ts";
 export * from "./Filters.ts";
 export * from "./GroupCache.ts";
+export * from "./GroupEvents.ts";
+export * from "./GroupJoin.ts";
 export * from "./LeaderBoard.ts";
 export * from "./Messages.ts";
 export * from "./RateLimiter.ts";

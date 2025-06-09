@@ -6,55 +6,50 @@ export const Autokick = database.define(
 	"autokick",
 	{
 		groupJid: { type: DataTypes.STRING, primaryKey: true },
-		jid: { type: DataTypes.STRING, allowNull: false },
-		lid: { type: DataTypes.STRING, allowNull: false },
-		users: { type: DataTypes.JSON, allowNull: false },
+		jid: { type: DataTypes.STRING, allowNull: true },
+		lid: { type: DataTypes.STRING, allowNull: true },
 	},
 	{ timestamps: false },
 );
 
 export async function addAutoKick(
 	groupJid: string,
-	jid: string,
-	lid: string,
-	userJids: string[],
+	jid: string | null,
+	lid: string | null,
 ) {
 	const entry = (await Autokick.findOne({
 		where: { groupJid },
 	})) as unknown as AutoKickModel | null;
 
 	if (entry) {
-		const currentUsers = entry.users;
-		const updated = Array.from(new Set([...currentUsers, ...userJids]));
-		return Autokick.update({ users: updated }, { where: { groupJid } });
+		await Autokick.update({ jid, lid }, { where: { groupJid } });
 	} else {
-		return Autokick.create({ groupJid, jid, lid, users: userJids });
+		await Autokick.create({ groupJid, jid, lid });
 	}
 }
 
-export async function getAutoKick(groupJid: string): Promise<string[]> {
+export async function getAutoKick(
+	groupJid: string,
+	id: string,
+): Promise<boolean> {
 	const entry = (await Autokick.findOne({
 		where: { groupJid },
 	})) as unknown as AutoKickModel | null;
-	return entry ? entry.users : [];
+
+	if (!entry) return false;
+
+	return entry.jid === id || entry.lid === id;
 }
 
-export async function delAutoKick(groupJid: string, userJids: string[]) {
-	const entry = (await Autokick.findOne({
-		where: { groupJid },
-	})) as unknown as AutoKickModel | null;
-	if (!entry) return;
-
-	const filtered = entry.users.filter(u => !userJids.includes(u));
-	if (!filtered.length) return Autokick.destroy({ where: { groupJid } });
-
-	return Autokick.update({ users: filtered }, { where: { groupJid } });
+export async function delAutoKick(groupJid: string) {
+	await Autokick.destroy({ where: { groupJid } });
 }
 
 export async function getAllAutoKicks() {
 	const all = (await Autokick.findAll()) as unknown as AutoKickModel[];
 	return all.map(entry => ({
 		groupJid: entry.groupJid,
-		participants: entry.users,
+		jid: entry.jid,
+		lid: entry.lid,
 	}));
 }

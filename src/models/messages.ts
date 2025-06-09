@@ -9,7 +9,7 @@ const Messages = database.define("messages", {
 });
 
 export const save_message = async (
-	event: BaileysEventMap["messages.upsert"]
+	event: BaileysEventMap["messages.upsert"],
 ) => {
 	if (!event?.messages?.[0]?.key?.id) return;
 	const id = event.messages[0].key.id;

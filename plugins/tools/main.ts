@@ -1,4 +1,3 @@
-import { readFile } from "node:fs/promises";
 import { Command } from "../../src/Core/plugin.ts";
 import {
 	fetch,
@@ -6,9 +5,8 @@ import {
 	urlBuffer,
 	lyrics,
 	upload,
+	logo,
 } from "../../src/Utils/index.ts";
-import { cwd } from "node:process";
-import path from "node:path";
 
 Command({
 	name: "url",
@@ -131,7 +129,6 @@ Command({
 	desc: "Get the url to the bot source code",
 	type: "group",
 	function: async m => {
-		const logo = await readFile(path.join(cwd(), "src", "media", "social.jpg"));
 		return await m.sendMessage(m.jid, {
 			text: "```Source Code\nhttps://github.com/AstroXTeam/whatsapp-bot```",
 			contextInfo: {

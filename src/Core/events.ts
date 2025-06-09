@@ -19,7 +19,7 @@ export default function (
 		if (events["messages.upsert"])
 			new MessageUpsert(clientSocket, events["messages.upsert"]);
 
-		if (events["group-participants.update"] || events["group.join-request"])
-			new GroupParticipant(clientSocket);
+		if (events["group-participants.update"])
+			new GroupParticipant(clientSocket, events["group-participants.update"]);
 	});
 }
