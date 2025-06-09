@@ -121,5 +121,4 @@ This project is licensed under the [MIT License](LICENSE).
 **[ffmpeg](https://ffmpeg.org/)**  
 **[Baileys](https://github.com/WhiskeySockets/Baileys)**
 
-**Made with 💙 <a href="https://github.com/AstroX11" target="_blank"><strong>AstroX11</strong></a>
-<img src="https://avatars.githubusercontent.com/u/188756392?s=200&v=4" alt="AstroX11" width="24" height="24" style="border-radius: 50%; vertical-align: middle;"/>**
+**Made with 💙 <a href="https://github.com/AstroX11" target="_blank"><strong>AstroX11</strong></a>**
