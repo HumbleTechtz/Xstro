@@ -1,17 +1,12 @@
 # `xstro`
 
 > [!IMPORTANT]
-> **Use at Your Own Risk**
 > WhatsApp’s [Terms of Service](https://www.whatsapp.com/legal/terms-of-service) **explicitly prohibit the use of unauthorized third-party automation tools** that interact with its platform. This includes bots, automation frameworks, and reverse-engineered clients. **Violations can result in permanent bans or legal action.**
->
-> Be vigilant against scammers and social engineering. The project maintainers will **never ask for your WhatsApp session or credentials**.
-> For full security information and user responsibilities, see [Security Notice](#security-notice).
->
 > By using this project, you acknowledge and accept all associated risks and liabilities.
 
 <div align="center">
   <img src="https://avatars.githubusercontent.com/u/188756392?s=200&v=4" height="96" alt="xstro logo" />
-  <h4>Open Source WhatsApp Automation that has the ability to send, receive, manage, and process WhatsApp messages and events. It provides a reliable way to automate WhatsApp interactions for personal and small project usage.</h4>
+  <h4>Xstro is an Open Source WhatsApp Automation that has the ability to send, receive, manage, and process WhatsApp messages and events. It provides a reliable way to automate WhatsApp interactions for personal and small project usage.</h4>
   <p>
     <a href="https://github.com/AstroXTeam/whatsapp-bot/actions"><img src="https://img.shields.io/github/actions/workflow/status/AstroXTeam/whatsapp-bot/docker-image.yml?branch=stable&style=flat-square" alt="CI Status" /></a>
     <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="License" /></a>
@@ -21,13 +16,10 @@
 
 ## Getting Started
 
-### Prerequisites
+#### Prerequisites (Windows | VPS)
 
 - [Node.js 24](https://nodejs.org/)
-- [Pnpm](https://pnpm.io/) and [Yarn](https://yarnpkg.com/)
 - [Ffmpeg](https://ffmpeg.org/)
-
-### Installation
 
 ```bash
 npm i -g pnpm yarn
@@ -35,6 +27,17 @@ git clone --branch stable https://github.com/AstroXTeam/whatsapp-bot.git
 cd whatsapp-bot
 pnpm install
 ```
+
+## Features
+
+- **Send & Receive Messages:** Automate replies or notifications.
+- **Group Messaging:** Send messages to groups you manage or participate in.
+- **Media Support:** Send and receive images, stickers, audio, and documents (requires ffmpeg for some features).
+- **Custom Scripting:** Add your own logic or plugins in the `src/` directory.
+- **Simple Deployment:** Run on Heroku, Koyeb, Render, Replit, Pterodactyl, or your own VPS.
+- **No Data Collection:** Your credentials and sessions are always local to your deployment.
+
+> **Note:** Feature set will evolve over time.
 
 ## Deployment
 
@@ -98,74 +101,13 @@ Deploy easily on these platforms, or use your own server:
    - You can add custom modules or plugins for your use case.
    - For more advanced configuration, see comments in the source files.
 
-## Usage
-
-Start the bot:
-
-```bash
-pnpm start
-```
-
-- A pairing code or QR code will appear in your terminal or logs. Scan this on WhatsApp to authenticate your device.
-- The bot will start and listen for messages, events, or commands as defined in your configuration.
-
-For more usage examples and advanced options, see [`docs/USAGE.md`](docs/USAGE.md) if available.
-
-## Features
-
-- **Send & Receive Messages:** Automate replies or notifications.
-- **Group Messaging:** Send messages to groups you manage or participate in.
-- **Media Support:** Send and receive images, stickers, audio, and documents (requires ffmpeg for some features).
-- **Custom Scripting:** Add your own logic or plugins in the `src/` directory.
-- **Simple Deployment:** Run on Heroku, Koyeb, Render, Replit, Pterodactyl, or your own VPS.
-- **No Data Collection:** Your credentials and sessions are always local to your deployment.
-
-> **Note:** Feature set may evolve over time. See the project source and workflow status for updates.
-
 ## Contributing
 
 We welcome and appreciate contributions from the community!  
 If you have ideas, improvements, bugfixes, or want to add new features, please follow the steps below:
-
-1. **Read the Guidelines**
-
-   - Please review our [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines, and our [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for community standards.
-
-2. **Getting Started**
-
-   - Fork this repository and clone it to your local machine.
-   - Create a new branch for your feature or fix:
-     ```bash
-     git checkout -b feature/my-feature
-     ```
-   - Make your changes, write clear commit messages, and include tests if possible.
-
-3. **Linting & Testing**
-
-   - Run `pnpm lint` (mandatory) to ensure your code meets formatting and style guidelines.
-   - Run `pnpm test` (if available) to ensure nothing is broken and your contribution is stable.
-
-4. **Pull Requests Only**
-   - Once your changes are ready, push your branch to your fork and open a Pull Request (PR) against the `stable` branch.
-   - Clearly describe what your PR changes, reference any related context, and include steps to reproduce or test if applicable.
-   - Be responsive to feedback and willing to make necessary adjustments.
-   - Only Pull Requests are considered for changes; issues and discussions are currently disabled.
+Please review our [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines, and our [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for community standards.
 
 **Thank you! Your contributions are what drive this project forward.**
-
-## Security Notice
-
-Security is critical when using automation tools that interact with private accounts and data.
-
-- **Never share your session credentials, QR codes, or tokens with anyone.**
-- **Do not run this bot on untrusted, public, or shared servers.** Your WhatsApp session can be hijacked if unauthorized parties access your deployment or log files.
-- **Keep your `.env` and configuration files secure.** These files may contain sensitive information.
-- **Always review any code or plugins you add.** Malicious code can compromise your WhatsApp account, leak your data, or perform unwanted actions.
-- **Understand the risks:** WhatsApp may permanently ban or restrict accounts using automation tools. You are solely responsible for any consequences resulting from your use of this project.
-- The maintainers of this project will never ask for your WhatsApp QR code, session, phone number, or any sensitive credentials.
-- If you ever suspect a security issue or have concerns, immediately stop the bot, review your environment, and reset your WhatsApp session.
-
-By using this tool, you agree to accept all risks and responsibilities that come with automation.
 
 ## License
 
