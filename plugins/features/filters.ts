@@ -4,7 +4,7 @@ import {
 	setFilter,
 	delFilter,
 	getAllFilters,
-} from "../../src/Models/filter.ts";
+} from "../../src/Models/index.ts";
 import { escapeRegex } from "../group/antiword.ts";
 
 Command({

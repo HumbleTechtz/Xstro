@@ -1,5 +1,7 @@
 import ConnectionUpdate from "../Controllers/Connection.ts";
 import MessageUpsert from "../Controllers/MessageUpsert.ts";
+import GroupParticipant from "../Controllers/Participants.ts";
+import Calls from "../Controllers/Calls.ts";
 import type { WASocket } from "baileys";
 
 export default function (
@@ -9,10 +11,15 @@ export default function (
 	clientSocket.ev.process(async events => {
 		if (events["creds.update"]) await saveCreds();
 
+		if (events.call) new Calls(clientSocket, events.call);
+
 		if (events["connection.update"])
 			new ConnectionUpdate(clientSocket, events["connection.update"]);
 
 		if (events["messages.upsert"])
 			new MessageUpsert(clientSocket, events["messages.upsert"]);
+
+		if (events["group-participants.update"] || events["group.join-request"])
+			new GroupParticipant(clientSocket);
 	});
 }

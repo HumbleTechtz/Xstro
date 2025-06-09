@@ -1,6 +1,7 @@
+import { generateMessageIDV2 } from "baileys";
 import { Command } from "../../src/Core/plugin.ts";
-import { getAntidelete, setAntidelete } from "../../src/Models/antidelete.ts";
-import { loadMesage } from "../../src/Models/messages.ts";
+import { getAntidelete, setAntidelete } from "../../src/Models/index.ts";
+import { getMessage } from "../../src/Models/index.ts";
 
 Command({
 	name: "antidelete",
@@ -65,9 +66,21 @@ Command({
 		const messageKey = protocolMessage.key;
 		if (!messageKey?.id) return;
 
-		const m = await loadMesage(messageKey);
+		const m = await getMessage(messageKey);
 		if (!m) return;
 
-		await msg.forward(msg.isGroup ? msg.jid : msg.owner.jid, m, { quoted: msg });
+		await msg.forward(
+			msg.isGroup ? msg.jid : msg.owner.jid,
+			{
+				key: {
+					id: generateMessageIDV2(msg.owner.jid),
+					remoteJid: msg.isGroup ? msg.jid : msg.owner.jid,
+					fromMe: true,
+					participant: msg.isGroup ? msg.owner.jid : undefined,
+				},
+				message: m,
+			},
+			{ quoted: msg },
+		);
 	},
 });

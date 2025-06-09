@@ -1,5 +1,5 @@
 import { Command, commands } from "../../src/Core/plugin.ts";
-import { removeStickerCmd, setStickerCmd } from "../../src/Models/sticker.ts";
+import { removeStickerCmd, setStickerCmd } from "../../src/Models/index.ts";
 
 Command({
 	name: "setcmd",
