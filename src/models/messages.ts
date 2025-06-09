@@ -9,13 +9,15 @@ const Messages = database.define("messages", {
 });
 
 export const save_message = async (
-	event: BaileysEventMap["messages.upsert"],
+	event: BaileysEventMap["messages.upsert"]
 ) => {
 	if (!event?.messages?.[0]?.key?.id) return;
 	const id = event.messages[0].key.id;
 	const requestId = event.requestId ?? null;
 
-	await Messages.create({ id, messages: event.messages[0], requestId });
+	try {
+		await Messages.create({ id, messages: event.messages[0], requestId });
+	} catch {}
 };
 
 export const getMessage = async (key: WAMessageKey) => {
