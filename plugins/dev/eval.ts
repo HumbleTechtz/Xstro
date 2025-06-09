@@ -1,5 +1,5 @@
 import util from "util";
-import { Command } from "../src/Core/plugin.ts";
+import { Command } from "../../src/Core/plugin.ts";
 
 Command({
 	on: true,

@@ -1,5 +1,5 @@
-import { Command } from "../src/Core/plugin.ts";
-import { askAI } from "../src/Utils/scraper.mts";
+import { Command } from "../../src/Core/plugin.ts";
+import { askAI } from "../../src/Utils/scraper.mts";
 
 Command({
 	name: "ai",

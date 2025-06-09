@@ -14,20 +14,19 @@
 		"node": ">=23"
 	},
 	"scripts": {
-		"lint": "eslint --fix",
-		"build": "tsc",
+		"postinstall": "eslint . && tsc",
+		"test": "pnpm lint && tsx ./src/Core/client.ts",
 		"start": "pm2 start ./lib/src/Core/client.js --attach",
-		"stop": "pm2 delete all",
-		"restart": "pm2 delete all && pnpm start",
-		"dev": "tsx ./src/Core/client.ts"
+		"stop": "pm2 stop 0",
+		"restart": "pm2 delete all && pnpm start"
 	},
 	"packageManager": "pnpm@10.10.0",
 	"dependencies": {
-		"@cacheable/node-cache": "^1.5.5",
+		"@cacheable/node-cache": "^1.5.6",
 		"@hapi/boom": "^10.0.1",
 		"baileys": "github:WhiskeySockets/Baileys",
 		"canvas": "^3.1.0",
-		"cheerio": "^1.0.0",
+		"cheerio": "^1.1.0",
 		"dotenv": "^16.5.0",
 		"file-type": "21.0.0",
 		"form-data": "^4.0.3",
@@ -44,9 +43,9 @@
 	"devDependencies": {
 		"@types/node": "^22.15.30",
 		"@types/pg": "^8.15.4",
-		"@typescript-eslint/eslint-plugin": "^8.33.1",
-		"@typescript-eslint/parser": "^8.33.1",
-		"@typescript-eslint/utils": "^8.33.1",
+		"@typescript-eslint/eslint-plugin": "^8.34.0",
+		"@typescript-eslint/parser": "^8.34.0",
+		"@typescript-eslint/utils": "^8.34.0",
 		"eslint": "^9.28.0",
 		"eslint-config-prettier": "^10.1.5",
 		"eslint-plugin-prettier": "^5.4.1",

@@ -1,5 +1,5 @@
-import { Command } from "../src/Core/plugin.ts";
-import { update } from "../src/Utils/updater.ts";
+import { Command } from "../../src/Core/plugin.ts";
+import { update } from "../../src/Utils/updater.ts";
 
 Command({
 	name: "update",

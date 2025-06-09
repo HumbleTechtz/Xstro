@@ -10,5 +10,5 @@ export * from "./send-msg.ts";
 export * from "./scraper.mts";
 export * from "./useSqliteAuthState.ts";
 export const logo = await readFile(
-	path.join(cwd(), "src", "media", "social.jpg"),
+	path.join(cwd(), "src", "Media", "social.png"),
 );

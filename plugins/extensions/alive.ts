@@ -1,5 +1,5 @@
-import { Command } from "../src/Core/plugin.ts";
-import { getAlive, SetAlive } from "../src/Models/index.ts";
+import { Command } from "../../src/Core/plugin.ts";
+import { getAlive, SetAlive } from "../../src/Models/index.ts";
 
 Command({
 	name: "alive",
