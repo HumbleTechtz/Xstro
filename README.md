@@ -49,7 +49,7 @@ Deploy easily on these platforms, or use your own server:
 <div align="center">
 
 <a href="#heroku" target="_blank"><img src="https://img.shields.io/badge/-Heroku-black?style=for-the-badge&logo=heroku&logoColor=white" alt="Deploy to Heroku"></a>
-<a href="https://app.koyeb.com/deploy?name=xstro&repository=AstroX11%2FXstro&branch=stable&builder=dockerfile" target="_blank"><img src="https://img.shields.io/badge/-Koyeb-black?style=for-the-badge&logo=koyeb&logoColor=white" alt="Deploy to Koyeb"></a>
+<a href="https://app.koyeb.com/deploy?name=whatsapp-bot&repository=AstroXTeam%2Fwhatsapp-bot&branch=stable&builder=dockerfile&instance_type=free&instances_min=0&autoscaling_sleep_idle_delay=300&env%5BUSER_NUMBER%5D=&env%5BOWNER_NAME%5D=&env%5BBOT_NAME%5D=&env%5BPORT%5D=8000" target="_blank"><img src="https://img.shields.io/badge/-Koyeb-black?style=for-the-badge&logo=koyeb&logoColor=white" alt="Deploy to Koyeb"></a>
 <a href="https://render.com/deploy?repo=https://github.com/AstroX11/Xstro" target="_blank"><img src="https://img.shields.io/badge/-Render-black?style=for-the-badge&logo=render&logoColor=white" alt="Deploy to Render"></a>
 <a href="https://pterodactyl.io/" target="_blank"><img src="https://img.shields.io/badge/-Panel-black?style=for-the-badge&logo=pterodactyl&logoColor=white" alt="Deploy on Pterodactyl"></a>
 <a href="https://replit.com/github/AstroX11/Xstro" target="_blank"><img src="https://img.shields.io/badge/-Replit-black?style=for-the-badge&logo=Replit&logoColor=white" alt="Run on Replit"></a>

@@ -13,11 +13,13 @@ import hooks from "./hooks.ts";
 import useSqliteAuthState from "../Utils/useSqliteAuthState.ts";
 import { pairClient } from "./pair.ts";
 import { getMessage, cachedGroupMetadata } from "../Models/index.ts";
+import { startServer } from "./network.ts";
 
 (async () => {
 	const { state, saveCreds } = await useSqliteAuthState();
 	const { version } = await fetchLatestBaileysVersion();
 	const cache = new NodeCache();
+	startServer(config.PORT);
 
 	const sock = makeWASocket({
 		auth: {
