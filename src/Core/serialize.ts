@@ -140,10 +140,12 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 		owner: { jid: jidOwner, lid: lidOwner },
 		mention: quoted?.mentionedJid,
 		device: getDevice(key?.id ?? ""),
-		sudo: await isSudo(sender),
+		sudo: (await isSudo(sender)) ?? [jidOwner, lidOwner].includes(sender),
 		quoted: quoted
 			? {
-					sudo: await isSudo(quoted.sender),
+					sudo:
+						(await isSudo(quoted.sender)) ??
+						[jidOwner, lidOwner].includes(quoted.sender),
 					...quoted,
 				}
 			: undefined,

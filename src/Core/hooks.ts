@@ -22,7 +22,7 @@ export default function (sock: WASocket) {
 		} catch {}
 	};
 
-	setTimeout(() => {
+	setTimeout(async () => {
 		fetchAndUpdateGroups();
 		setInterval(fetchAndUpdateGroups, 45 * 1000);
 		startClockAlignedScheduler(() => groupAutoMute(sock));

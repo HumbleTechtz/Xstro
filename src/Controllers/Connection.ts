@@ -1,5 +1,5 @@
 import { Boom } from "@hapi/boom";
-import { delay, DisconnectReason, jidNormalizedUser } from "baileys";
+import { DisconnectReason, jidNormalizedUser } from "baileys";
 import { syncPlugins } from "../Core/plugin.ts";
 import { SetSudo } from "../Models/Sudo.ts";
 import { auth, sendStart } from "../Utils/index.ts";
@@ -73,7 +73,6 @@ export default class Connection {
 	private async handleOpen() {
 		console.info("Connected to WhatsApp");
 		await sendStart(this.client);
-		await delay(5000);
 		await SetSudo(
 			jidNormalizedUser(this.client?.user?.id),
 			jidNormalizedUser(this.client?.user?.lid),

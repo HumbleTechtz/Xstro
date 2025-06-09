@@ -14,7 +14,7 @@
 		"node": ">=23"
 	},
 	"scripts": {
-		"postinstall": "eslint . && tsc",
+		"postinstall": "eslint --fix && tsc",
 		"test": "pnpm lint && tsx ./src/Core/client.ts",
 		"start": "pm2 start ./lib/src/Core/client.js --attach",
 		"stop": "pm2 stop 0",
@@ -28,6 +28,7 @@
 		"canvas": "^3.1.0",
 		"cheerio": "^1.1.0",
 		"dotenv": "^16.5.0",
+		"ffmpeg-static": "^5.2.0",
 		"file-type": "21.0.0",
 		"form-data": "^4.0.3",
 		"got": "^14.4.7",

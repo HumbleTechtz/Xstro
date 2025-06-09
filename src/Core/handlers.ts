@@ -4,8 +4,6 @@ import { getStickerCmd, canProceed, resetIfExpired } from "../Models/index.ts";
 import type { Serialize } from "./serialize.ts";
 
 export default async function (message: Serialize) {
-	const { sudo, sender, prefix, text, mode, isGroup } = message;
-
 	setInterval(
 		async () => {
 			try {
@@ -20,28 +18,29 @@ export default async function (message: Serialize) {
 	await Promise.all([
 		(async () => {
 			try {
-				if (!text) return;
+				if (!message?.text) return;
 				for (const cmd of commands) {
-					const handler = prefix.find((p: string) => text.startsWith(p)) ?? "";
-					const match = text
+					const handler =
+						message.prefix.find((p: string) => message?.text?.startsWith(p)) ?? "";
+					const match = message.text
 						.slice(handler.length)
 						.match(cmd.name as string | RegExp);
 
 					if (!handler || !match) continue;
 
-					if (mode && !sudo) continue;
+					if (message.mode && !message.sudo) continue;
 
-					if (cmd.fromMe && !sudo) {
+					if (cmd.fromMe && !message.sudo) {
 						await message.send(lang.FOR_SUDO_USERS);
 						continue;
 					}
 
-					if (cmd.isGroup && !isGroup) {
+					if (cmd.isGroup && !message.isGroup) {
 						await message.send(lang.FOR_GROUPS_ONLY);
 						continue;
 					}
 
-					if (!sudo && !(await canProceed(sender!))) {
+					if (!message.sudo && !(await canProceed(message.sender!))) {
 						await message.send(lang.RATE_LIMIT_REACHED);
 						continue;
 					}
@@ -81,14 +80,14 @@ export default async function (message: Serialize) {
 					const match = sticker.cmdname.match(cmd.name! as string | RegExp);
 					if (!match) continue;
 
-					if (mode && !sudo) continue;
+					if (message.mode && !message.sudo) continue;
 
-					if (cmd.fromMe && !sudo) {
+					if (cmd.fromMe && !message.sudo) {
 						await message.send(lang.FOR_SUDO_USERS);
 						continue;
 					}
 
-					if (cmd.isGroup && !isGroup) {
+					if (cmd.isGroup && !message.isGroup) {
 						await message.send(lang.FOR_GROUPS_ONLY);
 						continue;
 					}

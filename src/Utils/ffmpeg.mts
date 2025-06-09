@@ -7,6 +7,7 @@ import { promisify } from "util";
 import Crypto from "crypto";
 import webp from "node-webpmux";
 import { fileTypeFromBuffer } from "file-type";
+import ffmpeg from "ffmpeg-static";
 
 const execAsync = promisify(exec);
 const { writeFileSync, existsSync, readFileSync, mkdirSync } = fs;
@@ -35,7 +36,7 @@ export const GIFBufferToVideoBuffer = async (
 
 	try {
 		await execAsync(
-			`ffmpeg -i "${gifPath}" -movflags faststart -pix_fmt yuv420p -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" -f mp4 "${mp4Path}"`,
+			`"${ffmpeg}" -i "${gifPath}" -movflags faststart -pix_fmt yuv420p -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" -f mp4 "${mp4Path}"`,
 		);
 		const buffer = readFileSync(mp4Path);
 		fs.unlinkSync(mp4Path);
@@ -54,7 +55,7 @@ export async function audioToBlackVideo(input: Buffer): Promise<Buffer> {
 
 	try {
 		await execAsync(
-			`ffmpeg -f lavfi -i "color=black:s=1920x1080:r=30" -i "${inputFile}" -c:v libx264 -preset ultrafast -crf 23 -c:a aac -b:a 128k -map 0:v -map 1:a -shortest "${video}"`,
+			`"${ffmpeg}" -f lavfi -i "color=black:s=1920x1080:r=30" -i "${inputFile}" -c:v libx264 -preset ultrafast -crf 23 -c:a aac -b:a 128k -map 0:v -map 1:a -shortest "${video}"`,
 		);
 		const buffer = readFileSync(video);
 		fs.unlinkSync(video);
@@ -67,10 +68,7 @@ export async function audioToBlackVideo(input: Buffer): Promise<Buffer> {
 	}
 }
 
-export async function flipMedia(
-	input: Buffer,
-	direction: string,
-): Promise<Buffer> {
+export async function flipMedia(input: Buffer, direction: string) {
 	const inputFile = await saveInputFile(input);
 	const fileType = await fileTypeFromBuffer(input);
 	const outputFile = temp(fileType?.ext!);
@@ -84,7 +82,7 @@ export async function flipMedia(
 
 	try {
 		await execAsync(
-			`ffmpeg -i "${inputFile}" -vf "${validDirections[direction]}" "${outputFile}"`,
+			`"${ffmpeg}" -i "${inputFile}" -vf "${validDirections[direction]}" "${outputFile}"`,
 		);
 		const buffer = readFileSync(outputFile);
 		fs.unlinkSync(outputFile);
@@ -103,7 +101,7 @@ export async function webpToImage(input: Buffer): Promise<Buffer> {
 	writeFileSync(inputFile, input);
 
 	try {
-		await execAsync(`ffmpeg -i "${inputFile}" "${outputImage}"`);
+		await execAsync(`"${ffmpeg}" -i "${inputFile}" "${outputImage}"`);
 		const buffer = readFileSync(outputImage);
 		fs.unlinkSync(outputImage);
 		fs.unlinkSync(inputFile);
@@ -121,7 +119,7 @@ export async function convertToMp3(input: Buffer): Promise<Buffer> {
 
 	try {
 		await execAsync(
-			`ffmpeg -i "${inputFile}" -c:a libmp3lame -b:a 192k "${outputAudio}"`,
+			`"${ffmpeg}" -i "${inputFile}" -c:a libmp3lame -b:a 192k "${outputAudio}"`,
 		);
 		const buffer = readFileSync(outputAudio);
 		fs.unlinkSync(outputAudio);
@@ -140,7 +138,7 @@ export async function toPTT(input: Buffer): Promise<Buffer> {
 
 	try {
 		await execAsync(
-			`ffmpeg -i "${inputFile}" -c:a libopus -ac 1 -ar 48000 -b:a 128k -application voip "${outputAudio}"`,
+			`"${ffmpeg}" -i "${inputFile}" -c:a libopus -ac 1 -ar 48000 -b:a 128k -application voip "${outputAudio}"`,
 		);
 		const buffer = readFileSync(outputAudio);
 		fs.unlinkSync(outputAudio);
@@ -159,7 +157,7 @@ export async function toVideo(input: Buffer): Promise<Buffer> {
 
 	try {
 		await execAsync(
-			`ffmpeg -i "${inputFile}" -c:v libx264 -crf 32 -preset slow -c:a aac -b:a 128k -ar 44100 "${outputVideo}"`,
+			`"${ffmpeg}" -i "${inputFile}" -c:v libx264 -crf 32 -preset slow -c:a aac -b:a 128k -ar 44100 "${outputVideo}"`,
 		);
 		const buffer = readFileSync(outputVideo);
 		fs.unlinkSync(outputVideo);
@@ -198,7 +196,7 @@ export const isAnimatedWebp = (filePath: Buffer): Promise<boolean> => {
 		sharp(filePath)
 			.metadata()
 			.then(metadata => {
-				resolve(metadata?.pages! > 1); // If pages > 1, it's animated
+				resolve(metadata?.pages! > 1);
 			})
 			.catch(error => {
 				reject(error);
@@ -221,7 +219,7 @@ export async function convertWebPFile(media: Buffer): Promise<Buffer> {
 				frame,
 			);
 		}
-		const ffmpegCommand = `ffmpeg -r ${fps} -i "${path.join(tempDir, "frame_%05d.png")}" \
+		const ffmpegCommand = `"${ffmpeg}" -r ${fps} -i "${path.join(tempDir, "frame_%05d.png")}" \
         -c:v libvpx-vp9 -pix_fmt yuva420p -b:v 500k -y "${tempOutput}"`;
 
 		await execAsync(ffmpegCommand);
@@ -253,7 +251,7 @@ async function imageToWebp(media: Buffer): Promise<Buffer> {
 
 	fs.writeFileSync(tmpFileIn, media);
 
-	const ffmpegCommand = `ffmpeg -i "${tmpFileIn}" -vf "scale=512:512:force_original_aspect_ratio=decrease" -c:v libwebp -quality 60 "${tmpFileOut}"`;
+	const ffmpegCommand = `"${ffmpeg}" -i "${tmpFileIn}" -vf "scale=512:512:force_original_aspect_ratio=decrease" -c:v libwebp -quality 60 "${tmpFileOut}"`;
 
 	try {
 		const { stderr } = await execAsync(ffmpegCommand);
@@ -282,7 +280,7 @@ async function videoToWebp(media: Buffer): Promise<Buffer> {
 
 	fs.writeFileSync(tmpFileIn, media);
 
-	const ffmpegCommand = `ffmpeg -i "${tmpFileIn}" -vf "scale=512:512:force_original_aspect_ratio=decrease,pad=512:512:(ow-iw)/2:(oh-ih)/2:color=0x00000000,fps=15" -c:v libwebp -loop 0 -preset default -t 00:00:10 -q:v 40 -fs 500k -pix_fmt yuva420p "${tmpFileOut}"`;
+	const ffmpegCommand = `"${ffmpeg}" -i "${tmpFileIn}" -vf "scale=512:512:force_original_aspect_ratio=decrease,pad=512:512:(ow-iw)/2:(oh-ih)/2:color=0x00000000,fps=15" -c:v libwebp -loop 0 -preset default -t 00:00:10 -q:v 40 -fs 500k -pix_fmt yuva420p "${tmpFileOut}"`;
 
 	try {
 		const { stderr } = await execAsync(ffmpegCommand);
@@ -439,12 +437,8 @@ export async function trimVideo(
 	const outputVideo = temp("mp4");
 
 	try {
-		// The -ss parameter specifies the start time
-		// The -to parameter specifies the end time
-		// Using these parameters before -i would be faster (seeking) but less accurate
-		// Using them after -i is slower but more accurate for frame-exact cutting
 		await execAsync(
-			`ffmpeg -i "${inputFile}" -ss ${startTime} -to ${endTime} -c:v libx264 -c:a aac -strict experimental -b:a 128k "${outputVideo}"`,
+			`"${ffmpeg}" -i "${inputFile}" -ss ${startTime} -to ${endTime} -c:v libx264 -c:a aac -strict experimental -b:a 128k "${outputVideo}"`,
 		);
 
 		const buffer = readFileSync(outputVideo);

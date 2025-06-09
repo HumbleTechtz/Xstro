@@ -3,7 +3,6 @@ FROM node:24.1.0
 RUN apt-get update && \
     apt-get install -y \
     git \
-    ffmpeg \
     build-essential \
     python3 \
     python3-pip \
