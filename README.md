@@ -109,16 +109,4 @@ Please review our [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines, an
 
 **Thank you! Your contributions are what drive this project forward.**
 
-## License
-
-This project is licensed under the [MIT License](LICENSE).
-
-## Acknowledgements
-
-**[Baileys](https://github.com/WhiskeySockets/Baileys)**  
-**[Node.js](https://nodejs.org/)**  
-**[TypeScript](https://www.typescriptlang.org/)**  
-**[ffmpeg](https://ffmpeg.org/)**  
-**[Baileys](https://github.com/WhiskeySockets/Baileys)**
-
 **Made with 💙 <a href="https://github.com/AstroX11" target="_blank"><strong>AstroX11</strong></a>**
