@@ -15,7 +15,7 @@
 	},
 	"scripts": {
 		"lint": "eslint --fix",
-		"prestart": "tsc",
+		"build": "tsc",
 		"start": "pm2 start ./lib/src/Core/client.js --attach",
 		"stop": "pm2 delete all",
 		"restart": "pm2 delete all && pnpm start",
