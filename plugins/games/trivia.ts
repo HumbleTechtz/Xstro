@@ -170,6 +170,7 @@ async function endTriviaGame(msg: any, game: TriviaGame) {
 
 Command({
 	on: true,
+	dontAddCommandList: true,
 	function: async message => {
 		const game = activeGames.get(message.jid);
 		if (!game) return;

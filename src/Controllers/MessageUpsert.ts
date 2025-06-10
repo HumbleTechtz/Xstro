@@ -14,20 +14,21 @@ export default class MessageUpsert {
 	}
 
 	private async upsert() {
-		const event = this.event;
-		await Promise.all([save_message(event), this.hookMessages(event.messages)]);
+		const { messages } = this.event;
+		await Promise.allSettled([
+			save_message(this.event),
+			this.hookMessages(messages),
+		]);
 	}
 
 	private async hookMessages(
 		messages: BaileysEventMap["messages.upsert"]["messages"],
 	) {
-		for (const message of messages) {
-			await handlers(
-				await serialize(
-					this.client,
-					structuredClone(JSON.parse(JSON.stringify(message))),
-				),
-			);
-		}
+		const messagePromises = messages.map(async message => {
+			const serialized = await serialize(this.client, structuredClone(message));
+			return handlers(serialized);
+		});
+
+		await Promise.allSettled(messagePromises);
 	}
 }

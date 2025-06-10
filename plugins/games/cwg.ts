@@ -74,6 +74,7 @@ Command({
 
 Command({
 	on: true,
+	dontAddCommandList: true,
 	function: async message => {
 		const jid = message.jid;
 		const text = message.text?.trim().toLowerCase();

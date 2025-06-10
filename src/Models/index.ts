@@ -1,4 +1,5 @@
 export * from "./Alive.ts";
+export * from "./AntiCall.ts";
 export * from "./AntiDelete.ts";
 export * from "./Antilink.ts";
 export * from "./AntiWord.ts";
