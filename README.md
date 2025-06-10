@@ -14,20 +14,6 @@
   </p>
 </div>
 
-## Getting Started
-
-#### Prerequisites (Windows | VPS)
-
-- [Node.js 24](https://nodejs.org/)
-- [Ffmpeg](https://ffmpeg.org/)
-
-```bash
-npm i -g pnpm yarn
-git clone --branch stable https://github.com/AstroXTeam/whatsapp-bot.git
-cd whatsapp-bot
-pnpm install
-```
-
 ## Features
 
 - **Send & Receive Messages:** Automate replies or notifications.
