@@ -20,6 +20,5 @@ WORKDIR /whatsapp-bot
 
 RUN npm install -g npm@latest pnpm@latest
 RUN pnpm install
-RUN pnpm run build
 
 CMD ["pnpm", "start"]
