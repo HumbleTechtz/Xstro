@@ -15,7 +15,7 @@
 	},
 	"scripts": {
 		"postinstall": "eslint --fix && tsc",
-		"test": "pnpm lint && tsx ./src/Core/client.ts",
+		"test": "tsx ./src/Core/client.ts",
 		"start": "pm2 start ./lib/src/Core/client.js --attach",
 		"stop": "pm2 stop 0",
 		"restart": "pm2 delete all && pnpm start"

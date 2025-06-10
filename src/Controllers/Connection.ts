@@ -1,9 +1,10 @@
 import { Boom } from "@hapi/boom";
-import { DisconnectReason, jidNormalizedUser } from "baileys";
+import { delay, DisconnectReason, jidNormalizedUser } from "baileys";
 import { syncPlugins } from "../Core/plugin.ts";
 import { SetSudo } from "../Models/Sudo.ts";
 import { auth, sendStart } from "../Utils/index.ts";
 import type { BaileysEventMap, WASocket } from "baileys";
+import { getBoot, setBoot } from "../Models/Boot.ts";
 
 export default class Connection {
 	private client: WASocket;
@@ -58,13 +59,16 @@ export default class Connection {
 			exit();
 		} else if (resetWithClearStateReasons.includes(reason)) {
 			console.error(`Critical error: ${reason} — clearing state and exiting`);
+			await setBoot(true);
 			await auth.truncate();
 			exit();
 		} else if (reason === DisconnectReason.restartRequired) {
 			console.info("Restart required — exiting to allow restart");
+			await setBoot(true);
 			process.exit(0);
 		} else {
 			console.error("Unexpected disconnect reason:", reason);
+			await setBoot(true);
 			await auth.truncate();
 			exit();
 		}
@@ -72,6 +76,16 @@ export default class Connection {
 
 	private async handleOpen() {
 		console.info("Connected to WhatsApp");
+		const isNewLogin = await getBoot();
+		await delay(5500);
+		if (isNewLogin) {
+			try {
+				await setBoot(false);
+			} catch {
+				exit();
+			}
+			exit();
+		}
 		await sendStart(this.client);
 		await SetSudo(
 			jidNormalizedUser(this.client?.user?.id),

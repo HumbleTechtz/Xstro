@@ -6,6 +6,7 @@ export * from "./AntiWord.ts";
 export * from "./AutoKick.ts";
 export * from "./AutoMute.ts";
 export * from "./Ban.ts";
+export * from "./Boot.ts";
 export * from "./Filters.ts";
 export * from "./GroupCache.ts";
 export * from "./GroupEvents.ts";

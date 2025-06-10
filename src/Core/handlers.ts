@@ -103,73 +103,38 @@ class TextCommandHandler {
 
 class StickerCommandHandler {
 	static async process(message: Serialize) {
-		console.log("=== StickerCommandHandler.process START ===");
-		console.log("Message has sticker:", !!message?.message?.stickerMessage);
-		console.log(
-			"Message has lottie sticker:",
-			!!message?.message?.lottieStickerMessage,
-		);
-
 		const sticker = await this.extractStickerCommand(message);
-		console.log("Extracted sticker:", sticker);
-
-		if (!sticker) {
-			console.log("No sticker found, returning");
-			return;
-		}
-
-		console.log("Commands to check:", commands.length);
+		if (!sticker) return;
 
 		for (const cmd of commands) {
-			console.log(`Checking command: ${cmd.name}`);
 			const match = sticker.cmdname.match(cmd.name! as string | RegExp);
-			console.log(`Match result:`, match);
-
 			if (!match) continue;
 
-			console.log("Command matched, validating...");
 			const validation = await CommandValidator.validate(cmd, message);
-			console.log("Validation result:", validation);
 
 			if (!validation || validation === "valid") {
 				if (validation === "valid") {
-					console.log("Executing sticker command function...");
 					await cmd.function(message, match[2] ?? "");
-					console.log("Sticker command executed");
 				} else if (validation) {
-					console.log("Sending validation message:", validation);
 					await message.send(validation);
 				}
 			}
 		}
-		console.log("=== StickerCommandHandler.process END ===");
 	}
 
 	private static async extractStickerCommand(message: Serialize) {
-		console.log("=== extractStickerCommand START ===");
 		const stickerMessage = message?.message?.stickerMessage;
 		const lottieStickerMessage = message?.message?.lottieStickerMessage;
-
-		console.log("stickerMessage exists:", !!stickerMessage);
-		console.log("lottieStickerMessage exists:", !!lottieStickerMessage);
 
 		const fileSha256 =
 			stickerMessage?.fileSha256 ??
 			lottieStickerMessage?.message?.stickerMessage?.fileSha256;
 
-		console.log("fileSha256 exists:", !!fileSha256);
-
-		if (!fileSha256) {
-			console.log("No fileSha256, returning null");
-			return null;
-		}
+		if (!fileSha256) return null;
 
 		const filesha256 = Buffer.from(new Uint8Array(fileSha256)).toString("base64");
-		console.log("Generated filesha256:", filesha256.substring(0, 20) + "...");
 
 		const result = await getStickerCmd(filesha256);
-		console.log("getStickerCmd result:", result);
-		console.log("=== extractStickerCommand END ===");
 
 		return result;
 	}
