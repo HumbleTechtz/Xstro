@@ -4,7 +4,6 @@ import {
 	getAntilink,
 	setAntilink,
 } from "../../src/Models/index.ts";
-import { isAdmin, isBotAdmin } from "../../src/Utils/constants.ts";
 
 Command({
 	name: "antilink",
@@ -64,7 +63,7 @@ Command({
 	function: async msg => {
 		if (!msg.isGroup || !msg?.text) return;
 		if (msg.key.fromMe || msg.sudo) return;
-		if (!(await isBotAdmin(msg)) || (await isAdmin(msg.jid, msg.sender))) return;
+		if (msg.isAdmin || !msg.isBotAdmin) return;
 
 		const antilink = await getAntilink(msg.jid);
 		if (!antilink) return;

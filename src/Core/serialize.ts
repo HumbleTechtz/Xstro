@@ -2,19 +2,24 @@ import {
 	downloadMediaMessage,
 	getDevice,
 	isJidGroup,
-	isJidUser,
-	isLidUser,
 	jidNormalizedUser,
 	normalizeMessageContent,
 } from "baileys";
 import {
+	findJidLid,
 	forwardM,
 	getMessageContent,
 	getQuotedContent,
+	isAdmin,
 	isBotAdmin,
 	isMediaMessage,
+	parseUserId,
 	prepareMessage,
 } from "../Utils/index.ts";
+import { isSudo } from "../Models/Sudo.ts";
+import { getMode, getPrefix } from "../Models/Settings.ts";
+import { cachedGroupMetadata } from "../Models/GroupCache.ts";
+import type { MessageMisc } from "../Types/index.ts";
 import type {
 	AnyMessageContent,
 	WAContextInfo,
@@ -22,9 +27,6 @@ import type {
 	WAMessageKey,
 	WASocket,
 } from "baileys";
-import { isSudo } from "../Models/Sudo.ts";
-import type { MessageMisc } from "../Types/index.ts";
-import { getMode, getPrefix } from "../Models/Settings.ts";
 
 export async function serialize(client: WASocket, WAMessage: WAMessage) {
 	const normalizedMessages = {
@@ -36,8 +38,9 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 	const isGroup = isJidGroup(jid) as boolean;
 	const jidOwner = jidNormalizedUser(client?.user?.id);
 	const lidOwner = jidNormalizedUser(client?.user?.lid);
+	const owner = { jid: jidOwner, lid: lidOwner };
 	const sender =
-		isJidGroup(jid) || broadcast
+		isGroup || broadcast
 			? (key.participant as string)
 			: key.fromMe
 				? jidOwner
@@ -45,8 +48,6 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 
 	const content = getMessageContent(message);
 	const quoted = getQuotedContent(message, key, [jidOwner, lidOwner]);
-
-	key.fromMe = [jidOwner, lidOwner].includes(sender);
 
 	return {
 		send: async function (
@@ -87,8 +88,7 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 			return await client.sendMessage(this.jid, { text, edit: this.key });
 		},
 		deleteM: async function (key: WAMessageKey) {
-			const canDeleteForAll =
-				this.key.fromMe || (this.isGroup && (await isBotAdmin(this)));
+			const canDeleteForAll = this.key.fromMe || (this.isGroup && this.isBotAdmin);
 			if (!canDeleteForAll) {
 				return await client.chatModify(
 					{
@@ -104,48 +104,36 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 			return await client.sendMessage(this.jid, { delete: key });
 		},
 		parseId: async function (id?: any) {
-			if (id) {
-				if (isLidUser(id) || isJidUser(id)) return id;
-				id = id.replace(/\D+/g, "") + "@s.whatsapp.net";
-				try {
-					const result = await client.onWhatsApp(id);
-					if (result?.[0]?.exists) return result[0].jid;
-				} catch {
-					return `${id.split("@")[0]}@lid`;
-				}
+			const parsedId = await parseUserId(id, client);
+			if (parsedId) return parsedId;
+
+			if (isGroup && id) {
+				const { participants, addressingMode } = await cachedGroupMetadata(jid);
+				return findJidLid(client, participants, id, addressingMode);
 			}
 
-			if (this?.mention?.length! > 0) {
-				let mentionedId = this.mention?.[0];
-				if (isLidUser(mentionedId) || isJidUser(mentionedId)) return mentionedId;
-				mentionedId = mentionedId?.replace(/\D+/g, "") + "@s.whatsapp.net";
-				try {
-					const result = await client.onWhatsApp(mentionedId);
-					if (result?.[0]?.exists) return result[0].jid;
-				} catch {
-					return `${mentionedId.split("@")[0]}@lid`;
-				}
-			}
 			if (this.quoted?.sender) return this.quoted.sender;
+
 			if (!this.isGroup) return this.jid;
+
 			return undefined;
 		},
 		key,
 		jid,
 		isGroup,
-		prefix: await getPrefix(),
 		sender,
-		mode: await getMode(),
+		owner,
 		broadcast,
-		owner: { jid: jidOwner, lid: lidOwner },
+		isAdmin: isGroup ? await isAdmin(jid, sender) : null,
+		isBotAdmin: isGroup ? await isBotAdmin(owner, jid) : null,
+		prefix: await getPrefix(),
+		mode: await getMode(),
 		mention: quoted?.mentionedJid,
-		device: getDevice(key?.id ?? ""),
-		sudo: (await isSudo(sender)) ?? [jidOwner, lidOwner].includes(sender),
+		device: getDevice(key?.id!),
+		sudo: await isSudo(sender),
 		quoted: quoted
 			? {
-					sudo:
-						(await isSudo(quoted.sender)) ??
-						[jidOwner, lidOwner].includes(quoted.sender),
+					sudo: await isSudo(quoted.sender),
 					...quoted,
 				}
 			: undefined,

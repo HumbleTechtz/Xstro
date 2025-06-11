@@ -37,8 +37,9 @@
 		"node-webpmux": "^3.2.1",
 		"pdfkit": "^0.17.1",
 		"pg": "^8.16.0",
+		"pino": "^9.7.0",
 		"pm2": "^6.0.8",
-		"quantava": "^2.5.1",
+		"quantava": "^2.5.2",
 		"sharp": "^0.34.2"
 	},
 	"devDependencies": {
@@ -52,7 +53,7 @@
 		"eslint-plugin-prettier": "^5.4.1",
 		"jiti": "^2.4.2",
 		"prettier": "^3.5.3",
-		"tsx": "^4.19.4",
+		"tsx": "^4.20.1",
 		"typescript": "^5.8.3"
 	}
 }

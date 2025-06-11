@@ -9,4 +9,7 @@ export default {
 	GROUP_NOW_AUTO_UNMUTED: "Group is now unmuted due to AutoUnMute.",
 	BOT_NAME: "ωнαтѕαρρ вσт",
 	BOT_DESCRIPTION_INFO: "σρєи ѕσυя¢є αυтσмαтισи тσσℓ",
+	BOT_NOT_ADMIN: "```I am not an admin on this Group```",
+	PARTICIPANT_NOT_ADMIN:
+		"```You are not a Group admin, I can do such for you```",
 };
