@@ -34,16 +34,17 @@ Command({
 			);
 		}
 
+		const mode = match.toLowerCase().trim();
+		const newMode = mode === "private";
 		const currentMode = await getMode();
-		if (currentMode && match.toLowerCase() === "private") {
-			return await msg.send("_Already in Private Mode_");
-		} else if (!currentMode && match.toLowerCase() === "public") {
-			return await msg.send("_Already in Public Mode_");
+
+		if (currentMode === newMode) {
+			return await msg.send(
+				`_Already in ${mode.charAt(0).toUpperCase() + mode.slice(1)} Mode_`,
+			);
 		}
 
-		const newMode = match.toLowerCase() === "private";
 		await setMode(newMode);
-
-		return await msg.send(`_Bot is now in ${match.toLowerCase()} mode_`);
+		return await msg.send(`_Bot is now in ${mode} mode_`);
 	},
 });

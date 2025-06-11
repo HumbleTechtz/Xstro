@@ -29,7 +29,7 @@ import { startServer } from "./network.ts";
 		agent: config.PROXY ? new HttpsProxyAgent(config.PROXY) : undefined,
 		version,
 		keepAliveIntervalMs: 2000,
-		browser: Browsers.windows("chrome"),
+		browser: Browsers.windows("FireFox"),
 		syncFullHistory: true,
 		emitOwnEvents: true,
 		generateHighQualityLinkPreview: true,

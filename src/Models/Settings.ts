@@ -13,7 +13,7 @@ export const getSettings = async () => {
 	if (!config) {
 		await Settings.create({
 			id: 1,
-			prefix: JSON.stringify(["."]),
+			prefix: ["."],
 			mode: 1,
 		});
 		config = await Settings.findOne({ where: { id: 1 } });
@@ -25,22 +25,29 @@ export const getSettings = async () => {
 	};
 };
 
-export const setPrefix = async (prefix: string[]) => {
-	const existing = (await Settings.findByPk(1)) as { prefix?: string };
-	const prefixes = existing.prefix ? JSON.parse(existing.prefix) : [];
-	const payload = Array.from(new Set([...prefix, ...prefixes]));
-	await Settings.update({ prefix: payload }, { where: { id: 1 } });
+export const setPrefix = async (payload: string[]) => {
+	let { prefix } = await getSettings();
+	if (typeof prefix !== "object") prefix = JSON.parse(prefix);
+	else [];
+	const updated = Array.from(new Set([...prefix, ...payload]));
+	return await Settings.update(
+		{
+			prefix: updated,
+		},
+		{ where: { id: 1 } },
+	);
 };
 
 export const setMode = async (mode: boolean) => {
-	await Settings.update({ mode: mode ? 1 : 0 }, { where: { id: 1 } });
+	const { prefix } = await getSettings();
+	await Settings.update({ mode: mode ? 1 : 0, prefix }, { where: { id: 1 } });
 };
 
 export const getPrefix = async () => {
-	const config = (await Settings.findOne({ where: { id: 1 } })) as {
-		prefix?: string;
-	};
-	return config?.prefix ? (JSON.parse(config.prefix) as string[]) : ["."];
+	const config = await Settings.findOne({ where: { id: 1 } });
+
+	if (!config?.prefix) return ["."];
+	return JSON.parse(config?.prefix as any) as string[];
 };
 
 export const getMode = async (): Promise<boolean> => {
