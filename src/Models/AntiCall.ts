@@ -7,7 +7,7 @@ const AntiCall = database.define(
 		mode: { type: DataTypes.BOOLEAN, allowNull: true },
 		action: { type: DataTypes.STRING, allowNull: false },
 	},
-	{ timestamps: false },
+	{ timestamps: false }
 );
 
 export const getAntiCall = async () => {
@@ -21,7 +21,7 @@ export const setAntiCall = async (mode: boolean, action: "block" | "warn") => {
 	if (current && current.mode === mode && current.action === action)
 		return false;
 	if (current) {
-		return AntiCall.update({ mode, action }, { where: { id: current.id } });
+		await AntiCall.destroy({ where: { mode: current.mode ? 1 : 0 } });
 	}
 	return AntiCall.create({ mode, action });
 };
