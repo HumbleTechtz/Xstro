@@ -1,6 +1,6 @@
 import { Command } from "../../src/Core/plugin.ts";
 import { cachedGroupMetadata } from "../../src/Models/index.ts";
-import { adminCheck } from "../../src/Utils/constants.ts";
+import lang from "../../src/Utils/lang.ts";
 
 Command({
 	name: "add",
@@ -9,7 +9,8 @@ Command({
 	desc: "Add participant to group",
 	type: "group",
 	function: async (message, match) => {
-		if (!(await adminCheck(message))) return;
+		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
+		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!match) return message.send("_Provide a valid number_");
 		const user = `${match}@s.whatsapp.net`;
 		if (!(await message.onWhatsApp(user))) {
@@ -29,7 +30,8 @@ Command({
 	desc: "Remove participant from group",
 	type: "group",
 	function: async (message, match) => {
-		if (!(await adminCheck(message))) return;
+		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
+		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!match) return message.send("_Provide a valid number or mention_");
 		const user = await message.parseId(match);
 		if (!user) return message.send("_Invalid number or mention_");
@@ -47,7 +49,8 @@ Command({
 	desc: "Kickall all participants from a Group",
 	type: "group",
 	function: async message => {
-		if (!(await adminCheck(message))) return;
+		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
+		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		const groupData = await cachedGroupMetadata("120363286769939283@g.us");
 		const participants = groupData.participants
 			.filter(p => !p.admin)
@@ -64,7 +67,8 @@ Command({
 	desc: "Promote participant to admin",
 	type: "group",
 	function: async (message, match) => {
-		if (!(await adminCheck(message))) return;
+		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
+		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!match) return message.send("_Provide a valid number or mention_");
 		const user = await message.parseId(match);
 		if (!user) return message.send("_Invalid number or mention_");
@@ -89,7 +93,8 @@ Command({
 	desc: "Demote admin to participant",
 	type: "group",
 	function: async (message, match) => {
-		if (!(await adminCheck(message))) return;
+		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
+		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!match) return message.send("_Provide a valid number or mention_");
 		const user = await message.parseId(match);
 		if (!user) return message.send("_Invalid number or mention_");
@@ -163,7 +168,8 @@ Command({
 	desc: "Update group name",
 	type: "group",
 	function: async (message, match) => {
-		if (!(await adminCheck(message))) return;
+		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
+		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!match) return message.send("_Provide new group name_");
 		await message.groupUpdateSubject(message.jid, match);
 		return await message.send("_Group name updated_");
@@ -177,7 +183,8 @@ Command({
 	desc: "Update group description",
 	type: "group",
 	function: async (message, match) => {
-		if (!(await adminCheck(message))) return;
+		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
+		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!match) return message.send("_Provide new group description_");
 		await message.groupUpdateDescription(message.jid, match);
 		return await message.send("_Group description updated_");
@@ -191,7 +198,8 @@ Command({
 	desc: "Allow only admins to send messages",
 	type: "group",
 	function: async message => {
-		if (!(await adminCheck(message))) return;
+		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
+		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		const metadata = await cachedGroupMetadata(message.jid);
 		if (metadata.announce) return message.send("_Group already muted_");
 		await message.groupSettingUpdate(message.jid, "announcement");
@@ -206,7 +214,8 @@ Command({
 	desc: "Allow all members to send messages",
 	type: "group",
 	function: async message => {
-		if (!(await adminCheck(message))) return;
+		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
+		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		const metadata = await cachedGroupMetadata(message.jid);
 		if (!metadata.announce) return message.send("_Group already unmuted_");
 		await message.groupSettingUpdate(message.jid, "not_announcement");
@@ -221,7 +230,8 @@ Command({
 	desc: "Restrict settings to admins",
 	type: "group",
 	function: async message => {
-		if (!(await adminCheck(message))) return;
+		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
+		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		const metadata = await cachedGroupMetadata(message.jid);
 		if (metadata.restrict)
 			return message.send("_Group settings already restricted_");
@@ -237,7 +247,8 @@ Command({
 	desc: "Allow all members to manage settings",
 	type: "group",
 	function: async message => {
-		if (!(await adminCheck(message))) return;
+		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
+		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		const metadata = await cachedGroupMetadata(message.jid);
 		if (!metadata.restrict)
 			return message.send("_Group settings already unrestricted_");
@@ -253,7 +264,8 @@ Command({
 	desc: "Get group invite link",
 	type: "group",
 	function: async message => {
-		if (!(await adminCheck(message))) return;
+		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
+		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		const code = await message.groupInviteCode(message.jid);
 		return await message.send(`_https://chat.whatsapp.com/${code}_`);
 	},
@@ -266,7 +278,8 @@ Command({
 	desc: "Revoke group invite code",
 	type: "group",
 	function: async message => {
-		if (!(await adminCheck(message))) return;
+		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
+		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		const code = await message.groupRevokeInvite(message.jid);
 		return await message.send(`_https://chat.whatsapp.com/${code}_`);
 	},
@@ -279,7 +292,8 @@ Command({
 	desc: "Toggle group join approval",
 	type: "group",
 	function: async (message, match) => {
-		if (!(await adminCheck(message))) return;
+		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
+		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!match)
 			return message.send(`_Usage: ${message.prefix[0]}approval on | off_`);
 		match = match.toLowerCase().trim();
@@ -339,7 +353,8 @@ Command({
 	desc: "Get group join requests",
 	type: "group",
 	function: async message => {
-		if (!(await adminCheck(message))) return;
+		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
+		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		const requests = await message.groupRequestParticipantsList(message.jid);
 		if (!requests || requests.length === 0) {
 			return message.send("_No join requests found_");
@@ -388,7 +403,8 @@ Command({
 	desc: "Reject all group join requests",
 	type: "group",
 	function: async message => {
-		if (!(await adminCheck(message))) return;
+		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
+		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		const requests = await message.groupRequestParticipantsList(message.jid);
 		if (!requests || requests.length === 0) {
 			return message.send("_No join requests found_");

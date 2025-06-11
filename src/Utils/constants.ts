@@ -1,6 +1,12 @@
 import { cachedGroupMetadata } from "../Models/index.ts";
-import type { WAMessageContent } from "baileys";
-import type { Serialize } from "../Core/serialize.ts";
+import {
+	isJidUser,
+	isLidUser,
+	type GroupMetadata,
+	type WAMessageContent,
+	type WASocket,
+} from "baileys";
+import type { OnWhatsAppResult } from "../Types/OnWhatsApp.ts";
 
 export function isPath(text: string): boolean {
 	if (typeof text !== "string" || text.trim() === "") return false;
@@ -126,8 +132,10 @@ export async function isAdmin(jid: string, participant: string) {
 	return allAdmins.includes(participant);
 }
 
-export async function isBotAdmin(data: Serialize) {
-	const { owner, jid } = data;
+export async function isBotAdmin(
+	owner: { jid: string; lid: string },
+	jid: string,
+) {
 	const metadata = await cachedGroupMetadata(jid);
 	if (!metadata) return false;
 	const allAdmins = metadata.participants
@@ -137,23 +145,6 @@ export async function isBotAdmin(data: Serialize) {
 	return allAdmins.includes(owner.jid);
 }
 
-export const adminCheck = (message: Serialize): Promise<boolean> => {
-	return new Promise(async resolve => {
-		const { jid, sender } = message;
-		if (!(await isAdmin(jid, sender))) {
-			await message.send(`_@${sender?.split("@")[0]} You are not Admin_`, {
-				mentions: [sender],
-			});
-			return resolve(false);
-		}
-		if (!(await isBotAdmin(message))) {
-			await message.send(`_@${sender.split("@")[0]} I am not an Admin_`, {
-				mentions: [sender],
-			});
-		}
-		resolve(true);
-	});
-};
 /**
  * Converts 12-hour time (e.g., "5:30pm") to a timestamp (ms since epoch) for today.
  */
@@ -296,4 +287,50 @@ export function extractStringfromMessage(message?: WAMessageContent) {
 			return message?.protocolMessage?.editedMessage?.documentMessage?.caption;
 		}
 	}
+}
+
+export async function findJidLid(
+	client: WASocket,
+	data: GroupMetadata["participants"],
+	input: string,
+	addressMode: "lid" | "pn",
+) {
+	if (input?.startsWith("@")) input = input.split("@")[1];
+	if (input?.includes("@")) input = input.split("@")[0];
+	if (addressMode === "lid") {
+		for (const entry of data) {
+			const idNumber = entry.id?.split("@")[0];
+			const jidNumber = entry.jid?.split("@")[0];
+			if (idNumber === input || jidNumber === input) {
+				return { jid: entry.jid, lid: entry.id };
+			}
+		}
+		return null;
+	}
+
+	const jids = [input];
+	const waResults = (await client.onWhatsApp(...jids)) as OnWhatsAppResult[];
+
+	if (waResults.length === 0) {
+		return null;
+	}
+
+	const result = waResults[0];
+	return addressMode === "pn" ? result.jid : result.lid;
+}
+
+export async function parseUserId(id: any, client: WASocket) {
+	if (!id) return undefined;
+	if (isLidUser(id) || isJidUser(id)) return id;
+
+	const num = id.replace(/\D+/g, "");
+	const jid = `${num}@s.whatsapp.net`;
+
+	try {
+		const data = await client.onWhatsApp(jid);
+		if (data?.[0]?.exists) return data[0].jid;
+	} catch {
+		return `${num}@lid`;
+	}
+	return undefined;
 }

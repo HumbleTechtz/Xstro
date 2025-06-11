@@ -4,7 +4,7 @@ import {
 	delAutoKick,
 	getAllAutoKicks,
 } from "../../src/Models/index.ts";
-import { adminCheck } from "../../src/Utils/constants.ts";
+import lang from "../../src/Utils/lang.ts";
 
 Command({
 	name: "autokick",
@@ -13,7 +13,8 @@ Command({
 	desc: "Manage autokick list (add, del, list)",
 	type: "group",
 	function: async (msg, args) => {
-		if (!(await adminCheck(msg))) return;
+		if (!msg.isAdmin) return msg.send(lang.BOT_NOT_ADMIN);
+		if (!msg.isBotAdmin) return msg.send(lang.BOT_NOT_ADMIN);
 		if (!args) {
 			return msg.send(`Usage: ${msg.prefix[0]}autokick <add|del|list> <user?>`);
 		}

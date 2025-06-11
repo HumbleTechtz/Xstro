@@ -1,6 +1,5 @@
 import { Command } from "../../src/Core/plugin.ts";
 import { setAntiWord, getAntiword } from "../../src/Models/index.ts";
-import { isAdmin, isBotAdmin } from "../../src/Utils/constants.ts";
 
 Command({
 	name: "antiword",
@@ -58,7 +57,7 @@ Command({
 	function: async msg => {
 		if (!msg.isGroup || !msg?.text) return;
 		if (msg.key.fromMe || msg.sudo) return;
-		if (!(await isBotAdmin(msg)) || (await isAdmin(msg.jid, msg.sender))) return;
+		if (msg.isAdmin || !msg.isBotAdmin) return;
 
 		const record = await getAntiword(msg.jid);
 		if (!record?.status || !record.words?.length) return;
