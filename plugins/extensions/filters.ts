@@ -46,8 +46,6 @@ Command({
 	desc: "Add or update group filter",
 	type: "filter",
 	function: async (msg, match) => {
-		if (!msg.isGroup)
-			return await msg.send("This command is only for group chats.");
 		if (!match || !match.includes(":"))
 			return await msg.send("Use format name:response");
 
@@ -55,7 +53,7 @@ Command({
 		const response = rest.join(":").trim();
 		if (!name || !response) return await msg.send("Name or response missing");
 
-		await setFilter(name.trim(), response, true, true); // updated
+		await setFilter(name.trim(), response, true, true);
 		return await msg.send(`*Group filter saved for _${name.trim()}_*`);
 	},
 });
@@ -97,7 +95,6 @@ Command({
 		if (!text) return;
 
 		const allFilters = await getAllFilters();
-
 		const keyword = allFilters.find(filter => {
 			const regex = new RegExp(`\\b${escapeRegex(filter.name)}\\b`, "i");
 			return regex.test(text);
@@ -106,15 +103,29 @@ Command({
 		if (!keyword || !keyword.status) return;
 
 		if (keyword.isGroup) {
-			if (!msg.isGroup) return;
-			if (
-				!msg.mention?.includes(msg.owner.jid) ||
-				!msg.mention.includes(msg.owner.lid) ||
-				msg.key.fromMe
-			)
+			if (msg.isGroup) {
+				const mentionMatches = [...text.matchAll(/@(\w+)/g)].map(m => m[1]);
+
+				const ownerJidUsername = msg.owner.jid.split("@")[0];
+				const ownerLidUsername = msg.owner.lid.split("@")[0];
+
+				const mentionsOwner =
+					mentionMatches.includes(ownerJidUsername) ||
+					mentionMatches.includes(ownerLidUsername);
+				const quotedOwner =
+					msg.quoted?.sender === msg.owner.jid ||
+					msg.quoted?.sender === msg.owner.lid;
+
+				if (!mentionsOwner && !quotedOwner && msg.key.fromMe) return;
+
+				return await msg.send(keyword.response);
+			} else {
 				return;
+			}
 		}
 
-		return await msg.send(keyword.response);
+		if (!msg.isGroup) {
+			return await msg.send(keyword.response);
+		}
 	},
 });

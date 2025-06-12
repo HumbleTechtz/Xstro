@@ -33,3 +33,16 @@ export const getMessage = async (key: WAMessageKey) => {
 		);
 	}
 };
+
+export const loadMessage = async (key: WAMessageKey) => {
+	const exists = (await Messages.findOne({ where: { id: key.id } })) as {
+		id: string;
+		messages: string;
+		requestId?: string;
+	} | null;
+	if (exists?.messages) {
+		return (
+			WAProto.WebMessageInfo.fromObject(JSON.parse(exists.messages)) || undefined
+		);
+	}
+};

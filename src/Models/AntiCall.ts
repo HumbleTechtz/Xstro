@@ -7,7 +7,7 @@ const AntiCall = database.define(
 		mode: { type: DataTypes.BOOLEAN, allowNull: true },
 		action: { type: DataTypes.STRING, allowNull: false },
 	},
-	{ timestamps: false }
+	{ timestamps: false },
 );
 
 export const getAntiCall = async () => {

@@ -3,26 +3,27 @@ import database from "../Core/database.ts";
 
 const Antidelete = database.define("antidelete", {
 	mode: {
-		type: DataTypes.STRING,
+		type: DataTypes.BOOLEAN,
 		allowNull: true,
-		defaultValue: "all",
-		primaryKey: true,
 	},
 });
 
-export const setAntidelete = async (mode: "gc" | "dm" | "global" | null) => {
-	const record = (await Antidelete.findOne()) as { mode: string };
+export const setAntidelete = async (mode: boolean) => {
+	const [record] = await Antidelete.findAll({ limit: 1 });
 
 	if (!record) {
 		await Antidelete.create({ mode });
 		return true;
 	}
-	if (record.mode === mode) return undefined;
-	await Antidelete.destroy({ where: { mode: record.mode } });
+
+	if (record.mode === mode) return;
+
+	await Antidelete.destroy({ where: {} });
 	await Antidelete.create({ mode });
 	return true;
 };
 
 export const getAntidelete = async () => {
-	return await Antidelete.findAll();
+	const [record] = await Antidelete.findAll({ limit: 1 });
+	return Boolean(record?.mode);
 };
