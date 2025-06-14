@@ -25,11 +25,7 @@
 - Easy deployment to any platform
 - Fully self-hosted; no data collection
 
-> [!NOTE] Feature set will evolve over time.
-
-- **Clear Purpose**: Provide deployment section with clean text links, hidden behind descriptive text.
-
-- **Revised version**:
+`NOTE: Feature set will evolve over time.`
 
 ## Deployment
 
