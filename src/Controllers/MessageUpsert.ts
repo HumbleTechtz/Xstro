@@ -1,4 +1,4 @@
-import handlers from "../Core/handlers.ts";
+import makeCommands from "../Core/handlers.ts";
 import { serialize } from "../Core/serialize.ts";
 import { save_message } from "../Models/Messages.ts";
 import type { BaileysEventMap, WASocket } from "baileys";
@@ -25,8 +25,15 @@ export default class MessageUpsert {
 		messages: BaileysEventMap["messages.upsert"]["messages"],
 	) {
 		const messagePromises = messages.map(async message => {
+			if (
+				message.message?.protocolMessage &&
+				message.message.protocolMessage.type === 0
+			) {
+				const { key } = message["message"].protocolMessage;
+				this.client.ev.emit("messages.delete", { keys: [{ ...key }] });
+			}
 			const serialized = await serialize(this.client, structuredClone(message));
-			return handlers(serialized);
+			return makeCommands(serialized);
 		});
 
 		await Promise.allSettled(messagePromises);
