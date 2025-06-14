@@ -11,6 +11,5 @@
 		"allowImportingTsExtensions": true,
 		"forceConsistentCasingInFileNames": true
 	},
-	"include": ["types", "src", "plugins", "*.ts", "*.mts"],
-	"exclude": ["lib"]
+	"include": ["types", "src", "plugins", "*.ts", "*.mts"]
 }
