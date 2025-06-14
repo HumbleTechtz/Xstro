@@ -28,6 +28,10 @@
       },
     },
   },
+  "trustedDependencies": [
+    "baileys",
+    "protobufjs",
+  ],
   "packages": {
     "@cacheable/node-cache": ["@cacheable/node-cache@1.5.6", "", { "dependencies": { "cacheable": "^1.10.0", "hookified": "^1.9.1", "keyv": "^5.3.3" } }, "sha512-1sLMrvrWoxrqiVKW1BFDjYrBGSG32miOJfNyPUaWwisvbsu+V2wgYqPyLiw0qpprxtjVZT02omsGgQut+DKw8Q=="],
 
