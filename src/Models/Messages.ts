@@ -9,9 +9,7 @@ database.exec(`
   )
 `);
 
-export async function save_message(
-	event: BaileysEventMap["messages.upsert"]
-): Promise<void> {
+export async function save_message(event: BaileysEventMap["messages.upsert"]) {
 	if (!event?.messages?.[0]?.key?.id) return;
 	const id = event.messages[0].key.id;
 	const requestId = event.requestId ?? null;
@@ -24,9 +22,7 @@ export async function save_message(
 	} catch {}
 }
 
-export async function getMessage(
-	key: WAMessageKey
-): Promise<WAProto.WebMessageInfo["message"] | undefined> {
+export async function getMessage(key: WAMessageKey) {
 	const exists = database
 		.query("SELECT messages FROM messages WHERE id = ?")
 		.get(key.id!) as {
@@ -42,9 +38,7 @@ export async function getMessage(
 	}
 }
 
-export async function loadMessage(
-	key: WAMessageKey
-): Promise<WAProto.WebMessageInfo | undefined> {
+export async function loadMessage(key: WAMessageKey) {
 	const exists = database
 		.query("SELECT messages FROM messages WHERE id = ?")
 		.get(key.id!) as {

@@ -16,7 +16,7 @@
 	"dependencies": {
 		"@cacheable/node-cache": "^1.5.6",
 		"@hapi/boom": "^10.0.1",
-		"baileys": "github:WhiskeySockets/Baileys",
+		"baileys": "https://github.com/WhiskeySockets/Baileys/releases/download/nightly/baileys-nightly.tgz",
 		"canvas": "^3.1.0",
 		"cheerio": "^1.1.0",
 		"dotenv": "^16.5.0",
