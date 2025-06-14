@@ -22,7 +22,7 @@ export default class MessageUpsert {
 	}
 
 	private async hookMessages(
-		messages: BaileysEventMap["messages.upsert"]["messages"],
+		messages: BaileysEventMap["messages.upsert"]["messages"]
 	) {
 		const messagePromises = messages.map(async message => {
 			if (

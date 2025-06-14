@@ -17,16 +17,13 @@ class CleanupManager {
 	startCleanup() {
 		if (this.cleanupInterval) return;
 
-		this.cleanupInterval = setInterval(
-			async () => {
-				try {
-					await resetIfExpired();
-				} catch (e) {
-					console.error("Cleanup error:", e);
-				}
-			},
-			5 * 60 * 1000,
-		);
+		this.cleanupInterval = setInterval(async () => {
+			try {
+				await resetIfExpired();
+			} catch (e) {
+				console.error("Cleanup error:", e);
+			}
+		}, 5 * 60 * 1000);
 	}
 
 	stopCleanup() {
@@ -86,7 +83,7 @@ class TextCommandHandler {
 	private static async executeCommand(
 		cmd: any,
 		message: Serialize,
-		args: string,
+		args: string
 	) {
 		try {
 			await cmd.function(message, args);
@@ -94,7 +91,7 @@ class TextCommandHandler {
 			const cmdName =
 				cmd.name?.toString().toLowerCase().split(/\W+/)[2] || "unknown";
 			await message.send(
-				`\`\`\`An error occurred while running ${cmdName} command\`\`\``,
+				`\`\`\`An error occurred while running ${cmdName} command\`\`\``
 			);
 			console.error(`Command execution error (${cmdName}):`, e);
 		}
@@ -107,7 +104,7 @@ class StickerCommandHandler {
 		if (!sticker) return;
 
 		for (const cmd of commands) {
-			const match = sticker.cmdname.match(cmd.name! as string | RegExp);
+			const match = sticker.cmdname!.match(cmd.name! as string | RegExp);
 			if (!match) continue;
 
 			const validation = await CommandValidator.validate(cmd, message);
@@ -132,7 +129,9 @@ class StickerCommandHandler {
 
 		if (!fileSha256) return null;
 
-		const filesha256 = Buffer.from(new Uint8Array(fileSha256)).toString("base64");
+		const filesha256 = Buffer.from(new Uint8Array(fileSha256)).toString(
+			"base64"
+		);
 
 		const result = await getStickerCmd(filesha256);
 
@@ -153,13 +152,13 @@ export default async function handlers(message: Serialize) {
 
 	await Promise.allSettled([
 		TextCommandHandler.process(message).catch(e =>
-			console.error("Text command error:", e),
+			console.error("Text command error:", e)
 		),
 		StickerCommandHandler.process(message).catch(e =>
-			console.error("Sticker command error:", e),
+			console.error("Sticker command error:", e)
 		),
 		EventListenerHandler.process(message).catch(e =>
-			console.error("Event listener error:", e),
+			console.error("Event listener error:", e)
 		),
 	]);
 }

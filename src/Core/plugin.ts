@@ -20,7 +20,7 @@ export function Command(cmd: Commands) {
 
 export async function syncPlugins(
 	pluginDir: string,
-	extensions: string[] = [".ts"],
+	extensions: string[] = [".ts"]
 ): Promise<void> {
 	const pluginsPath = join(__dirname, pluginDir);
 
@@ -40,12 +40,12 @@ export async function syncPlugins(
 							await import(fileUrl);
 						} catch (err) {
 							console.error(
-								`Failed to load plugin ${entry.name}: ${(err as Error).message}`,
+								`Failed to load plugin ${entry.name}: ${(err as Error).message}`
 							);
 						}
 					}
 				}
-			}),
+			})
 		);
 	}
 

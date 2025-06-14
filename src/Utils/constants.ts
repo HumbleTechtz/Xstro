@@ -12,7 +12,7 @@ export function isPath(text: string): boolean {
 	if (typeof text !== "string" || text.trim() === "") return false;
 
 	return /^(?:\.|\.\.|[a-zA-Z]:)?[\/\\]?[a-zA-Z0-9_\-.]+(?:[\/\\][a-zA-Z0-9_\-.]+)*(?:\.[a-zA-Z0-9]+)?$/.test(
-		text.trim(),
+		text.trim()
 	);
 }
 
@@ -134,7 +134,7 @@ export async function isAdmin(jid: string, participant: string) {
 
 export async function isBotAdmin(
 	owner: { jid: string; lid: string },
-	jid: string,
+	jid: string
 ) {
 	const metadata = await cachedGroupMetadata(jid);
 	if (!metadata) return false;
@@ -173,7 +173,7 @@ export function timeStringToTimestamp(timeStr: string): number | null {
 		h,
 		m,
 		0,
-		0,
+		0
 	);
 	return result.getTime();
 }
@@ -190,7 +190,11 @@ export function isValidTimeString(timeStr: string): boolean {
 	const m = parseInt(minutes, 10);
 
 	return (
-		h >= 1 && h <= 12 && m >= 0 && m <= 59 && (period === "am" || period === "pm")
+		h >= 1 &&
+		h <= 12 &&
+		m >= 0 &&
+		m <= 59 &&
+		(period === "am" || period === "pm")
 	);
 }
 
@@ -248,7 +252,7 @@ export function stripCircularRefs(obj: any) {
 				seen.add(value);
 			}
 			return value;
-		}),
+		})
 	);
 }
 
@@ -259,16 +263,30 @@ export function extractStringfromMessage(message?: WAMessageContent) {
 	if (message?.videoMessage?.caption) return message.videoMessage.caption;
 	if (message?.extendedTextMessage) return message.extendedTextMessage.text;
 	if (message?.eventMessage) {
-		return `${message?.eventMessage?.name ?? ""}\n${message?.eventMessage?.description ?? ""}`;
+		return `${message?.eventMessage?.name ?? ""}\n${
+			message?.eventMessage?.description ?? ""
+		}`;
 	}
 	if (message?.pollCreationMessageV3) {
-		return `${message?.pollCreationMessageV3?.name}\n${message?.pollCreationMessageV3?.options?.map(opt => opt.optionName).toString()}`;
+		return `${
+			message?.pollCreationMessageV3?.name
+		}\n${message?.pollCreationMessageV3?.options
+			?.map(opt => opt.optionName)
+			.toString()}`;
 	}
 	if (message?.pollCreationMessage) {
-		return `${message?.pollCreationMessage?.name}\n${message?.pollCreationMessage?.options?.map(opt => opt.optionName).toString()}`;
+		return `${
+			message?.pollCreationMessage?.name
+		}\n${message?.pollCreationMessage?.options
+			?.map(opt => opt.optionName)
+			.toString()}`;
 	}
 	if (message?.pollCreationMessageV2) {
-		return `${message?.pollCreationMessageV2?.name}\n${message?.pollCreationMessageV2?.options?.map(opt => opt.optionName).toString()}`;
+		return `${
+			message?.pollCreationMessageV2?.name
+		}\n${message?.pollCreationMessageV2?.options
+			?.map(opt => opt.optionName)
+			.toString()}`;
 	}
 	if (message?.protocolMessage) {
 		if (message?.protocolMessage?.editedMessage?.extendedTextMessage) {
@@ -293,7 +311,7 @@ export async function findJidLid(
 	client: WASocket,
 	data: GroupMetadata["participants"],
 	input: string,
-	addressMode: "lid" | "pn",
+	addressMode: "lid" | "pn"
 ) {
 	if (input?.startsWith("@")) input = input.split("@")[1];
 	if (input?.includes("@")) input = input.split("@")[0];

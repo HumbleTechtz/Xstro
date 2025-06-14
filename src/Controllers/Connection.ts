@@ -2,7 +2,7 @@ import { Boom } from "@hapi/boom";
 import { delay, DisconnectReason, jidNormalizedUser } from "baileys";
 import { syncPlugins } from "../Core/plugin.ts";
 import { SetSudo } from "../Models/Sudo.ts";
-import { auth, sendStart } from "../Utils/index.ts";
+import { truncate, sendStart } from "../Utils/index.ts";
 import type { BaileysEventMap, WASocket } from "baileys";
 import { getBoot, setBoot } from "../Models/Boot.ts";
 
@@ -37,7 +37,7 @@ export default class Connection {
 	}
 
 	private async handleClose(
-		lastDisconnect?: BaileysEventMap["connection.update"]["lastDisconnect"],
+		lastDisconnect?: BaileysEventMap["connection.update"]["lastDisconnect"]
 	) {
 		const error = lastDisconnect?.error as Boom;
 		const reason = error?.output?.statusCode;
@@ -60,7 +60,7 @@ export default class Connection {
 		} else if (resetWithClearStateReasons.includes(reason)) {
 			console.error(`Critical error: ${reason} — clearing state and exiting`);
 			await setBoot(true);
-			await auth.truncate();
+			await truncate();
 			exit();
 		} else if (reason === DisconnectReason.restartRequired) {
 			console.info("Restart required — exiting to allow restart");
@@ -69,7 +69,7 @@ export default class Connection {
 		} else {
 			console.error("Unexpected disconnect reason:", reason);
 			await setBoot(true);
-			await auth.truncate();
+			await truncate();
 			exit();
 		}
 	}
@@ -89,7 +89,7 @@ export default class Connection {
 		await sendStart(this.client);
 		await SetSudo(
 			jidNormalizedUser(this.client?.user?.id),
-			jidNormalizedUser(this.client?.user?.lid),
+			jidNormalizedUser(this.client?.user?.lid)
 		);
 	}
 }

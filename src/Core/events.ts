@@ -4,13 +4,13 @@ import GroupParticipant from "../Controllers/Participants.ts";
 import Calls from "../Controllers/Calls.ts";
 import GroupRequests from "../Controllers/GroupRequests.ts";
 import MessageDelete from "../Controllers/MessageDelete.ts";
-import type { WASocket } from "baileys";
+import type { BaileysEventMap, WASocket } from "baileys";
 
 export default function (
 	clientSocket: WASocket,
-	{ saveCreds }: { saveCreds: () => Promise<void> },
+	{ saveCreds }: { saveCreds: () => Promise<void> }
 ) {
-	clientSocket.ev.process(async events => {
+	clientSocket.ev.process(async (events: BaileysEventMap) => {
 		if (events["creds.update"]) await saveCreds();
 
 		if (events.call) new Calls(clientSocket, events.call);

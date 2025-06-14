@@ -33,13 +33,16 @@ export default class GroupRequests {
 			const participantName = participant.split("@")[0];
 			const authorName = author ? author.split("@")[0] : "System";
 
-			const content = `\`\`\`${actionText.replace("@participant", `@${participantName}`).replace("@author", `@${authorName}`).replace("@group", groupName)}\`\`\``;
+			const content = `\`\`\`${actionText
+				.replace("@participant", `@${participantName}`)
+				.replace("@author", `@${authorName}`)
+				.replace("@group", groupName)}\`\`\``;
 
 			const messageContent = profileImg
 				? {
 						image: { url: profileImg },
 						caption: content,
-					}
+				  }
 				: { text: content };
 
 			await this.client.sendMessage(id, {

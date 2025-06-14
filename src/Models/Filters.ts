@@ -13,27 +13,23 @@ export async function setFilter(
 	name: string,
 	response: string,
 	status: boolean,
-	isGroup?: boolean
+	isGroup = false
 ): Promise<void> {
 	const exists = database
 		.query("SELECT 1 FROM filters WHERE name = ?")
 		.get(name);
-	const query = {
-		name,
-		response,
-		status: parseBooleanToInteger(status),
-		isGroup: typeof isGroup === "boolean" && isGroup ? 1 : 0,
-	};
+
+	const params = [response, status ? 1 : 0, isGroup ? 1 : 0];
 
 	if (exists) {
 		database.run(
 			"UPDATE filters SET response = ?, status = ?, isGroup = ? WHERE name = ?",
-			[query.response, query.status, query.isGroup, query.name]
+			[...params, name]
 		);
 	} else {
 		database.run(
 			"INSERT INTO filters (name, response, status, isGroup) VALUES (?, ?, ?, ?)",
-			[query.name, query.response, query.status, query.isGroup]
+			[name, ...params]
 		);
 	}
 }
@@ -44,24 +40,12 @@ export async function getFilter(name: string): Promise<{
 	status: boolean;
 	isGroup: boolean | null;
 } | null> {
-	name = name.trim().toLowerCase();
-	const rec = database
+	const normalizedName = name.trim().toLowerCase();
+	const record = database
 		.query("SELECT name, response, status, isGroup FROM filters WHERE name = ?")
-		.get(name) as {
-		name: string;
-		response: string | null;
-		status: number;
-		isGroup: number | null;
-	} | null;
+		.get(normalizedName) as any;
 
-	return rec
-		? {
-				name: rec.name,
-				response: rec.response,
-				status: Boolean(rec.status),
-				isGroup: rec.isGroup != null ? Boolean(rec.isGroup) : null,
-		  }
-		: null;
+	return record ? transformFilterRecord(record) : null;
 }
 
 export async function getAllFilters(): Promise<
@@ -72,31 +56,30 @@ export async function getAllFilters(): Promise<
 		isGroup: boolean | null;
 	}[]
 > {
-	const recs = database
+	const records = database
 		.query(
-			"SELECT name, response, status, isGroup FROM filters WHERE status = ?"
+			"SELECT name, response, status, isGroup FROM filters WHERE status = 1"
 		)
-		.all(1) as {
-		name: string;
-		response: string | null;
-		status: number;
-		isGroup: number | null;
-	}[];
-	return recs.map(rec => ({
-		name: rec.name,
-		response: rec.response,
-		status: Boolean(rec.status),
-		isGroup: rec.isGroup != null ? Boolean(rec.isGroup) : null,
-	}));
+		.all() as any[];
+
+	return records.map(transformFilterRecord);
 }
 
-export async function delFilter(name: string): Promise<void> {
-	database.run("DELETE FROM filters WHERE name = ?", [name]);
+export async function delFilter(name: string): Promise<boolean> {
+	const result = database.run("DELETE FROM filters WHERE name = ?", [name]);
+	return result.changes > 0;
 }
 
-function parseBooleanToInteger(value: boolean): number {
-	if (typeof value !== "boolean") {
-		throw new Error("Expected a boolean value");
-	}
-	return value ? 1 : 0;
+function transformFilterRecord(record: any): {
+	name: string;
+	response: string | null;
+	status: boolean;
+	isGroup: boolean | null;
+} {
+	return {
+		name: record.name,
+		response: record.response,
+		status: Boolean(record.status),
+		isGroup: record.isGroup != null ? Boolean(record.isGroup) : null,
+	};
 }

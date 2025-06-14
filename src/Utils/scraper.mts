@@ -108,7 +108,7 @@ export async function technews() {
 		return newsItems
 			.map(
 				(posts: NewsItem) =>
-					`${posts.title}\n${posts.description}\n${posts.postLink}\n`,
+					`${posts.title}\n${posts.description}\n${posts.postLink}\n`
 			)
 			.join("\n");
 	} catch (error) {
@@ -117,7 +117,7 @@ export async function technews() {
 }
 
 export async function lyrics(
-	song: string,
+	song: string
 ): Promise<
 	{ artist: string; lyrics: string; thumbnail: string | undefined } | undefined
 > {
@@ -148,14 +148,14 @@ export async function lyrics(
 
 export async function askAI(
 	provider: "ai" | "llama" | "dalle" | "nikka" | "jeevs" | "maths",
-	prompt: string,
+	prompt: string
 ): Promise<string> {
 	const encodedPrompt = encodeURIComponent(prompt);
 	if (provider === "ai") {
 		return JSON.parse(
 			await fetch(
-				`https://bk9.fun/ai/BK92?BK9=You%20are%20Xstro%20whatsapp%20bot%20open%20source%20that%27s%20made%20by%20AstroX11%20that%27s%20your%20name,%20Xstro%20and%20if%20asked%20of%20your%20model%20that%27s%20your%20model%20unchnaged&q=${encodedPrompt}&model=gpt-4o`,
-			),
+				`https://bk9.fun/ai/BK92?BK9=You%20are%20Xstro%20whatsapp%20bot%20open%20source%20that%27s%20made%20by%20AstroX11%20that%27s%20your%20name,%20Xstro%20and%20if%20asked%20of%20your%20model%20that%27s%20your%20model%20unchnaged&q=${encodedPrompt}&model=gpt-4o`
+			)
 		).BK9.replace(/\D+/g, "");
 	}
 

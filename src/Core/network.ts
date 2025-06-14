@@ -1,14 +1,20 @@
-import http from "http";
-
-export function startServer(port: number = 8000, host: string = "localhost") {
-	const server = http.createServer((req, res) => {
-		res.writeHead(200, { "Content-Type": "text/plain" });
-		res.end("Server is running\n");
+export function startServer(
+	port: number = 8000,
+	hostname: string = "localhost"
+) {
+	const server = Bun.serve({
+		port,
+		hostname,
+		fetch(req) {
+			return new Response("Server is running\n", {
+				headers: { "Content-Type": "text/plain" },
+			});
+		},
 	});
 
-	server.listen(port, host, () => {
-		console.log(`Server running at http://${host}:${port}/`);
-	});
+	console.log(`Server running at http://${hostname}:${port}/`);
 
 	return server;
 }
+
+startServer()

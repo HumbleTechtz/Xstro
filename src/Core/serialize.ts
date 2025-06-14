@@ -43,8 +43,8 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 		isGroup || broadcast
 			? (key.participant as string)
 			: key.fromMe
-				? jidOwner
-				: jid;
+			? jidOwner
+			: jid;
 
 	const content = getMessageContent(message);
 	const quoted = getQuotedContent(message, key, [jidOwner, lidOwner]);
@@ -52,7 +52,7 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 	return {
 		send: async function (
 			content: string | Buffer,
-			options?: MessageMisc & Partial<AnyMessageContent>,
+			options?: MessageMisc & Partial<AnyMessageContent>
 		) {
 			const message = await prepareMessage(client, content, {
 				jid: this.jid,
@@ -66,7 +66,7 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 		forward: async function (
 			jid: string,
 			message: WAMessage,
-			options?: WAContextInfo & { quoted: WAMessage },
+			options?: WAContextInfo & { quoted: WAMessage }
 		) {
 			return await forwardM(client, jid, message, options);
 		},
@@ -82,13 +82,14 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 					this.jid,
 					this.mtype === "imageMessage"
 						? { image: media, caption: text, edit: msg?.key ?? this.key }
-						: { video: media, caption: text, edit: msg?.key ?? this.key },
+						: { video: media, caption: text, edit: msg?.key ?? this.key }
 				);
 			}
 			return await client.sendMessage(this.jid, { text, edit: this.key });
 		},
 		deleteM: async function (key: WAMessageKey) {
-			const canDeleteForAll = this.key.fromMe || (this.isGroup && this.isBotAdmin);
+			const canDeleteForAll =
+				this.key.fromMe || (this.isGroup && this.isBotAdmin);
 			if (!canDeleteForAll) {
 				return await client.chatModify(
 					{
@@ -98,7 +99,7 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 							timestamp: Date.now(),
 						},
 					},
-					this.jid,
+					this.jid
 				);
 			}
 			return await client.sendMessage(this.jid, { delete: key });
@@ -135,7 +136,7 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 			? {
 					sudo: await isSudo(quoted.sender),
 					...quoted,
-				}
+			  }
 			: undefined,
 		...content,
 		...messages,
@@ -143,5 +144,6 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 	};
 }
 
-export type Serialize =
-	ReturnType<typeof serialize> extends Promise<infer T> ? T : undefined;
+export type Serialize = ReturnType<typeof serialize> extends Promise<infer T>
+	? T
+	: undefined;

@@ -8,7 +8,7 @@ import {
 	cachedGroupMetadataAll,
 	getAutoMute,
 } from "../Models/index.ts";
-import type { WASocket } from "baileys";
+import type { GroupMetadata, WASocket } from "baileys";
 
 export default function (sock: WASocket) {
 	const fetchAndUpdateGroups = async () => {
@@ -17,7 +17,7 @@ export default function (sock: WASocket) {
 
 			const data = await sock.groupFetchAllParticipating();
 			for (const [jid, metadata] of Object.entries(data)) {
-				await updateMetaGroup(jid, metadata);
+				await updateMetaGroup(jid, metadata as GroupMetadata);
 			}
 		} catch {}
 	};
@@ -38,11 +38,11 @@ async function groupAutoMute(client: WASocket) {
 		if (!automute) continue;
 
 		const isGroupLocked = await client.groupMetadata(jid).then(
-			metadata => metadata?.announce === true,
-			() => false,
+			(metadata: GroupMetadata) => metadata?.announce === true,
+			() => false
 		);
 
-		if (currentTime === automute.startTime.toLowerCase() && !isGroupLocked) {
+		if (currentTime === automute.startTime!.toLowerCase() && !isGroupLocked) {
 			await client.sendMessage(jid, {
 				text: lang.GROUP_NOW_AUTO_MUTED,
 			});

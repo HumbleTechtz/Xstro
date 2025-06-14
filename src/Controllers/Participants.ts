@@ -13,7 +13,7 @@ export default class GroupParticipant {
 	updates: BaileysEventMap["group-participants.update"];
 	constructor(
 		client: WASocket,
-		updates: BaileysEventMap["group-participants.update"],
+		updates: BaileysEventMap["group-participants.update"]
 	) {
 		this.client = client;
 		this.updates = updates;
@@ -28,11 +28,15 @@ export default class GroupParticipant {
 
 		if (autokicklist && action === "add") {
 			await this.client.sendMessage(id, {
-				text: `\`\`\`@${participants[0].split("@")[0]} loser is back, now kicking you off\`\`\``,
+				text: `\`\`\`@${
+					participants[0].split("@")[0]
+				} loser is back, now kicking you off\`\`\``,
 				mentions: participants,
 			});
 			await this.client.sendMessage(id, {
-				text: `\`\`\`@${participants[0].split("@")[0]} Was kicked due to AutoKick\`\`\``,
+				text: `\`\`\`@${
+					participants[0].split("@")[0]
+				} Was kicked due to AutoKick\`\`\``,
 				mentions: participants,
 			});
 			await this.client.groupParticipantsUpdate(id, participants, "remove");
@@ -51,15 +55,15 @@ export default class GroupParticipant {
 				action === "promote"
 					? `was given the administrator role by @${author.split("@")[0]} `
 					: action === "demote"
-						? `was removed from their admin role by @${author.split("@")[0]}`
-						: ""
+					? `was removed from their admin role by @${author.split("@")[0]}`
+					: ""
 			}\`\`\``.trim();
 
 			const message = profileImg
 				? {
 						image: { url: profileImg },
 						caption: content,
-					}
+				  }
 				: { text: content };
 
 			await this.client.sendMessage(id, {
@@ -94,7 +98,7 @@ export default class GroupParticipant {
 			const quotesText = `"${quotesJson[0].q}"\n\n— ${quotesJson[0].a}`;
 
 			const factResponse = await fetch(
-				"https://uselessfacts.jsph.pl/random.json?language=en",
+				"https://uselessfacts.jsph.pl/random.json?language=en"
 			);
 			const factJson = await factResponse.json();
 
@@ -127,7 +131,7 @@ export default class GroupParticipant {
 					? {
 							image: { url: profileImg },
 							caption: finalText,
-						}
+					  }
 					: { text: finalText };
 
 			await this.client.sendMessage(id, {

@@ -39,7 +39,7 @@ export default class MessageDelete {
 								"*ᴀɴᴛɪᴅᴇʟᴇᴛᴇ ғᴏᴜɴᴅ ᴀ ᴍᴇssᴀɢᴇ!*\nᴍᴇssᴀɢᴇ: " +
 								(extractStringfromMessage(store.message!) ?? ""),
 						},
-						{ quoted: store ?? undefined },
+						{ quoted: store ?? undefined }
 					);
 				}
 			}

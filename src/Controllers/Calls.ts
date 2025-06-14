@@ -24,7 +24,9 @@ export default class Calls {
 				if (antiCall.action === "block") {
 					await this.client.rejectCall(update.id, caller);
 					await this.client.sendMessage(chatId, {
-						text: `\`\`\`@${caller.split("@")[0]} you have been blocked for calling.\`\`\``,
+						text: `\`\`\`@${
+							caller.split("@")[0]
+						} you have been blocked for calling.\`\`\``,
 						mentions: [caller],
 					});
 					await this.client.updateBlockStatus(caller, "block");
@@ -32,7 +34,9 @@ export default class Calls {
 				} else if (antiCall.action === "warn") {
 					await this.client.rejectCall(update.id, caller);
 					await this.client.sendMessage(chatId, {
-						text: `\`\`\`@${caller.split("@")[0]} this is ${this.client.user?.name} Personal Assistant Xstro, and I have terminated your call, leave a message, no calls allowed.\`\`\``,
+						text: `\`\`\`@${caller.split("@")[0]} this is ${
+							this.client.user?.name
+						} Personal Assistant Xstro, and I have terminated your call, leave a message, no calls allowed.\`\`\``,
 						mentions: [caller],
 					});
 					return;
