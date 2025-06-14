@@ -2,6 +2,7 @@ import ConnectionUpdate from "../Controllers/Connection.ts";
 import MessageUpsert from "../Controllers/MessageUpsert.ts";
 import GroupParticipant from "../Controllers/Participants.ts";
 import Calls from "../Controllers/Calls.ts";
+import GroupRequests from "../Controllers/GroupRequests.ts";
 import type { WASocket } from "baileys";
 
 export default function (
@@ -21,5 +22,9 @@ export default function (
 
 		if (events["group-participants.update"])
 			new GroupParticipant(clientSocket, events["group-participants.update"]);
+
+		if (events["group.join-request"]) {
+			new GroupRequests(clientSocket, events["group.join-request"]);
+		}
 	});
 }
