@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://avatars.githubusercontent.com/u/188756392?s=200&v=4" height="96" alt="xstro logo" />
+  <img src="https://avatars.githubusercontent.com/u/211725231??s=200v=4" height="96" alt="xstro logo" />
   <p>
     A simple, privacy-focused third-party automation tool designed to send, receive, process, and interact with WhatsApp Web via WebSocket.
   </p>
