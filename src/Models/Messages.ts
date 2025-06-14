@@ -1,30 +1,38 @@
-import { DataTypes } from "quantava";
 import database from "../Core/database.ts";
 import { WAProto, type BaileysEventMap, type WAMessageKey } from "baileys";
 
-const Messages = database.define("messages", {
-	id: { type: DataTypes.STRING, allowNull: false, primaryKey: true },
-	messages: { type: DataTypes.JSON },
-	requestId: { type: DataTypes.STRING },
-});
+database.exec(`
+  CREATE TABLE IF NOT EXISTS messages (
+    id TEXT PRIMARY KEY,
+    messages TEXT,
+    requestId TEXT
+  )
+`);
 
-export const save_message = async (
-	event: BaileysEventMap["messages.upsert"],
-) => {
+export async function save_message(
+	event: BaileysEventMap["messages.upsert"]
+): Promise<void> {
 	if (!event?.messages?.[0]?.key?.id) return;
 	const id = event.messages[0].key.id;
 	const requestId = event.requestId ?? null;
 
 	try {
-		await Messages.create({ id, messages: event.messages[0], requestId });
+		database.run(
+			"INSERT INTO messages (id, messages, requestId) VALUES (?, ?, ?)",
+			[id, JSON.stringify(event.messages[0]), requestId]
+		);
 	} catch {}
-};
+}
 
-export const getMessage = async (key: WAMessageKey) => {
-	const exists = (await Messages.findOne({ where: { id: key.id } })) as {
+export async function getMessage(
+	key: WAMessageKey
+): Promise<WAProto.WebMessageInfo["message"] | undefined> {
+	const exists = database
+		.query("SELECT messages FROM messages WHERE id = ?")
+		.get(key.id!) as {
 		id: string;
-		messages: string;
-		requestId?: string;
+		messages: string | null;
+		requestId: string | null;
 	} | null;
 	if (exists?.messages) {
 		return (
@@ -32,17 +40,22 @@ export const getMessage = async (key: WAMessageKey) => {
 			undefined
 		);
 	}
-};
+}
 
-export const loadMessage = async (key: WAMessageKey) => {
-	const exists = (await Messages.findOne({ where: { id: key.id } })) as {
+export async function loadMessage(
+	key: WAMessageKey
+): Promise<WAProto.WebMessageInfo | undefined> {
+	const exists = database
+		.query("SELECT messages FROM messages WHERE id = ?")
+		.get(key.id!) as {
 		id: string;
-		messages: string;
-		requestId?: string;
+		messages: string | null;
+		requestId: string | null;
 	} | null;
 	if (exists?.messages) {
 		return (
-			WAProto.WebMessageInfo.fromObject(JSON.parse(exists.messages)) || undefined
+			WAProto.WebMessageInfo.fromObject(JSON.parse(exists.messages)) ||
+			undefined
 		);
 	}
-};
+}

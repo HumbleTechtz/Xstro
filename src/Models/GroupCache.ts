@@ -1,46 +1,57 @@
-import { DataTypes } from "quantava";
 import database from "../Core/database.ts";
 import type { GroupMetadata } from "baileys";
 
-const Metadata = database.define(
-	"group_metadata",
-	{
-		jid: {
-			type: DataTypes.STRING,
-			allowNull: false,
-			primaryKey: true,
-			unique: true,
-		},
-		data: { type: DataTypes.JSON, allowNull: true },
-	},
-	{ timestamps: false },
-);
+database.exec(`
+  CREATE TABLE IF NOT EXISTS group_metadata (
+    jid TEXT PRIMARY KEY UNIQUE,
+    data TEXT
+  )
+`);
 
-export async function cachedGroupMetadata(jid: string) {
-	const metadata = (await Metadata.findOne({ where: { jid } })) as {
-		data: string;
-	};
+export async function cachedGroupMetadata(jid: string): Promise<GroupMetadata> {
+	const metadata = database
+		.query("SELECT data FROM group_metadata WHERE jid = ?")
+		.get(jid) as {
+		jid: string;
+		data: string | null;
+	} | null;
+	if (!metadata?.data) throw new Error("No metadata found for jid: " + jid);
 	return JSON.parse(metadata.data) as GroupMetadata;
 }
 
 export async function cachedGroupMetadataAll(): Promise<{
 	[_: string]: GroupMetadata;
 }> {
-	const metadata = (await Metadata.findAll()) as Array<{
+	const metadata = database
+		.query("SELECT jid, data FROM group_metadata")
+		.all() as {
 		jid: string;
-		data: string;
-	}>;
-	return metadata
-		? Object.fromEntries(metadata.map(m => [m.jid, JSON.parse(m.data)]))
-		: {};
+		data: string | null;
+	}[];
+	return Object.fromEntries(
+		metadata.filter(m => m.data).map(m => [m.jid, JSON.parse(m.data!)])
+	);
 }
 
-export async function updateMetaGroup(jid: string, data: GroupMetadata) {
+export async function updateMetaGroup(
+	jid: string,
+	data: GroupMetadata
+): Promise<void> {
 	if (!jid || !data) return;
-	const exists = await Metadata.findOne({ where: { jid } });
+	const exists = database
+		.query("SELECT 1 FROM group_metadata WHERE jid = ?")
+		.get(jid);
+	const serializedData = JSON.stringify(data);
+
 	if (exists) {
-		await Metadata.update({ jid, data }, { where: { jid } });
+		database.run("UPDATE group_metadata SET data = ? WHERE jid = ?", [
+			serializedData,
+			jid,
+		]);
 	} else {
-		await Metadata.create({ jid, data });
+		database.run("INSERT INTO group_metadata (jid, data) VALUES (?, ?)", [
+			jid,
+			serializedData,
+		]);
 	}
 }

@@ -1,43 +1,55 @@
-import { DataTypes } from "quantava";
 import database from "../Core/database.ts";
 
-const StickerCMD = database.define(
-	"sticker_cmd",
-	{
-		filesha256: { type: DataTypes.STRING, primaryKey: true },
-		cmdname: { type: DataTypes.STRING },
-	},
-	{ timestamps: false },
-);
+database.exec(`
+  CREATE TABLE IF NOT EXISTS sticker_cmd (
+    filesha256 TEXT PRIMARY KEY,
+    cmdname TEXT
+  )
+`);
 
-export const getStickerCmd = async function (filesha256: string) {
-	const record = (await StickerCMD.findByPk(filesha256)) as {
+export async function getStickerCmd(filesha256: string): Promise<
+	| {
+			filesha256: string;
+			cmdname: string | null;
+	  }
+	| undefined
+> {
+	const record = database
+		.query("SELECT filesha256, cmdname FROM sticker_cmd WHERE filesha256 = ?")
+		.get(filesha256) as {
 		filesha256: string;
-		cmdname: string;
-	};
-	return record ? record : undefined;
-};
+		cmdname: string | null;
+	} | null;
+	return record ?? undefined;
+}
 
-export const setStickerCmd = async function (
+export async function setStickerCmd(
 	filesha256: string,
-	cmdname: string,
-) {
-	const doesexits = await StickerCMD.findOne({ where: { filesha256 } });
-	if (doesexits) {
-		return await StickerCMD.update(
-			{ filesha256, cmdname },
-			{ where: { filesha256, cmdname } },
-		);
+	cmdname: string
+): Promise<void> {
+	const exists = database
+		.query("SELECT 1 FROM sticker_cmd WHERE filesha256 = ?")
+		.get(filesha256);
+	if (exists) {
+		database.run("UPDATE sticker_cmd SET cmdname = ? WHERE filesha256 = ?", [
+			cmdname,
+			filesha256,
+		]);
 	} else {
-		return await StickerCMD.create({ filesha256, cmdname });
+		database.run(
+			"INSERT INTO sticker_cmd (filesha256, cmdname) VALUES (?, ?)",
+			[filesha256, cmdname]
+		);
 	}
-};
+}
 
-export const removeStickerCmd = async function (cmdname: string) {
-	const doesexist = await StickerCMD.findOne({ where: { cmdname } });
-	if (!doesexist) {
-		return undefined;
-	}
-	await StickerCMD.destroy({ where: { cmdname } });
+export async function removeStickerCmd(
+	cmdname: string
+): Promise<boolean | undefined> {
+	const exists = database
+		.query("SELECT 1 FROM sticker_cmd WHERE cmdname = ?")
+		.get(cmdname);
+	if (!exists) return undefined;
+	database.run("DELETE FROM sticker_cmd WHERE cmdname = ?", [cmdname]);
 	return true;
-};
+}

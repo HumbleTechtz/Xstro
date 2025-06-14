@@ -1,44 +1,73 @@
-import { DataTypes } from "quantava";
 import database from "../Core/database.ts";
 
-const GroupJoin = database.define("group_join", {
-	groupJid: { type: DataTypes.STRING, allowNull: false, primaryKey: true },
-	welcome: { type: DataTypes.STRING },
-	goodbye: { type: DataTypes.STRING },
-});
+database.exec(`
+  CREATE TABLE IF NOT EXISTS group_join (
+    groupJid TEXT PRIMARY KEY,
+    welcome TEXT,
+    goodbye TEXT
+  )
+`);
 
-export const setWelcome = async (id: string, text: string) => {
-	const exists = await GroupJoin.findOne({ where: { groupJid: id } });
+export async function setWelcome(id: string, text: string): Promise<void> {
+	const exists = database
+		.query("SELECT 1 FROM group_join WHERE groupJid = ?")
+		.get(id);
 	if (exists) {
-		await GroupJoin.update({ welcome: text }, { where: { groupJid: id } });
-		return;
+		database.run("UPDATE group_join SET welcome = ? WHERE groupJid = ?", [
+			text,
+			id,
+		]);
+	} else {
+		database.run("INSERT INTO group_join (groupJid, welcome) VALUES (?, ?)", [
+			id,
+			text,
+		]);
 	}
-	return await GroupJoin.create({ groupJid: id, welcome: text });
-};
+}
 
-export const setGoodBye = async (id: string, text: string) => {
-	const exists = await GroupJoin.findOne({ where: { groupJid: id } });
+export async function setGoodBye(id: string, text: string): Promise<void> {
+	const exists = database
+		.query("SELECT 1 FROM group_join WHERE groupJid = ?")
+		.get(id);
 	if (exists) {
-		await GroupJoin.update({ goodbye: text }, { where: { groupJid: id } });
-		return;
+		database.run("UPDATE group_join SET goodbye = ? WHERE groupJid = ?", [
+			text,
+			id,
+		]);
+	} else {
+		database.run("INSERT INTO group_join (groupJid, goodbye) VALUES (?, ?)", [
+			id,
+			text,
+		]);
 	}
-	return await GroupJoin.create({ groupJid: id, goodbye: text });
-};
+}
 
-export const getWelcome = async (id: string) => {
-	const data = await GroupJoin.findOne({ where: { groupJid: id } });
-	return (data?.welcome as string) || null;
-};
+export async function getWelcome(id: string): Promise<string | null> {
+	const data = database
+		.query("SELECT welcome FROM group_join WHERE groupJid = ?")
+		.get(id) as {
+		groupJid: string;
+		welcome: string | null;
+		goodbye: string | null;
+	} | null;
+	return data?.welcome ?? null;
+}
 
-export const getGoodBye = async (id: string) => {
-	const data = await GroupJoin.findOne({ where: { groupJid: id } });
-	return (data?.goodbye as string) || null;
-};
+export async function getGoodBye(id: string): Promise<string | null> {
+	const data = database
+		.query("SELECT goodbye FROM group_join WHERE groupJid = ?")
+		.get(id) as {
+		groupJid: string;
+		welcome: string | null;
+		goodbye: string | null;
+	} | null;
+	return data?.goodbye ?? null;
+}
 
-export const delWelcome = async (id: string) => {
-	await GroupJoin.update({ welcome: null }, { where: { groupJid: id } });
-};
+export async function delWelcome(id: string): Promise<void> {
+	database.run("UPDATE group_join SET welcome = NULL WHERE groupJid = ?", [id]);
+}
 
-export const delGoodBye = async (id: string) => {
-	await GroupJoin.update({ goodbye: null }, { where: { groupJid: id } });
-};
+export async function delGoodBye(id: string): Promise<void> {
+	database.run("UPDATE group_join SET goodbye = NULL WHERE groupJid = ?", [id]);
+}

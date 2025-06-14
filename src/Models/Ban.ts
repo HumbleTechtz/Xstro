@@ -1,32 +1,42 @@
-import { DataTypes } from "quantava";
 import database from "../Core/database.ts";
 import { isJidUser, isLidUser } from "baileys";
 
-const Ban = database.define("ban_user", {
-	id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-	jid: { type: DataTypes.STRING, unique: true },
-	lid: { type: DataTypes.STRING },
-});
+database.exec(`
+  CREATE TABLE IF NOT EXISTS ban_user (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    jid TEXT UNIQUE,
+    lid TEXT
+  )
+`);
 
-export const setBan = async (jid: string, lid: string) => {
+interface BanRecord {
+	id: number;
+	jid: string | null;
+	lid: string | null;
+}
+
+export const setBan = async (jid: string, lid: string): Promise<void> => {
 	if (!isJidUser(jid) || !isLidUser(lid)) return;
-	const exists = await Ban.findOne({ where: { jid } });
+	const exists = database
+		.query("SELECT 1 FROM ban_user WHERE jid = ?")
+		.get(jid);
 	if (!exists) {
-		return await Ban.create({ jid, lid });
+		database.run("INSERT INTO ban_user (jid, lid) VALUES (?, ?)", [jid, lid]);
 	}
-	return;
 };
 
 export const getBan = async (
-	banType: "jid" | "lid" = "jid",
+	banType: "jid" | "lid" = "jid"
 ): Promise<string[]> => {
-	const users = (await Ban.findAll({
-		attributes: [banType],
-	})) as any;
-	return users.map((user: any) => user[banType]);
+	const users = database
+		.query(`SELECT ${banType} FROM ban_user WHERE ${banType} IS NOT NULL`)
+		.all() as Array<{ [key: string]: string }>;
+	return users
+		.map(user => user[banType])
+		.filter((value): value is string => value != null);
 };
 
-export const delBan = async (user: string) => {
+export const delBan = async (user: string): Promise<void> => {
 	let field: "jid" | "lid" | undefined;
 
 	if (isJidUser(user)) field = "jid";
@@ -34,10 +44,7 @@ export const delBan = async (user: string) => {
 
 	if (!field) return;
 
-	const exists = await Ban.findOne({ where: { [field]: user } });
-	if (!exists) return;
-
-	await Ban.destroy({ where: { [field]: user } });
+	database.run(`DELETE FROM ban_user WHERE ${field} = ?`, [user]);
 };
 
 export const isBanned = async (user: string): Promise<boolean> => {
@@ -48,6 +55,8 @@ export const isBanned = async (user: string): Promise<boolean> => {
 
 	if (!field) return false;
 
-	const exists = await Ban.findOne({ where: { [field]: user } });
+	const exists = database
+		.query(`SELECT 1 FROM ban_user WHERE ${field} = ?`)
+		.get(user);
 	return !!exists;
 };

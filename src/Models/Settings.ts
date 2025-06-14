@@ -1,56 +1,82 @@
-import { DataTypes } from "quantava";
 import database from "../Core/database.ts";
 
-const Settings = database.define("settings", {
-	id: { type: DataTypes.INTEGER, autoIncrement: false, primaryKey: true },
-	prefix: { type: DataTypes.ARRAY, defaultValue: ["."] },
-	mode: { type: DataTypes.BOOLEAN, defaultValue: true },
-});
+database.exec(`
+  CREATE TABLE IF NOT EXISTS settings (
+    id INTEGER PRIMARY KEY,
+    prefix TEXT NOT NULL DEFAULT '["."]',
+    mode INTEGER NOT NULL DEFAULT 1
+  )
+`);
 
-export const getSettings = async () => {
-	let config = (await Settings.findOne({ where: { id: 1 } })) as any;
+export async function getSettings(): Promise<{
+	prefix: string[];
+	mode: boolean;
+}> {
+	let config = database
+		.query("SELECT prefix, mode FROM settings WHERE id = ?")
+		.get(1) as {
+		id: number;
+		prefix: string;
+		mode: number;
+	} | null;
 
 	if (!config) {
-		await Settings.create({
-			id: 1,
-			prefix: ["."],
-			mode: 1,
-		});
-		config = await Settings.findOne({ where: { id: 1 } });
+		database.run("INSERT INTO settings (id, prefix, mode) VALUES (?, ?, ?)", [
+			1,
+			JSON.stringify(["."]),
+			1,
+		]);
+		config = database
+			.query("SELECT prefix, mode FROM settings WHERE id = ?")
+			.get(1) as {
+			id: number;
+			prefix: string;
+			mode: number;
+		};
 	}
 
 	return {
 		prefix: JSON.parse(config.prefix),
 		mode: Boolean(config.mode),
 	};
-};
+}
 
-export const setPrefix = async (payload: string[]) => {
-	let { prefix } = await getSettings();
-	if (typeof prefix !== "object") prefix = JSON.parse(prefix);
-	else [];
+export async function setPrefix(payload: string[]): Promise<void> {
+	const { prefix, mode } = await getSettings();
 	const updated = Array.from(new Set([...prefix, ...payload]));
-	return await Settings.update(
-		{
-			prefix: updated,
-		},
-		{ where: { id: 1 } },
-	);
-};
+	database.run("UPDATE settings SET prefix = ? WHERE id = ?", [
+		JSON.stringify(updated),
+		1,
+	]);
+}
 
-export const setMode = async (mode: boolean) => {
+export async function setMode(mode: boolean): Promise<void> {
 	const { prefix } = await getSettings();
-	await Settings.update({ mode: mode ? 1 : 0, prefix }, { where: { id: 1 } });
-};
+	database.run("UPDATE settings SET mode = ?, prefix = ? WHERE id = ?", [
+		mode ? 1 : 0,
+		JSON.stringify(prefix),
+		1,
+	]);
+}
 
-export const getPrefix = async () => {
-	const config = await Settings.findOne({ where: { id: 1 } });
+export async function getPrefix(): Promise<string[]> {
+	const config = database
+		.query("SELECT prefix FROM settings WHERE id = ?")
+		.get(1) as {
+		id: number;
+		prefix: string;
+		mode: number;
+	} | null;
+	return config?.prefix ? JSON.parse(config.prefix) : ["."];
+}
 
-	if (!config?.prefix) return ["."];
-	return JSON.parse(config?.prefix as any) as string[];
-};
-
-export const getMode = async (): Promise<boolean> => {
-	const config = (await Settings.findOne({ where: { id: 1 } })) as any;
+export async function getMode(): Promise<boolean> {
+	const config = database
+		.query("SELECT mode FROM settings WHERE id = ?")
+		.get(1) as {
+		id: number;
+		prefix: string;
+		mode: number;
+	} | null;
 	return config ? Boolean(config.mode) : true;
-};
+}

@@ -1,33 +1,57 @@
-import { DataTypes } from "quantava";
 import database from "../Core/database.ts";
 
-const AutoMute = database.define("automute", {
-	jid: { type: DataTypes.STRING, allowNull: false, primaryKey: true },
-	startTime: { type: DataTypes.STRING, allowNull: true },
-	endTime: { type: DataTypes.STRING, allowNull: true },
-});
+database.exec(`
+  CREATE TABLE IF NOT EXISTS automute (
+    jid TEXT PRIMARY KEY,
+    startTime TEXT,
+    endTime TEXT
+  )
+`);
 
-const setAutoMute = async (
+export async function setAutoMute(
 	jid: string,
 	startTime: string,
-	endTime?: string,
-) => {
-	return AutoMute.upsert({ jid, startTime, endTime });
-};
+	endTime?: string
+): Promise<boolean> {
+	const existing = database
+		.query("SELECT 1 FROM automute WHERE jid = ?")
+		.get(jid);
 
-const delAutoMute = async (jid: string) => {
-	return AutoMute.destroy({ where: { jid } });
-};
+	if (existing) {
+		database.run(
+			"UPDATE automute SET startTime = ?, endTime = ? WHERE jid = ?",
+			[startTime, endTime ?? null, jid]
+		);
+	} else {
+		database.run(
+			"INSERT INTO automute (jid, startTime, endTime) VALUES (?, ?, ?)",
+			[jid, startTime, endTime ?? null]
+		);
+	}
 
-const getAutoMute = async (jid: string) => {
-	const result = await AutoMute.findOne({ where: { jid } });
-	if (!result) return null;
-	const { jid: foundJid, startTime, endTime } = result as any;
-	return {
-		jid: foundJid as string,
-		startTime: startTime as string,
-		endTime: endTime as string | null,
-	};
-};
+	return true;
+}
 
-export { AutoMute, setAutoMute, delAutoMute, getAutoMute };
+export async function delAutoMute(jid: string): Promise<number> {
+	database.run("DELETE FROM automute WHERE jid = ?", [jid]);
+	const result = database.query("SELECT changes() AS changes").get();
+	if (result && typeof result === "object" && "changes" in result) {
+		return (result as { changes: number }).changes;
+	}
+	return 0;
+}
+
+export async function getAutoMute(jid: string): Promise<{
+	jid: string;
+	startTime: string | null;
+	endTime: string | null;
+} | null> {
+	const result = database
+		.query("SELECT jid, startTime, endTime FROM automute WHERE jid = ?")
+		.get(jid) as {
+		jid: string;
+		startTime: string | null;
+		endTime: string | null;
+	} | null;
+	return result ?? null;
+}

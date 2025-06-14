@@ -1,26 +1,41 @@
-import { DataTypes } from "quantava";
 import database from "../Core/database.ts";
 
-const GroupEvent = database.define("group_event", {
-	groupJid: { type: DataTypes.STRING, allowNull: false, primaryKey: true },
-	mode: { type: DataTypes.BOOLEAN },
-});
+database.exec(`
+  CREATE TABLE IF NOT EXISTS group_event (
+    groupJid TEXT PRIMARY KEY,
+    mode INTEGER
+  )
+`);
 
-export const setGroupEvent = async (id: string, mode: true | false) => {
+export async function setGroupEvent(id: string, mode: boolean): Promise<void> {
 	const opt = mode ? 1 : 0;
-	const exists = await GroupEvent.findOne({ where: { groupJid: id } });
+	const exists = database
+		.query("SELECT 1 FROM group_event WHERE groupJid = ?")
+		.get(id);
+
 	if (exists) {
-		await GroupEvent.update({ mode: opt }, { where: { groupJid: id } });
-		return;
+		database.run("UPDATE group_event SET mode = ? WHERE groupJid = ?", [
+			opt,
+			id,
+		]);
+	} else {
+		database.run("INSERT INTO group_event (groupJid, mode) VALUES (?, ?)", [
+			id,
+			opt,
+		]);
 	}
-	return await GroupEvent.create({ groupJid: id, mode: opt });
-};
+}
 
-export const getGroupEvent = async (id: string): Promise<boolean> => {
-	const entry = await GroupEvent.findOne({ where: { groupJid: id } });
+export async function getGroupEvent(id: string): Promise<boolean> {
+	const entry = database
+		.query("SELECT mode FROM group_event WHERE groupJid = ?")
+		.get(id) as {
+		groupJid: string;
+		mode: number | null;
+	} | null;
 	return !!(entry && entry.mode);
-};
+}
 
-export const delGroupEvent = async (id: string) => {
-	await GroupEvent.destroy({ where: { groupJid: id } });
-};
+export async function delGroupEvent(id: string): Promise<void> {
+	database.run("DELETE FROM group_event WHERE groupJid = ?", [id]);
+}

@@ -1,41 +1,61 @@
-import { DataTypes } from "quantava";
 import database from "../Core/database.ts";
 
-const Antilink = database.define("antilink", {
-	jid: { type: DataTypes.STRING, allowNull: false, unique: true },
-	mode: { type: DataTypes.BOOLEAN, allowNull: true },
-	links: { type: DataTypes.JSON, allowNull: true },
-});
+database.exec(`
+  CREATE TABLE IF NOT EXISTS antilink (
+    jid TEXT NOT NULL UNIQUE,
+    mode INTEGER,
+    links TEXT
+  )
+`);
 
-export const setAntilink = async function (
+export const setAntilink = async (
 	jid: string,
 	mode: boolean,
-	links?: string[],
-) {
-	const existing = await Antilink.findOne({ where: { jid } });
+	links?: string[]
+): Promise<void> => {
+	const existing = database
+		.query("SELECT 1 FROM antilink WHERE jid = ?")
+		.get(jid);
 
 	if (existing) {
-		await Antilink.update({ jid, mode, links }, { where: { jid } });
+		database.run("UPDATE antilink SET mode = ?, links = ? WHERE jid = ?", [
+			mode ? 1 : 0,
+			links ? JSON.stringify(links) : null,
+			jid,
+		]);
 	} else {
-		await Antilink.create({ jid, mode, links });
+		database.run("INSERT INTO antilink (jid, mode, links) VALUES (?, ?, ?)", [
+			jid,
+			mode ? 1 : 0,
+			links ? JSON.stringify(links) : null,
+		]);
 	}
 };
 
-export const getAntilink = async function (jid: string) {
-	const record = (await Antilink.findOne({ where: { jid } })) as {
+export const getAntilink = async (
+	jid: string
+): Promise<{
+	jid: string;
+	mode: boolean | null;
+	links: string[] | null;
+} | null> => {
+	const record = database
+		.query("SELECT jid, mode, links FROM antilink WHERE jid = ?")
+		.get(jid) as {
 		jid: string;
-		mode: number;
-		links: string;
-	};
+		mode: number | null;
+		links: string | null;
+	} | null;
+
 	if (!record) return null;
 
 	return {
 		jid: record.jid,
-		mode: Boolean(record.mode),
+		mode: record.mode != null ? Boolean(record.mode) : null,
 		links: record.links ? JSON.parse(record.links) : [],
 	};
 };
 
-export const delAntilink = async function (jid: string) {
-	await Antilink.destroy({ where: { jid } });
+export const delAntilink = async (jid: string): Promise<void> => {
+	database.run("DELETE FROM antilink WHERE jid = ?", [jid]);
 };

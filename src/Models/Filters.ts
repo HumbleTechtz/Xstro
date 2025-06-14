@@ -1,67 +1,98 @@
-import { DataTypes } from "quantava";
 import database from "../Core/database.ts";
 
-export const Filters = database.define("filters", {
-	name: { type: DataTypes.STRING, allowNull: false, unique: true },
-	response: { type: DataTypes.STRING, allowNull: true },
-	status: { type: DataTypes.BOOLEAN, defaultValue: false },
-	isGroup: { type: DataTypes.BOOLEAN, allowNull: true },
-});
+database.exec(`
+  CREATE TABLE IF NOT EXISTS filters (
+    name TEXT NOT NULL UNIQUE,
+    response TEXT,
+    status INTEGER DEFAULT 0,
+    isGroup INTEGER
+  )
+`);
 
-export const setFilter = async (
+export async function setFilter(
 	name: string,
 	response: string,
 	status: boolean,
-	isGroup?: boolean,
-) => {
-	const exists = await Filters.findOne({ where: { name } });
+	isGroup?: boolean
+): Promise<void> {
+	const exists = database
+		.query("SELECT 1 FROM filters WHERE name = ?")
+		.get(name);
 	const query = {
 		name,
 		response,
 		status: parseBooleanToInteger(status),
-		isGroup: typeof isGroup === "boolean" && isGroup === true ? 1 : 0,
+		isGroup: typeof isGroup === "boolean" && isGroup ? 1 : 0,
 	};
 
 	if (exists) {
-		return await Filters.update(query, { where: { name } });
+		database.run(
+			"UPDATE filters SET response = ?, status = ?, isGroup = ? WHERE name = ?",
+			[query.response, query.status, query.isGroup, query.name]
+		);
 	} else {
-		return await Filters.create(query);
+		database.run(
+			"INSERT INTO filters (name, response, status, isGroup) VALUES (?, ?, ?, ?)",
+			[query.name, query.response, query.status, query.isGroup]
+		);
 	}
-};
+}
 
-export const getFilter = async (name: string) => {
+export async function getFilter(name: string): Promise<{
+	name: string;
+	response: string | null;
+	status: boolean;
+	isGroup: boolean | null;
+} | null> {
 	name = name.trim().toLowerCase();
-	const rec = (await Filters.findOne({ where: { name: name } })) as {
+	const rec = database
+		.query("SELECT name, response, status, isGroup FROM filters WHERE name = ?")
+		.get(name) as {
 		name: string;
-		response: string;
+		response: string | null;
 		status: number;
-		isGroup: number;
-	};
+		isGroup: number | null;
+	} | null;
+
 	return rec
 		? {
 				name: rec.name,
 				response: rec.response,
 				status: Boolean(rec.status),
-				isGroup: Boolean(rec.isGroup),
-			}
+				isGroup: rec.isGroup != null ? Boolean(rec.isGroup) : null,
+		  }
 		: null;
-};
+}
 
-export const getAllFilters = async () => {
-	const recs = (await Filters.findAll({
-		where: { status: 1 },
-	})) as { name: string; response: string; status: number; isGroup: number }[];
+export async function getAllFilters(): Promise<
+	{
+		name: string;
+		response: string | null;
+		status: boolean;
+		isGroup: boolean | null;
+	}[]
+> {
+	const recs = database
+		.query(
+			"SELECT name, response, status, isGroup FROM filters WHERE status = ?"
+		)
+		.all(1) as {
+		name: string;
+		response: string | null;
+		status: number;
+		isGroup: number | null;
+	}[];
 	return recs.map(rec => ({
 		name: rec.name,
 		response: rec.response,
 		status: Boolean(rec.status),
-		isGroup: Boolean(rec.isGroup),
+		isGroup: rec.isGroup != null ? Boolean(rec.isGroup) : null,
 	}));
-};
+}
 
-export const delFilter = async (name: string) => {
-	return await Filters.destroy({ where: { name } });
-};
+export async function delFilter(name: string): Promise<void> {
+	database.run("DELETE FROM filters WHERE name = ?", [name]);
+}
 
 function parseBooleanToInteger(value: boolean): number {
 	if (typeof value !== "boolean") {

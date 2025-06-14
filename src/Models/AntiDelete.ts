@@ -1,29 +1,31 @@
-import { DataTypes } from "quantava";
 import database from "../Core/database.ts";
 
-const Antidelete = database.define("antidelete", {
-	mode: {
-		type: DataTypes.BOOLEAN,
-		allowNull: true,
-	},
-});
+database.exec(`
+  CREATE TABLE IF NOT EXISTS antidelete (
+    mode INTEGER
+  )
+`);
 
-export const setAntidelete = async (mode: boolean) => {
-	const [record] = await Antidelete.findAll({ limit: 1 });
+export const setAntidelete = async (mode: boolean): Promise<boolean> => {
+	const record = database
+		.query("SELECT mode FROM antidelete LIMIT 1")
+		.get() as { mode: boolean | null } | null;
 
 	if (!record) {
-		await Antidelete.create({ mode });
+		database.run("INSERT INTO antidelete (mode) VALUES (?)", [mode ? 1 : 0]);
 		return true;
 	}
 
-	if (record.mode === mode) return;
+	if (record.mode === mode) return false;
 
-	await Antidelete.destroy({ where: {} });
-	await Antidelete.create({ mode });
+	database.run("DELETE FROM antidelete");
+	database.run("INSERT INTO antidelete (mode) VALUES (?)", [mode ? 1 : 0]);
 	return true;
 };
 
-export const getAntidelete = async () => {
-	const [record] = await Antidelete.findAll({ limit: 1 });
+export const getAntidelete = async (): Promise<boolean> => {
+	const record = database
+		.query("SELECT mode FROM antidelete LIMIT 1")
+		.get() as { mode: boolean | null } | null;
 	return Boolean(record?.mode);
 };

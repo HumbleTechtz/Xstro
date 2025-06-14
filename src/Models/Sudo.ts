@@ -1,30 +1,34 @@
-import { DataTypes } from "quantava";
 import database from "../Core/database.ts";
 import { isJidUser, isLidUser } from "baileys";
 
-const Sudo = database.define("sudo_user", {
-	id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-	jid: { type: DataTypes.STRING, unique: true },
-	lid: { type: DataTypes.STRING },
-});
+database.exec(`
+  CREATE TABLE IF NOT EXISTS sudo_user (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    jid TEXT UNIQUE,
+    lid TEXT
+  )
+`);
 
-export const SetSudo = async (jid: string, lid: string) => {
+export async function SetSudo(jid: string, lid: string): Promise<void> {
 	if (!isJidUser(jid) || !isLidUser(lid)) return;
-	const exists = await Sudo.findOne({ where: { jid } });
+	const exists = database
+		.query("SELECT 1 FROM sudo_user WHERE jid = ?")
+		.get(jid);
 	if (!exists) {
-		return await Sudo.create({ jid, lid });
+		database.run("INSERT INTO sudo_user (jid, lid) VALUES (?, ?)", [jid, lid]);
 	}
-	return;
-};
+}
 
-export const getSudo = async (sudoType: "jid" | "lid"): Promise<string[]> => {
-	const users = (await Sudo.findAll({
-		attributes: [sudoType],
-	})) as any;
-	return users.map((user: any) => user[sudoType]);
-};
+export async function getSudo(sudoType: "jid" | "lid"): Promise<string[]> {
+	const users = database
+		.query(`SELECT ${sudoType} FROM sudo_user WHERE ${sudoType} IS NOT NULL`)
+		.all() as Array<{ [key: string]: string }>;
+	return users
+		.map(user => user[sudoType])
+		.filter((value): value is string => value != null);
+}
 
-export const delSudo = async (user: string) => {
+export async function delSudo(user: string): Promise<void> {
 	let field: "jid" | "lid" | undefined;
 
 	if (isJidUser(user)) field = "jid";
@@ -32,19 +36,19 @@ export const delSudo = async (user: string) => {
 
 	if (!field) return;
 
-	const exists = await Sudo.findOne({ where: { [field]: user } });
-	if (!exists) return;
+	database.run(`DELETE FROM sudo_user WHERE ${field} = ?`, [user]);
+}
 
-	await Sudo.destroy({ where: { [field]: user } });
-};
-
-export const isSudo = async (user: string) => {
+export async function isSudo(user: string): Promise<boolean> {
 	let field: "jid" | "lid" | undefined;
 
 	if (isJidUser(user)) field = "jid";
 	else if (isLidUser(user)) field = "lid";
 
 	if (!field) return false;
-	const exists = await Sudo.findOne({ where: { [field]: user } });
+
+	const exists = database
+		.query(`SELECT 1 FROM sudo_user WHERE ${field} = ?`)
+		.get(user);
 	return !!exists;
-};
+}

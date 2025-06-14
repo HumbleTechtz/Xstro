@@ -1,55 +1,60 @@
-import { DataTypes } from "quantava";
 import database from "../Core/database.ts";
-import type { AutoKickModel } from "../Types/AutoKick.ts";
 
-export const Autokick = database.define(
-	"autokick",
-	{
-		groupJid: { type: DataTypes.STRING, primaryKey: true },
-		jid: { type: DataTypes.STRING, allowNull: true },
-		lid: { type: DataTypes.STRING, allowNull: true },
-	},
-	{ timestamps: false },
-);
+database.exec(`
+  CREATE TABLE IF NOT EXISTS autokick (
+    groupJid TEXT PRIMARY KEY,
+    jid TEXT,
+    lid TEXT
+  )
+`);
 
 export async function addAutoKick(
 	groupJid: string,
 	jid: string | null,
-	lid: string | null,
-) {
-	const entry = (await Autokick.findOne({
-		where: { groupJid },
-	})) as unknown as AutoKickModel | null;
+	lid: string | null
+): Promise<void> {
+	const entry = database
+		.query("SELECT groupJid, jid, lid FROM autokick WHERE groupJid = ?")
+		.get(groupJid) as { groupJid: string; jid: string; lid: string } | null;
 
 	if (entry) {
-		await Autokick.update({ jid, lid }, { where: { groupJid } });
+		database.run("UPDATE autokick SET jid = ?, lid = ? WHERE groupJid = ?", [
+			jid,
+			lid,
+			groupJid,
+		]);
 	} else {
-		await Autokick.create({ groupJid, jid, lid });
+		database.run("INSERT INTO autokick (groupJid, jid, lid) VALUES (?, ?, ?)", [
+			groupJid,
+			jid,
+			lid,
+		]);
 	}
 }
 
 export async function getAutoKick(
 	groupJid: string,
-	id: string,
+	id: string
 ): Promise<boolean> {
-	const entry = (await Autokick.findOne({
-		where: { groupJid },
-	})) as unknown as AutoKickModel | null;
+	const entry = database
+		.query("SELECT jid, lid FROM autokick WHERE groupJid = ?")
+		.get(groupJid) as { groupJid: string; jid: string; lid: string } | null;
 
 	if (!entry) return false;
 
 	return entry.jid === id || entry.lid === id;
 }
 
-export async function delAutoKick(groupJid: string) {
-	await Autokick.destroy({ where: { groupJid } });
+export async function delAutoKick(groupJid: string): Promise<void> {
+	database.run("DELETE FROM autokick WHERE groupJid = ?", [groupJid]);
 }
 
-export async function getAllAutoKicks() {
-	const all = (await Autokick.findAll()) as unknown as AutoKickModel[];
-	return all.map(entry => ({
-		groupJid: entry.groupJid,
-		jid: entry.jid,
-		lid: entry.lid,
-	}));
+export async function getAllAutoKicks(): Promise<
+	{ groupJid: string; jid: string; lid: string }[]
+> {
+	return database.query("SELECT groupJid, jid, lid FROM autokick").all() as {
+		groupJid: string;
+		jid: string;
+		lid: string;
+	}[];
 }

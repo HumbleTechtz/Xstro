@@ -1,33 +1,49 @@
-import { DataTypes } from "quantava";
 import database from "../Core/database.ts";
 
-const Alive = database.define(
-	"alive_message",
-	{
-		id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-		message: { type: DataTypes.STRING, allowNull: false },
-	},
-	{ timestamps: false },
-);
+database.exec(`
+  CREATE TABLE IF NOT EXISTS alive_message (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    message TEXT NOT NULL
+  )
+`);
 
 export const SetAlive = async (message: string) => {
-	const exists = await Alive.findByPk(1);
+	const exists = database
+		.query("SELECT 1 FROM alive_message WHERE id = ?")
+		.get(1);
+
 	if (exists) {
-		return await Alive.update({ message }, { where: { id: 1 } });
+		database.run("UPDATE alive_message SET message = ? WHERE id = ?", [
+			message,
+			1,
+		]);
+		return {
+			changes: (database.query("SELECT changes() AS changes").get() as { changes: number }).changes,
+		};
 	}
-	return await Alive.create({ message });
+
+	database.run("INSERT INTO alive_message (message) VALUES (?)", [message]);
+	return {
+		changes: (database.query("SELECT changes() AS changes").get() as { changes: number }).changes,
+	};
 };
 
 export const getAlive = async () => {
-	const exists = (await Alive.findByPk(1)) as { id?: number; message?: string };
-
-	return exists?.message ? exists.message : `_I am alive_`;
+	const result = database
+		.query("SELECT message FROM alive_message WHERE id = ?")
+		.get(1) as { message?: string } | null;
+	return result?.message ?? "_I am alive_";
 };
 
 export const delAlive = async () => {
-	const exists = await Alive.findByPk(1);
+	const exists = database
+		.query("SELECT 1 FROM alive_message WHERE id = ?")
+		.get(1);
 	if (exists) {
-		return await Alive.destroy({ where: { id: 1 } });
+		database.run("DELETE FROM alive_message WHERE id = ?");
+		return {
+			changes: (database.query("SELECT changes() AS changes").get() as { changes: number }).changes,
+		};
 	}
 	return;
 };
