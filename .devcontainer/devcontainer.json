@@ -1,12 +1,9 @@
 {
-    "name": "Xstro",
-    "build": {
-        "dockerfile": "../Dockerfile"
-    },
-    "features": {
-        "ghcr.io/devcontainers/features/node:1": {
-            "version": "24"
-        },
-        "ghcr.io/devcontainers/features/git:1": {}
-    }
+	"name": "Xstro",
+	"build": {
+		"dockerfile": "../Dockerfile"
+	},
+	"features": {
+		"ghcr.io/devcontainers/features/git:1": {}
+	}
 }

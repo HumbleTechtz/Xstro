@@ -11,7 +11,7 @@
 	"homepage": "https://github.com/AstroXTeam/whatsapp-bot#readme",
 	"author": "AstroX11 <devastro0010@gmail.com>",
 	"scripts": {
-		"start": "bun start ./src/Core/client.ts",
+		"start": "bun ./src/Core/client.ts",
 		"postinstall": "bun scripts/patchBaileys.ts"
 	},
 	"dependencies": {
