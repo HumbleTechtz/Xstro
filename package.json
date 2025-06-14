@@ -10,17 +10,10 @@
 	},
 	"homepage": "https://github.com/AstroXTeam/whatsapp-bot#readme",
 	"author": "AstroX11 <devastro0010@gmail.com>",
-	"engines": {
-		"node": ">=23"
-	},
 	"scripts": {
-		"postinstall": "eslint --fix && tsc",
-		"test": "tsx ./src/Core/client.ts",
-		"start": "pm2 start ./lib/src/Core/client.js --attach",
-		"stop": "pm2 stop 0",
-		"restart": "pm2 delete all && pnpm start"
+		"start": "bun start ./src/Core/client.ts",
+		"postinstall": "bun scripts/patchBaileys.ts"
 	},
-	"packageManager": "pnpm@10.10.0",
 	"dependencies": {
 		"@cacheable/node-cache": "^1.5.6",
 		"@hapi/boom": "^10.0.1",
@@ -35,25 +28,14 @@
 		"https-proxy-agent": "^7.0.6",
 		"link-preview-js": "^3.1.0",
 		"node-webpmux": "^3.2.1",
-		"pdfkit": "^0.17.1",
 		"pg": "^8.16.0",
 		"pino": "^9.7.0",
-		"pm2": "^6.0.8",
-		"quantava": "^2.5.2",
 		"sharp": "^0.34.2"
 	},
 	"devDependencies": {
-		"@types/node": "^24.0.0",
+		"@types/bun": "latest",
 		"@types/pg": "^8.15.4",
-		"@typescript-eslint/eslint-plugin": "^8.34.0",
-		"@typescript-eslint/parser": "^8.34.0",
-		"@typescript-eslint/utils": "^8.34.0",
-		"eslint": "^9.28.0",
-		"eslint-config-prettier": "^10.1.5",
-		"eslint-plugin-prettier": "^5.4.1",
-		"jiti": "^2.4.2",
-		"prettier": "^3.5.3",
-		"tsx": "^4.20.1",
 		"typescript": "^5.8.3"
-	}
+	},
+	"private": true
 }

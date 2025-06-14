@@ -1,4 +1,4 @@
-import config from "../../config.mjs";
+import config from "../../config.js";
 import type { WASocket } from "baileys";
 
 export async function pairClient(sock: WASocket) {

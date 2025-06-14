@@ -1,11 +1,11 @@
 import { Command, commands } from "../../src/Core/plugin.ts";
-import { platform, totalmem, freemem } from "node:os";
+import { platform, totalmem, freemem } from "os";
 import {
 	fancy,
 	formatBytes,
 	formatRuntime,
 } from "../../src/Utils/constants.ts";
-import config from "../../config.mjs";
+import config from "../../config.js";
 
 Command({
 	name: "menu",

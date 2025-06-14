@@ -1,8 +1,0 @@
-onlyBuiltDependencies:
-  - baileys
-  - better-sqlite3
-  - canvas
-  - esbuild
-  - ffmpeg-static
-  - protobufjs
-  - sharp

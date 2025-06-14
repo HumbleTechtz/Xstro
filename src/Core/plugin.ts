@@ -1,6 +1,6 @@
-import { pathToFileURL, fileURLToPath } from "node:url";
-import { join, extname, dirname } from "node:path";
-import { readdir } from "node:fs/promises";
+import { pathToFileURL, fileURLToPath } from "url";
+import { join, extname, dirname } from "path";
+import { readdir } from "fs/promises";
 import type { Commands } from "../Types/index.ts";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

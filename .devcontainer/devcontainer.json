@@ -8,6 +8,5 @@
             "version": "24"
         },
         "ghcr.io/devcontainers/features/git:1": {}
-    },
-    "postCreateCommand": "apt-get update && apt-get install -y ffmpeg"
+    }
 }
