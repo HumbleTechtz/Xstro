@@ -1,6 +1,6 @@
 import { delay } from "baileys";
 import { Command } from "../../src/Core/plugin.ts";
-import { formatRuntime } from "../../src/Utils/constants.ts";
+import { formatRuntime, restart, shutdown } from "../../src/Utils/constants.ts";
 
 Command({
 	name: "ping",
@@ -35,9 +35,8 @@ Command({
 	type: "system",
 	function: async message => {
 		await delay(2000);
-		await message.send("_Restarting..._");
-		await delay(2000);
-		process.exit();
+		await message.send("*Restarting*");
+		restart()
 	},
 });
 
@@ -48,7 +47,7 @@ Command({
 	desc: "Shut down bot",
 	type: "system",
 	function: async msg => {
-		await msg.send("_Shutting down..._");
-		process.exit(1);
+		await msg.send("*Bye.*");
+		shutdown()
 	},
 });

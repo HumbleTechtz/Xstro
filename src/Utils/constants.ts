@@ -8,6 +8,9 @@ import {
 } from "baileys";
 import type { OnWhatsAppResult } from "../Types/OnWhatsApp.ts";
 
+export const restart = () => process.exit(0);
+export const shutdown = () => process.exit(1);
+
 export function isPath(text: string): boolean {
 	if (typeof text !== "string" || text.trim() === "") return false;
 

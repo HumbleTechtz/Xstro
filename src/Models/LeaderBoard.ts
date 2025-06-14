@@ -53,7 +53,7 @@ function determineRank(score: number): string {
 
 async function updateLeaderboard(users: { userId: string; score: number }[]) {
 	const { rows: currentLeaderboard } = await pool.query(
-		"SELECT userid, score, rank FROM leaderboard",
+		"SELECT userid, score, rank FROM leaderboard"
 	);
 	const dbMap = new Map(currentLeaderboard.map(u => [u.userid, u]));
 
@@ -69,31 +69,20 @@ async function updateLeaderboard(users: { userId: string; score: number }[]) {
 
 		let roundScore = user.score;
 
-		if (top3.includes(user.userId)) {
-			roundScore *= 1.02;
-			console.log(`Top 3 boost applied to ${user.userId}: +2%`);
-		}
+		if (top3.includes(user.userId)) roundScore *= 1.02;
 
-		if (["legend", "master", "diamond"].includes(String(currentRank))) {
+		if (["legend", "master", "diamond"].includes(String(currentRank)))
 			roundScore *= 1.05;
-			console.log(`High-rank boost applied to ${user.userId}: +5%`);
-		}
 
 		let finalScore;
 		if (top3.includes(user.userId)) {
 			finalScore = currentScore + Math.floor(roundScore);
 		} else {
 			const isHighRank = ["legend", "master", "diamond"].includes(
-				String(currentRank),
+				String(currentRank)
 			);
 			const penaltyMultiplier = isHighRank ? 0.85 : 0.92;
 			finalScore = currentScore + Math.floor(roundScore * penaltyMultiplier);
-
-			if (isHighRank) {
-				console.log(
-					`High-rank penalty applied to ${user.userId}: 15% reduction for not reaching top 3`,
-				);
-			}
 		}
 
 		finalScore = Math.max(finalScore, 0);
@@ -102,18 +91,18 @@ async function updateLeaderboard(users: { userId: string; score: number }[]) {
 		if (entry) {
 			await pool.query(
 				"UPDATE leaderboard SET score = $1, rank = $2 WHERE userid = $3",
-				[finalScore, newRank, user.userId],
+				[finalScore, newRank, user.userId]
 			);
 		} else {
 			await pool.query(
 				"INSERT INTO leaderboard (userid, score, rank) VALUES ($1, $2, $3)",
-				[user.userId, finalScore, newRank],
+				[user.userId, finalScore, newRank]
 			);
 		}
 	}
 
 	const { rows: updatedLeaderboard } = await pool.query(
-		"SELECT userid, score, rank FROM leaderboard ORDER BY score DESC, userid ASC",
+		"SELECT userid, score, rank FROM leaderboard ORDER BY score DESC, userid ASC"
 	);
 	return updatedLeaderboard.map(u => ({
 		userId: u.userid,
@@ -134,7 +123,7 @@ async function getLeaderboard(): Promise<
 	}[]
 > {
 	const { rows } = await pool.query(
-		"SELECT userid, score, rank FROM leaderboard ORDER BY score DESC, userid ASC",
+		"SELECT userid, score, rank FROM leaderboard ORDER BY score DESC, userid ASC"
 	);
 	return rows.map(u => ({
 		userId: String(u.userid ?? ""),

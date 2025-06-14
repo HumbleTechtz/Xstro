@@ -10,12 +10,9 @@ export default class Calls {
 		this.processCallers();
 	}
 	async processCallers() {
-		console.log(this.events);
 		for (const update of this.events) {
-			console.log(update);
 			if (update.status === "offer") {
 				const antiCall = await getAntiCall();
-				console.log(`Is anticall enabled:`, antiCall);
 				if (!antiCall || !antiCall.mode) continue;
 
 				const caller = update.from;

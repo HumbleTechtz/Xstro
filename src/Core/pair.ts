@@ -1,4 +1,5 @@
 import config from "../../config.js";
+import { shutdown } from "../Utils/constants.ts";
 import type { WASocket } from "baileys";
 
 export async function pairClient(sock: WASocket) {
@@ -6,7 +7,7 @@ export async function pairClient(sock: WASocket) {
 		const phoneNumber = config.USER_NUMBER?.replace(/[^0-9]/g, "") ?? "";
 		if (phoneNumber.length < 11) {
 			console.error("Please input a valid number");
-			process.exit(1);
+			shutdown();
 		}
 		await new Promise(resolve => setTimeout(resolve, 2000));
 		console.log(`Pairing Code: ${await sock.requestPairingCode(phoneNumber)}`);

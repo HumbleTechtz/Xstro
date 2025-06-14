@@ -11,10 +11,5 @@ export function startServer(
 			});
 		},
 	});
-
-	console.log(`Server running at http://${hostname}:${port}/`);
-
 	return server;
 }
-
-startServer()
