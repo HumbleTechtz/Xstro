@@ -11,7 +11,8 @@
 	"homepage": "https://github.com/AstroXTeam/whatsapp-bot#readme",
 	"author": "AstroX11 <devastro0010@gmail.com>",
 	"scripts": {
-		"start": "bun app.ts"
+		"start": "bun app.ts",
+		"postinstall": "bun pm trust --all"
 	},
 	"dependencies": {
 		"@cacheable/node-cache": "^1.5.6",
@@ -39,6 +40,9 @@
 	"private": true,
 	"trustedDependencies": [
 		"baileys",
-		"protobufjs"
+		"canvas",
+		"ffmpeg-static",
+		"protobufjs",
+		"sharp"
 	]
 }
