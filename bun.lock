@@ -29,7 +29,10 @@
     },
   },
   "trustedDependencies": [
+    "ffmpeg-static",
+    "sharp",
     "baileys",
+    "canvas",
     "protobufjs",
   ],
   "packages": {

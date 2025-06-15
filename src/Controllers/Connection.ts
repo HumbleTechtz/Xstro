@@ -77,14 +77,14 @@ export default class Connection {
 	private async handleOpen() {
 		console.info("Connected to WhatsApp");
 		const isNewLogin = await getBoot();
-		await delay(5500);
+		await delay(2500);
 		if (isNewLogin) {
 			try {
 				await setBoot(false);
+				restart();
 			} catch {
 				restart();
 			}
-			restart();
 		}
 		await sendStart(this.client);
 		await SetSudo(
