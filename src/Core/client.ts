@@ -4,7 +4,7 @@ import {
 	Browsers,
 	fetchLatestBaileysVersion,
 } from "baileys";
-import * as P from "pino";
+import { pino } from "pino";
 import { HttpsProxyAgent } from "https-proxy-agent";
 import NodeCache from "@cacheable/node-cache";
 
@@ -14,40 +14,36 @@ import hooks from "./hooks.ts";
 import useSqliteAuthState from "../Utils/useSqliteAuthState.ts";
 import { pairClient } from "./pair.ts";
 import { getMessage, cachedGroupMetadata } from "../Models/index.ts";
-import { startServer } from "./network.ts";
+import "./network.ts";
 
-(async () => {
+export default async function createWhatsAppSocket() {
 	const cache = new NodeCache();
-	const logger = P.pino({ level: "silent" });
 	const { state, saveCreds } = await useSqliteAuthState();
 	const { version } = await fetchLatestBaileysVersion();
-	startServer(config.PORT);
+	const logger = pino({ level: "silent" });
 
 	const sock = makeWASocket({
 		auth: {
 			creds: state.creds,
-			keys: makeCacheableSignalKeyStore(state.keys, logger),
+			keys: makeCacheableSignalKeyStore(state.keys),
 		},
+		browser: Browsers.ubuntu("Safari"),
 		agent: config.PROXY ? new HttpsProxyAgent(config.PROXY) : undefined,
 		version,
 		logger,
 		keepAliveIntervalMs: 2000,
-		browser: Browsers['ubuntu']('Safari'),
-		syncFullHistory: true,
-		emitOwnEvents: true,
-		generateHighQualityLinkPreview: true,
-		linkPreviewImageThumbnailWidth: 1920,
-		msgRetryCounterCache: cache,
 		mediaCache: cache,
-		userDevicesCache: cache,
-		callOfferCache: cache,
+		emitOwnEvents: true,
+		syncFullHistory: true,
+		msgRetryCounterCache: cache,
 		getMessage,
 		cachedGroupMetadata,
 	});
 
 	await pairClient(sock);
-
 	await Promise.all([events(sock, { saveCreds }), hooks(sock)]);
 
 	return sock;
-})();
+}
+
+createWhatsAppSocket()
