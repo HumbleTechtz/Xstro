@@ -32,7 +32,7 @@ import { startServer } from "./network.ts";
 		version,
 		logger,
 		keepAliveIntervalMs: 2000,
-		browser: Browsers.windows("FireFox"),
+		browser: Browsers['ubuntu']('Safari'),
 		syncFullHistory: true,
 		emitOwnEvents: true,
 		generateHighQualityLinkPreview: true,
