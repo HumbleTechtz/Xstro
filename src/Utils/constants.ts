@@ -69,25 +69,6 @@ export function isLid(id?: string) {
 /**
  * Purpose of this function is to simply remove the "@" at the end of the jid/lid string
  */
-export function cleanJidLid(input: string): string {
-	if (!input) return "";
-	return input.split("@")[0];
-}
-
-export function parseBoolean(stringStatement: string): boolean {
-	stringStatement = stringStatement.toLowerCase().trim();
-	if (stringStatement === "false") {
-		return false;
-	}
-	return true;
-}
-
-export function toStandardCase(text: string): string {
-	if (!text) return "";
-	text = text.trim();
-	return text[0].toUpperCase() + text.slice(1).toLowerCase();
-}
-
 export function fancy(text: any): string {
 	const fancyMap: Record<string, string> = {
 		a: "ᴀ",
@@ -148,38 +129,6 @@ export async function isBotAdmin(
 	return allAdmins.includes(owner.jid);
 }
 
-/**
- * Converts 12-hour time (e.g., "5:30pm") to a timestamp (ms since epoch) for today.
- */
-export function timeStringToTimestamp(timeStr: string): number | null {
-	const match = timeStr
-		.trim()
-		.toLowerCase()
-		.match(/^(\d{1,2}):(\d{2})(am|pm)$/);
-	if (!match) return null;
-
-	// eslint-disable-next-line
-	let [_, hours, minutes, period] = match;
-	let h = parseInt(hours, 10);
-	const m = parseInt(minutes, 10);
-
-	if (h < 1 || h > 12 || m < 0 || m > 59) return null;
-
-	if (period === "pm" && h !== 12) h += 12;
-	if (period === "am" && h === 12) h = 0;
-
-	const now = new Date();
-	const result = new Date(
-		now.getFullYear(),
-		now.getMonth(),
-		now.getDate(),
-		h,
-		m,
-		0,
-		0
-	);
-	return result.getTime();
-}
 export function isValidTimeString(timeStr: string): boolean {
 	const match = timeStr
 		.trim()
@@ -244,19 +193,6 @@ export function extractUrl(text: string): string | null {
 	const urlRegex = /https?:\/\/[^\s/$.?#].[^\s]*/gi;
 	const matches = text.match(urlRegex);
 	return matches && matches.length > 0 ? matches[0] : null;
-}
-
-export function stripCircularRefs(obj: any) {
-	const seen = new WeakSet();
-	return JSON.parse(
-		JSON.stringify(obj, (key, value) => {
-			if (typeof value === "object" && value !== null) {
-				if (seen.has(value)) return; // Omit circular
-				seen.add(value);
-			}
-			return value;
-		})
-	);
 }
 
 export function extractStringfromMessage(message?: WAMessageContent) {
