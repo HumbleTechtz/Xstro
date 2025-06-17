@@ -4,8 +4,6 @@ RUN apt-get update && \
 	apt-get install -y \
 	git \
 	build-essential \
-	python3 \
-	python3-pip \
 	libcairo2-dev \
 	libjpeg-dev \
 	libpango1.0-dev \

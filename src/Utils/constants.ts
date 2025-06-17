@@ -58,17 +58,6 @@ export function formatBytes(bytes: number): string {
 	return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))}${sizes[i]}`;
 }
 
-export function isLid(id?: string) {
-	if (!id) return undefined;
-	if (id.toLowerCase().trim().endsWith("@lid")) {
-		return true;
-	}
-	return undefined;
-}
-
-/**
- * Purpose of this function is to simply remove the "@" at the end of the jid/lid string
- */
 export function fancy(text: any): string {
 	const fancyMap: Record<string, string> = {
 		a: "ᴀ",
