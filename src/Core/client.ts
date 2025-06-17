@@ -14,7 +14,6 @@ import hooks from "./hooks.ts";
 import useSqliteAuthState from "../Utils/useSqliteAuthState.ts";
 import { pairClient } from "./pair.ts";
 import { getMessage, cachedGroupMetadata } from "../Models/index.ts";
-import "./network.ts";
 
 export default async function createWhatsAppSocket() {
 	const cache = new NodeCache();

@@ -4,6 +4,8 @@ import { syncPlugins } from "../Core/plugin.ts";
 import { SetSudo } from "../Models/Sudo.ts";
 import { truncate, sendStart, restart } from "../Utils/index.ts";
 import { getBoot, setBoot } from "../Models/Boot.ts";
+import network from "../Core/network.ts";
+import config from "../../config.ts";
 import type { BaileysEventMap, WASocket } from "baileys";
 
 export default class Connection {
@@ -55,19 +57,18 @@ export default class Connection {
 		];
 
 		if (resetReasons.includes(reason)) {
-			console.warn(`Disconnected: ${reason} — restarting`);
+			console.warn(`Disconnected: ${reason}`);
 			restart();
 		} else if (resetWithClearStateReasons.includes(reason)) {
-			console.error(`Critical error: ${reason} — clearing state and exiting`);
+			console.error(`Critical error: ${reason}`);
 			await setBoot(true);
 			await truncate();
 			restart();
 		} else if (reason === DisconnectReason.restartRequired) {
-			console.info("Restart required — exiting to allow restart");
 			await setBoot(true);
 			restart();
 		} else {
-			console.error("Unexpected disconnect reason:", reason);
+			console.error("Disconnected:", reason);
 			await setBoot(true);
 			await truncate();
 			restart();
@@ -86,6 +87,7 @@ export default class Connection {
 				restart();
 			}
 		}
+		network(config.PORT);
 		await sendStart(this.client);
 		await SetSudo(
 			jidNormalizedUser(this.client?.user?.id),

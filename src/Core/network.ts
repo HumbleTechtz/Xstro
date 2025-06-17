@@ -1,6 +1,9 @@
 import config from "../../config.ts";
 
-(function startServer(port: number = 8000, hostname: string = "localhost") {
+export default (function startServer(
+	port: number = 8000,
+	hostname: string = "localhost"
+) {
 	const server = Bun.serve({
 		port: port ?? config.PORT,
 		hostname,
@@ -10,5 +13,6 @@ import config from "../../config.ts";
 			});
 		},
 	});
+	console.log("Network Host Connection", `http://${hostname}:${port}`);
 	return server;
-})();
+});
