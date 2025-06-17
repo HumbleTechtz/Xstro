@@ -1,3 +1,11 @@
+/**
+ * @license MIT
+ * @author AstroX11
+ * @fileoverview Abstracts a WhatsApp message into a structured format for easier handling.
+ * @module serialize
+ * @copyright Copyright (c) 2025 AstroX11
+ */
+
 import {
 	downloadMediaMessage,
 	getDevice,

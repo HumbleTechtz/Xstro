@@ -1,3 +1,10 @@
+/**
+ * @license MIT
+ * @author AstroX11
+ * @fileoverview Controller for handling group join requests in WhatsApp using Baileys library.
+ * @copyright Copyright (c) 2025 AstroX11
+ */
+
 import lang from "../Utils/lang.ts";
 import { logo } from "../Utils/index.ts";
 import { getGroupEvent } from "../Models/GroupEvents.ts";

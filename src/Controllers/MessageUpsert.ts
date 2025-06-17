@@ -1,3 +1,10 @@
+/**
+ * @license MIT
+ * @author AstroX11
+ * @fileoverview Controller for handling WhatsApp message upserts using Baileys library.
+ * @copyright Copyright (c) 2025 AstroX11
+ */
+
 import makeCommands from "../Core/handlers.ts";
 import { serialize } from "../Core/serialize.ts";
 import { save_message } from "../Models/Messages.ts";

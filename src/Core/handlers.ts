@@ -1,3 +1,10 @@
+/**
+ * @license MIT
+ * @author AstroX11
+ * @fileoverview Command handler for processing text and sticker commands in WhatsApp bot.
+ * @copyright Copyright (c) 2025 AstroX11
+ */
+
 import lang from "../Utils/lang.ts";
 import { commands } from "./plugin.ts";
 import { getStickerCmd, canProceed, resetIfExpired } from "../Models/index.ts";

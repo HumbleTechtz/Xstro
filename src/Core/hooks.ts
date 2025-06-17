@@ -1,3 +1,10 @@
+/**
+ * @license MIT
+ * @author AstroX11
+ * @fileoverview Hook for managing group metadata and auto-mute functionality in WhatsApp bot.
+ * @copyright Copyright (c) 2025 AstroX11
+ */
+
 import lang from "../Utils/lang.ts";
 import {
 	getCurrentTimeString,

@@ -1,3 +1,10 @@
+/**
+ * @license MIT
+ * @author AstroX11
+ * @fileoverview Command registration and plugin synchronization for WhatsApp bot.
+ * @copyright Copyright (c) 2025 AstroX11
+ */
+
 import { pathToFileURL, fileURLToPath } from "url";
 import { join, extname, dirname } from "path";
 import { readdir } from "fs/promises";

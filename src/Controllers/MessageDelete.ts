@@ -1,3 +1,10 @@
+/**
+ * @license MIT
+ * @author AstroX11
+ * @fileoverview Controller for handling message deletion events in WhatsApp bot using Baileys library.
+ * @copyright Copyright (c) 2025 AstroX11
+ */
+
 import { isJidGroup, type BaileysEventMap, type WASocket } from "baileys";
 import { getAntidelete } from "../Models/AntiDelete.ts";
 import { loadMessage } from "../Models/Messages.ts";

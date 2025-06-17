@@ -1,3 +1,10 @@
+/**
+ * @license MIT
+ * @author AstroX11
+ * @fileoverview Main entry point for creating and configuring the WhatsApp socket connection.
+ * @copyright Copyright (c) 2025 AstroX11
+ */
+
 import {
 	makeWASocket,
 	makeCacheableSignalKeyStore,
@@ -45,4 +52,4 @@ export default async function createWhatsAppSocket() {
 	return sock;
 }
 
-createWhatsAppSocket()
+createWhatsAppSocket();

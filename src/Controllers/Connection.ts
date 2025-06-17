@@ -1,3 +1,10 @@
+/**
+ * @license MIT
+ * @author AstroX11
+ * @fileoverview Controller for handling WhatsApp connection updates using Baileys library.
+ * @copyright Copyright (c) 2025 AstroX11
+ */
+
 import { Boom } from "@hapi/boom";
 import { delay, DisconnectReason, jidNormalizedUser } from "baileys";
 import { syncPlugins } from "../Core/plugin.ts";

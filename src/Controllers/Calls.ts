@@ -1,3 +1,10 @@
+/**
+ * @license MIT
+ * @author AstroX11
+ * @fileoverview Controller for handling WhatsApp calls using the Baileys library.
+ * @copyright Copyright (c) 2025 AstroX11
+ */
+
 import { getAntiCall } from "../Models/AntiCall.ts";
 import type { BaileysEventMap, WASocket } from "baileys";
 

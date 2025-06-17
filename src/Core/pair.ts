@@ -1,3 +1,10 @@
+/**
+ * @license MIT
+ * @author AstroX11
+ * @fileoverview Pairing client for WhatsApp bot using Baileys library.
+ * @copyright Copyright (c) 2025 AstroX11
+ */
+
 import config from "../../config.js";
 import { shutdown } from "../Utils/constants.ts";
 import type { WASocket } from "baileys";
