@@ -1,12 +1,5 @@
 import { Command } from "../src/Core/plugin.ts";
-import {
-	fetch,
-	isUrl,
-	urlBuffer,
-	lyrics,
-	upload,
-	logo,
-} from "../src/Utils/index.ts";
+import { fetch, isUrl, urlBuffer, upload, logo } from "../src/Utils/index.ts";
 
 Command({
 	name: "url",
@@ -48,102 +41,14 @@ Command({
 });
 
 Command({
-	name: "lyrics",
-	fromMe: false,
-	isGroup: false,
-	desc: "Get lyrics of any song",
-	type: "tools",
-	function: async (message, match) => {
-		if (!match) return message.send("_Provide a song name_");
-		const data = await lyrics(match);
-		if (data?.thumbnail) {
-			return await message.send(await urlBuffer(data.thumbnail), {
-				caption: data.lyrics,
-			});
-		} else {
-			return await message.send(data?.lyrics!);
-		}
-	},
-});
-
-Command({
-	name: "carbon",
-	fromMe: false,
-	isGroup: false,
-	desc: "Create a carbon code",
-	type: "tools",
-	function: async (message, match) => {
-		if (!match) return message.send("_Provide a code_");
-
-		const response = await urlBuffer(
-			`https://bk9.fun/maker/carbonimg?q=${match}`
-		);
-
-		await message.sendMessage(message.jid, {
-			caption: "Here is your carbon image",
-			image: response,
-			mimetype: "image/png",
-		});
-	},
-});
-
-Command({
-	name: "enhance",
-	fromMe: false,
-	isGroup: false,
-	desc: "Enhance an image",
-	type: "tools",
-	function: async message => {
-		const msg = message.quoted;
-		if (!msg || msg.type !== "imageMessage")
-			return message.send("Reply to an image");
-		const buffer = await message.downloadM(msg);
-		const url = await upload(buffer);
-		return await message.sendMessage(message.jid, {
-			image: { url: `https://bk9.fun/tools/enhance?url=${url}` },
-			caption: "Here is your enhanced image",
-			mimetype: "image/jpeg",
-		});
-	},
-});
-
-Command({
-	name: "pdf",
-	fromMe: false,
-	isGroup: false,
-	desc: "Convert image to pdf",
-	type: "tools",
-	function: async message => {
-		const txt = message.text || message?.quoted?.text;
-		if (!txt) return message.send("Provide a text");
-		return await message.send(`https://bk9.fun/tools/pdf?url=${txt}`, {
-			caption: "Here is your pdf",
-			mimetype: "application/pdf",
-		});
-	},
-});
-
-Command({
 	name: "repo",
 	fromMe: false,
 	isGroup: false,
 	desc: "Get the url to the bot source code",
 	type: "group",
 	function: async m => {
-		return await m.sendMessage(m.jid, {
-			text: "```Source Code\nhttps://github.com/AstroXTeam/whatsapp-bot```",
-			contextInfo: {
-				externalAdReply: {
-					title: "χѕтяσ вσт",
-					body: "тαρ нєяє",
-					mediaType: 1,
-					thumbnail: logo,
-					sourceUrl: "https://github.com/AstroXTeam/whatsapp-bot",
-					thumbnailUrl: "https://github.com/AstroXTeam/whatsapp-bot",
-					renderLargerThumbnail: false,
-					showAdAttribution: true,
-				},
-			},
-		});
+		return await m.send(
+			`You can find the source code of this bot at: https://github.com/AstroXTeam/whatsapp-bot`
+		);
 	},
 });
