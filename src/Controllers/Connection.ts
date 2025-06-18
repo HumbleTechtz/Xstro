@@ -5,14 +5,13 @@
  * @copyright Copyright (c) 2025 AstroX11
  */
 
+import network from "../Core/network.ts";
+import config from "../../config.ts";
 import { Boom } from "@hapi/boom";
 import { delay, DisconnectReason, jidNormalizedUser } from "baileys";
 import { syncPlugins } from "../Core/plugin.ts";
-import { SetSudo } from "../Models/Sudo.ts";
-import { truncate, sendStart, restart } from "../Utils/index.ts";
-import { getBoot, setBoot } from "../Models/Boot.ts";
-import network from "../Core/network.ts";
-import config from "../../config.ts";
+import { SetSudo, truncate, getBoot, setBoot } from "../Models/index.ts";
+import { sendStart, restart } from "../Utils/index.ts";
 import type { BaileysEventMap, WASocket } from "baileys";
 
 export default class Connection {

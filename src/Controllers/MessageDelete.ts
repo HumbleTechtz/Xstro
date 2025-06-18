@@ -5,12 +5,14 @@
  * @copyright Copyright (c) 2025 AstroX11
  */
 
-import { isJidGroup, type BaileysEventMap, type WASocket } from "baileys";
-import { getAntidelete } from "../Models/AntiDelete.ts";
-import { loadMessage } from "../Models/Messages.ts";
-import { isMediaMessage } from "../Utils/content.ts";
-import { forwardM } from "../Utils/send-msg.ts";
-import { extractStringfromMessage } from "../Utils/constants.ts";
+import { isJidGroup } from "baileys";
+import { getAntidelete, loadMessage } from "../Models/index.ts";
+import {
+	isMediaMessage,
+	forwardM,
+	extractStringfromMessage,
+} from "../Utils/index.ts";
+import type { BaileysEventMap, WASocket } from "baileys";
 
 export default class MessageDelete {
 	protected client: WASocket;
