@@ -1,4 +1,4 @@
-import { Command } from "../../src/Core/plugin.ts";
+import { Command } from "../src/Core/plugin.ts";
 import {
 	convertToMp3,
 	toPTT,
@@ -8,7 +8,7 @@ import {
 	cropToCircle,
 	createSticker,
 	trimVideo,
-} from "../../src/Utils/ffmpeg.mts";
+} from "../src/Utils/ffmpeg.mts";
 
 Command({
 	name: "ptt",
@@ -95,7 +95,10 @@ Command({
 		if (msg?.type !== "audioMessage" && msg?.type !== "imageMessage")
 			return message.send("_Reply a video or image message_");
 		const choice = args?.toLowerCase();
-		if (!choice || !["left", "right", "vertical", "horizontal"].includes(choice))
+		if (
+			!choice ||
+			!["left", "right", "vertical", "horizontal"].includes(choice)
+		)
 			return message.send("_Use: left, right, vertical, or horizontal_");
 		const flipped = await flipMedia(await message.downloadM(msg), choice);
 		return await message.send(flipped);
@@ -136,7 +139,7 @@ Command({
 			return message.send(
 				"_Reply a video, image or sticker_\n_" +
 					message.prefix[0] +
-					"sticker Astro|Xstro_",
+					"sticker Astro|Xstro_"
 			);
 
 		let packname, author;
@@ -147,7 +150,7 @@ Command({
 		const sticker = await createSticker(
 			await message.downloadM(msg),
 			author?.trim() || "Astro",
-			packname?.trim() || "Xstro",
+			packname?.trim() || "Xstro"
 		);
 		return await message.sendMessage(message.jid, {
 			sticker,
@@ -174,7 +177,7 @@ Command({
 		const trimmedVideo = await trimVideo(
 			await message.downloadM(msg),
 			startTime,
-			endTime,
+			endTime
 		);
 		return await message.send(trimmedVideo);
 	},

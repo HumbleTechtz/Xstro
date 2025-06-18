@@ -1,5 +1,5 @@
-import { Command } from "../../src/Core/plugin.ts";
-import { getAntiCall, setAntiCall } from "../../src/Models/AntiCall.ts";
+import { Command } from "../src/Core/plugin.ts";
+import { getAntiCall, setAntiCall } from "../src/Models/AntiCall.ts";
 
 Command({
 	name: "anticall",
@@ -11,7 +11,9 @@ Command({
 		const input = args?.toLowerCase()?.trim();
 
 		if (!input || !["on", "off", "block", "warn"].includes(input)) {
-			return msg.send(`_Usage: ${msg.prefix[0]}anticall on | off | block | warn_`);
+			return msg.send(
+				`_Usage: ${msg.prefix[0]}anticall on | off | block | warn_`
+			);
 		}
 
 		const current = await getAntiCall();

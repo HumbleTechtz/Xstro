@@ -1,6 +1,6 @@
-import { Command } from "../../src/Core/plugin.ts";
-import { restart } from "../../src/Utils/constants.ts";
-import { update } from "../../src/Utils/updater.ts";
+import { Command } from "../src/Core/plugin.ts";
+import { restart } from "../src/Utils/constants.ts";
+import { update } from "../src/Utils/updater.ts";
 
 Command({
 	name: "update",
@@ -35,7 +35,7 @@ Command({
 				break;
 			case "updated":
 				await message.send("Updating...");
-				restart()
+				restart();
 				break;
 			case "error":
 				await message.send("Update failed:\n```" + result.error + "```");

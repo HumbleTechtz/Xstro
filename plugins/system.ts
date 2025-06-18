@@ -1,6 +1,6 @@
 import { delay } from "baileys";
-import { Command } from "../../src/Core/plugin.ts";
-import { formatRuntime, restart, shutdown } from "../../src/Utils/constants.ts";
+import { Command } from "../src/Core/plugin.ts";
+import { formatRuntime, restart, shutdown } from "../src/Utils/constants.ts";
 
 Command({
 	name: "ping",

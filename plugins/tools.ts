@@ -1,4 +1,4 @@
-import { Command } from "../../src/Core/plugin.ts";
+import { Command } from "../src/Core/plugin.ts";
 import {
 	fetch,
 	isUrl,
@@ -6,7 +6,7 @@ import {
 	lyrics,
 	upload,
 	logo,
-} from "../../src/Utils/index.ts";
+} from "../src/Utils/index.ts";
 
 Command({
 	name: "url",
@@ -15,7 +15,8 @@ Command({
 	desc: "Shorten a url",
 	type: "tools",
 	function: async (message, match) => {
-		if (!match || !isUrl(match)) return message.send("Provide a url to shorten");
+		if (!match || !isUrl(match))
+			return message.send("Provide a url to shorten");
 		const url = await fetch(`https://tinyurl.com/api-create.php?url=${match}`);
 		return await message.send(url);
 	},
@@ -35,11 +36,11 @@ Command({
 			profilePic = await message.profilePictureUrl(user, "image");
 			if (!profilePic)
 				return message.send(
-					"User has no profile picture, or maybe their settings is prevent the bot from seeing it.",
+					"User has no profile picture, or maybe their settings is prevent the bot from seeing it."
 				);
 		} catch {
 			return message.send(
-				`_Unable to get Profile Picture, this may be that the user doesn't have one or their settings blocks the bot from accessing it, the user may be required to save your contact in order to extract their profile picture_`,
+				`_Unable to get Profile Picture, this may be that the user doesn't have one or their settings blocks the bot from accessing it, the user may be required to save your contact in order to extract their profile picture_`
 			);
 		}
 		return await message.send(await urlBuffer(profilePic));
@@ -75,7 +76,7 @@ Command({
 		if (!match) return message.send("_Provide a code_");
 
 		const response = await urlBuffer(
-			`https://bk9.fun/maker/carbonimg?q=${match}`,
+			`https://bk9.fun/maker/carbonimg?q=${match}`
 		);
 
 		await message.sendMessage(message.jid, {

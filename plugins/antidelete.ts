@@ -1,5 +1,5 @@
-import { Command } from "../../src/Core/plugin.ts";
-import { setAntidelete } from "../../src/Models/index.ts";
+import { Command } from "../src/Core/plugin.ts";
+import { setAntidelete } from "../src/Models/index.ts";
 
 Command({
 	name: "antidelete",
@@ -14,7 +14,7 @@ Command({
 					"Usage:",
 					`${msg.prefix[0]}antidelete on`,
 					`${msg.prefix[0]}antidelete off`,
-				].join("\n"),
+				].join("\n")
 			);
 		}
 
@@ -35,7 +35,7 @@ Command({
 				"Usage:",
 				`${msg.prefix[0]}antidelete on`,
 				`${msg.prefix[0]}antidelete off`,
-			].join("\n"),
+			].join("\n")
 		);
 	},
 });

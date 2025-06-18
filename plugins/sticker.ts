@@ -1,5 +1,5 @@
-import { Command, commands } from "../../src/Core/plugin.ts";
-import { removeStickerCmd, setStickerCmd } from "../../src/Models/index.ts";
+import { Command, commands } from "../src/Core/plugin.ts";
+import { removeStickerCmd, setStickerCmd } from "../src/Models/index.ts";
 
 Command({
 	name: "setcmd",
@@ -25,7 +25,7 @@ Command({
 
 		const cmdname = match?.trim().toLowerCase();
 		const cmds = commands.map(
-			cmd => cmd.name?.toString().split(/[\p{S}\p{P}]/gu)[5],
+			cmd => cmd.name?.toString().split(/[\p{S}\p{P}]/gu)[5]
 		);
 
 		if (!cmds.includes(cmdname)) {
@@ -46,12 +46,13 @@ Command({
 		if (!match) return message.send("_Provide a command name, eg ping_");
 		const cmdname = match?.trim().toLowerCase();
 		const cmds = commands.map(
-			cmd => cmd.name?.toString().split(/[\p{S}\p{P}]/gu)[5],
+			cmd => cmd.name?.toString().split(/[\p{S}\p{P}]/gu)[5]
 		);
 		if (!cmds.includes(cmdname))
 			return await message.send("_This command does not exist_");
 		const set = await removeStickerCmd(cmdname);
-		if (!set) return await message.send("_That cmd was not set in sticker cmd_");
+		if (!set)
+			return await message.send("_That cmd was not set in sticker cmd_");
 		return await message.send(`_${cmdname} has been removed from Sticker Cmd_`);
 	},
 });

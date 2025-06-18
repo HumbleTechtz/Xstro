@@ -1,7 +1,7 @@
-import { Command } from "../../src/Core/plugin.ts";
+import { Command } from "../src/Core/plugin.ts";
 
 Command({
-	name: "chatpin",
+	name: "cpin",
 	fromMe: true,
 	isGroup: false,
 	desc: "Pin a chat",
@@ -13,7 +13,7 @@ Command({
 });
 
 Command({
-	name: "chatunpin",
+	name: "cunpin",
 	fromMe: true,
 	isGroup: false,
 	desc: "Unpin a chat",
@@ -38,7 +38,7 @@ Command({
 					{ key: message.key, messageTimestamp: message.messageTimestamp },
 				],
 			},
-			message.jid,
+			message.jid
 		);
 		return message.send("Archived.");
 	},
@@ -58,7 +58,7 @@ Command({
 					{ key: message.key, messageTimestamp: message.messageTimestamp },
 				],
 			},
-			message.jid,
+			message.jid
 		);
 		return message.send("Unarchived.");
 	},
@@ -78,7 +78,7 @@ Command({
 					{ key: message.key, messageTimestamp: message.messageTimestamp },
 				],
 			},
-			message.jid,
+			message.jid
 		);
 		return message.send("Cleared.");
 	},
@@ -98,7 +98,7 @@ Command({
 					{ key: message.key, messageTimestamp: message.messageTimestamp },
 				],
 			},
-			message.jid,
+			message.jid
 		);
 	},
 });
@@ -122,7 +122,7 @@ Command({
 					star: true,
 				},
 			},
-			msg.jid,
+			msg.jid
 		);
 		return msg.send("Starred.");
 	},
@@ -147,7 +147,7 @@ Command({
 					star: false,
 				},
 			},
-			msg.jid,
+			msg.jid
 		);
 		return msg.send("Unstarred.");
 	},

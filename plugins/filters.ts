@@ -1,6 +1,6 @@
-import { Command } from "../../src/Core/plugin.ts";
-import { setFilter, delFilter, getAllFilters } from "../../src/Models/index.ts";
-import { escapeRegex } from "../group/antiword.ts";
+import { Command } from "../src/Core/plugin.ts";
+import { setFilter, delFilter, getAllFilters } from "../src/Models/index.ts";
+import { escapeRegex } from "./group/antiword.ts";
 
 Command({
 	name: "filter",
@@ -121,10 +121,10 @@ Command({
 
 			const shouldRespond = checkGroupFilterTrigger(msg, text);
 			if (shouldRespond) {
-				return await msg.send(matchedFilter.response);
+				return await msg.send(matchedFilter.response!);
 			}
 		} else if (!msg.isGroup) {
-			return await msg.send(matchedFilter.response);
+			return await msg.send(matchedFilter.response!);
 		}
 	},
 });

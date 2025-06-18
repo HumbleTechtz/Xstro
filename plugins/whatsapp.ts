@@ -1,5 +1,5 @@
 import { delay } from "baileys";
-import { Command } from "../../src/Core/plugin.ts";
+import { Command } from "../src/Core/plugin.ts";
 
 Command({
 	name: "bio",
@@ -150,7 +150,7 @@ Command({
 			users.map((nums: string) => `\n@${nums.split("@")[0]}`).join(""),
 			{
 				mentions: users,
-			},
+			}
 		);
 	},
 });
