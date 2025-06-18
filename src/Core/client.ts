@@ -18,7 +18,7 @@ import NodeCache from "@cacheable/node-cache";
 import config from "../../config.ts";
 import events from "./events.ts";
 import hooks from "./hooks.ts";
-import useSqliteAuthState from "../Utils/useSqliteAuthState.ts";
+import useSqliteAuthState from "../Models/useSqliteAuthState.ts";
 import { pairClient } from "./pair.ts";
 import { getMessage, cachedGroupMetadata } from "../Models/index.ts";
 
@@ -40,7 +40,8 @@ export default async function createWhatsAppSocket() {
 		keepAliveIntervalMs: 2000,
 		mediaCache: cache,
 		emitOwnEvents: true,
-		syncFullHistory: true,
+		syncFullHistory: false,
+		shouldSyncHistoryMessage: () => false,
 		msgRetryCounterCache: cache,
 		getMessage,
 		cachedGroupMetadata,

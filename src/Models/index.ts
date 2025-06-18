@@ -17,3 +17,4 @@ export * from "./RateLimiter.ts";
 export * from "./Settings.ts";
 export * from "./StickerCmd.ts";
 export * from "./Sudo.ts";
+export * from "./useSqliteAuthState.ts";
