@@ -14,6 +14,14 @@ import {
 	getGroupEvent,
 } from "../Models/index.ts";
 import type { BaileysEventMap, WASocket } from "baileys";
+import {
+	fact,
+	getAdvice,
+	getInsult,
+	getJoke,
+	getQuote,
+	getRizz,
+} from "../Utils/fun.ts";
 
 export default class GroupParticipant {
 	client: WASocket;
@@ -100,21 +108,16 @@ export default class GroupParticipant {
 			const groupDesc = groupMetadata.desc || "";
 			const groupName = groupMetadata.subject || "";
 
-			const quotesResponse = await fetch("https://zenquotes.io/api/random");
-			const quotesJson = await quotesResponse.json();
-			const quotesText = `"${quotesJson[0].q}"\n\n— ${quotesJson[0].a}`;
-
-			const factResponse = await fetch(
-				"https://uselessfacts.jsph.pl/random.json?language=en"
-			);
-			const factJson = await factResponse.json();
-
 			const replacements: Record<string, string> = {
 				"@user": `@${participant.split("@")[0]}`,
 				"@gdesc": groupDesc,
 				"@gname": groupName,
-				"@fact": factJson.text,
-				"@quotes": quotesText,
+				"@fact": await fact(),
+				"@rizz": await getRizz(),
+				"@insult": await getInsult(),
+				"@joke": await getJoke(),
+				"@advice": await getAdvice(),
+				"@quotes": await getQuote(),
 				"@members": `${membersCount}`,
 			};
 
