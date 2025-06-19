@@ -7,7 +7,7 @@
 
 import makeCommands from "../Core/handlers.ts";
 import { serialize } from "../Core/serialize.ts";
-import { save_message } from "../Models/Messages.ts";
+import { save_message } from "../Models/index.ts";
 import type { BaileysEventMap, WASocket } from "baileys";
 
 export default class MessageUpsert {
@@ -21,6 +21,7 @@ export default class MessageUpsert {
 	}
 
 	private async upsert() {
+		if (this.event.type !== "notify") return;
 		const { messages } = this.event;
 		await Promise.allSettled([
 			save_message(this.event),

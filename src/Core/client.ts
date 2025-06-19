@@ -22,7 +22,7 @@ import useSqliteAuthState from "../Models/useSqliteAuthState.ts";
 import { pairClient } from "./pair.ts";
 import { getMessage, cachedGroupMetadata } from "../Models/index.ts";
 
-export default async function createWhatsAppSocket() {
+async function createWhatsAppSocket() {
 	const cache = new NodeCache();
 	const { state, saveCreds } = await useSqliteAuthState();
 	const { version } = await fetchLatestBaileysVersion();

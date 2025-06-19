@@ -9,6 +9,7 @@ import {
 	type WAMessageContent,
 	type WAMessageKey,
 	type WAMessage,
+	getDevice,
 } from "baileys";
 import type { ContentTypeResult } from "../Types/index.ts";
 
@@ -145,6 +146,7 @@ export function getQuotedContent(
 				},
 				message: quotedM ?? undefined,
 				type,
+				device: getDevice(Quoted.stanzaId!),
 				sender: Quoted.participant!,
 				text: extractStringfromMessage(quotedM),
 				viewOnce:
@@ -164,7 +166,6 @@ export function getQuotedContent(
 				].includes(type!),
 				broadcast: Boolean(Quoted?.remoteJid!),
 				mentions: Quoted.mentionedJid || [],
-				// eslint-disable-next-line
 				...(({ quotedMessage, stanzaId, remoteJid, ...rest }) => rest)(Quoted),
 		  }
 		: undefined;

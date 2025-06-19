@@ -39,9 +39,7 @@ export default class Connection {
 	}
 
 	private async handleConnecting() {
-		console.info("Connecting to WhatsApp...");
 		await syncPlugins("../../plugins", [".ts", ".js", ".mjs"]);
-		console.info("Plugins Synced");
 	}
 
 	private async handleClose(
@@ -82,7 +80,6 @@ export default class Connection {
 	}
 
 	private async handleOpen() {
-		console.info("Connected to WhatsApp");
 		const isNewLogin = await getBoot();
 		await delay(2500);
 		if (isNewLogin) {
@@ -99,5 +96,7 @@ export default class Connection {
 			jidNormalizedUser(this.client?.user?.id),
 			jidNormalizedUser(this.client?.user?.lid)
 		);
+
+		console.info(`Connected to ${this.client.user?.name}`);
 	}
 }

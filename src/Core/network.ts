@@ -20,6 +20,5 @@ export default (function startServer(
 			});
 		},
 	});
-	console.log("Network Host Connection", `http://${hostname}:${port}`);
 	return server;
 });

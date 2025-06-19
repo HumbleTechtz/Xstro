@@ -125,7 +125,6 @@ export function isValidTimeString(timeStr: string): boolean {
 		.match(/^(\d{1,2}):(\d{2})(am|pm)$/);
 	if (!match) return false;
 
-	// eslint-disable-next-line
 	const [_, hours, minutes, period] = match;
 	const h = parseInt(hours, 10);
 	const m = parseInt(minutes, 10);
