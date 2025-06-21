@@ -22,7 +22,7 @@ import useSqliteAuthState from "../Models/useSqliteAuthState.ts";
 import { pairClient } from "./pair.ts";
 import { getMessage, cachedGroupMetadata } from "../Models/index.ts";
 
-async function createWhatsAppSocket() {
+(async () => {
 	const cache = new NodeCache();
 	const { state, saveCreds } = await useSqliteAuthState();
 	const { version } = await fetchLatestBaileysVersion();
@@ -51,6 +51,7 @@ async function createWhatsAppSocket() {
 	await Promise.all([events(sock, { saveCreds }), hooks(sock)]);
 
 	return sock;
-}
-
-createWhatsAppSocket();
+})().catch(error => {
+	console.error("Client ERROR:", error);
+	process.exit(1);
+});

@@ -7,6 +7,7 @@ import {
 	type WASocket,
 } from "baileys";
 import type { OnWhatsAppResult } from "../Types/OnWhatsApp.ts";
+import { Serialize } from "../Core/serialize.ts";
 
 export const restart = () => process.exit(0);
 export const shutdown = () => process.exit(1);
@@ -279,3 +280,15 @@ export async function parseUserId(id: any, client: WASocket) {
 	}
 	return undefined;
 }
+
+export const countdown = (secs: number, client: Serialize) => {
+	const interval = setInterval(() => {
+		secs -= 10;
+		if (secs > 0) {
+			client.send(`_${secs} seconds left_`);
+		} else {
+			clearInterval(interval);
+			client.send(`_0 seconds left_`);
+		}
+	}, 10000);
+};

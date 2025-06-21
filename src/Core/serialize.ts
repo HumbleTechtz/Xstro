@@ -12,6 +12,7 @@ import {
 	isJidGroup,
 	jidNormalizedUser,
 	normalizeMessageContent,
+	WAProto,
 } from "baileys";
 import {
 	findJidLid,
@@ -127,6 +128,7 @@ export async function serialize(client: WASocket, WAMessage: WAMessage) {
 
 			return undefined;
 		},
+		proto: WAProto,
 		key,
 		jid,
 		isGroup,

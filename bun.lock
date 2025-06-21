@@ -4,6 +4,7 @@
     "": {
       "name": "xstro",
       "dependencies": {
+        "@astrox11/wcg": "^0.0.1",
         "@cacheable/node-cache": "^1.5.6",
         "@hapi/boom": "^10.0.1",
         "baileys": "https://github.com/WhiskeySockets/Baileys/releases/download/nightly/baileys-nightly.tgz",
@@ -36,6 +37,8 @@
     "protobufjs",
   ],
   "packages": {
+    "@astrox11/wcg": ["@astrox11/wcg@0.0.1", "", { "dependencies": { "axios": "^1.10.0" }, "peerDependencies": { "typescript": "^5" } }, "sha512-LB8CWni3/p0TOdnM5mr5YbuMoDYk16fi4tAIrk5Z3I+2G8RT5n7GWpCpjsNoVrAGjrHwBiqg6XnJBTFJRpLv+g=="],
+
     "@cacheable/node-cache": ["@cacheable/node-cache@1.5.6", "", { "dependencies": { "cacheable": "^1.10.0", "hookified": "^1.9.1", "keyv": "^5.3.3" } }, "sha512-1sLMrvrWoxrqiVKW1BFDjYrBGSG32miOJfNyPUaWwisvbsu+V2wgYqPyLiw0qpprxtjVZT02omsGgQut+DKw8Q=="],
 
     "@derhuerst/http-basic": ["@derhuerst/http-basic@8.2.4", "", { "dependencies": { "caseless": "^0.12.0", "concat-stream": "^2.0.0", "http-response-object": "^3.0.1", "parse-cache-control": "^1.0.1" } }, "sha512-F9rL9k9Xjf5blCz8HsJRO4diy111cayL2vkY2XE4r4t3n0yPXVYy3KD3nJ1qbrSn9743UWSXH4IwuCa/HWlGFw=="],
