@@ -21,7 +21,7 @@ import {
 	type WAMessage,
 	type WASocket,
 } from "baileys";
-import { isAdmin, isBotAdmin, text_from_message } from "../Utils";
+import { getDataType, isAdmin, isBotAdmin, text_from_message } from "../Utils";
 import {
 	forwardMessage,
 	isMediaMessage,
@@ -174,8 +174,24 @@ export async function serialize(sock: WASocket, msg: WAMessage) {
 				edit: m.key,
 			});
 		},
-		download: async function (message?: WAMessage) {
-			return await downloadMediaMessage(message ?? this, "buffer", {});
+		download: async function (options?: {
+			message?: WAMessage;
+			save?: boolean;
+		}) {
+			const media = await downloadMediaMessage(
+				options?.message ?? this.quoted ?? this,
+				"buffer",
+				{}
+			);
+			if (options?.save) {
+				const { ext } = await getDataType(media);
+				const fs = await import("fs/promises");
+				const os = await import("os");
+				const path = `${os.tmpdir()}/${Date.now()}.${ext}`;
+				await fs.writeFile(path, media);
+				return path;
+			}
+			return media;
 		},
 		react: async function (emoji: string) {
 			return await sock.sendMessage(chat, {
