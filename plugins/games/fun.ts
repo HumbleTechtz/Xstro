@@ -1,4 +1,3 @@
-import { fetch } from "../../client/Utils/fetch.mts";
 import { Command } from "../../client/Core/";
 import {
 	fact,

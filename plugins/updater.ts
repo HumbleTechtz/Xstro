@@ -1,6 +1,5 @@
-import { Command } from "../client/Core/";
-import { restart } from "../client/Utils/constants";
-import { update } from "../client/Utils/updater";
+import { Command } from "../client/Core";
+import { restart, update } from "../client/Utils";
 
 Command({
 	name: "update",
@@ -10,7 +9,11 @@ Command({
 	type: "utilities",
 	function: async (message, match) => {
 		const prefix = message.prefix[0];
-		const result = await update(match === "now");
+		const result = (await update(match === "now")) as {
+			status: "up-to-date" | "updates-available" | "updated" | "error";
+			commits?: string[];
+			error?: string;
+		};
 
 		switch (result.status) {
 			case "up-to-date":

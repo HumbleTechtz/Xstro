@@ -30,13 +30,13 @@ Command({
 			return message.send("```A Word Chain Game is already in progress.```");
 		if (pending.has(jid))
 			return message.send(
-				"```A Word Chain Game is already gathering challengers.```",
+				"```A Word Chain Game is already gathering challengers.```"
 			);
 
 		pending.set(jid, { jids: [], timers: [] });
 
 		await message.send(
-			'```Word Chain Game starting! Type "join" to participate.```',
+			'```Word Chain Game starting! Type "join" to participate.```'
 		);
 
 		let countdown = 30;
@@ -52,7 +52,9 @@ Command({
 				countdown !== lastCountdown &&
 				(countdown === 30 || countdown === 20 || countdown === 10)
 			) {
-				await message.send(`\`\`\`Game starting in ${countdown} seconds.\`\`\``);
+				await message.send(
+					`\`\`\`Game starting in ${countdown} seconds.\`\`\``
+				);
 				lastCountdown = countdown;
 			}
 			countdown -= 10;
@@ -74,7 +76,7 @@ Command({
 			const playersText = p.jids.map(id => `@${id.split("@")[0]}`).join(", ");
 			await message.send(
 				`\`\`\`Word Chain Game started! Challengers: ${playersText}\`\`\``,
-				{ mentions: p.jids },
+				{ mentions: p.jids }
 			);
 		}, 30000);
 
@@ -104,7 +106,7 @@ Command({
 				p.jids.push(message.sender);
 				return message.send(
 					`\`\`\`@${message.sender.split("@")[0]} joined the Match.\`\`\``,
-					{ mentions: [message.sender] },
+					{ mentions: [message.sender] }
 				);
 			}
 			return;
@@ -165,7 +167,7 @@ class Wcg {
 			this.cleanup(jid);
 			await this.message.send(
 				"```Insufficient challengers to begin the Word Chain Game! At least 2 players are required.```",
-				{ mentions: this.originalPlayers },
+				{ mentions: this.originalPlayers }
 			);
 			return;
 		}
@@ -186,7 +188,7 @@ class Wcg {
 
 	async playWord(
 		input: string,
-		from: string,
+		from: string
 	): Promise<{ text: string; mentions: string[] }> {
 		if (!this.active) return { text: "", mentions: [] };
 
@@ -237,7 +239,7 @@ class Wcg {
 		const pts: number = word.length;
 		this.scores.set(
 			currentPlayerJid,
-			(this.scores.get(currentPlayerJid) || 0) + pts,
+			(this.scores.get(currentPlayerJid) || 0) + pts
 		);
 		this.lastLetter = word[word.length - 1];
 		this.currentIndex = (this.currentIndex + 1) % this.players.length;
@@ -248,7 +250,11 @@ class Wcg {
 		const nextPlayerName: string = nextPlayerJid.split("@")[0];
 
 		return {
-			text: `\`\`\`@${currentPlayerName} scores ${pts} points for "${word}" in the Game!\n\n@${nextPlayerName}, your challenge awaits:\nSubmit a word starting with "${this.lastLetter.toUpperCase()}" (${this.minLen}+ letters).\nYou have ${this.currentTimeout / 1000} seconds to respond!\`\`\``,
+			text: `\`\`\`@${currentPlayerName} scores ${pts} points for "${word}" in the Game!\n\n@${nextPlayerName}, your challenge awaits:\nSubmit a word starting with "${this.lastLetter.toUpperCase()}" (${
+				this.minLen
+			}+ letters).\nYou have ${
+				this.currentTimeout / 1000
+			} seconds to respond!\`\`\``,
 			mentions: [currentPlayerJid, nextPlayerJid],
 		};
 	}
@@ -275,7 +281,11 @@ class Wcg {
 		this.scheduleNextTurn(this.message.chat);
 		const nextPlayer: string = this.players[this.currentIndex];
 		const nextPlayerName: string = nextPlayer.split("@")[0];
-		return `${msg}\n\n\`\`\`@${nextPlayerName}, your challenge awaits:\nSubmit a word starting with "${this.lastLetter.toUpperCase()}" (${this.minLen}+ letters).\nYou have ${this.currentTimeout / 1000} seconds to respond!\`\`\``;
+		return `${msg}\n\n\`\`\`@${nextPlayerName}, your challenge awaits:\nSubmit a word starting with "${this.lastLetter.toUpperCase()}" (${
+			this.minLen
+		}+ letters).\nYou have ${
+			this.currentTimeout / 1000
+		} seconds to respond!\`\`\``;
 	}
 
 	getCurrentTimeout(): number {
@@ -361,12 +371,14 @@ class Wcg {
 			result = `\`\`\`The Word Chain Game has concluded!\n\nFinal standings:\n${scoreText}\`\`\``;
 		}
 
-		const validPlayers = this.originalPlayers.filter(userId => isLidUser(userId));
+		const validPlayers = this.originalPlayers.filter(userId =>
+			isLidUser(userId)
+		);
 		await updateLeaderboard(
 			validPlayers.map(userId => ({
 				userId,
 				score: this.scores.get(userId) || 0,
-			})),
+			}))
 		);
 
 		this.cleanup(jid);
@@ -386,12 +398,14 @@ class Wcg {
 
 		const result: string = `\`\`\`The Word Chain Game has ended due to inactivity!\n\nFinal standings:\n${scoreText}\`\`\``;
 
-		const validPlayers = this.originalPlayers.filter(userId => isLidUser(userId));
+		const validPlayers = this.originalPlayers.filter(userId =>
+			isLidUser(userId)
+		);
 		await updateLeaderboard(
 			validPlayers.map(userId => ({
 				userId,
 				score: this.scores.get(userId) || 0,
-			})),
+			}))
 		);
 
 		this.cleanup(jid);
@@ -429,7 +443,11 @@ class Wcg {
 			this.lastLetter = this.alphabet[Math.floor(Math.random() * 26)];
 		}
 		this.minLen = Math.floor(this.turnNumber / 5) + 3;
-		return `\`\`\`@${name}, your challenge awaits in this Match:\nSubmit a word starting with "${this.lastLetter.toUpperCase()}" (${this.minLen}+ letters).\nYou have ${this.currentTimeout / 1000} seconds to respond!\`\`\``;
+		return `\`\`\`@${name}, your challenge awaits in this Match:\nSubmit a word starting with "${this.lastLetter.toUpperCase()}" (${
+			this.minLen
+		}+ letters).\nYou have ${
+			this.currentTimeout / 1000
+		} seconds to respond!\`\`\``;
 	}
 
 	getCurrentPlayer(): string {

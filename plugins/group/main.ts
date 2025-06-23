@@ -152,11 +152,13 @@ Command({
 					text: `@${message.chat} ${match ?? ""}`,
 					contextInfo: {
 						mentionedJid: participants.filter(p => p.id).map(p => p.id),
-						groupMentions: [{ groupJid: message.chat, groupSubject: "everyone" }],
+						groupMentions: [
+							{ groupJid: message.chat, groupSubject: "everyone" },
+						],
 					},
 				},
 			},
-			{},
+			{}
 		);
 	},
 });
@@ -318,7 +320,7 @@ Command({
 	function: async (message, match) => {
 		if (!match || !match.includes(";")) {
 			return message.send(
-				`_Usage: ${message.prefix[0]}poll question; option1, option2, option3_`,
+				`_Usage: ${message.prefix[0]}poll question; option1, option2, option3_`
 			);
 		}
 		const [question, optionsRaw] = match.split(";").map(s => s.trim());
@@ -365,13 +367,13 @@ Command({
 				participants.map(p => `@${p.split("@")[0]}`).join("\n"),
 			{
 				mentions: participants,
-			},
+			}
 		);
 	},
 });
 
 Command({
-	name: "approve",
+	name: "accept",
 	fromMe: false,
 	isGroup: true,
 	desc: "Approve a group join request",
@@ -385,13 +387,15 @@ Command({
 		await message.groupRequestParticipantsUpdate(
 			message.chat,
 			participants,
-			"approve",
+			"approve"
 		);
 		return await message.send(
-			`_Approved members: ${participants.map(p => `@${p.split("@")[0]}`).join(", ")}_`,
+			`_Approved members: ${participants
+				.map(p => `@${p.split("@")[0]}`)
+				.join(", ")}_`,
 			{
 				mentions: participants,
-			},
+			}
 		);
 	},
 });
@@ -413,13 +417,15 @@ Command({
 		await message.groupRequestParticipantsUpdate(
 			message.chat,
 			participants,
-			"reject",
+			"reject"
 		);
 		return await message.send(
-			`_Rejected members: ${participants.map(p => `@${p.split("@")[0]}`).join(", ")}_`,
+			`_Rejected members: ${participants
+				.map(p => `@${p.split("@")[0]}`)
+				.join(", ")}_`,
 			{
 				mentions: participants,
-			},
+			}
 		);
 	},
 });

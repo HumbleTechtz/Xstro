@@ -17,7 +17,9 @@ Command({
 		if (!args) {
 			const isEnabled = await getGroupEvent(groupJid);
 			const state = isEnabled ? "ON" : "OFF";
-			return msg.send(`_Group event mode is currently: ${state.toLowerCase()}_`);
+			return msg.send(
+				`_Group event mode is currently: ${state.toLowerCase()}_`
+			);
 		}
 
 		const mode = args.toLowerCase();

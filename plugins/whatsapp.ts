@@ -66,7 +66,7 @@ Command({
 		const msg = message.quoted;
 		if (!msg || !msg.image) return message.send("```Reply an Image```");
 		const media = await message.download();
-		await message.updateProfilePicture(message.owner.jid, media);
+		await message.updateProfilePicture(message.owner.jid, media as Buffer);
 		return message.send("```Profile Photo Updated```");
 	},
 });

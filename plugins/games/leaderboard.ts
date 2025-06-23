@@ -41,37 +41,51 @@ Command({
 
 		const legendsText =
 			legends.length > 0
-				? `Legends:\n${legends.map((e, i) => `${i + 1}. @${e.userId.split("@")[0]}: ${e.score}`).join("\n")}\n`
+				? `Legends:\n${legends
+						.map((e, i) => `${i + 1}. @${e.userId.split("@")[0]}: ${e.score}`)
+						.join("\n")}\n`
 				: "Legends:\n---\n";
 
 		const masterText =
 			master.length > 0
-				? `Master:\n${master.map((e, i) => `${i + 1}. @${e.userId.split("@")[0]}: ${e.score}`).join("\n")}\n`
+				? `Master:\n${master
+						.map((e, i) => `${i + 1}. @${e.userId.split("@")[0]}: ${e.score}`)
+						.join("\n")}\n`
 				: "Master:\n---\n";
 
 		const diamondText =
 			diamond.length > 0
-				? `Diamond:\n${diamond.map((e, i) => `${i + 1}. @${e.userId.split("@")[0]}: ${e.score}`).join("\n")}\n`
+				? `Diamond:\n${diamond
+						.map((e, i) => `${i + 1}. @${e.userId.split("@")[0]}: ${e.score}`)
+						.join("\n")}\n`
 				: "Diamond:\n---\n";
 
 		const platinumText =
 			platinum.length > 0
-				? `Platinum:\n${platinum.map((e, i) => `${i + 1}. @${e.userId.split("@")[0]}: ${e.score}`).join("\n")}\n`
+				? `Platinum:\n${platinum
+						.map((e, i) => `${i + 1}. @${e.userId.split("@")[0]}: ${e.score}`)
+						.join("\n")}\n`
 				: "Platinum:\n---\n";
 
 		const goldText =
 			gold.length > 0
-				? `Gold:\n${gold.map((e, i) => `${i + 1}. @${e.userId.split("@")[0]}: ${e.score}`).join("\n")}\n`
+				? `Gold:\n${gold
+						.map((e, i) => `${i + 1}. @${e.userId.split("@")[0]}: ${e.score}`)
+						.join("\n")}\n`
 				: "Gold:\n---\n";
 
 		const silverText =
 			silver.length > 0
-				? `Silver:\n${silver.map((e, i) => `${i + 1}. @${e.userId.split("@")[0]}: ${e.score}`).join("\n")}\n`
+				? `Silver:\n${silver
+						.map((e, i) => `${i + 1}. @${e.userId.split("@")[0]}: ${e.score}`)
+						.join("\n")}\n`
 				: "Silver:\n---\n";
 
 		const bronzeText =
 			bronze.length > 0
-				? `Bronze:\n${bronze.map((e, i) => `${i + 1}. @${e.userId.split("@")[0]}: ${e.score}`).join("\n")}\n`
+				? `Bronze:\n${bronze
+						.map((e, i) => `${i + 1}. @${e.userId.split("@")[0]}: ${e.score}`)
+						.join("\n")}\n`
 				: "Bronze:\n---\n";
 
 		const formatted = `LeaderBoard\n\n${legendsText}${masterText}${diamondText}${platinumText}${goldText}${silverText}${bronzeText}`;
