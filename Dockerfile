@@ -11,7 +11,7 @@ RUN apt-get update && \
 	librsvg2-dev && \
 	rm -rf /var/lib/apt/lists/*
 
-RUN git clone https://github.com/AstroXTeam/whatsapp-bot /whatsapp-bot
+RUN git clone https://github.com/AstroX11/whatsapp-bot /whatsapp-bot
 
 WORKDIR /whatsapp-bot
 

@@ -5,9 +5,9 @@
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/AstroXTeam/whatsapp-bot.git"
+		"url": "git+https://github.com/AstroX11/whatsapp-bot.git"
 	},
-	"homepage": "https://github.com/AstroXTeam/whatsapp-bot#readme",
+	"homepage": "https://github.com/AstroX11/whatsapp-bot#readme",
 	"author": "AstroX11 <devastro0010@gmail.com>",
 	"scripts": {
 		"start": "bun app.ts"

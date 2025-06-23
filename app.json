@@ -1,25 +1,21 @@
 {
-    "name": "xstro",
-    "description": "OpenSource Automation System",
-    "repository": "https://github.com/AstroXTeam/whatsapp-bot",
-    "stack": "container",
-    "success_url": "/",
-    "env": {
-        "USER_NUMBER": {
-            "description": "Your WhatsApp Account Number that want's to run the bot.",
-            "required": true
-        },
-        "OWNER_NAME": {
-            "description": "Owner of the Bot Name",
-            "required": false
-        },
-        "BOT_NAME": {
-            "description": "Custom Bot Name",
-            "required": false
-        },
-        "PROXY": {
-            "description": "Use a custom Proxy rather than Server's IP",
-            "required": false
-        }
-    }
+	"name": "xstro",
+	"description": "Simple WA Bot",
+	"repository": "https://github.com/AstroX11/whatsapp-bot",
+	"stack": "container",
+	"success_url": "/",
+	"env": {
+		"USER_NUMBER": {
+			"description": "Your WhatsApp Account Number that want's to run the bot.",
+			"required": true
+		},
+		"OWNER_NAME": {
+			"description": "Owner of the Bot Name",
+			"required": false
+		},
+		"BOT_NAME": {
+			"description": "Custom Bot Name",
+			"required": false
+		}
+	}
 }

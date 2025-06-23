@@ -7,6 +7,6 @@ Command({
 	desc: "Get the url to the bot source code",
 	type: "group",
 	function: async m => {
-		return await m.send(`https://github.com/AstroXTeam/whatsapp-bot`);
+		return await m.send(`https://github.com/AstroX11/whatsapp-bot`);
 	},
 });

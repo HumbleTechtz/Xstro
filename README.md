@@ -4,8 +4,8 @@
     A simple, privacy-focused third-party automation tool designed to send, receive, process, and interact with WhatsApp Web via WebSocket.
   </p>
   <p>
-    <a href="https://github.com/AstroXTeam/whatsapp-bot/actions">
-      <img src="https://img.shields.io/github/actions/workflow/status/AstroXTeam/whatsapp-bot/docker-image.yml?branch=stable&style=flat-square" alt="CI Status" />
+    <a href="https://github.com/AstroX11/whatsapp-bot/actions">
+      <img src="https://img.shields.io/github/actions/workflow/status/AstroX11/whatsapp-bot/docker-image.yml?branch=stable&style=flat-square" alt="CI Status" />
     </a>
     <a href="https://opensource.org/licenses/MIT">
       <img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="License" />
@@ -35,18 +35,18 @@ Before deploying, set your phone number in `USER_NUMBER`. A connection code will
 
 1. If you don’t have a Heroku account, [create one](https://heroku.com).
 2. Watch this [Heroku tutorial video](https://github.com/AstroX11/deploy-videos/raw/refs/heads/main/heroku.mp4).
-3. Deploy using the [Heroku deploy template](https://www.heroku.com/deploy?template=https://github.com/AstroXTeam/whatsapp-bot).
+3. Deploy using the [Heroku deploy template](https://www.heroku.com/deploy?template=https://github.com/AstroX11/whatsapp-bot).
 
 ### Koyeb
 
 - [Create a Koyeb account](https://app.koyeb.com/).
-- [Deploy on Koyeb from repo](https://app.koyeb.com/deploy?name=whatsapp-bot&repository=AstroXTeam%2Fwhatsapp-bot&branch=stable&builder=dockerfile&instance_type=free).
+- [Deploy on Koyeb from repo](https://app.koyeb.com/deploy?name=whatsapp-bot&repository=AstroX11%2Fwhatsapp-bot&branch=stable&builder=dockerfile&instance_type=free).
 - See the [Koyeb docs](https://docs.koyeb.com/).
 
 ### Render
 
 - [Create a Render account](https://render.com/).
-- [Deploy on Render from repo](https://render.com/deploy?repo=https://github.com/AstroXTeam/whatsapp-bot).
+- [Deploy on Render from repo](https://render.com/deploy?repo=https://github.com/AstroX11/whatsapp-bot).
 - Read the [Render docs](https://render.com/docs).
 
 ### Pterodactyl Panel
@@ -62,7 +62,7 @@ Before deploying, set your phone number in `USER_NUMBER`. A connection code will
 2. Clone the repository:
 
    ```bash
-   git clone https://github.com/AstroXTeam/whatsapp-bot.git
+   git clone https://github.com/AstroX11/whatsapp-bot.git
    cd whatsapp-bot
    ```
 
