@@ -81,14 +81,9 @@ Command({
 		const msg = message.quoted;
 		if (!msg || !msg.viewonce)
 			return message.send("Use, your phone to reply a viewonce");
-		if (msg.message) {
-			const mediaType = msg.msg_type as
-				| "imageMessage"
-				| "videoMessage"
-				| "audioMessage";
-			msg.message[mediaType]!.viewOnce = false;
-			return await message.forward(message.chat, msg, { quoted: message });
-		}
+		// @ts-ignore
+		if (msg.message) msg.message[msg.msg_type!].viewOnce = false;
+		return await message.forward(message.chat, msg, { quoted: message });
 	},
 });
 
@@ -102,14 +97,9 @@ Command({
 		const msg = message.quoted;
 		if (!msg || (!msg.audio && !msg.video && !msg.image))
 			return message.send("```Reply a media message```");
-		const msgs = msg.msg_type as
-			| "imageMessage"
-			| "videoMessage"
-			| "audioMessage";
-		if (msg.message?.[msgs]) {
-			msg.message[msgs].viewOnce = true;
-			return await message.forward(message.chat, msg, { quoted: message });
-		}
+		// @ts-ignore
+		if (msg.message) msg.message[msg.msg_type!].viewOnce = true;
+		return await message.forward(message.chat, msg, { quoted: message });
 	},
 });
 
