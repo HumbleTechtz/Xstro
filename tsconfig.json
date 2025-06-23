@@ -9,5 +9,5 @@
 		"noEmit": true,
 		"forceConsistentCasingInFileNames": true
 	},
-	"include": ["src/**/*", "plugins/**/**/*"]
+	"include": ["client/**/*", "plugins/**/**/*"]
 }

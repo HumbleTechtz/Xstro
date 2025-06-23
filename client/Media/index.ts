@@ -3,5 +3,5 @@ import path from "path";
 import { cwd } from "process";
 
 export const logo = await readFile(
-	path.join(cwd(), "src", "Media", "social.png")
+	path.join(cwd(), "client", "Media", "social.png")
 );
