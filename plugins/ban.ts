@@ -1,5 +1,5 @@
-import { Command } from "../../client/Core";
-import { delBan, getBan, setBan } from "../../client/Models";
+import { Command } from "../client/Core";
+import { delBan, getBan, setBan } from "../client/Models";
 
 Command({
 	name: "ban",
