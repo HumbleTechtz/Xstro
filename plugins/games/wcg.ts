@@ -1,7 +1,7 @@
 import { isLidUser } from "baileys";
-import { Command } from "../../src/Core/plugin.ts";
-import { updateLeaderboard } from "../../src/Models/index.ts";
-import type { Serialize } from "../../src/Core/serialize.ts";
+import { Command } from "../../client/Core/";
+import { updateLeaderboard } from "../../client/Models";
+import type { Serialize } from "../../client/Core/serialize";
 
 const games = new Map<string, Wcg>();
 const pending = new Map<string, { jids: string[]; timers: NodeJS.Timeout[] }>();
@@ -13,7 +13,7 @@ Command({
 	desc: "Play Word Chain Game",
 	type: "games",
 	function: async (message, match) => {
-		const jid = message.jid;
+		const jid = message.chat;
 
 		if (match === "end") {
 			if (games.has(jid)) {
@@ -86,7 +86,7 @@ Command({
 	on: true,
 	dontAddCommandList: true,
 	function: async message => {
-		const jid = message.jid;
+		const jid = message.chat;
 		const text = message.text?.trim().toLowerCase();
 		if (!text) return;
 
@@ -242,7 +242,7 @@ class Wcg {
 		this.lastLetter = word[word.length - 1];
 		this.currentIndex = (this.currentIndex + 1) % this.players.length;
 		this.turnNumber++;
-		this.scheduleNextTurn(this.message.jid);
+		this.scheduleNextTurn(this.message.chat);
 
 		const nextPlayerJid: string = this.players[this.currentIndex];
 		const nextPlayerName: string = nextPlayerJid.split("@")[0];
@@ -269,10 +269,10 @@ class Wcg {
 		if (this.currentIndex >= this.players.length) this.currentIndex = 0;
 
 		if (this.players.length <= 1) {
-			return msg + "\n\n" + (await this.endGame(this.message.jid, false));
+			return msg + "\n\n" + (await this.endGame(this.message.chat, false));
 		}
 
-		this.scheduleNextTurn(this.message.jid);
+		this.scheduleNextTurn(this.message.chat);
 		const nextPlayer: string = this.players[this.currentIndex];
 		const nextPlayerName: string = nextPlayer.split("@")[0];
 		return `${msg}\n\n\`\`\`@${nextPlayerName}, your challenge awaits:\nSubmit a word starting with "${this.lastLetter.toUpperCase()}" (${this.minLen}+ letters).\nYou have ${this.currentTimeout / 1000} seconds to respond!\`\`\``;
@@ -327,7 +327,7 @@ class Wcg {
 		}
 		this.inactivityTimeout = setTimeout(async () => {
 			if (this.active) {
-				const endMsg: string = await this.forceEndGame(this.message.jid);
+				const endMsg: string = await this.forceEndGame(this.message.chat);
 				await this.message.send(endMsg, {
 					mentions: this.originalPlayers,
 				});

@@ -1,6 +1,6 @@
-import { Command } from "../../src/Core/plugin.ts";
-import { cachedGroupMetadata } from "../../src/Models/index.ts";
-import lang from "../../src/Utils/lang.ts";
+import { Command } from "../../client/Core/";
+import { cachedGroupMetadata } from "../../client/Models";
+import lang from "../../client/Utils/language";
 
 Command({
 	name: "add",
@@ -16,7 +16,7 @@ Command({
 		if (!(await message.onWhatsApp(user))) {
 			return message.send("_Invalid number_");
 		}
-		await message.groupParticipantsUpdate(message.jid, [user], "add");
+		await message.groupParticipantsUpdate(message.chat, [user], "add");
 		message.send(`_@${user.split("@")[0]} added to group_`, {
 			mentions: [user],
 		});
@@ -33,9 +33,9 @@ Command({
 		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!match) return message.send("_Provide a valid number or mention_");
-		const user = await message.parseId(match);
+		const user = await message.userId(match);
 		if (!user) return message.send("_Invalid number or mention_");
-		await message.groupParticipantsUpdate(message.jid, [user], "remove");
+		await message.groupParticipantsUpdate(message.chat, [user], "remove");
 		message.send(`_@${user.split("@")[0]} kicked from group_`, {
 			mentions: [user],
 		});
@@ -56,7 +56,7 @@ Command({
 			.filter(p => !p.admin)
 			.map(p => p.id);
 
-		await message.groupParticipantsUpdate(message.jid, participants, "remove");
+		await message.groupParticipantsUpdate(message.chat, participants, "remove");
 	},
 });
 
@@ -70,16 +70,16 @@ Command({
 		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!match) return message.send("_Provide a valid number or mention_");
-		const user = await message.parseId(match);
+		const user = await message.userId(match);
 		if (!user) return message.send("_Invalid number or mention_");
-		const groupData = await cachedGroupMetadata(message.jid);
+		const groupData = await cachedGroupMetadata(message.chat);
 		const admins = groupData.participants.filter(v => v.admin).map(v => v.id);
 		if (admins.includes(user)) {
 			return message.send(`_@${user.split("@")[0]} is already admin_`, {
 				mentions: [user],
 			});
 		}
-		await message.groupParticipantsUpdate(message.jid, [user], "promote");
+		await message.groupParticipantsUpdate(message.chat, [user], "promote");
 		return await message.send(`_@${user.split("@")[0]} is now admin_`, {
 			mentions: [user],
 		});
@@ -96,16 +96,16 @@ Command({
 		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!match) return message.send("_Provide a valid number or mention_");
-		const user = await message.parseId(match);
+		const user = await message.userId(match);
 		if (!user) return message.send("_Invalid number or mention_");
-		const groupData = await cachedGroupMetadata(message.jid);
+		const groupData = await cachedGroupMetadata(message.chat);
 		const admins = groupData.participants.filter(v => v.admin).map(v => v.id);
 		if (!admins.includes(user)) {
 			return message.send(`_@${user.split("@")[0]} is not admin_`, {
 				mentions: [user],
 			});
 		}
-		await message.groupParticipantsUpdate(message.jid, [user], "demote");
+		await message.groupParticipantsUpdate(message.chat, [user], "demote");
 		return await message.send(`_@${user.split("@")[0]} is no longer admin_`, {
 			mentions: [user],
 		});
@@ -144,15 +144,15 @@ Command({
 	desc: "Mention entire group",
 	type: "group",
 	function: async (message, match) => {
-		const { participants } = await cachedGroupMetadata(message.jid);
+		const { participants } = await cachedGroupMetadata(message.chat);
 		return await message.relayMessage(
-			message.jid,
+			message.chat,
 			{
 				extendedTextMessage: {
-					text: `@${message.jid} ${match ?? ""}`,
+					text: `@${message.chat} ${match ?? ""}`,
 					contextInfo: {
 						mentionedJid: participants.filter(p => p.id).map(p => p.id),
-						groupMentions: [{ groupJid: message.jid, groupSubject: "everyone" }],
+						groupMentions: [{ groupJid: message.chat, groupSubject: "everyone" }],
 					},
 				},
 			},
@@ -171,7 +171,7 @@ Command({
 		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!match) return message.send("_Provide new group name_");
-		await message.groupUpdateSubject(message.jid, match);
+		await message.groupUpdateSubject(message.chat, match);
 		return await message.send("_Group name updated_");
 	},
 });
@@ -186,7 +186,7 @@ Command({
 		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!match) return message.send("_Provide new group description_");
-		await message.groupUpdateDescription(message.jid, match);
+		await message.groupUpdateDescription(message.chat, match);
 		return await message.send("_Group description updated_");
 	},
 });
@@ -200,9 +200,9 @@ Command({
 	function: async message => {
 		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
-		const metadata = await cachedGroupMetadata(message.jid);
+		const metadata = await cachedGroupMetadata(message.chat);
 		if (metadata.announce) return message.send("_Group already muted_");
-		await message.groupSettingUpdate(message.jid, "announcement");
+		await message.groupSettingUpdate(message.chat, "announcement");
 		return await message.send("_Group muted, only admins can send messages_");
 	},
 });
@@ -216,9 +216,9 @@ Command({
 	function: async message => {
 		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
-		const metadata = await cachedGroupMetadata(message.jid);
+		const metadata = await cachedGroupMetadata(message.chat);
 		if (!metadata.announce) return message.send("_Group already unmuted_");
-		await message.groupSettingUpdate(message.jid, "not_announcement");
+		await message.groupSettingUpdate(message.chat, "not_announcement");
 		return await message.send("_Group unmuted, all members can send messages_");
 	},
 });
@@ -232,10 +232,10 @@ Command({
 	function: async message => {
 		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
-		const metadata = await cachedGroupMetadata(message.jid);
+		const metadata = await cachedGroupMetadata(message.chat);
 		if (metadata.restrict)
 			return message.send("_Group settings already restricted_");
-		await message.groupSettingUpdate(message.jid, "locked");
+		await message.groupSettingUpdate(message.chat, "locked");
 		return await message.send("_Group settings restricted to admins_");
 	},
 });
@@ -249,10 +249,10 @@ Command({
 	function: async message => {
 		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
-		const metadata = await cachedGroupMetadata(message.jid);
+		const metadata = await cachedGroupMetadata(message.chat);
 		if (!metadata.restrict)
 			return message.send("_Group settings already unrestricted_");
-		await message.groupSettingUpdate(message.jid, "unlocked");
+		await message.groupSettingUpdate(message.chat, "unlocked");
 		return await message.send("_Group settings unrestricted_");
 	},
 });
@@ -266,7 +266,7 @@ Command({
 	function: async message => {
 		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
-		const code = await message.groupInviteCode(message.jid);
+		const code = await message.groupInviteCode(message.chat);
 		return await message.send(`_https://chat.whatsapp.com/${code}_`);
 	},
 });
@@ -280,7 +280,7 @@ Command({
 	function: async message => {
 		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
-		const code = await message.groupRevokeInvite(message.jid);
+		const code = await message.groupRevokeInvite(message.chat);
 		return await message.send(`_https://chat.whatsapp.com/${code}_`);
 	},
 });
@@ -298,11 +298,11 @@ Command({
 			return message.send(`_Usage: ${message.prefix[0]}approval on | off_`);
 		match = match.toLowerCase().trim();
 		if (match === "on") {
-			await message.groupJoinApprovalMode(message.jid, "on");
+			await message.groupJoinApprovalMode(message.chat, "on");
 			return message.send("_Approval mode on_");
 		}
 		if (match === "off") {
-			await message.groupJoinApprovalMode(message.jid, "off");
+			await message.groupJoinApprovalMode(message.chat, "off");
 			return message.send("_Approval mode off_");
 		}
 		return message.send(`_Usage: ${message.prefix[0]}approval on | off_`);
@@ -329,7 +329,7 @@ Command({
 			.map(opt => opt.trim())
 			.filter(Boolean);
 		if (options.length < 2) return message.send("_Add at least 2 options_");
-		await message.sendMessage(message.jid, {
+		await message.sendMessage(message.chat, {
 			poll: { name: question, values: options, selectableCount: 1 },
 		});
 	},
@@ -342,7 +342,7 @@ Command({
 	desc: "Leave a group",
 	type: "group",
 	function: async message => {
-		return await message.groupLeave(message.jid);
+		return await message.groupLeave(message.chat);
 	},
 });
 
@@ -355,7 +355,7 @@ Command({
 	function: async message => {
 		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
-		const requests = await message.groupRequestParticipantsList(message.jid);
+		const requests = await message.groupRequestParticipantsList(message.chat);
 		if (!requests || requests.length === 0) {
 			return message.send("_No join requests found_");
 		}
@@ -377,13 +377,13 @@ Command({
 	desc: "Approve a group join request",
 	type: "group",
 	function: async message => {
-		const requests = await message.groupRequestParticipantsList(message.jid);
+		const requests = await message.groupRequestParticipantsList(message.chat);
 		if (!requests || requests.length === 0) {
 			return message.send("_No join requests found_");
 		}
 		const participants = requests.map(p => p.id);
 		await message.groupRequestParticipantsUpdate(
-			message.jid,
+			message.chat,
 			participants,
 			"approve",
 		);
@@ -405,13 +405,13 @@ Command({
 	function: async message => {
 		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
-		const requests = await message.groupRequestParticipantsList(message.jid);
+		const requests = await message.groupRequestParticipantsList(message.chat);
 		if (!requests || requests.length === 0) {
 			return message.send("_No join requests found_");
 		}
 		const participants = requests.map(p => p.id);
 		await message.groupRequestParticipantsUpdate(
-			message.jid,
+			message.chat,
 			participants,
 			"reject",
 		);

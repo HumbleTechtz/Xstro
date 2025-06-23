@@ -1,5 +1,5 @@
-import { Command } from "../../src/Core/plugin.ts";
-import { setAntiWord, getAntiword } from "../../src/Models/index.ts";
+import { Command } from "../../client/Core/";
+import { setAntiWord, getAntiword } from "../../client/Models";
 
 Command({
 	name: "antiword",
@@ -7,7 +7,7 @@ Command({
 	isGroup: true,
 	type: "group",
 	function: async (message, match) => {
-		const jid = message.jid;
+		const jid = message.chat;
 		const prefix = message.prefix[0];
 
 		if (!match) {
@@ -59,7 +59,7 @@ Command({
 		if (msg.key.fromMe || msg.sudo) return;
 		if (msg.isAdmin || !msg.isBotAdmin) return;
 
-		const record = await getAntiword(msg.jid);
+		const record = await getAntiword(msg.chat);
 		if (!record?.status || !record.words?.length) return;
 
 		const lowerText = msg.text.toLowerCase();

@@ -1,5 +1,5 @@
-import { Command } from "../../src/Core/plugin.ts";
-import { delBan, getBan, setBan } from "../../src/Models/index.ts";
+import { Command } from "../../client/Core";
+import { delBan, getBan, setBan } from "../../client/Models";
 
 Command({
 	name: "ban",
@@ -11,7 +11,7 @@ Command({
 		if (!args) return msg.send("_Provide number to ban_");
 
 		const bannedList = await getBan();
-		const userToBan = await msg.parseId(args);
+		const userToBan = await msg.userId(args);
 		if (!userToBan) return msg.send(`_Invalid user_`);
 		if (bannedList.includes(userToBan))
 			return msg.send("_User is already banned_");
@@ -29,7 +29,7 @@ Command({
 	desc: "Unban a user",
 	type: "settings",
 	function: async (msg, args) => {
-		const user = await msg.parseId(args);
+		const user = await msg.userId(args);
 		if (!user) return msg.send(`_Provided User is Invalid_`);
 		const banned = await getBan();
 		if (!banned.includes(user)) {

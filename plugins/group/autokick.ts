@@ -1,10 +1,10 @@
-import { Command } from "../../src/Core/plugin.ts";
+import { Command } from "../../client/Core/";
 import {
 	addAutoKick,
 	delAutoKick,
 	getAllAutoKicks,
-} from "../../src/Models/index.ts";
-import lang from "../../src/Utils/lang.ts";
+} from "../../client/Models";
+import lang from "../../client/Utils/language";
 
 Command({
 	name: "autokick",
@@ -20,7 +20,7 @@ Command({
 		}
 
 		const [subcmd, ...rest] = args.split(" ");
-		const groupJid = msg.jid;
+		const groupJid = msg.chat;
 
 		if (subcmd === "list") {
 			const allEntries = await getAllAutoKicks();
@@ -37,7 +37,7 @@ Command({
 		}
 
 		const rawUser = rest.join(" ");
-		const parsedUser = await msg.parseId(rawUser);
+		const parsedUser = await msg.userId(rawUser);
 		if (!parsedUser) return msg.send("_Invalid user provided_");
 
 		const { jid, lid, exists } = await msg

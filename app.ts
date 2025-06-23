@@ -1,8 +1,8 @@
 import { spawn } from "child_process";
-import database from "./src/Core/database.ts";
+import database from "./client/Core/database";
 
 const startClient = () => {
-	const client = spawn("bun", ["run", "./src/Core/client.ts"], {
+	const client = spawn("bun", ["run", "./client/Core/client"], {
 		stdio: "inherit",
 	});
 

@@ -1,4 +1,4 @@
-import { Command } from "../../src/Core/plugin.ts";
+import { Command } from "../../client/Core/";
 
 Command({
 	name: "schedule",

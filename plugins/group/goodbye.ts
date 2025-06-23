@@ -1,5 +1,5 @@
-import { Command } from "../../src/Core/plugin.ts";
-import { setGoodBye, getGoodBye, delGoodBye } from "../../src/Models/index.ts";
+import { Command } from "../../client/Core/";
+import { setGoodBye, getGoodBye, delGoodBye } from "../../client/Models";
 
 Command({
 	name: "goodbye",
@@ -8,7 +8,7 @@ Command({
 	desc: "Set, get, or remove goodbye message",
 	type: "group",
 	function: async (msg, args) => {
-		const groupJid = msg.jid;
+		const groupJid = msg.chat;
 
 		if (!args) {
 			const current = await getGoodBye(groupJid);

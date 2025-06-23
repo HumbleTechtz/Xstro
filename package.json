@@ -1,8 +1,7 @@
 {
 	"name": "xstro",
-	"version": "21.0.0",
+	"version": "22.0.0",
 	"description": "Simple WA bot.",
-	"type": "module",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
@@ -14,34 +13,20 @@
 		"start": "bun app.ts"
 	},
 	"dependencies": {
-		"@cacheable/node-cache": "^1.5.6",
 		"@hapi/boom": "^10.0.1",
 		"baileys": "https://github.com/WhiskeySockets/Baileys/releases/download/nightly/baileys-nightly.tgz",
-		"canvas": "^3.1.0",
-		"cheerio": "^1.1.0",
-		"dotenv": "^16.5.0",
+		"canvas": "^3.1.1",
 		"ffmpeg-static": "^5.2.0",
-		"file-type": "21.0.0",
-		"form-data": "^4.0.3",
-		"got": "^14.4.7",
-		"https-proxy-agent": "^7.0.6",
-		"link-preview-js": "^3.1.0",
-		"node-webpmux": "^3.2.1",
-		"pg": "^8.16.0",
-		"pino": "^9.7.0",
-		"sharp": "^0.34.2"
+		"jimp": "^1.6.0",
+		"pg": "^8.16.2"
 	},
 	"devDependencies": {
 		"@types/bun": "latest",
 		"@types/pg": "^8.15.4",
 		"typescript": "^5.8.3"
 	},
-	"private": true,
 	"trustedDependencies": [
 		"baileys",
-		"canvas",
-		"ffmpeg-static",
-		"protobufjs",
-		"sharp"
+		"protobufjs"
 	]
 }

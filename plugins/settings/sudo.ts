@@ -1,5 +1,5 @@
-import { Command } from "../../src/Core/plugin.ts";
-import { SetSudo, delSudo, getSudo, isSudo } from "../../src/Models/index.ts";
+import { Command } from "../../client/Core";
+import { SetSudo, delSudo, getSudo, isSudo } from "../../client/Models";
 
 Command({
 	name: "setsudo",
@@ -14,7 +14,7 @@ Command({
 				`_${msg.sender.split("@")[0]} You cannot sudo inside a Group, Please this command should be used in Personal Chats_`,
 			);
 
-		const userToSudo = await msg.parseId(args);
+		const userToSudo = await msg.userId(args);
 		if (!userToSudo) return msg.send(`_User is invalid_`);
 
 		if (await isSudo(userToSudo)) return msg.send("_Already a sudo user_");
@@ -37,7 +37,7 @@ Command({
 	function: async (msg, args) => {
 		if (!args) return msg.send(`_Provide number to remove from sudo_`);
 
-		const user = await msg.parseId(args);
+		const user = await msg.userId(args);
 		if (!user) return msg.send(`_Provided User is invalid_`);
 
 		if (!(await isSudo(user))) {

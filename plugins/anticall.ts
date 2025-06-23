@@ -1,5 +1,5 @@
-import { Command } from "../src/Core/plugin.ts";
-import { getAntiCall, setAntiCall } from "../src/Models/AntiCall.ts";
+import { Command } from "../client/Core";
+import { getAntiCall, setAntiCall } from "../client/Models";
 
 Command({
 	name: "anticall",

@@ -1,7 +1,7 @@
-import { Command, commands } from "../src/Core/plugin.ts";
+import config from "../config";
 import { platform, totalmem, freemem } from "os";
-import { fancy, formatBytes, formatRuntime } from "../src/Utils/constants.ts";
-import config from "../config.ts";
+import { Command, commands } from "../client/Core";
+import { fancy, formatBytes, formatRuntime } from "../client/Utils";
 
 Command({
 	name: "menu",

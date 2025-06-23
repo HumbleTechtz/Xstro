@@ -1,6 +1,6 @@
-import { Command } from "../src/Core/plugin.ts";
-import { setFilter, delFilter, getAllFilters } from "../src/Models/index.ts";
-import { escapeRegex } from "./group/antiword.ts";
+import { Command } from "../client/Core";
+import { setFilter, delFilter, getAllFilters } from "../client/Models";
+import { escapeRegex } from "./group/antiword";
 
 Command({
 	name: "filter",

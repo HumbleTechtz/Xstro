@@ -1,6 +1,6 @@
 import { delay } from "baileys";
-import { Command } from "../../src/Core/plugin.ts";
-import { getLeaderboard } from "../../src/Models/index.ts";
+import { Command } from "../../client/Core/";
+import { getLeaderboard } from "../../client/Models";
 
 Command({
 	name: "leaderboard",

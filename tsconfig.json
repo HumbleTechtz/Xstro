@@ -1,15 +1,13 @@
 {
 	"compilerOptions": {
 		"target": "ESNext",
-		"module": "NodeNext",
-		"moduleResolution": "nodenext",
+		"module": "preserve",
 		"rootDir": ".",
 		"strict": true,
 		"skipLibCheck": true,
 		"noImplicitThis": true,
 		"noEmit": true,
-		"allowImportingTsExtensions": true,
 		"forceConsistentCasingInFileNames": true
 	},
-	"include": ["types", "src", "plugins", "*.ts", "*.mts"]
+	"include": ["src/**/*", "plugins/**/**/*"]
 }

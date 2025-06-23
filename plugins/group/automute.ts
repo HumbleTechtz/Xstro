@@ -1,10 +1,10 @@
-import { Command } from "../../src/Core/plugin.ts";
+import { Command } from "../../client/Core/";
 import {
 	setAutoMute,
 	delAutoMute,
 	getAutoMute,
-} from "../../src/Models/index.ts";
-import { isValidTimeString } from "../../src/Utils/constants.ts";
+} from "../../client/Models";
+import { isValidTimeString } from "../../client/Utils/constants";
 
 Command({
 	name: "amute",

@@ -1,5 +1,5 @@
 import { delay } from "baileys";
-import { Command } from "../src/Core/plugin.ts";
+import { Command } from "../client/Core";
 
 Command({
 	name: "bio",
@@ -34,7 +34,7 @@ Command({
 	desc: "Block a user from Messaging you",
 	type: "whatsapp",
 	function: async (message, match) => {
-		const jid = await message.parseId(match);
+		const jid = await message.userId(match);
 		if (!jid) return message.send("```No user specified to block```");
 		await message.send("```Blocked```");
 		await delay(300);
@@ -49,7 +49,7 @@ Command({
 	desc: "Unblock a user to allow Messaging",
 	type: "whatsapp",
 	function: async (message, match) => {
-		const jid = await message.parseId(match);
+		const jid = await message.userId(match);
 		if (!jid) return message.send("```No user specified to unblock```");
 		await message.updateBlockStatus(jid, "unblock");
 		return await message.send("```Unblocked```");
@@ -64,9 +64,8 @@ Command({
 	type: "whatsapp",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg || !(msg.type === "imageMessage"))
-			return message.send("```Reply an Image```");
-		const media = await message.downloadM();
+		if (!msg || !msg.image) return message.send("```Reply an Image```");
+		const media = await message.download();
 		await message.updateProfilePicture(message.owner.jid, media);
 		return message.send("```Profile Photo Updated```");
 	},
@@ -80,14 +79,15 @@ Command({
 	type: "whatsapp",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg || !msg.viewOnce) return message.send("```Reply a Viewonce```");
+		if (!msg || !msg.viewonce)
+			return message.send("Use, your phone to reply a viewonce");
 		if (msg.message) {
-			const mediaType = msg.type as
+			const mediaType = msg.msg_type as
 				| "imageMessage"
 				| "videoMessage"
 				| "audioMessage";
 			msg.message[mediaType]!.viewOnce = false;
-			return await message.forward(message.jid, msg, { quoted: message });
+			return await message.forward(message.chat, msg, { quoted: message });
 		}
 	},
 });
@@ -100,11 +100,15 @@ Command({
 	type: "whatsapp",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg || !msg.media) return message.send("```Reply a media message```");
-		const msgs = msg.type as "imageMessage" | "videoMessage" | "audioMessage";
+		if (!msg || (!msg.audio && !msg.video && !msg.image))
+			return message.send("```Reply a media message```");
+		const msgs = msg.msg_type as
+			| "imageMessage"
+			| "videoMessage"
+			| "audioMessage";
 		if (msg.message?.[msgs]) {
 			msg.message[msgs].viewOnce = true;
-			return await message.forward(message.jid, msg, { quoted: message });
+			return await message.forward(message.chat, msg, { quoted: message });
 		}
 	},
 });
@@ -120,7 +124,7 @@ Command({
 		if (!msg || !msg?.key.fromMe)
 			return message.send("```Reply your own message```");
 		if (!match) return message.send(`Usage: $${message.prefix[0]}edit Hello.`);
-		return await message.editM(match);
+		return await message.edit(match);
 	},
 });
 
@@ -133,7 +137,7 @@ Command({
 	function: async message => {
 		const msg = message.quoted;
 		if (!msg) return message.send("```Reply a message```");
-		return await message.deleteM(msg.key);
+		return await message.delete();
 	},
 });
 
@@ -148,9 +152,7 @@ Command({
 		if (!users) return message.send("No blocked users found");
 		return await message.send(
 			users.map((nums: string) => `\n@${nums.split("@")[0]}`).join(""),
-			{
-				mentions: users,
-			}
+			{ mentions: users }
 		);
 	},
 });
@@ -178,15 +180,13 @@ Command({
 	function: async (message, match) => {
 		const msg = message.quoted;
 		if (!msg) return message.send("No message quoted to forward");
-		const jid = await message.parseId(match);
+		const jid = await message.userId(match);
 		if (!jid) return message.send("No user specified to forward");
-		if (!(await message.onWhatsApp(jid)))
-			return message.send("User is not on WhatsApp");
 		await message.forward(jid, msg, {
 			isForwarded: true,
 			forwardingScore: 999,
 			quoted: message,
 		});
-		return message.send("Message forwarded successfully");
+		return message.send("Message Forwarded");
 	},
 });

@@ -1,5 +1,5 @@
-import { Command } from "../../src/Core/plugin.ts";
-import { setWelcome, getWelcome, delWelcome } from "../../src/Models/index.ts";
+import { Command } from "../../client/Core/";
+import { setWelcome, getWelcome, delWelcome } from "../../client/Models";
 
 Command({
 	name: "welcome",
@@ -8,7 +8,7 @@ Command({
 	desc: "Set, get, or remove welcome message",
 	type: "group",
 	function: async (msg, args) => {
-		const groupJid = msg.jid;
+		const groupJid = msg.chat;
 
 		if (!args) {
 			const current = await getWelcome(groupJid);

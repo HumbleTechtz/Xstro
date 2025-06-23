@@ -1,6 +1,6 @@
 import { delay } from "baileys";
-import { Command } from "../src/Core/plugin.ts";
-import { formatRuntime, restart, shutdown } from "../src/Utils/constants.ts";
+import { Command } from "../client/Core";
+import { formatRuntime, restart, shutdown } from "../client/Utils";
 
 Command({
 	name: "ping",
@@ -12,7 +12,7 @@ Command({
 		const start = Date.now();
 		const msg = await message.send("Pong!");
 		const end = Date.now();
-		return await msg.editM(`\`\`\`${end - start} ms\`\`\``);
+		return await msg.edit(`\`\`\`${end - start} ms\`\`\``);
 	},
 });
 
@@ -23,7 +23,7 @@ Command({
 	desc: "Get bot runtime",
 	type: "system",
 	function: async message => {
-		return await message.send(`\`\`\`${formatRuntime(process.uptime())}\`\`\``);
+		return await message.send(formatRuntime(process.uptime()));
 	},
 });
 
@@ -35,8 +35,8 @@ Command({
 	type: "system",
 	function: async message => {
 		await delay(2000);
-		await message.send("*Restarting*");
-		restart()
+		await message.send("Restarting");
+		restart();
 	},
 });
 
@@ -47,7 +47,7 @@ Command({
 	desc: "Shut down bot",
 	type: "system",
 	function: async msg => {
-		await msg.send("*Bye.*");
-		shutdown()
+		await msg.send("Bye");
+		shutdown();
 	},
 });

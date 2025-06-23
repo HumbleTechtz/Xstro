@@ -1,7 +1,6 @@
-import { Command } from "../src/Core/plugin.ts";
-import { getAlive, SetAlive } from "../src/Models/index.ts";
-import { formatRuntime } from "../src/Utils/constants.ts";
-import { fact, getAdvice, getQuote } from "../src/Utils/fun.ts";
+import { Command } from "../client/Core";
+import { getAlive, SetAlive } from "../client/Models";
+import { formatRuntime, fact, getAdvice, getQuote } from "../client/Utils";
 
 Command({
 	name: "alive",
@@ -11,18 +10,32 @@ Command({
 	type: "misc",
 	function: async (msg, match) => {
 		if (match) await SetAlive(match);
-		return await msg.send(
-			(
-				await getAlive()
-			)
-				.replace("@user", `@${msg.sender.split("@")[0]}`)
-				.replace("@owner", `@${msg.owner.jid.split("@")[0]}`)
-				.replace("@fact", await fact())
-				.replace("@quote", await getQuote())
-				.replace("@advice", await getAdvice())
-				.replace("@uptime", `${formatRuntime(process.uptime())}`)
-				.replace("@runtime", `${formatRuntime(process.uptime())}`),
-			{ mentions: [msg.sender, msg.owner.jid].filter(Boolean) }
-		);
+		let aliveMsg = await getAlive();
+
+		const replacements: { [key: string]: string | Promise<string> } = {
+			"@user": `@${msg.sender.split("@")[0]}`,
+			"@owner": msg.owner?.jid ? `@${msg.owner.jid.split("@")[0]}` : "",
+			"@fact": fact(),
+			"@quote": getQuote(),
+			"@advice": getAdvice(),
+			"@uptime": formatRuntime(process.uptime()),
+			"@runtime": formatRuntime(process.uptime()),
+		};
+
+		const mentions = [];
+		for (const key of ["@user", "@owner"]) {
+			if (aliveMsg.includes(key) && replacements[key]) {
+				mentions.push(key === "@user" ? msg.sender : msg.owner.jid);
+			}
+		}
+
+		for (const [key, value] of Object.entries(replacements)) {
+			if (aliveMsg.includes(key)) {
+				const replacement = typeof value === "string" ? value : await value;
+				aliveMsg = aliveMsg.replace(key, replacement);
+			}
+		}
+
+		return await msg.send(aliveMsg, { jid: msg.chat, mentions });
 	},
 });

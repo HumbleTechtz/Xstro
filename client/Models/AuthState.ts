@@ -1,0 +1,102 @@
+import database from "../Core/database";
+import { BufferJSON, initAuthCreds, WAProto } from "baileys";
+import type { AuthenticationCreds, SignalDataTypeMap } from "baileys";
+
+database.exec(`
+	CREATE TABLE IF NOT EXISTS auth (
+	name TEXT PRIMARY KEY,
+	data TEXT
+	);
+`);
+
+export default async function () {
+	async function writeData(data: any, name: string): Promise<void> {
+		const exists = database
+			.query("SELECT 1 FROM auth WHERE name = ?")
+			.get(name);
+		const serializedData = JSON.stringify(data, BufferJSON.replacer);
+
+		if (exists) {
+			database.run("UPDATE auth SET data = ? WHERE name = ?", [
+				serializedData,
+				name,
+			]);
+		} else {
+			database.run("INSERT INTO auth (name, data) VALUES (?, ?)", [
+				name,
+				serializedData,
+			]);
+		}
+	}
+
+	async function readData(name: string): Promise<any> {
+		const exists = database
+			.query("SELECT data FROM auth WHERE name = ?")
+			.get(name) as {
+			name: string;
+			data: string | null;
+		} | null;
+		try {
+			return exists?.data ? JSON.parse(exists.data, BufferJSON.reviver) : null;
+		} catch {
+			return null;
+		}
+	}
+
+	async function removeData(name: string): Promise<void> {
+		database.run("DELETE FROM auth WHERE name = ?", [name]);
+	}
+
+	const creds: AuthenticationCreds =
+		(await readData("creds")) || initAuthCreds();
+
+	return {
+		state: {
+			creds,
+			keys: {
+				get: async <T extends keyof SignalDataTypeMap>(
+					type: T,
+					ids: string[]
+				): Promise<{ [id: string]: SignalDataTypeMap[T] }> => {
+					const data: { [id: string]: SignalDataTypeMap[T] } = {};
+					await Promise.all(
+						ids.map(async id => {
+							let value = await readData(`${type}-${id}`);
+							if (type === "app-state-sync-key" && value) {
+								try {
+									value = WAProto.Message.AppStateSyncKeyData.fromObject(value);
+								} catch (e) {
+									console.error(
+										`Failed to decode AppStateSyncKeyData for ID "${id}":`,
+										e
+									);
+								}
+							}
+							data[id] = value as SignalDataTypeMap[T];
+						})
+					);
+					return data;
+				},
+				set: async (data: { [category: string]: { [id: string]: any } }) => {
+					const tasks = Object.entries(data).flatMap(([category, ids]) =>
+						Object.entries(ids).map(([id, value]) =>
+							value
+								? writeData(value, `${category}-${id}`)
+								: removeData(`${category}-${id}`)
+						)
+					);
+					await Promise.all(tasks);
+				},
+			},
+		},
+		saveCreds: async () => {
+			await writeData(creds, "creds");
+		},
+	};
+}
+
+export function auth() {
+	return {
+		truncate: () => database.run("DELETE FROM auth"),
+	};
+}

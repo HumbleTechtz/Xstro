@@ -1,5 +1,5 @@
-import { Command } from "../src/Core/plugin.ts";
-import { setAntidelete } from "../src/Models/index.ts";
+import { Command } from "../client/Core";
+import { setAntidelete } from "../client/Models";
 
 Command({
 	name: "antidelete",

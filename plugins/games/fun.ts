@@ -1,5 +1,5 @@
-import { fetch } from "../../src/Utils/fetch.mts";
-import { Command } from "../../src/Core/plugin.ts";
+import { fetch } from "../../client/Utils/fetch.mts";
+import { Command } from "../../client/Core/";
 import {
 	fact,
 	getAdvice,
@@ -12,7 +12,7 @@ import {
 	getNumberFact,
 	getQuote,
 	getRizz,
-} from "../../src/Utils/fun.ts";
+} from "../../client/Utils/fun";
 
 Command({
 	name: "rizz",

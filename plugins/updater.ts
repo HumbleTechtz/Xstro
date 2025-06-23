@@ -1,6 +1,6 @@
-import { Command } from "../src/Core/plugin.ts";
-import { restart } from "../src/Utils/constants.ts";
-import { update } from "../src/Utils/updater.ts";
+import { Command } from "../client/Core/";
+import { restart } from "../client/Utils/constants";
+import { update } from "../client/Utils/updater";
 
 Command({
 	name: "update",

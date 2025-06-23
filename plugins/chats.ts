@@ -1,4 +1,4 @@
-import { Command } from "../src/Core/plugin.ts";
+import { Command } from "../client/Core";
 
 Command({
 	name: "cpin",
@@ -7,7 +7,7 @@ Command({
 	desc: "Pin a chat",
 	type: "chats",
 	function: async message => {
-		await message.chatModify({ pin: true }, message.jid);
+		await message.chatModify({ pin: true }, message.chat);
 		return message.send("Pined.");
 	},
 });
@@ -19,7 +19,7 @@ Command({
 	desc: "Unpin a chat",
 	type: "chats",
 	function: async message => {
-		await message.chatModify({ pin: false }, message.jid);
+		await message.chatModify({ pin: false }, message.chat);
 		return message.send("Unpined.");
 	},
 });
@@ -38,7 +38,7 @@ Command({
 					{ key: message.key, messageTimestamp: message.messageTimestamp },
 				],
 			},
-			message.jid
+			message.chat
 		);
 		return message.send("Archived.");
 	},
@@ -58,7 +58,7 @@ Command({
 					{ key: message.key, messageTimestamp: message.messageTimestamp },
 				],
 			},
-			message.jid
+			message.chat
 		);
 		return message.send("Unarchived.");
 	},
@@ -78,7 +78,7 @@ Command({
 					{ key: message.key, messageTimestamp: message.messageTimestamp },
 				],
 			},
-			message.jid
+			message.chat
 		);
 		return message.send("Cleared.");
 	},
@@ -98,7 +98,7 @@ Command({
 					{ key: message.key, messageTimestamp: message.messageTimestamp },
 				],
 			},
-			message.jid
+			message.chat
 		);
 	},
 });
@@ -122,7 +122,7 @@ Command({
 					star: true,
 				},
 			},
-			msg.jid
+			msg.chat
 		);
 		return msg.send("Starred.");
 	},
@@ -147,7 +147,7 @@ Command({
 					star: false,
 				},
 			},
-			msg.jid
+			msg.chat
 		);
 		return msg.send("Unstarred.");
 	},
@@ -163,7 +163,7 @@ Command({
 		if (!message.quoted) {
 			return message.send("Reply a message to pin it.");
 		}
-		return await message.sendMessage(message.jid, {
+		return await message.sendMessage(message.chat, {
 			pin: message.quoted.key,
 			type: 1,
 			time: 604800,
@@ -181,7 +181,7 @@ Command({
 		if (!message.quoted) {
 			return message.send("Reply a message to pin it.");
 		}
-		return await message.sendMessage(message.jid, {
+		return await message.sendMessage(message.chat, {
 			pin: message.quoted.key,
 			type: 2,
 			time: undefined,

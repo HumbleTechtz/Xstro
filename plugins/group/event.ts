@@ -1,9 +1,9 @@
-import { Command } from "../../src/Core/plugin.ts";
+import { Command } from "../../client/Core/";
 import {
 	setGroupEvent,
 	getGroupEvent,
 	delGroupEvent,
-} from "../../src/Models/index.ts";
+} from "../../client/Models";
 
 Command({
 	name: "event",
@@ -12,7 +12,7 @@ Command({
 	desc: "Enable or disable group event mode",
 	type: "group",
 	function: async (msg, args) => {
-		const groupJid = msg.jid;
+		const groupJid = msg.chat;
 
 		if (!args) {
 			const isEnabled = await getGroupEvent(groupJid);

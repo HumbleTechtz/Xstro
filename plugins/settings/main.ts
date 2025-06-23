@@ -1,5 +1,5 @@
-import { Command } from "../../src/Core/plugin.ts";
-import { setPrefix, setMode, getMode } from "../../src/Models/index.ts";
+import { Command } from "../../client/Core/";
+import { setPrefix, setMode, getMode } from "../../client/Models";
 
 Command({
 	name: "setprefix",
