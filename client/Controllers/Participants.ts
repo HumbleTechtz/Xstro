@@ -6,13 +6,8 @@
  */
 
 import lang from "../Utils/language";
-import {
-	getGoodBye,
-	getWelcome,
-	getAutoKick,
-	getGroupEvent,
-} from "../Models";
-import type { BaileysEventMap, WASocket } from "baileys";
+import { logo } from "../Media";
+import { getGoodBye, getWelcome, getAutoKick, getGroupEvent } from "../Models";
 import {
 	fact,
 	getAdvice,
@@ -20,8 +15,8 @@ import {
 	getJoke,
 	getQuote,
 	getRizz,
-} from "../Utils/fun";
-import { logo } from "../Media";
+} from "../Utils";
+import type { BaileysEventMap, WASocket } from "baileys";
 
 export default class GroupParticipant {
 	client: WASocket;

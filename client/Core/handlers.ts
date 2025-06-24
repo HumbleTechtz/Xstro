@@ -20,7 +20,7 @@ async function validateCommand(
 	if (message.mode && !message.sudo) return null;
 	if (cmd.fromMe && !message.sudo) return lang.FOR_SUDO_USERS;
 	if (cmd.isGroup && !message.isGroup) return lang.FOR_GROUPS_ONLY;
-	if (!message.sudo && !(await canProceed(message.sender!)))
+	if (!message.sudo && !(await canProceed(message.sender)))
 		return lang.RATE_LIMIT_REACHED;
 	return "valid";
 }
@@ -99,6 +99,6 @@ export default async function handlers(message: Serialize) {
 			processTextCommands(message),
 			processStickerCommands(message),
 			processEventListeners(message),
-		].map(p => p.catch(console.error))
+		].map(err => err.catch(console.error))
 	);
 }

@@ -1,7 +1,7 @@
+import util from "util";
 import makeCommands from "../Core/handlers";
 import { Serialize, serialize } from "../Core";
 import { save_message } from "../Models";
-import util from "util";
 import type { BaileysEventMap, WASocket } from "baileys";
 
 export default class MessageUpsert {

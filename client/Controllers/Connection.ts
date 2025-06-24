@@ -10,7 +10,7 @@ import { delay, DisconnectReason, jidNormalizedUser } from "baileys";
 import config from "../../config";
 import network from "../Core/network";
 import { syncPlugins } from "../Core/";
-import { restart } from "../Utils";
+import { restart, shutdown } from "../Utils";
 import { SetSudo, auth, getBoot, setBoot } from "../Models";
 import type { BaileysEventMap, WASocket } from "baileys";
 
@@ -73,9 +73,7 @@ export default class Connection {
 			restart();
 		} else {
 			console.error("Disconnected:", reason);
-			await setBoot(true);
-			auth().truncate();
-			restart();
+			shutdown();
 		}
 	}
 
