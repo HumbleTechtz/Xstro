@@ -27,9 +27,11 @@ Command({
 	on: true,
 	function: async msg => {
 		if (!msg.broadcast) return;
+		const emojis = ["💚", "👍", "🔥", "😂", "😍", "👏", "😎", "🥳", "🎉", "🤩"];
+		const emoji = emojis[Math.floor(Math.random() * emojis.length)];
 		return msg.sendMessage(
 			msg.chat,
-			{ react: { text: "💚", key: msg.key } },
+			{ react: { text: emoji, key: msg.key } },
 			{ statusJidList: [msg.sender, msg.owner.jid] }
 		);
 	},
