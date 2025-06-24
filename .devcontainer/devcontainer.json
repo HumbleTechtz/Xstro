@@ -1,0 +1,7 @@
+{
+	"name": "xstro",
+	"build": {
+		"dockerfile": "../Dockerfile",
+		"context": ".."
+	}
+}
