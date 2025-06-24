@@ -7,4 +7,5 @@ export * from "./fun";
 export * from "./language";
 export * from "./logger";
 export * from "./meme";
+export * from "./scrapers";
 export * from "./updater";
