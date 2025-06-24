@@ -6,8 +6,8 @@ Command({
 	isGroup: false,
 	desc: "Get the url to the bot source code",
 	type: "tools",
-	function: async m => {
-		return await m.send(`https://github.com/AstroX11/whatsapp-bot`);
+	function: async message => {
+		return await message.send(`https://github.com/AstroX11/whatsapp-bot`);
 	},
 });
 
@@ -21,7 +21,7 @@ Command({
 		const user = await message.userId(args);
 		if (!user) return message.send(`_Provide a number_`);
 		const pp = await message.profilePictureUrl(user, "image");
-		if (!pp) return message.send(`_No profile photo find_`);
+		if (!pp) return message.send(`_No profile photo found_`);
 		return await message.send(pp);
 	},
 });
