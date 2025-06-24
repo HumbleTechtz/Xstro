@@ -15,11 +15,11 @@
 	"dependencies": {
 		"@hapi/boom": "^10.0.1",
 		"baileys": "https://github.com/WhiskeySockets/Baileys/releases/download/nightly/baileys-nightly.tgz",
-		"canvas": "^3.1.1",
 		"ffmpeg-static": "^5.2.0",
 		"jimp": "^1.6.0",
 		"node-webpmux": "^3.2.1",
-		"pg": "^8.16.2"
+		"pg": "^8.16.2",
+		"pureimage": "^0.4.18"
 	},
 	"devDependencies": {
 		"@types/bun": "latest",

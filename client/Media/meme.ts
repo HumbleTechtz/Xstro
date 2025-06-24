@@ -1,14 +1,14 @@
-import { createCanvas, loadImage } from "canvas";
 import fs from "fs/promises";
 import { dirname, join, resolve } from "path";
 import { fileURLToPath } from "url";
+import * as PImage from "pureimage";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 function fetchPost() {
 	return new Promise<string[]>(async (resolvePromise, reject) => {
 		try {
-			const files = await fs.readdir(resolve(__dirname, "../media"));
+			const files = await fs.readdir(resolve(__dirname, "./images"));
 			const memes = files
 				.filter(file => file.toLowerCase().endsWith(".png"))
 				.map(file => file.replace(".png", ""));
@@ -26,25 +26,25 @@ export function createMeme(txt: string, actor: string) {
 
 			if (!templates.includes(actor)) {
 				throw new Error(
-					`Template "${actor}" not found. Available templates: ${templates.join(
-						", "
-					)}`
+					`Template "${actor}" not found. Available templates: ${templates.join(", ")}`
 				);
 			}
 
-			const canvas = createCanvas(825, 462);
-			const ctx = canvas.getContext("2d");
-			const image = await loadImage(
-				join(__dirname, "../media", `${actor}.png`)
-			);
-			ctx.drawImage(image, 0, 0);
+			const imagePath = join(__dirname, "./images", `${actor}.png`);
+			const baseImage = await PImage.decodePNGFromStream(await fs.open(imagePath).then(f => f.createReadStream()));
 
-			Object.assign(ctx, {
-				font: "20px Sans-Serif",
-				fillStyle: "black",
-				textAlign: "left",
-				textBaseline: "top",
-			});
+			const canvas = PImage.make(baseImage.width, baseImage.height);
+			const ctx = canvas.getContext("2d");
+
+			ctx.drawImage(baseImage, 0, 0);
+
+			const fontPath = join(__dirname, "Roboto-Regular.ttf");
+			const font = PImage.registerFont(fontPath, 'Sans');
+			await font.load();
+
+			ctx.fillStyle = "black";
+			ctx.font = "20pt Sans";
+			ctx.textAlign = "left";
 
 			const wrapText = (
 				text: string,
@@ -59,7 +59,7 @@ export function createMeme(txt: string, actor: string) {
 
 				for (const word of words) {
 					const testLine = line + word + " ";
-					const { width } = ctx.measureText(testLine);
+					const width = ctx.measureText(testLine).width;
 					if (width > maxWidth && line) {
 						ctx.fillText(line, x, currentY);
 						line = word + " ";
@@ -72,7 +72,15 @@ export function createMeme(txt: string, actor: string) {
 			};
 
 			wrapText(txt, 20, 140, 780, 30);
-			resolve(canvas.toBuffer("image/png"));
+
+			const { PassThrough } = await import('stream');
+			const stream = new PassThrough();
+			PImage.encodePNGToStream(canvas, stream);
+			const chunks: Buffer[] = [];
+			for await (const chunk of stream) {
+				chunks.push(Buffer.from(chunk));
+			}
+			resolve(Buffer.concat(chunks));
 		} catch (err) {
 			reject(err);
 		}
