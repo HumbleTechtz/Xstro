@@ -230,16 +230,16 @@ export async function serialize(sock: WASocket, msg: WAMessage) {
 					? `${user}@s.whatsapp.net`
 					: `${user}@lid`;
 			}
-			if (this.quoted?.sender) return this.quoted.sender;
-			if (this.mentions) {
-				let id = this.mentions[0];
-				id = id.replace(/\D/g, "");
 
+			if (this?.quoted?.participant) return this.quoted.participant;
+
+			if (this?.mentions && this.mentions.length > 0) {
+				const id = this?.mentions[0]?.replace(/\D/g, "");
 				return (await this.onWhatsApp(`${id}@s.whatsapp.net`))
 					? `${id}@s.whatsapp.net`
 					: `${id}@lid`;
 			}
-			return this.chat;
+			return chat;
 		},
 		...(({ ev, logger, ws, ...rest }) => rest)(sock),
 	};
