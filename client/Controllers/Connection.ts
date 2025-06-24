@@ -73,7 +73,7 @@ export default class Connection {
 			restart();
 		} else {
 			console.error("Disconnected:", reason);
-			shutdown();
+			restart();
 		}
 	}
 

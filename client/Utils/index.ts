@@ -1,6 +1,7 @@
 export * from "./cache";
 export * from "./constants";
 export * from "./envloader";
+export * from "./fetch";
 export * from "./filetype";
 export * from "./fun";
 export * from "./language";
