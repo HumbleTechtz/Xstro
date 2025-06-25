@@ -13,6 +13,7 @@ import {
 	getDevice,
 	isJidGroup,
 	isJidNewsletter,
+	isJidUser,
 	jidNormalizedUser,
 	normalizeMessageContent,
 	WAContextInfo,
@@ -28,7 +29,7 @@ import {
 	sendMessage,
 	type mtype,
 } from "./send_msg";
-import { isSudo, getSettings } from "../Models";
+import { isSudo, getSettings, cachedGroupMetadata } from "../Models";
 
 const msg_default_payload = async (
 	normalizedMessage: WAMessageContent | null | undefined,
@@ -234,6 +235,18 @@ export async function serialize(sock: WASocket, msg: WAMessage) {
 					: `${id}@lid`;
 			}
 			return chat;
+		},
+		getCoId: async function (id: string) {
+			if (isGroup) {
+				const { participants } = await cachedGroupMetadata(chat);
+				const found = participants.find(p => p.jid === id);
+				return found ? { jid: found.jid, lid: found.lid } : null;
+			}
+			const infoArr = (await this.onWhatsApp(id)) as
+				| { jid: string; exists: boolean; lid: string }[]
+				| undefined;
+			const info = infoArr?.[0];
+			return info?.exists ? { jid: info.jid, lid: info.lid } : null;
 		},
 		...(({ ev, logger, ws, ...rest }) => rest)(sock),
 	};
