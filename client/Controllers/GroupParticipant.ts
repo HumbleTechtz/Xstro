@@ -18,7 +18,7 @@ import {
 } from "../Utils";
 import type { BaileysEventMap, WASocket } from "baileys";
 
-export default class GroupParticipant {
+export default class {
 	client: WASocket;
 	updates: BaileysEventMap["group-participants.update"];
 	constructor(

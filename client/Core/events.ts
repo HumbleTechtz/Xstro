@@ -7,7 +7,7 @@
 
 import ConnectionUpdate from "../Controllers/Connection";
 import MessageUpsert from "../Controllers/MessageUpsert";
-import GroupParticipant from "../Controllers/Participants";
+import GroupParticipant from "../Controllers/GroupParticipant";
 import Calls from "../Controllers/Calls";
 import GroupRequests from "../Controllers/GroupRequests";
 import MessageDelete from "../Controllers/MessageDelete";

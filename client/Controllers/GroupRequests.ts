@@ -10,7 +10,7 @@ import { logo } from "../Media";
 import { getGroupEvent } from "../Models/GroupEvents";
 import type { BaileysEventMap, WASocket } from "baileys";
 
-export default class GroupRequests {
+export default class {
 	protected client: WASocket;
 	protected events: BaileysEventMap["group.join-request"];
 

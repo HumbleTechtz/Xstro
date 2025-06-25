@@ -4,7 +4,7 @@ import { Serialize, serialize } from "../Core";
 import { save_message } from "../Models";
 import type { BaileysEventMap, WASocket } from "baileys";
 
-export default class MessageUpsert {
+export default class {
 	constructor(
 		private client: WASocket,
 		private event: BaileysEventMap["messages.upsert"]

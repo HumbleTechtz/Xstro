@@ -6,15 +6,13 @@
  */
 
 import { Boom } from "@hapi/boom";
-import { delay, DisconnectReason, jidNormalizedUser } from "baileys";
-import config from "../../config";
-import network from "../Core/network";
-import { syncPlugins } from "../Core/";
-import { restart, shutdown } from "../Utils";
+import { DisconnectReason, jidNormalizedUser } from "baileys";
+import { syncPlugins } from "../Core";
+import { restart } from "../Utils";
 import { SetSudo, auth, getBoot, setBoot } from "../Models";
 import type { BaileysEventMap, WASocket } from "baileys";
 
-export default class Connection {
+export default class {
 	private client: WASocket;
 	private events: BaileysEventMap["connection.update"];
 	constructor(client: WASocket, events: BaileysEventMap["connection.update"]) {
@@ -78,22 +76,19 @@ export default class Connection {
 	}
 
 	private async handleOpen() {
-		const isNewLogin = await getBoot();
-		await delay(2500);
-		if (isNewLogin) {
-			try {
-				await setBoot(false);
-				restart();
-			} catch {
-				restart();
-			}
+		if (await getBoot()) {
+			await setBoot(false);
+			restart();
 		}
-		network(config.PORT);
 		await SetSudo(
 			jidNormalizedUser(this.client?.user?.id),
 			jidNormalizedUser(this.client?.user?.lid)
 		);
 
-		console.info(`Connected to ${this.client.user?.name}`);
+		console.info(
+			this.client.user?.name
+				? `Connected to ${this.client.user?.name}`
+				: `Bot Started`
+		);
 	}
 }

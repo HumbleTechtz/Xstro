@@ -46,7 +46,4 @@ import { MemoryCache, Logger } from "../Utils";
 	await Promise.all([events(sock, { saveCreds }), hooks(sock)]);
 
 	return sock;
-})().catch(error => {
-	console.error("Client ERROR:", error);
-	process.exit(1);
-});
+})();

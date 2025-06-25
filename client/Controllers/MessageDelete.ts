@@ -11,7 +11,7 @@ import { forwardMessage, isMediaMessage } from "../Core/send_msg";
 import { text_from_message } from "../Utils";
 import type { BaileysEventMap, WASocket } from "baileys";
 
-export default class MessageDelete {
+export default class {
 	protected client: WASocket;
 	protected update: BaileysEventMap["messages.delete"];
 	constructor(client: WASocket, update: BaileysEventMap["messages.delete"]) {
@@ -35,7 +35,9 @@ export default class MessageDelete {
 					const jid = isJidGroup(remoteJid!) ? remoteJid : userId;
 
 					if (isMediaMessage(store)) {
-						return await forwardMessage(this.client, jid!, store, { quoted: store });
+						return await forwardMessage(this.client, jid!, store, {
+							quoted: store,
+						});
 					}
 
 					return await this.client.sendMessage(

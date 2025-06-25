@@ -1,12 +1,42 @@
 import { spawn } from "child_process";
 import database from "./client/Core/database";
+import config from "./config";
 
-const startClient = () => {
-	spawn("bun", ["run", "./client/Core/client"], {
-		stdio: ["inherit", "inherit", "ignore"],
-	}).on("exit", code =>
-		code === 0 ? startClient() : (database.close(), process.exit(code))
+interface ClientManager {
+	(): import("child_process").ChildProcess;
+}
+
+const manageClient: ClientManager = () => {
+	Bun.serve({
+		port: config.PORT,
+		development: false,
+		routes: {
+			"/": {
+				GET: () => {
+					return new Response("Server Active");
+				},
+			},
+		},
+	});
+
+	const process: import("child_process").ChildProcess = spawn(
+		"bun",
+		["run", "./client/Core/client"],
+		{
+			stdio: ["inherit", "inherit", "ignore"],
+		}
 	);
-};
 
-startClient();
+	process.on("exit", (code: number | null) => {
+		if (code === 0) {
+			manageClient();
+		} else {
+			database.close();
+			// @ts-ignore
+			process.exit(code ?? undefined);
+		}
+	});
+
+	return process;
+};
+manageClient();
