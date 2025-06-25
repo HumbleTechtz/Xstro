@@ -1,61 +1,50 @@
-<div align="center">
-  <img src="https://avatars.githubusercontent.com/u/211725231??s=200v=4" height="96" alt="xstro logo" />
-  <p>
-    A simple, privacy-focused third-party automation tool designed to send, receive, process, and interact with WhatsApp Web via WebSocket.
-  </p>
-  <p>
-    <a href="https://github.com/AstroX11/whatsapp-bot/actions">
-      <img src="https://img.shields.io/github/actions/workflow/status/AstroX11/whatsapp-bot/docker-image.yml?branch=stable&style=flat-square" alt="CI Status" />
-    </a>
-    <a href="https://opensource.org/licenses/MIT">
-      <img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="License" />
-    </a>
-    <a href="https://github.com/WhiskeySockets/Baileys">
-      <img src="https://img.shields.io/badge/Baileys-Web%20API-orange?style=flat-square" alt="Powered by Baileys" />
-    </a>
-  </p>
-</div>
+### `whatsapp-bot`
 
-## Features
+A simple, privacy-focused third-party automation tool for sending, receiving, processing, and interacting with WhatsApp Web via WebSocket. It supports group messaging, media handling, and can be extended with custom scripts. Fully self-hosted with you managing literally everything, and easily deployable on any platform.
+
+**Features**
 
 - Send and receive messages
 - Group messaging support
 - Media handling (images, audio, stickers, docs)
 - Extendable with custom scripts
 - Easy deployment to any platform
-- Fully self-hosted; no data collection
 
 `NOTE: Feature set will evolve over time.`
 
-## Deployment
+### Deployment
 
 Before deploying, set your phone number in `USER_NUMBER`. A connection code will appear on first run.
 
-### Heroku
+| `config`      | `value`             |
+| ------------- | ------------------- |
+| `USER_NUMBER` | _(your number)_     |
+| `OWNER_NAME`  | _(your name)_       |
+| `BOT_NAME`    | _(your bot name)_   |
+| `PORT`        | _(http port sever)_ |
 
-1. If you don’t have a Heroku account, [create one](https://heroku.com).
-2. Watch this [Heroku tutorial video](https://github.com/AstroX11/deploy-videos/raw/refs/heads/main/heroku.mp4).
-3. Deploy using the [Heroku deploy template](https://www.heroku.com/deploy?template=https://github.com/AstroX11/whatsapp-bot).
+#### Heroku
 
-### Koyeb
+1. _[Create Heroku Account](https://heroku.com)._
+2. _[Heroku Tutorial](https://github.com/AstroX11/deploy-videos/raw/refs/heads/main/heroku.mp4)._
+3. _[Deploy to Heroku](https://www.heroku.com/deploy?template=https://github.com/AstroX11/whatsapp-bot)._
 
-- [Create a Koyeb account](https://app.koyeb.com/).
-- [Deploy on Koyeb from repo](https://app.koyeb.com/deploy?name=whatsapp-bot&repository=AstroX11%2Fwhatsapp-bot&branch=stable&builder=dockerfile&instance_type=free).
-- See the [Koyeb docs](https://docs.koyeb.com/).
+#### Koyeb
 
-### Render
+1. _[Create a Koyeb account](https://app.koyeb.com/)._
+2. _[Deploy on Koyeb from repo](https://app.koyeb.com/deploy?name=whatsapp-bot&repository=AstroX11%2Fwhatsapp-bot&branch=stable&builder=dockerfile&instance_type=free&instances_min=0&autoscaling_sleep_idle_delay=300&env%5BUSER_NUMBER%5D=)._
 
-- [Create a Render account](https://render.com/).
-- [Deploy on Render from repo](https://render.com/deploy?repo=https://github.com/AstroX11/whatsapp-bot).
-- Read the [Render docs](https://render.com/docs).
+#### Render
 
-### Pterodactyl Panel
+1. _[Create a Render account](https://render.com/)._
+2. _[Deploy on Render from repo](https://render.com/deploy?repo=https://github.com/AstroX11/whatsapp-bot)._
 
-- [Download deploy file](https://github.com/AstroX11/deploy-videos/raw/refs/heads/main/deploy.zip).
-- Visit the [Pterodactyl docs](https://pterodactyl.io/).
-- Watch the [Panel tutorial video](https://github.com/AstroX11/deploy-videos/raw/refs/heads/main/help.mp4).
+#### Pterodactyl Panel
 
-### Manual Start (VPS / Ubuntu / Windows)
+1. _[Deployment](https://github.com/AstroX11/deploy-videos/raw/refs/heads/main/deploy.zip)._
+2. _[Panel Tutorial](https://github.com/AstroX11/deploy-videos/raw/refs/heads/main/help.mp4)._
+
+#### VPS / Ubuntu / Windows
 
 1. Install [Bun](https://bun.sh) and Git
 
@@ -78,12 +67,4 @@ Before deploying, set your phone number in `USER_NUMBER`. A connection code will
    bun start
    ```
 
-## Contributing
-
-We welcome and appreciate contributions from the community!  
-If you have ideas, improvements, bugfixes, or want to add new features, please follow the steps below:
-Please review our [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines, and our [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for community standards.
-
-**Thank you! Your contributions are what drive this project forward.**
-
-**Made with 💙 <a href="https://github.com/AstroX11" target="_blank"><strong>AstroX11</strong></a>**
+_Thank you!._
