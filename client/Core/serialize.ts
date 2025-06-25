@@ -28,8 +28,7 @@ import {
 	sendMessage,
 	type mtype,
 } from "./send_msg";
-import { getSettings } from "../Models/Settings";
-import { getSudo, isSudo } from "../Models";
+import { isSudo, getSettings } from "../Models";
 
 const msg_default_payload = async (
 	normalizedMessage: WAMessageContent | null | undefined,
@@ -45,11 +44,8 @@ const msg_default_payload = async (
 	audio: msgType === "audioMessage",
 	document: msgType === "documentMessage",
 	sticker: msgType === "stickerMessage",
-	viewonce: [
-		"viewOnceMessageV2",
-		"viewOnceMessage",
-		"viewOnceMessageV2Extension",
-	].includes(msgType),
+	//@ts-ignore
+	viewonce: normalizedMessage?.[msgType]?.viewOnce as boolean,
 	text: text_from_message(normalizedMessage!),
 	sender,
 	isAdmin: isGroup ? await isAdmin(chat, sender) : undefined,
@@ -123,8 +119,10 @@ export async function serialize(sock: WASocket, msg: WAMessage) {
 						id: quoted.stanzaId,
 						participant: isGroup ? quoted.participant : undefined,
 					},
+					sudo: isSudo(quoted.participant!),
 					device: getDevice(quoted.stanzaId!),
 					broadcast: Boolean(quoted?.remoteJid),
+					participant: quoted.participant,
 					...(await msg_default_payload(
 						normalizeMessageContent(quoted.quotedMessage),
 						getContentType(normalizeMessageContent(quoted.quotedMessage))!,
@@ -132,7 +130,6 @@ export async function serialize(sock: WASocket, msg: WAMessage) {
 						chat,
 						isGroup
 					)),
-					...quoted,
 			  }
 			: undefined,
 		proto: WAProto,
@@ -174,10 +171,7 @@ export async function serialize(sock: WASocket, msg: WAMessage) {
 				edit: m.key,
 			});
 		},
-		download: async function (options?: {
-			message?: WAMessage;
-			save?: boolean;
-		}) {
+		download: async function (options?: { message?: WAMessage; save?: boolean }) {
 			const media = await downloadMediaMessage(
 				options?.message ?? this.quoted ?? this,
 				"buffer",

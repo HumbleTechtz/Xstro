@@ -79,10 +79,12 @@ Command({
 	type: "whatsapp",
 	function: async message => {
 		const msg = message.quoted;
-		if (!msg || !msg.viewonce)
+		if (!msg?.viewonce)
 			return message.send("Use, your phone to reply a viewonce");
-		// @ts-ignore
-		if (msg.message) msg.message[msg.msg_type!].viewOnce = false;
+		if (msg.message && msg.msg_type && msg.message[msg.msg_type]) {
+			// @ts-ignore
+			msg.message[msg.msg_type].viewOnce = false;
+		}
 		return await message.forward(message.chat, msg, { quoted: message });
 	},
 });
@@ -97,8 +99,10 @@ Command({
 		const msg = message.quoted;
 		if (!msg || (!msg.audio && !msg.video && !msg.image))
 			return message.send("```Reply a media message```");
-		// @ts-ignore
-		if (msg.message) msg.message[msg.msg_type!].viewOnce = true;
+		if (msg.message && msg.msg_type && msg.message[msg.msg_type]) {
+			// @ts-ignore
+			msg.message[msg.msg_type].viewOnce = true;
+		}
 		return await message.forward(message.chat, msg, { quoted: message });
 	},
 });

@@ -9,7 +9,7 @@ Command({
 	type: "misc",
 	function: async (message, match) => {
 		const msg = message?.quoted;
-		if (!msg || msg.sticker) {
+		if (!msg || !msg.sticker) {
 			return await message.send("_Reply to a sticker message_");
 		}
 		if (!match) {
