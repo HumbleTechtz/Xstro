@@ -6,19 +6,18 @@ interface ClientManager {
 	(): import("child_process").ChildProcess;
 }
 
-const manageClient: ClientManager = () => {
-	Bun.serve({
-		port: config.PORT,
-		development: false,
-		routes: {
-			"/": {
-				GET: () => {
-					return new Response("Server Active");
-				},
+Bun.serve({
+	port: config.PORT,
+	routes: {
+		"/": {
+			GET: () => {
+				return new Response("Server Active");
 			},
 		},
-	});
+	},
+});
 
+const manageClient: ClientManager = () => {
 	const process: import("child_process").ChildProcess = spawn(
 		"bun",
 		["run", "./client/Core/client"],
