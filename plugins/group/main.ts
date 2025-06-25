@@ -11,7 +11,7 @@ Command({
 	function: async (message, match) => {
 		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
-		if (!match) return message.send("_Provide a valid number_");
+
 		const user = `${match}@s.whatsapp.net`;
 		if (!(await message.onWhatsApp(user))) {
 			return message.send("_Invalid number_");
@@ -32,7 +32,7 @@ Command({
 	function: async (message, match) => {
 		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
-		if (!match) return message.send("_Provide a valid number or mention_");
+
 		const user = await message.userId(match);
 		if (!user) return message.send("_Invalid number or mention_");
 		await message.groupParticipantsUpdate(message.chat, [user], "remove");
@@ -51,10 +51,8 @@ Command({
 	function: async message => {
 		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
-		const groupData = await cachedGroupMetadata("120363286769939283@g.us");
-		const participants = groupData.participants
-			.filter(p => !p.admin)
-			.map(p => p.id);
+		const groupData = await cachedGroupMetadata(message.chat);
+		const participants = groupData.participants.filter(p => !p.admin).map(p => p.id);
 
 		await message.groupParticipantsUpdate(message.chat, participants, "remove");
 	},
@@ -69,7 +67,7 @@ Command({
 	function: async (message, match) => {
 		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
-		if (!match) return message.send("_Provide a valid number or mention_");
+		
 		const user = await message.userId(match);
 		if (!user) return message.send("_Invalid number or mention_");
 		const groupData = await cachedGroupMetadata(message.chat);
@@ -95,7 +93,7 @@ Command({
 	function: async (message, match) => {
 		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
-		if (!match) return message.send("_Provide a valid number or mention_");
+		
 		const user = await message.userId(match);
 		if (!user) return message.send("_Invalid number or mention_");
 		const groupData = await cachedGroupMetadata(message.chat);
@@ -152,9 +150,7 @@ Command({
 					text: `@${message.chat} ${match ?? ""}`,
 					contextInfo: {
 						mentionedJid: participants.filter(p => p.id).map(p => p.id),
-						groupMentions: [
-							{ groupJid: message.chat, groupSubject: "everyone" },
-						],
+						groupMentions: [{ groupJid: message.chat, groupSubject: "everyone" }],
 					},
 				},
 			},
@@ -235,8 +231,7 @@ Command({
 		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		const metadata = await cachedGroupMetadata(message.chat);
-		if (metadata.restrict)
-			return message.send("_Group settings already restricted_");
+		if (metadata.restrict) return message.send("_Group settings already restricted_");
 		await message.groupSettingUpdate(message.chat, "locked");
 		return await message.send("_Group settings restricted to admins_");
 	},
@@ -252,8 +247,7 @@ Command({
 		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		const metadata = await cachedGroupMetadata(message.chat);
-		if (!metadata.restrict)
-			return message.send("_Group settings already unrestricted_");
+		if (!metadata.restrict) return message.send("_Group settings already unrestricted_");
 		await message.groupSettingUpdate(message.chat, "unlocked");
 		return await message.send("_Group settings unrestricted_");
 	},
@@ -296,8 +290,7 @@ Command({
 	function: async (message, match) => {
 		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
-		if (!match)
-			return message.send(`_Usage: ${message.prefix[0]}approval on | off_`);
+		if (!match) return message.send(`_Usage: ${message.prefix[0]}approval on | off_`);
 		match = match.toLowerCase().trim();
 		if (match === "on") {
 			await message.groupJoinApprovalMode(message.chat, "on");
@@ -319,13 +312,10 @@ Command({
 	type: "group",
 	function: async (message, match) => {
 		if (!match || !match.includes(";")) {
-			return message.send(
-				`_Usage: ${message.prefix[0]}poll question; option1, option2, option3_`
-			);
+			return message.send(`_Usage: ${message.prefix[0]}poll question; option1, option2, option3_`);
 		}
 		const [question, optionsRaw] = match.split(";").map(s => s.trim());
-		if (!question || !optionsRaw)
-			return message.send("_Provide a question and options_");
+		if (!question || !optionsRaw) return message.send("_Provide a question and options_");
 		const options = optionsRaw
 			.split(",")
 			.map(opt => opt.trim())
@@ -362,13 +352,9 @@ Command({
 			return message.send("_No join requests found_");
 		}
 		const participants = requests.map(p => p.id);
-		return await message.send(
-			`_Join requests: ${participants.length}_\n\n` +
-				participants.map(p => `@${p.split("@")[0]}`).join("\n"),
-			{
-				mentions: participants,
-			}
-		);
+		return await message.send(`_Join requests: ${participants.length}_\n\n` + participants.map(p => `@${p.split("@")[0]}`).join("\n"), {
+			mentions: participants,
+		});
 	},
 });
 
@@ -384,19 +370,10 @@ Command({
 			return message.send("_No join requests found_");
 		}
 		const participants = requests.map(p => p.id);
-		await message.groupRequestParticipantsUpdate(
-			message.chat,
-			participants,
-			"approve"
-		);
-		return await message.send(
-			`_Approved members: ${participants
-				.map(p => `@${p.split("@")[0]}`)
-				.join(", ")}_`,
-			{
-				mentions: participants,
-			}
-		);
+		await message.groupRequestParticipantsUpdate(message.chat, participants, "approve");
+		return await message.send(`_Approved members: ${participants.map(p => `@${p.split("@")[0]}`).join(", ")}_`, {
+			mentions: participants,
+		});
 	},
 });
 
@@ -414,18 +391,9 @@ Command({
 			return message.send("_No join requests found_");
 		}
 		const participants = requests.map(p => p.id);
-		await message.groupRequestParticipantsUpdate(
-			message.chat,
-			participants,
-			"reject"
-		);
-		return await message.send(
-			`_Rejected members: ${participants
-				.map(p => `@${p.split("@")[0]}`)
-				.join(", ")}_`,
-			{
-				mentions: participants,
-			}
-		);
+		await message.groupRequestParticipantsUpdate(message.chat, participants, "reject");
+		return await message.send(`_Rejected members: ${participants.map(p => `@${p.split("@")[0]}`).join(", ")}_`, {
+			mentions: participants,
+		});
 	},
 });
