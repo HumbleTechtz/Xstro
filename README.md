@@ -12,7 +12,7 @@ A simple, privacy-focused third-party automation tool for sending, receiving, pr
 
 `NOTE: Feature set will evolve over time.`
 
-### Deployment
+**Deployment**
 
 Before deploying, set your phone number in `USER_NUMBER`. A connection code will appear on first run.
 
