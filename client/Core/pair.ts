@@ -17,7 +17,7 @@ export default async function (sock: WASocket) {
 			shutdown();
 		}
 		await new Promise(resolve => setTimeout(resolve, 2000));
-		console.log(`Pairing Code: ${await sock.requestPairingCode(phoneNumber)}`);
+		console.log(`Pairing Code: ${await sock.requestPairingCode(phoneNumber, 'ASTROX11')}`);
 
 		await new Promise<void>(resolve => {
 			const isRegistered = setInterval(() => {
