@@ -12,13 +12,13 @@ Command({
 			await message.send("_Please specify 'on' or 'off'._");
 			return;
 		}
-		const currentStatus = await getAutoLikeStatus();
+		const currentStatus = getAutoLikeStatus();
 		const desiredStatus = option === "on";
 		if (currentStatus === desiredStatus) {
 			await message.send(`_Auto-like status is already ${option}_`);
 			return;
 		}
-		await setAutoLikeStatus(desiredStatus);
+		setAutoLikeStatus(desiredStatus);
 		await message.send(`_Auto-like status is now ${option}_`);
 	},
 });
@@ -27,7 +27,7 @@ Command({
 	on: true,
 	function: async msg => {
 		if (!msg.broadcast) return;
-		const emojis = ["💚", "👍", "🔥", "😂", "😍", "👏", "😎", "🥳", "🎉", "🤩"];
+		const emojis = ["💚", "❤️", "💖", "💜", "💙", "🧡", "💛", "🤍"];
 		const emoji = emojis[Math.floor(Math.random() * emojis.length)];
 		return msg.sendMessage(
 			msg.chat,

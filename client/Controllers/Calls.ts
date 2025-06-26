@@ -19,7 +19,7 @@ export default class {
 	async processCallers() {
 		for (const update of this.events) {
 			if (update.status === "offer") {
-				const antiCall = await getAntiCall();
+				const antiCall = getAntiCall();
 				if (!antiCall || !antiCall.mode) continue;
 
 				const caller = update.from;

@@ -23,11 +23,11 @@ ${prefix}antilink set chat.whatsapp.com,google.com\`\`\``
 		args = args.toLowerCase().trim();
 		const choice = args.split(" ");
 		if (choice[0] === "on") {
-			await setAntilink(msg.chat, true);
+			setAntilink(msg.chat, true);
 			return await msg.send("_Antilink turned on_");
 		}
 		if (choice[0] === "off") {
-			await delAntilink(msg.chat);
+			delAntilink(msg.chat);
 			return await msg.send("_Antilink turned off_");
 		}
 
@@ -36,7 +36,7 @@ ${prefix}antilink set chat.whatsapp.com,google.com\`\`\``
 				return await msg.send(
 					`\`\`\`Usage:\n${prefix}antilink mode kick\nOR\n${prefix}antilink mode delete\`\`\``
 				);
-			await setAntilink(msg.chat, choice[1] === "kick" ? true : false);
+			setAntilink(msg.chat, choice[1] === "kick" ? true : false);
 			return await msg.send(
 				"_Antilink mode is now set to " + choice[1] + " participant_"
 			);
@@ -44,10 +44,8 @@ ${prefix}antilink set chat.whatsapp.com,google.com\`\`\``
 
 		if (choice[0] === "set") {
 			if (!choice?.[1])
-				return await msg.send(
-					"_You need to add some specific links to prohibit_"
-				);
-			await setAntilink(msg.chat, true, choice.slice(1));
+				return await msg.send("_You need to add some specific links to prohibit_");
+			setAntilink(msg.chat, true, choice.slice(1));
 			return await msg.send(
 				`_Antilink set to handle ${choice.slice(1).length} links_`
 			);
@@ -63,7 +61,7 @@ Command({
 		if (msg.key.fromMe || msg.sudo) return;
 		if (msg.isAdmin || !msg.isBotAdmin) return;
 
-		const antilink = await getAntilink(msg.chat);
+		const antilink = getAntilink(msg.chat);
 		if (!antilink) return;
 
 		const text = msg.text.toLowerCase();
@@ -85,9 +83,7 @@ Command({
 		if (antilink.mode === true) {
 			await msg.groupParticipantsUpdate(msg.chat, [msg.sender!], "remove");
 			await msg.send(
-				`_@${
-					msg.sender!.split("@")[0]
-				} was removed for sending a prohibited link_`,
+				`_@${msg.sender!.split("@")[0]} was removed for sending a prohibited link_`,
 				{ mentions: [msg.sender!] }
 			);
 		} else {

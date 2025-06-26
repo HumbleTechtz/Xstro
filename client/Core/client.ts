@@ -21,7 +21,7 @@ import { MemoryCache, Logger } from "../Utils";
 
 (async () => {
 	const cache = new MemoryCache();
-	const { state, saveCreds } = await useSqliteAuthState();
+	const { state, saveCreds } = useSqliteAuthState();
 	const { version } = await fetchLatestBaileysVersion();
 	const logger = Logger("silent");
 
@@ -35,11 +35,14 @@ import { MemoryCache, Logger } from "../Utils";
 		logger,
 		mediaCache: cache,
 		emitOwnEvents: true,
-		syncFullHistory: false,
-		shouldSyncHistoryMessage: () => false,
+		syncFullHistory: true,
 		msgRetryCounterCache: cache,
-		getMessage,
-		cachedGroupMetadata,
+		getMessage: async key => {
+			return getMessage(key);
+		},
+		cachedGroupMetadata: async jid => {
+			return cachedGroupMetadata(jid);
+		},
 	});
 
 	await pair(sock);

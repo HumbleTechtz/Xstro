@@ -109,35 +109,29 @@ export function fancy(text: any): string {
 		.join("");
 }
 
-export function isAdmin(jid: string, participant: string): Promise<boolean> {
-	return new Promise(resolve => {
-		cachedGroupMetadata(jid).then(metadata => {
-			if (!metadata) return resolve(false);
-			const allAdmins = metadata.participants
-				.filter(v => v.admin !== null)
-				.map(v => v.id);
-			resolve(allAdmins.includes(participant));
-		});
-	});
+export function isAdmin(jid: string, participant: string): boolean {
+	const metadata = cachedGroupMetadata(jid);
+	if (!metadata) return false;
+	const allAdmins = metadata.participants
+		.filter(v => v.admin !== null)
+		.map(v => v.id);
+	return allAdmins.includes(participant);
 }
 
 export function isBotAdmin(
 	owner: { jid: string; lid: string },
 	jid: string
-): Promise<boolean> {
-	return new Promise(resolve => {
-		cachedGroupMetadata(jid).then(metadata => {
-			if (!metadata) return resolve(false);
-			const allAdmins = metadata.participants
-				.filter(v => v.admin !== null)
-				.map(v => v.id);
-			const isAdmin =
-				metadata.addressingMode === "lid"
-					? allAdmins.includes(owner.lid)
-					: allAdmins.includes(owner.jid);
-			resolve(isAdmin);
-		});
-	});
+): boolean {
+	const metadata = cachedGroupMetadata(jid);
+	if (!metadata) return false;
+	const allAdmins = metadata.participants
+		.filter(v => v.admin !== null)
+		.map(v => v.id);
+	const isAdmin =
+		metadata.addressingMode === "lid"
+			? allAdmins.includes(owner.lid)
+			: allAdmins.includes(owner.jid);
+	return isAdmin;
 }
 
 export function isValidTimeString(timeStr: string): boolean {
@@ -150,11 +144,7 @@ export function isValidTimeString(timeStr: string): boolean {
 	const h = parseInt(hours, 10);
 	const m = parseInt(minutes, 10);
 	return (
-		h >= 1 &&
-		h <= 12 &&
-		m >= 0 &&
-		m <= 59 &&
-		(period === "am" || period === "pm")
+		h >= 1 && h <= 12 && m >= 0 && m <= 59 && (period === "am" || period === "pm")
 	);
 }
 
@@ -201,7 +191,9 @@ export function countdown(
 	}, 10000);
 }
 
-export function text_from_message(message?: WAMessageContent): string | null | undefined {
+export function text_from_message(
+	message?: WAMessageContent
+): string | null | undefined {
 	if (!message) return null;
 
 	const getText = (obj: any, path: string) =>
@@ -218,15 +210,10 @@ export function text_from_message(message?: WAMessageContent): string | null | u
 			`${message.eventMessage.name || ""}\n${
 				message.eventMessage.description || ""
 			}`) ||
-		(message.pollCreationMessageV3 &&
-			pollText(message.pollCreationMessageV3)) ||
+		(message.pollCreationMessageV3 && pollText(message.pollCreationMessageV3)) ||
 		(message.pollCreationMessage && pollText(message.pollCreationMessage)) ||
-		(message.pollCreationMessageV2 &&
-			pollText(message.pollCreationMessageV2)) ||
-		getText(
-			message,
-			"protocolMessage.editedMessage.extendedTextMessage.text"
-		) ||
+		(message.pollCreationMessageV2 && pollText(message.pollCreationMessageV2)) ||
+		getText(message, "protocolMessage.editedMessage.extendedTextMessage.text") ||
 		getText(message, "protocolMessage.editedMessage.videoMessage.caption") ||
 		getText(message, "protocolMessage.editedMessage.imageMessage.caption") ||
 		getText(message, "protocolMessage.editedMessage.conversation") ||

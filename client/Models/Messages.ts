@@ -9,7 +9,7 @@ database.exec(`
 	)
 `);
 
-export async function save_message(event: BaileysEventMap["messages.upsert"]) {
+export function savemsg(event: BaileysEventMap["messages.upsert"]) {
 	if (!event?.messages?.[0]?.key?.id) return;
 	const id = event.messages[0].key.id;
 	const requestId = event.requestId ?? null;
@@ -22,7 +22,7 @@ export async function save_message(event: BaileysEventMap["messages.upsert"]) {
 	} catch {}
 }
 
-export async function getMessage(key: WAMessageKey) {
+export function getMessage(key: WAMessageKey) {
 	const exists = database
 		.query("SELECT messages FROM messages WHERE id = ?")
 		.get(key.id!) as {
@@ -38,7 +38,7 @@ export async function getMessage(key: WAMessageKey) {
 	}
 }
 
-export async function loadMessage(key: WAMessageKey) {
+export function loadMessage(key: WAMessageKey) {
 	const exists = database
 		.query("SELECT messages FROM messages WHERE id = ?")
 		.get(key.id!) as {
@@ -48,8 +48,7 @@ export async function loadMessage(key: WAMessageKey) {
 	} | null;
 	if (exists?.messages) {
 		return (
-			WAProto.WebMessageInfo.fromObject(JSON.parse(exists.messages)) ||
-			undefined
+			WAProto.WebMessageInfo.fromObject(JSON.parse(exists.messages)) || undefined
 		);
 	}
 }

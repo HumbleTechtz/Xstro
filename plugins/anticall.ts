@@ -11,18 +11,16 @@ Command({
 		const input = args?.toLowerCase()?.trim();
 
 		if (!input || !["on", "off", "block", "warn"].includes(input)) {
-			return msg.send(
-				`_Usage: ${msg.prefix[0]}anticall on | off | block | warn_`
-			);
+			return msg.send(`_Usage: ${msg.prefix[0]}anticall on | off | block | warn_`);
 		}
 
-		const current = await getAntiCall();
+		const current = getAntiCall();
 
 		if (input === "off") {
 			if (!current || (current.mode === false && current.action === "warn")) {
 				return msg.send("_AntiCall is already turned off._");
 			}
-			await setAntiCall(false, "warn");
+			setAntiCall(false, "warn");
 			return msg.send("_AntiCall has been turned off._");
 		}
 
@@ -30,7 +28,7 @@ Command({
 			if (current?.mode === true && current.action === "warn") {
 				return msg.send("_AntiCall is already on with warn action._");
 			}
-			await setAntiCall(true, "warn");
+			setAntiCall(true, "warn");
 			return msg.send("_AntiCall has been turned on and set to warn caller._");
 		}
 
@@ -38,7 +36,7 @@ Command({
 			if (current?.mode === true && current.action === input) {
 				return msg.send(`_AntiCall is already set to '${input}'._`);
 			}
-			await setAntiCall(true, input as "block" | "warn");
+			setAntiCall(true, input as "block" | "warn");
 			return msg.send(`_AntiCall action set to '${input}'._`);
 		}
 	},

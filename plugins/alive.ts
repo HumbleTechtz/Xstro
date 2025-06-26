@@ -9,8 +9,8 @@ Command({
 	desc: "Get Alive message",
 	type: "misc",
 	function: async (msg, match) => {
-		if (match) await SetAlive(match);
-		let aliveMsg = await getAlive();
+		if (match) SetAlive(match);
+		let aliveMsg = getAlive();
 
 		const replacements: { [key: string]: string | Promise<string> } = {
 			"@user": `@${msg.sender.split("@")[0]}`,

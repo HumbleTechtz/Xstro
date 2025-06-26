@@ -8,11 +8,11 @@ database.exec(`
 	)
 `);
 
-export async function addAutoKick(
+export function addAutoKick(
 	groupJid: string,
 	jid: string | null,
 	lid: string | null
-): Promise<void> {
+) {
 	const entry = database
 		.query("SELECT groupJid, jid, lid FROM autokick WHERE groupJid = ?")
 		.get(groupJid) as { groupJid: string; jid: string; lid: string } | null;
@@ -32,10 +32,7 @@ export async function addAutoKick(
 	}
 }
 
-export async function getAutoKick(
-	groupJid: string,
-	id: string
-): Promise<boolean> {
+export function getAutoKick(groupJid: string, id: string) {
 	const entry = database
 		.query("SELECT jid, lid FROM autokick WHERE groupJid = ?")
 		.get(groupJid) as { groupJid: string; jid: string; lid: string } | null;
@@ -45,13 +42,11 @@ export async function getAutoKick(
 	return entry.jid === id || entry.lid === id;
 }
 
-export async function delAutoKick(groupJid: string): Promise<void> {
+export function delAutoKick(groupJid: string) {
 	database.run("DELETE FROM autokick WHERE groupJid = ?", [groupJid]);
 }
 
-export async function getAllAutoKicks(): Promise<
-	{ groupJid: string; jid: string; lid: string }[]
-> {
+export function getAllAutoKicks() {
 	return database.query("SELECT groupJid, jid, lid FROM autokick").all() as {
 		groupJid: string;
 		jid: string;

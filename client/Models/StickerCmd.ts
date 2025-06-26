@@ -7,13 +7,12 @@ database.exec(`
 	)
 `);
 
-export async function getStickerCmd(filesha256: string): Promise<
+export function getStickerCmd(filesha256: string):
 	| {
 			filesha256: string;
 			cmdname: string | null;
 	  }
-	| undefined
-> {
+	| undefined {
 	const record = database
 		.query("SELECT filesha256, cmdname FROM sticker_cmd WHERE filesha256 = ?")
 		.get(filesha256) as {
@@ -23,10 +22,7 @@ export async function getStickerCmd(filesha256: string): Promise<
 	return record ?? undefined;
 }
 
-export async function setStickerCmd(
-	filesha256: string,
-	cmdname: string
-): Promise<void> {
+export function setStickerCmd(filesha256: string, cmdname: string) {
 	const exists = database
 		.query("SELECT 1 FROM sticker_cmd WHERE filesha256 = ?")
 		.get(filesha256);
@@ -36,16 +32,14 @@ export async function setStickerCmd(
 			filesha256,
 		]);
 	} else {
-		database.run(
-			"INSERT INTO sticker_cmd (filesha256, cmdname) VALUES (?, ?)",
-			[filesha256, cmdname]
-		);
+		database.run("INSERT INTO sticker_cmd (filesha256, cmdname) VALUES (?, ?)", [
+			filesha256,
+			cmdname,
+		]);
 	}
 }
 
-export async function removeStickerCmd(
-	cmdname: string
-): Promise<boolean | undefined> {
+export function removeStickerCmd(cmdname: string): boolean | undefined {
 	const exists = database
 		.query("SELECT 1 FROM sticker_cmd WHERE cmdname = ?")
 		.get(cmdname);

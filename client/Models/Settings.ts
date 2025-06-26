@@ -9,11 +9,11 @@ database.exec(`
 	)
 `);
 
-export async function getSettings(): Promise<{
+export function getSettings(): {
 	prefix: string[];
 	mode: boolean;
 	autoLikeStatus: boolean;
-}> {
+} {
 	let config = database
 		.query("SELECT prefix, mode, autoLikeStatus FROM settings WHERE id = ?")
 		.get(1) as {
@@ -45,8 +45,8 @@ export async function getSettings(): Promise<{
 	};
 }
 
-export async function setPrefix(payload: string[]): Promise<void> {
-	const { prefix, mode, autoLikeStatus } = await getSettings();
+export function setPrefix(payload: string[]) {
+	const { prefix, mode, autoLikeStatus } = getSettings();
 	const updated = Array.from(new Set([...prefix, ...payload]));
 	database.run(
 		"UPDATE settings SET prefix = ?, mode = ?, autoLikeStatus = ? WHERE id = ?",
@@ -54,23 +54,23 @@ export async function setPrefix(payload: string[]): Promise<void> {
 	);
 }
 
-export async function setMode(mode: boolean): Promise<void> {
-	const { prefix, autoLikeStatus } = await getSettings();
+export function setMode(mode: boolean) {
+	const { prefix, autoLikeStatus } = getSettings();
 	database.run(
 		"UPDATE settings SET mode = ?, prefix = ?, autoLikeStatus = ? WHERE id = ?",
 		[mode ? 1 : 0, JSON.stringify(prefix), autoLikeStatus ? 1 : 0, 1]
 	);
 }
 
-export async function setAutoLikeStatus(status: boolean): Promise<void> {
-	const { prefix, mode } = await getSettings();
+export function setAutoLikeStatus(status: boolean) {
+	const { prefix, mode } = getSettings();
 	database.run(
 		"UPDATE settings SET prefix = ?, mode = ?, autoLikeStatus = ? WHERE id = ?",
 		[JSON.stringify(prefix), mode ? 1 : 0, status ? 1 : 0, 1]
 	);
 }
 
-export async function getPrefix(): Promise<string[]> {
+export function getPrefix(): string[] {
 	const config = database
 		.query("SELECT prefix FROM settings WHERE id = ?")
 		.get(1) as {
@@ -82,7 +82,7 @@ export async function getPrefix(): Promise<string[]> {
 	return config?.prefix ? JSON.parse(config.prefix) : ["."];
 }
 
-export async function getMode(): Promise<boolean> {
+export function getMode() {
 	const config = database
 		.query("SELECT mode FROM settings WHERE id = ?")
 		.get(1) as {
@@ -94,7 +94,7 @@ export async function getMode(): Promise<boolean> {
 	return config ? Boolean(config.mode) : true;
 }
 
-export async function getAutoLikeStatus(): Promise<boolean> {
+export function getAutoLikeStatus() {
 	const config = database
 		.query("SELECT autoLikeStatus FROM settings WHERE id = ?")
 		.get(1) as {

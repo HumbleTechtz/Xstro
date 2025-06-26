@@ -63,11 +63,11 @@ export default class {
 			restart();
 		} else if (resetWithClearStateReasons.includes(reason)) {
 			console.error(`Critical error: ${reason}`);
-			await setBoot(true);
+			setBoot(true);
 			auth().truncate();
 			restart();
 		} else if (reason === DisconnectReason.restartRequired) {
-			await setBoot(true);
+			setBoot(true);
 			restart();
 		} else {
 			console.error("Disconnected:", reason);
@@ -76,11 +76,11 @@ export default class {
 	}
 
 	private async handleOpen() {
-		if (await getBoot()) {
-			await setBoot(false);
+		if (getBoot()) {
+			setBoot(false);
 			restart();
 		}
-		await SetSudo(
+		SetSudo(
 			jidNormalizedUser(this.client?.user?.id),
 			jidNormalizedUser(this.client?.user?.lid)
 		);

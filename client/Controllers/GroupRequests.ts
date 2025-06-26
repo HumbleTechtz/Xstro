@@ -22,7 +22,7 @@ export default class {
 
 	private async updates() {
 		const { id, author, participant, action, method } = this.events;
-		const enabled = await getGroupEvent(id);
+		const enabled = getGroupEvent(id);
 
 		if (!enabled) return;
 

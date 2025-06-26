@@ -7,7 +7,7 @@ database.exec(`
 	)
 `);
 
-export const SetAlive = async (message: string) => {
+export const SetAlive = (message: string) => {
 	const exists = database
 		.query("SELECT 1 FROM alive_message WHERE id = ?")
 		.get(1);
@@ -34,14 +34,14 @@ export const SetAlive = async (message: string) => {
 	};
 };
 
-export const getAlive = async () => {
+export const getAlive = () => {
 	const result = database
 		.query("SELECT message FROM alive_message WHERE id = ?")
 		.get(1) as { message?: string } | null;
 	return result?.message ?? "_I am alive_";
 };
 
-export const delAlive = async () => {
+export const delAlive = () => {
 	const exists = database
 		.query("SELECT 1 FROM alive_message WHERE id = ?")
 		.get(1);

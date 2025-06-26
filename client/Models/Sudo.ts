@@ -9,7 +9,7 @@ database.exec(`
 	)
 `);
 
-export async function SetSudo(jid: string, lid: string): Promise<void> {
+export function SetSudo(jid: string, lid: string) {
 	if (!isJidUser(jid) || !isLidUser(lid)) return;
 	const exists = database
 		.query("SELECT 1 FROM sudo_user WHERE jid = ?")
@@ -19,7 +19,7 @@ export async function SetSudo(jid: string, lid: string): Promise<void> {
 	}
 }
 
-export async function getSudo(sudoType: "jid" | "lid"): Promise<string[]> {
+export function getSudo(sudoType: "jid" | "lid") {
 	const users = database
 		.query(`SELECT ${sudoType} FROM sudo_user WHERE ${sudoType} IS NOT NULL`)
 		.all() as Array<{ [key: string]: string }>;
@@ -28,7 +28,7 @@ export async function getSudo(sudoType: "jid" | "lid"): Promise<string[]> {
 		.filter((value): value is string => value != null);
 }
 
-export async function delSudo(user: string): Promise<void> {
+export function delSudo(user: string) {
 	let field: "jid" | "lid" | undefined;
 
 	if (isJidUser(user)) field = "jid";
@@ -39,7 +39,7 @@ export async function delSudo(user: string): Promise<void> {
 	database.run(`DELETE FROM sudo_user WHERE ${field} = ?`, [user]);
 }
 
-export async function isSudo(user: string): Promise<boolean> {
+export function isSudo(user: string) {
 	let field: "jid" | "lid" | undefined;
 
 	if (isJidUser(user)) field = "jid";

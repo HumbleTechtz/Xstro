@@ -49,12 +49,12 @@ const msg_default_payload = async (
 	viewonce: normalizedMessage?.[msgType]?.viewOnce as boolean,
 	text: text_from_message(normalizedMessage!),
 	sender,
-	isAdmin: isGroup ? await isAdmin(chat, sender) : undefined,
+	isAdmin: isGroup ? isAdmin(chat, sender) : undefined,
 });
 
 export async function serialize(sock: WASocket, msg: WAMessage) {
 	let { key, message, broadcast, ...props } = msg;
-	let { prefix, mode } = await getSettings();
+	let { prefix, mode } = getSettings();
 
 	message = normalizeMessageContent(message);
 	broadcast = Boolean(broadcast);
@@ -107,10 +107,10 @@ export async function serialize(sock: WASocket, msg: WAMessage) {
 		prefix,
 		mode,
 		...baseStructure,
-		sudo: await isSudo(sender),
+		sudo: isSudo(sender),
 		device: getDevice(key.id!),
 		mentions: quoted?.mentionedJid,
-		isBotAdmin: isGroup ? await isBotAdmin(owner, chat) : undefined,
+		isBotAdmin: isGroup ? isBotAdmin(owner, chat) : undefined,
 		...props,
 		quoted: quoted
 			? {
@@ -236,17 +236,17 @@ export async function serialize(sock: WASocket, msg: WAMessage) {
 			}
 			return chat;
 		},
-		getCoId: async function (id: string) {
+		userInfo: async function (id: string) {
 			if (isGroup) {
-				const { participants } = await cachedGroupMetadata(chat);
+				const { participants } = cachedGroupMetadata(chat);
 				const found = participants.find(p => p.jid === id);
-				return found ? { jid: found.jid, lid: found.lid } : null;
+				return { jid: found?.jid as string, lid: found?.lid as string };
 			}
 			const infoArr = (await this.onWhatsApp(id)) as
 				| { jid: string; exists: boolean; lid: string }[]
 				| undefined;
 			const info = infoArr?.[0];
-			return info?.exists ? { jid: info.jid, lid: info.lid } : null;
+			return { jid: info?.jid as string, lid: info?.lid as string };
 		},
 		...(({ ev, logger, ws, ...rest }) => rest)(sock),
 	};

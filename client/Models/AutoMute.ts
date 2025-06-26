@@ -8,20 +8,17 @@ database.exec(`
 	)
 `);
 
-export async function setAutoMute(
-	jid: string,
-	startTime: string,
-	endTime?: string
-): Promise<boolean> {
+export function setAutoMute(jid: string, startTime: string, endTime?: string) {
 	const existing = database
 		.query("SELECT 1 FROM automute WHERE jid = ?")
 		.get(jid);
 
 	if (existing) {
-		database.run(
-			"UPDATE automute SET startTime = ?, endTime = ? WHERE jid = ?",
-			[startTime, endTime ?? null, jid]
-		);
+		database.run("UPDATE automute SET startTime = ?, endTime = ? WHERE jid = ?", [
+			startTime,
+			endTime ?? null,
+			jid,
+		]);
 	} else {
 		database.run(
 			"INSERT INTO automute (jid, startTime, endTime) VALUES (?, ?, ?)",
@@ -32,7 +29,7 @@ export async function setAutoMute(
 	return true;
 }
 
-export async function delAutoMute(jid: string): Promise<number> {
+export function delAutoMute(jid: string) {
 	database.run("DELETE FROM automute WHERE jid = ?", [jid]);
 	const result = database.query("SELECT changes() AS changes").get();
 	if (result && typeof result === "object" && "changes" in result) {
@@ -41,11 +38,7 @@ export async function delAutoMute(jid: string): Promise<number> {
 	return 0;
 }
 
-export async function getAutoMute(jid: string): Promise<{
-	jid: string;
-	startTime: string | null;
-	endTime: string | null;
-} | null> {
+export function getAutoMute(jid: string) {
 	const result = database
 		.query("SELECT jid, startTime, endTime FROM automute WHERE jid = ?")
 		.get(jid) as {

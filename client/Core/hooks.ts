@@ -6,10 +6,7 @@
  */
 
 import lang from "../Utils/language";
-import {
-	getCurrentTimeString,
-	startClockAlignedScheduler,
-} from "../Utils/constants";
+import { getCurrentTimeString, startClockAlignedScheduler } from "../Utils";
 import {
 	updateMetaGroup,
 	cachedGroupMetadataAll,
@@ -24,7 +21,7 @@ export default function (sock: WASocket) {
 
 			const data = await sock.groupFetchAllParticipating();
 			for (const [jid, metadata] of Object.entries(data)) {
-				await updateMetaGroup(jid, metadata as GroupMetadata);
+				updateMetaGroup(jid, metadata as GroupMetadata);
 			}
 		} catch {}
 	};
@@ -38,10 +35,9 @@ export default function (sock: WASocket) {
 
 async function groupAutoMute(client: WASocket) {
 	const currentTime = getCurrentTimeString();
-	const allGroupMetadata = await cachedGroupMetadataAll();
 
-	for (const [jid] of Object.entries(allGroupMetadata)) {
-		const automute = await getAutoMute(jid);
+	for (const [jid] of Object.entries(cachedGroupMetadataAll())) {
+		const automute = getAutoMute(jid);
 		if (!automute) continue;
 
 		const isGroupLocked = await client.groupMetadata(jid).then(

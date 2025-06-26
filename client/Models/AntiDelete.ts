@@ -6,10 +6,10 @@ database.exec(`
 	)
 `);
 
-export const setAntidelete = async (mode: boolean): Promise<boolean> => {
-	const record = database
-		.query("SELECT mode FROM antidelete LIMIT 1")
-		.get() as { mode: boolean | null } | null;
+export const setAntidelete = (mode: boolean) => {
+	const record = database.query("SELECT mode FROM antidelete LIMIT 1").get() as {
+		mode: boolean | null;
+	} | null;
 
 	if (!record) {
 		database.run("INSERT INTO antidelete (mode) VALUES (?)", [mode ? 1 : 0]);
@@ -23,9 +23,9 @@ export const setAntidelete = async (mode: boolean): Promise<boolean> => {
 	return true;
 };
 
-export const getAntidelete = async (): Promise<boolean> => {
-	const record = database
-		.query("SELECT mode FROM antidelete LIMIT 1")
-		.get() as { mode: boolean | null } | null;
+export const getAntidelete = () => {
+	const record = database.query("SELECT mode FROM antidelete LIMIT 1").get() as {
+		mode: boolean | null;
+	} | null;
 	return Boolean(record?.mode);
 };

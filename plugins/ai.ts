@@ -10,7 +10,6 @@ Command({
 	function: async (msg, args) => {
 		args = args ?? msg.quoted?.text!;
 		if (!args) return msg.send(`_${msg.pushName} hello_`);
-		const response = await chatAi(args);
-		return await msg.send(response);
+		return await msg.send(await chatAi(args));
 	},
 });

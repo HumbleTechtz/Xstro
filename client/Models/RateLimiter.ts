@@ -12,7 +12,7 @@ function getTodayDate(): string {
 	return new Date().toISOString().split("T")[0];
 }
 
-export async function canProceed(sender: string): Promise<boolean> {
+export function canProceed(sender: string) {
 	const today = getTodayDate();
 	const record = database
 		.query(
@@ -49,7 +49,7 @@ export async function canProceed(sender: string): Promise<boolean> {
 	return true;
 }
 
-export async function resetAllLimits(): Promise<void> {
+export function resetAllLimits() {
 	const today = getTodayDate();
 	const users = database
 		.query("SELECT sender, request_count, last_request_date FROM ratelimiter")
@@ -67,7 +67,7 @@ export async function resetAllLimits(): Promise<void> {
 	}
 }
 
-export async function getRemainingQuota(sender: string): Promise<number> {
+export function getRemainingQuota(sender: string) {
 	const today = getTodayDate();
 	const record = database
 		.query(
@@ -82,7 +82,7 @@ export async function getRemainingQuota(sender: string): Promise<number> {
 	return Math.max(0, 10 - record.request_count);
 }
 
-export async function resetIfExpired(): Promise<void> {
+export function resetIfExpired() {
 	const users = database
 		.query("SELECT sender, request_count, last_request_date FROM ratelimiter")
 		.all() as {

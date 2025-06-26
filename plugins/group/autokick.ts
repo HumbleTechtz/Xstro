@@ -1,9 +1,5 @@
 import { Command } from "../../client/Core/";
-import {
-	addAutoKick,
-	delAutoKick,
-	getAllAutoKicks,
-} from "../../client/Models";
+import { addAutoKick, delAutoKick, getAllAutoKicks } from "../../client/Models";
 import lang from "../../client/Utils/language";
 
 Command({
@@ -23,7 +19,7 @@ Command({
 		const groupJid = msg.chat;
 
 		if (subcmd === "list") {
-			const allEntries = await getAllAutoKicks();
+			const allEntries = getAllAutoKicks();
 			const entry = allEntries.find(e => e.groupJid === groupJid);
 
 			if (!entry || (!entry.jid && !entry.lid)) {
@@ -48,14 +44,14 @@ Command({
 		if (subcmd === "add") {
 			const j = jid ?? null;
 			const l = (lid as string) ?? null;
-			await addAutoKick(groupJid, j, l);
+			addAutoKick(groupJid, j, l);
 			return msg.send(`_@${parsedUser.split("@")[0]} added to autokick list_`, {
 				mentions: [parsedUser],
 			});
 		}
 
 		if (subcmd === "del") {
-			await delAutoKick(groupJid);
+			delAutoKick(groupJid);
 			return msg.send(`_Autokick entry for group ${groupJid} removed_`);
 		}
 

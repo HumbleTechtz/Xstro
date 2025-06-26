@@ -1,4 +1,5 @@
 import { Command } from "../client/Core";
+import language from "../client/Utils/language";
 
 Command({
 	name: "repo",
@@ -7,7 +8,7 @@ Command({
 	desc: "Get the url to the bot source code",
 	type: "tools",
 	function: async message => {
-		return await message.send(`https://github.com/AstroX11/whatsapp-bot`);
+		return await message.send(language.REPO_URL);
 	},
 });
 

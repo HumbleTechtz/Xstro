@@ -8,17 +8,7 @@ database.exec(`
 	)
 `);
 
-export async function setAntiWord(
-	jid: string,
-	status: boolean,
-	words: string[]
-): Promise<
-	| {
-			enabled: boolean;
-			words: number;
-	  }
-	| undefined
-> {
+export function setAntiWord(jid: string, status: boolean, words: string[]) {
 	const badWords = Array.from(new Set(words));
 	const mode = status ? 1 : 0;
 	const existing = database
@@ -42,7 +32,7 @@ export async function setAntiWord(
 	return { enabled: true, words: badWords.length };
 }
 
-export async function delAntiword(jid: string): Promise<boolean> {
+export function delAntiword(jid: string) {
 	database.run("DELETE FROM antiword WHERE jid = ?", [jid]);
 	const result = database.query("SELECT changes() AS changes").get() as {
 		changes: number;
@@ -50,11 +40,7 @@ export async function delAntiword(jid: string): Promise<boolean> {
 	return result.changes > 0;
 }
 
-export async function getAntiword(jid: string): Promise<{
-	jid: string;
-	status: boolean | null;
-	words: string[] | null;
-} | null> {
+export function getAntiword(jid: string) {
 	const record = database
 		.query("SELECT jid, status, words FROM antiword WHERE jid = ?")
 		.get(jid) as {

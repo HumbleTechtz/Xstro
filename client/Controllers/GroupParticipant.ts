@@ -31,10 +31,10 @@ export default class {
 	}
 	async group_participant_update() {
 		const { id, author, participants, action } = this.updates;
-		const autokicklist = await getAutoKick(id, participants[0]);
-		const group_event = await getGroupEvent(id);
-		const welcome_msg = await getWelcome(id);
-		const goodbye_msg = await getGoodBye(id);
+		const autokicklist = getAutoKick(id, participants[0]);
+		const group_event = getGroupEvent(id);
+		const welcome_msg = getWelcome(id);
+		const goodbye_msg = getGoodBye(id);
 
 		if (autokicklist && action === "add") {
 			await this.client.sendMessage(id, {

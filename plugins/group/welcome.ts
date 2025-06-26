@@ -11,14 +11,14 @@ Command({
 		const groupJid = msg.chat;
 
 		if (!args) {
-			const current = await getWelcome(groupJid);
+			const current = getWelcome(groupJid);
 			const state = current ? "ON" : "OFF";
 			const text = current || "_No welcome message set._";
 			return msg.send(`_Welcome is ${state.toLowerCase()}_\n\n${text}`);
 		}
 
 		if (args.toLowerCase().trim() === "off") {
-			await delWelcome(groupJid);
+			delWelcome(groupJid);
 			return msg.send("_Welcome message removed._");
 		}
 
@@ -26,7 +26,7 @@ Command({
 			return msg.send("```Provide the welcome message after on.```");
 		}
 
-		await setWelcome(groupJid, args);
+		setWelcome(groupJid, args);
 		return msg.send("_Welcome message set._");
 	},
 });

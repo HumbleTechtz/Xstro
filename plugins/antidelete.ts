@@ -21,12 +21,12 @@ Command({
 		const cmd = match.trim().toLowerCase();
 
 		if (cmd === "on")
-			return (await setAntidelete(true))
+			return setAntidelete(true)
 				? msg.send("_Antidelete enabled_")
 				: msg.send("_Antidelete is already enabled_");
 
 		if (cmd === "off")
-			return (await setAntidelete(false))
+			return setAntidelete(false)
 				? msg.send("_Antidelete disabled_")
 				: msg.send("_Antidelete is already disabled_");
 

@@ -9,7 +9,7 @@ Command({
 	type: "settings",
 	function: async (msg, args) => {
 		if (!args) return msg.send(`_Usage: ${msg.prefix[0]}setprefix *#,_`);
-		await setPrefix([...args.split("")]);
+		setPrefix([...args.split("")]);
 		return msg.send(`_Bot prefix updated to "${args}"_\nUsage: ${args[0]}ping`);
 	},
 });
@@ -22,7 +22,7 @@ Command({
 	type: "settings",
 	function: async (msg, match) => {
 		const mode = match?.toLowerCase().trim();
-		const current = await getMode();
+		const current = getMode();
 		if (!["private", "public"].includes(mode!))
 			return msg.send(
 				`Usage:\n` +
@@ -31,7 +31,7 @@ Command({
 			);
 		const updated = mode === "private";
 		if (current === updated) return msg.send(`_Mode already in ${mode}_`);
-		await setMode(updated);
+		setMode(updated);
 		return msg.send(`_Bot is now in ${mode} mode_`);
 	},
 });

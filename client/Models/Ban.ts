@@ -9,19 +9,15 @@ database.exec(`
 	)
 `);
 
-export const setBan = async (jid: string, lid: string): Promise<void> => {
+export const setBan = (jid: string, lid: string) => {
 	if (!isJidUser(jid) || !isLidUser(lid)) return;
-	const exists = database
-		.query("SELECT 1 FROM ban_user WHERE jid = ?")
-		.get(jid);
+	const exists = database.query("SELECT 1 FROM ban_user WHERE jid = ?").get(jid);
 	if (!exists) {
 		database.run("INSERT INTO ban_user (jid, lid) VALUES (?, ?)", [jid, lid]);
 	}
 };
 
-export const getBan = async (
-	banType: "jid" | "lid" = "jid"
-): Promise<string[]> => {
+export const getBan = (banType: "jid" | "lid" = "jid") => {
 	const users = database
 		.query(`SELECT ${banType} FROM ban_user WHERE ${banType} IS NOT NULL`)
 		.all() as Array<{ [key: string]: string }>;
@@ -30,7 +26,7 @@ export const getBan = async (
 		.filter((value): value is string => value != null);
 };
 
-export const delBan = async (user: string): Promise<void> => {
+export const delBan = (user: string) => {
 	let field: "jid" | "lid" | undefined;
 
 	if (isJidUser(user)) field = "jid";
@@ -41,7 +37,7 @@ export const delBan = async (user: string): Promise<void> => {
 	database.run(`DELETE FROM ban_user WHERE ${field} = ?`, [user]);
 };
 
-export const isBanned = async (user: string): Promise<boolean> => {
+export const isBanned = (user: string) => {
 	let field: "jid" | "lid" | undefined;
 
 	if (isJidUser(user)) field = "jid";

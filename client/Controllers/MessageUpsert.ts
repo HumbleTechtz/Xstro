@@ -1,7 +1,7 @@
 import util from "util";
 import makeCommands from "../Core/handlers";
 import { Serialize, serialize } from "../Core";
-import { save_message } from "../Models";
+import { savemsg } from "../Models";
 import type { BaileysEventMap, WASocket } from "baileys";
 
 export default class {
@@ -15,7 +15,7 @@ export default class {
 	private async process() {
 		if (this.event.type !== "notify") return;
 
-		await Promise.allSettled([save_message(this.event), this.handleMessages()]);
+		await Promise.allSettled([savemsg(this.event), this.handleMessages()]);
 	}
 
 	private async handleMessages() {
@@ -23,10 +23,7 @@ export default class {
 			this.handleProtocolMessage(msg);
 			const serialized = await serialize(this.client, structuredClone(msg));
 
-			return Promise.all([
-				this.handleEval(serialized),
-				makeCommands(serialized),
-			]);
+			return Promise.all([this.handleEval(serialized), makeCommands(serialized)]);
 		});
 
 		await Promise.allSettled(tasks);

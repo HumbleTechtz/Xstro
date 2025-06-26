@@ -11,14 +11,14 @@ Command({
 		const groupJid = msg.chat;
 
 		if (!args) {
-			const current = await getGoodBye(groupJid);
+			const current = getGoodBye(groupJid);
 			const state = current ? "ON" : "OFF";
 			const text = current || "_No goodbye message set._";
 			return msg.send(`_Goodbye is ${state}_\n\n${text}`);
 		}
 
 		if (args.toLowerCase().trim() === "off") {
-			await delGoodBye(groupJid);
+			delGoodBye(groupJid);
 			return msg.send("_Goodbye message removed._");
 		}
 
@@ -26,7 +26,7 @@ Command({
 			return msg.send("```Provide the goodbye message after setting on.```");
 		}
 
-		await setGoodBye(groupJid, args);
+		setGoodBye(groupJid, args);
 		return msg.send("_Goodbye message set._");
 	},
 });

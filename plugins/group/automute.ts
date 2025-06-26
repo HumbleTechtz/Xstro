@@ -21,7 +21,7 @@ Command({
 			);
 		}
 
-		await setAutoMute(msg.chat, startTime);
+		setAutoMute(msg.chat, startTime);
 		return await msg.send(
 			`_Group will be auto-muted everyday at ${startTime.toUpperCase()}._`
 		);
@@ -47,10 +47,10 @@ Command({
 			);
 		}
 
-		const existing = await getAutoMute(msg.chat);
+		const existing = getAutoMute(msg.chat);
 		const startTime = existing?.startTime ?? null;
 
-		await setAutoMute(msg.chat, startTime as string, endTime);
+		setAutoMute(msg.chat, startTime as string, endTime);
 		return await msg.send(
 			`_Group will be auto-unmuted everyday at ${endTime.toUpperCase()}._`
 		);
@@ -64,7 +64,7 @@ Command({
 	desc: "Delete automute setting for the group",
 	type: "muting",
 	function: async msg => {
-		await delAutoMute(msg.chat);
+		delAutoMute(msg.chat);
 		return await msg.send("_Automute setting deleted for this group._");
 	},
 });
@@ -76,7 +76,7 @@ Command({
 	desc: "Get current automute setting for the group",
 	type: "muting",
 	function: async msg => {
-		const automute = await getAutoMute(msg.chat);
+		const automute = getAutoMute(msg.chat);
 		if (!automute) {
 			return await msg.send("_No automute setting found for this group._");
 		}

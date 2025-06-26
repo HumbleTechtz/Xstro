@@ -9,11 +9,9 @@ database.exec(`
 	);
 `);
 
-export default async function () {
-	async function writeData(data: any, name: string): Promise<void> {
-		const exists = database
-			.query("SELECT 1 FROM auth WHERE name = ?")
-			.get(name);
+export default function () {
+	function writeData(data: any, name: string) {
+		const exists = database.query("SELECT 1 FROM auth WHERE name = ?").get(name);
 		const serializedData = JSON.stringify(data, BufferJSON.replacer);
 
 		if (exists) {
@@ -29,7 +27,7 @@ export default async function () {
 		}
 	}
 
-	async function readData(name: string): Promise<any> {
+	function readData(name: string) {
 		const exists = database
 			.query("SELECT data FROM auth WHERE name = ?")
 			.get(name) as {
@@ -47,8 +45,7 @@ export default async function () {
 		database.run("DELETE FROM auth WHERE name = ?", [name]);
 	}
 
-	const creds: AuthenticationCreds =
-		(await readData("creds")) || initAuthCreds();
+	const creds: AuthenticationCreds = readData("creds") || initAuthCreds();
 
 	return {
 		state: {
@@ -89,8 +86,8 @@ export default async function () {
 				},
 			},
 		},
-		saveCreds: async () => {
-			await writeData(creds, "creds");
+		saveCreds: async() => {
+			writeData(creds, "creds");
 		},
 	};
 }

@@ -7,10 +7,7 @@ database.exec(`
 	)
 `);
 
-export const getAntiCall = async (): Promise<{
-	mode: boolean | null;
-	action: "block" | "warn";
-} | null> => {
+export const getAntiCall = () => {
 	const record = database
 		.query("SELECT mode, action FROM anticall LIMIT 1")
 		.get() as { mode: number | null; action: string } | null;
@@ -23,11 +20,8 @@ export const getAntiCall = async (): Promise<{
 	return null;
 };
 
-export const setAntiCall = async (
-	mode: boolean,
-	action: "block" | "warn"
-): Promise<boolean> => {
-	const current = await getAntiCall();
+export const setAntiCall = (mode: boolean, action: "block" | "warn") => {
+	const current = getAntiCall();
 	if (current && current.mode === mode && current.action === action) {
 		return false;
 	}
@@ -39,7 +33,7 @@ export const setAntiCall = async (
 	return true;
 };
 
-export const delAntiCall = async (): Promise<number> => {
+export const delAntiCall = () => {
 	database.run("DELETE FROM anticall");
 	const result = database.query("SELECT changes() AS changes").get();
 	return result && typeof result === "object" && "changes" in result

@@ -38,7 +38,7 @@ Command({
 			return await msg.send("Name or response missing");
 		}
 
-		await setFilter(name.trim(), response, true, false);
+		setFilter(name.trim(), response, true, false);
 		return await msg.send(`*Filter saved for _${name.trim()}_*`);
 	},
 });
@@ -60,7 +60,7 @@ Command({
 			return await msg.send("Name or response missing");
 		}
 
-		await setFilter(name.trim(), response, true, true);
+		setFilter(name.trim(), response, true, true);
 		return await msg.send(`*Group filter saved for _${name.trim()}_*`);
 	},
 });
@@ -71,7 +71,7 @@ Command({
 	desc: "List all filters",
 	type: "filter",
 	function: async msg => {
-		const filters = await getAllFilters();
+		const filters = getAllFilters();
 
 		if (!filters.length) {
 			return await msg.send("No filters found");
@@ -93,7 +93,7 @@ Command({
 			return await msg.send("Provide filter name");
 		}
 
-		const success = await delFilter(name);
+		const success = delFilter(name);
 		const message = success ? `Deleted filter _${name}_` : "Filter not found";
 		return await msg.send(message);
 	},
@@ -108,7 +108,7 @@ Command({
 		const text = msg.text?.trim().toLowerCase();
 		if (!text) return;
 
-		const filters = await getAllFilters();
+		const filters = getAllFilters();
 		const matchedFilter = filters.find(filter => {
 			const regex = new RegExp(`\\b${escapeRegex(filter.name)}\\b`, "i");
 			return regex.test(text);
@@ -138,8 +138,7 @@ function checkGroupFilterTrigger(msg: any, text: string): boolean {
 		mentionMatches.includes(ownerJidUsername) ||
 		mentionMatches.includes(ownerLidUsername);
 	const quotedOwner =
-		msg.quoted?.sender === msg.owner.jid ||
-		msg.quoted?.sender === msg.owner.lid;
+		msg.quoted?.sender === msg.owner.jid || msg.quoted?.sender === msg.owner.lid;
 
 	return mentionsOwner || quotedOwner || msg.key.fromMe;
 }

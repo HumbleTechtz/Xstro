@@ -8,11 +8,7 @@ database.exec(`
 	)
 `);
 
-export const setAntilink = async (
-	jid: string,
-	mode: boolean,
-	links?: string[]
-): Promise<void> => {
+export const setAntilink = (jid: string, mode: boolean, links?: string[]) => {
 	const existing = database
 		.query("SELECT 1 FROM antilink WHERE jid = ?")
 		.get(jid);
@@ -32,13 +28,7 @@ export const setAntilink = async (
 	}
 };
 
-export const getAntilink = async (
-	jid: string
-): Promise<{
-	jid: string;
-	mode: boolean | null;
-	links: string[] | null;
-} | null> => {
+export const getAntilink = (jid: string) => {
 	const record = database
 		.query("SELECT jid, mode, links FROM antilink WHERE jid = ?")
 		.get(jid) as {
@@ -56,6 +46,6 @@ export const getAntilink = async (
 	};
 };
 
-export const delAntilink = async (jid: string): Promise<void> => {
+export const delAntilink = (jid: string) => {
 	database.run("DELETE FROM antilink WHERE jid = ?", [jid]);
 };

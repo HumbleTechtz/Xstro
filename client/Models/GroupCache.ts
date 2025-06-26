@@ -8,7 +8,7 @@ database.exec(`
 	)
 `);
 
-export async function cachedGroupMetadata(jid: string): Promise<GroupMetadata> {
+export function cachedGroupMetadata(jid: string) {
 	const metadata = database
 		.query("SELECT data FROM group_metadata WHERE jid = ?")
 		.get(jid) as {
@@ -19,9 +19,9 @@ export async function cachedGroupMetadata(jid: string): Promise<GroupMetadata> {
 	return JSON.parse(metadata.data) as GroupMetadata;
 }
 
-export async function cachedGroupMetadataAll(): Promise<{
+export function cachedGroupMetadataAll(): {
 	[_: string]: GroupMetadata;
-}> {
+} {
 	const metadata = database
 		.query("SELECT jid, data FROM group_metadata")
 		.all() as {
@@ -33,10 +33,7 @@ export async function cachedGroupMetadataAll(): Promise<{
 	);
 }
 
-export async function updateMetaGroup(
-	jid: string,
-	data: GroupMetadata
-): Promise<void> {
+export function updateMetaGroup(jid: string, data: GroupMetadata) {
 	if (!jid || !data) return;
 	const exists = database
 		.query("SELECT 1 FROM group_metadata WHERE jid = ?")

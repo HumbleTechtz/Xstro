@@ -1,4 +1,3 @@
-import { delay } from "baileys";
 import { Command } from "../../client/Core/";
 import { getLeaderboard } from "../../client/Models";
 
@@ -9,8 +8,6 @@ Command({
 	desc: "View the game leaderboard",
 	type: "games",
 	function: async msg => {
-		await msg.send(`_Most Users are Hidden for Privacy Reasons_`);
-		await delay(3000);
 		const lbEntries = await getLeaderboard();
 		if (!lbEntries || lbEntries.length === 0) {
 			await msg.send("No leaderboard data available.");

@@ -20,14 +20,14 @@ export default class {
 		this.event();
 	}
 	private async event() {
-		const shouldDelete = await getAntidelete();
+		const shouldDelete = getAntidelete();
 		if (!shouldDelete) return;
 
 		if ("keys" in this.update) {
 			const keys = this.update.keys;
 
 			for (const key of keys) {
-				const store = await loadMessage(key);
+				const store = loadMessage(key);
 
 				if (store && !store.key.fromMe) {
 					const remoteJid = store.key.remoteJid;

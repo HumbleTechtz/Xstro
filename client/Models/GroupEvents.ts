@@ -7,17 +7,14 @@ database.exec(`
 	)
 `);
 
-export async function setGroupEvent(id: string, mode: boolean): Promise<void> {
+export function setGroupEvent(id: string, mode: boolean) {
 	const opt = mode ? 1 : 0;
 	const exists = database
 		.query("SELECT 1 FROM group_event WHERE groupJid = ?")
 		.get(id);
 
 	if (exists) {
-		database.run("UPDATE group_event SET mode = ? WHERE groupJid = ?", [
-			opt,
-			id,
-		]);
+		database.run("UPDATE group_event SET mode = ? WHERE groupJid = ?", [opt, id]);
 	} else {
 		database.run("INSERT INTO group_event (groupJid, mode) VALUES (?, ?)", [
 			id,
@@ -26,7 +23,7 @@ export async function setGroupEvent(id: string, mode: boolean): Promise<void> {
 	}
 }
 
-export async function getGroupEvent(id: string): Promise<boolean> {
+export function getGroupEvent(id: string) {
 	const entry = database
 		.query("SELECT mode FROM group_event WHERE groupJid = ?")
 		.get(id) as {
@@ -36,6 +33,6 @@ export async function getGroupEvent(id: string): Promise<boolean> {
 	return !!(entry && entry.mode);
 }
 
-export async function delGroupEvent(id: string): Promise<void> {
+export function delGroupEvent(id: string) {
 	database.run("DELETE FROM group_event WHERE groupJid = ?", [id]);
 }

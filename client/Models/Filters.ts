@@ -9,12 +9,12 @@ database.exec(`
 	)
 `);
 
-export async function setFilter(
+export function setFilter(
 	name: string,
 	response: string,
 	status: boolean,
 	isGroup = false
-): Promise<void> {
+) {
 	const exists = database
 		.query("SELECT 1 FROM filters WHERE name = ?")
 		.get(name);
@@ -34,12 +34,7 @@ export async function setFilter(
 	}
 }
 
-export async function getFilter(name: string): Promise<{
-	name: string;
-	response: string | null;
-	status: boolean;
-	isGroup: boolean | null;
-} | null> {
+export function getFilter(name: string) {
 	const normalizedName = name.trim().toLowerCase();
 	const record = database
 		.query("SELECT name, response, status, isGroup FROM filters WHERE name = ?")
@@ -48,24 +43,15 @@ export async function getFilter(name: string): Promise<{
 	return record ? transformFilterRecord(record) : null;
 }
 
-export async function getAllFilters(): Promise<
-	{
-		name: string;
-		response: string | null;
-		status: boolean;
-		isGroup: boolean | null;
-	}[]
-> {
+export function getAllFilters() {
 	const records = database
-		.query(
-			"SELECT name, response, status, isGroup FROM filters WHERE status = 1"
-		)
+		.query("SELECT name, response, status, isGroup FROM filters WHERE status = 1")
 		.all() as any[];
 
 	return records.map(transformFilterRecord);
 }
 
-export async function delFilter(name: string): Promise<boolean> {
+export function delFilter(name: string) {
 	const result = database.run("DELETE FROM filters WHERE name = ?", [name]);
 	return result.changes > 0;
 }

@@ -51,7 +51,7 @@ Command({
 	function: async message => {
 		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
-		const groupData = await cachedGroupMetadata(message.chat);
+		const groupData = cachedGroupMetadata(message.chat);
 		const participants = groupData.participants.filter(p => !p.admin).map(p => p.id);
 
 		await message.groupParticipantsUpdate(message.chat, participants, "remove");
@@ -70,7 +70,7 @@ Command({
 		
 		const user = await message.userId(match);
 		if (!user) return message.send("_Invalid number or mention_");
-		const groupData = await cachedGroupMetadata(message.chat);
+		const groupData = cachedGroupMetadata(message.chat);
 		const admins = groupData.participants.filter(v => v.admin).map(v => v.id);
 		if (admins.includes(user)) {
 			return message.send(`_@${user.split("@")[0]} is already admin_`, {
@@ -96,7 +96,7 @@ Command({
 		
 		const user = await message.userId(match);
 		if (!user) return message.send("_Invalid number or mention_");
-		const groupData = await cachedGroupMetadata(message.chat);
+		const groupData = cachedGroupMetadata(message.chat);
 		const admins = groupData.participants.filter(v => v.admin).map(v => v.id);
 		if (!admins.includes(user)) {
 			return message.send(`_@${user.split("@")[0]} is not admin_`, {
@@ -142,7 +142,7 @@ Command({
 	desc: "Mention entire group",
 	type: "group",
 	function: async (message, match) => {
-		const { participants } = await cachedGroupMetadata(message.chat);
+		const { participants } = cachedGroupMetadata(message.chat);
 		return await message.relayMessage(
 			message.chat,
 			{
@@ -198,7 +198,7 @@ Command({
 	function: async message => {
 		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
-		const metadata = await cachedGroupMetadata(message.chat);
+		const metadata = cachedGroupMetadata(message.chat);
 		if (metadata.announce) return message.send("_Group already muted_");
 		await message.groupSettingUpdate(message.chat, "announcement");
 		return await message.send("_Group muted, only admins can send messages_");
@@ -214,7 +214,7 @@ Command({
 	function: async message => {
 		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
-		const metadata = await cachedGroupMetadata(message.chat);
+		const metadata = cachedGroupMetadata(message.chat);
 		if (!metadata.announce) return message.send("_Group already unmuted_");
 		await message.groupSettingUpdate(message.chat, "not_announcement");
 		return await message.send("_Group unmuted, all members can send messages_");
@@ -230,7 +230,7 @@ Command({
 	function: async message => {
 		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
-		const metadata = await cachedGroupMetadata(message.chat);
+		const metadata = cachedGroupMetadata(message.chat);
 		if (metadata.restrict) return message.send("_Group settings already restricted_");
 		await message.groupSettingUpdate(message.chat, "locked");
 		return await message.send("_Group settings restricted to admins_");
@@ -246,7 +246,7 @@ Command({
 	function: async message => {
 		if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
 		if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
-		const metadata = await cachedGroupMetadata(message.chat);
+		const metadata = cachedGroupMetadata(message.chat);
 		if (!metadata.restrict) return message.send("_Group settings already unrestricted_");
 		await message.groupSettingUpdate(message.chat, "unlocked");
 		return await message.send("_Group settings unrestricted_");

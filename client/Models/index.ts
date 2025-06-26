@@ -1,8 +1,9 @@
 export * from "./Alive";
 export * from "./AntiCall";
 export * from "./AntiDelete";
-export * from "./Antilink";
 export * from "./AntiWord";
+export * from "./Antilink";
+export * from "./AuthState";
 export * from "./AutoKick";
 export * from "./AutoMute";
 export * from "./Ban";
@@ -17,4 +18,3 @@ export * from "./RateLimiter";
 export * from "./Settings";
 export * from "./StickerCmd";
 export * from "./Sudo";
-export * from "./AuthState";

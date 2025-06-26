@@ -8,7 +8,7 @@ database.exec(`
 	)
 `);
 
-export async function setWelcome(id: string, text: string): Promise<void> {
+export function setWelcome(id: string, text: string) {
 	const exists = database
 		.query("SELECT 1 FROM group_join WHERE groupJid = ?")
 		.get(id);
@@ -25,7 +25,7 @@ export async function setWelcome(id: string, text: string): Promise<void> {
 	}
 }
 
-export async function setGoodBye(id: string, text: string): Promise<void> {
+export function setGoodBye(id: string, text: string) {
 	const exists = database
 		.query("SELECT 1 FROM group_join WHERE groupJid = ?")
 		.get(id);
@@ -42,7 +42,7 @@ export async function setGoodBye(id: string, text: string): Promise<void> {
 	}
 }
 
-export async function getWelcome(id: string): Promise<string | null> {
+export function getWelcome(id: string) {
 	const data = database
 		.query("SELECT welcome FROM group_join WHERE groupJid = ?")
 		.get(id) as {
@@ -53,7 +53,7 @@ export async function getWelcome(id: string): Promise<string | null> {
 	return data?.welcome ?? null;
 }
 
-export async function getGoodBye(id: string): Promise<string | null> {
+export function getGoodBye(id: string) {
 	const data = database
 		.query("SELECT goodbye FROM group_join WHERE groupJid = ?")
 		.get(id) as {
@@ -64,10 +64,10 @@ export async function getGoodBye(id: string): Promise<string | null> {
 	return data?.goodbye ?? null;
 }
 
-export async function delWelcome(id: string): Promise<void> {
+export function delWelcome(id: string) {
 	database.run("UPDATE group_join SET welcome = NULL WHERE groupJid = ?", [id]);
 }
 
-export async function delGoodBye(id: string): Promise<void> {
+export function delGoodBye(id: string) {
 	database.run("UPDATE group_join SET goodbye = NULL WHERE groupJid = ?", [id]);
 }
