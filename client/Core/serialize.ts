@@ -239,7 +239,7 @@ export async function serialize(sock: WASocket, msg: WAMessage) {
 		userInfo: async function (id: string) {
 			if (isGroup) {
 				const { participants } = cachedGroupMetadata(chat);
-				const found = participants.find(p => p.jid === id);
+				const found = participants.find(p => p.id === id);
 				return { jid: found?.jid as string, lid: found?.lid as string };
 			}
 			const infoArr = (await this.onWhatsApp(id)) as
