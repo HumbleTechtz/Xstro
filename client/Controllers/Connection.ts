@@ -58,28 +58,23 @@ export default class {
 			DisconnectReason.badSession,
 		];
 
-		if (resetReasons.includes(reason)) {
-			console.warn(`Disconnected: ${reason}`);
-			restart();
-		} else if (resetWithClearStateReasons.includes(reason)) {
-			console.error(`Critical error: ${reason}`);
-			setBoot(true);
-			auth().truncate();
-			restart();
-		} else if (reason === DisconnectReason.restartRequired) {
-			setBoot(true);
-			restart();
-		} else {
-			console.error("Disconnected:", reason);
-			restart();
-		}
+		resetReasons.includes(reason)
+			? console.warn(`Disconnected: ${reason}`)
+			: resetWithClearStateReasons.includes(reason)
+			? (console.error(`Critical error: ${reason}`),
+			  this.client.logout(),
+			  auth().truncate(),
+			  setBoot(true))
+			: reason === DisconnectReason.restartRequired
+			? setBoot(true)
+			: console.error("Disconnected:", reason);
+
+		restart();
 	}
 
 	private async handleOpen() {
-		if (getBoot()) {
-			setBoot(false);
-			restart();
-		}
+		getBoot() && (setBoot(false), restart());
+
 		SetSudo(
 			jidNormalizedUser(this.client?.user?.id),
 			jidNormalizedUser(this.client?.user?.lid)
@@ -87,7 +82,7 @@ export default class {
 
 		console.info(
 			this.client.user?.name
-				? `Connected to ${this.client.user?.name}`
+				? `Connected to ${this.client.user.name}`
 				: `Bot Started`
 		);
 	}
