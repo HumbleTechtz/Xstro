@@ -11,7 +11,7 @@ import {
 	getNumberFact,
 	getQuote,
 	getRizz,
-} from "../../client/Utils/fun";
+} from "../../client/Utils";
 
 Command({
 	name: "rizz",
