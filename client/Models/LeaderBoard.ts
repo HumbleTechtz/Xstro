@@ -111,7 +111,7 @@ async function updateLeaderboard(users: { userId: string; score: number }[]) {
 }
 
 async function resetLeaderboard() {
-	await pool.query("UPDATE leaderboard SET score = 0, rank = 'bronze'");
+	await pool.query("DELETE FROM leaderboard");
 }
 
 async function getLeaderboard(): Promise<

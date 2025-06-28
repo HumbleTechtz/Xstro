@@ -1,11 +1,16 @@
+FROM oven/bun:latest AS bun
+FROM node:lts-slim AS node
 FROM oven/bun:latest
 
 RUN apt-get update && \
-	apt-get install -y \
-	git \
-	build-essential \
-	ffmpeg && \
-	rm -rf /var/lib/apt/lists/*
+    apt-get install -y \
+    git \
+    build-essential \
+    ffmpeg && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY --from=node /usr/local/bin/node /usr/local/bin/node
+COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
 
 RUN git clone https://github.com/AstroX11/whatsapp-bot /whatsapp-bot
 

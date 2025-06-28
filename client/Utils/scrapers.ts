@@ -1,8 +1,11 @@
+import { resolve } from "path";
+
 export async function getAPNews(): Promise<string> {
 	const response = await fetch("https://apnews.com/");
 	const html = await response.text();
 
-	const linkPattern = /<a class="Link " href="([^"]+)"><span class="PagePromoContentIcons-text">([^<]+)<\/span><\/a>/g;
+	const linkPattern =
+		/<a class="Link " href="([^"]+)"><span class="PagePromoContentIcons-text">([^<]+)<\/span><\/a>/g;
 	const results: string[] = [];
 	const seenTitles = new Set<string>();
 	let match: RegExpExecArray | null;
@@ -24,8 +27,10 @@ export async function getWABeta(): Promise<string> {
 	const response = await fetch("https://wabetainfo.com/");
 	const html = await response.text();
 
-	const titlePattern = /<div class="entry-excerpt mb-gutter last:mb-0">\s*([^<]+?)\s*<\/div>/g;
-	const linkPattern = /<a class="kenta-button kenta-button-right entry-read-more" href="([^"]+)"/g;
+	const titlePattern =
+		/<div class="entry-excerpt mb-gutter last:mb-0">\s*([^<]+?)\s*<\/div>/g;
+	const linkPattern =
+		/<a class="kenta-button kenta-button-right entry-read-more" href="([^"]+)"/g;
 
 	const titles: string[] = [];
 	const links: string[] = [];
@@ -52,7 +57,8 @@ export async function getTradeNews(): Promise<string> {
 	const response = await fetch("https://www.tradingview.com/ideas/");
 	const html = await response.text();
 
-	const linkPattern = /<a href="([^"]+)" data-name="open-idea-popup" class="title-tkslJwxl line-clamp-tkslJwxl stretched-outline-tkslJwxl">([^<]+)<\/a>/g;
+	const linkPattern =
+		/<a href="([^"]+)" data-name="open-idea-popup" class="title-tkslJwxl line-clamp-tkslJwxl stretched-outline-tkslJwxl">([^<]+)<\/a>/g;
 	const results: string[] = [];
 	const seenTitles = new Set<string>();
 	let match: RegExpExecArray | null;
@@ -150,7 +156,8 @@ export async function chatAi(message: string): Promise<string> {
 			"sec-fetch-mode": "cors",
 			"sec-fetch-site": "same-origin",
 			"sec-gpc": "1",
-			"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36",
+			"user-agent":
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36",
 		},
 		body: JSON.stringify(payload),
 	});
@@ -164,13 +171,34 @@ export async function chatAi(message: string): Promise<string> {
 
 /** Searches Brave and returns first 10 titles and URLs in plain text format. */
 export const searchWeb = async (query: string): Promise<string> => {
-	const res = await fetch(`https://search.brave.com/search?q=${encodeURIComponent(query)}`);
+	const res = await fetch(
+		`https://search.brave.com/search?q=${encodeURIComponent(query)}`
+	);
 	const html = await res.text();
 
-	const matches = [...html.matchAll(/<a href="([^"]+)"[^>]*?class="[^"]*?heading-serpresult[^"]*?".*?<div class="title[^"]*?"[^>]*?title="([^"]+)">/gs)];
+	const matches = [
+		...html.matchAll(
+			/<a href="([^"]+)"[^>]*?class="[^"]*?heading-serpresult[^"]*?".*?<div class="title[^"]*?"[^>]*?title="([^"]+)">/gs
+		),
+	];
 
 	return matches
 		.slice(0, 10)
 		.map(([, url, title]) => `${title}\n${url}`)
 		.join("\n\n");
+};
+
+export const Pinterest = async (url: string): Promise<string | null> => {
+	const proc = Bun.spawn(
+		["bun", "run", "tsx", resolve("client/Utils/pinterest.ts"), url],
+		{
+			stdout: "pipe",
+			stderr: "pipe",
+			cwd: process.cwd(),
+		}
+	);
+
+	const out = await new Response(proc.stdout).text();
+	const trimmed = out.trim();
+	return trimmed.length ? trimmed : null;
 };
