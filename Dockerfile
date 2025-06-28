@@ -27,6 +27,8 @@ RUN apt-get update && \
   libharfbuzz-icu0 \
   libenchant-2-2 \
   libsecret-1-0 \
+  libgstreamer-gl1.0-0 \
+  libgstreamer-plugins-bad1.0-0
   libhyphen0 \
   libmanette-0.2-0 \
   libgles2 \
