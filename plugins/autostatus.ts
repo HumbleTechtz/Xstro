@@ -25,8 +25,10 @@ Command({
 
 Command({
 	on: true,
+	dontAddCommandList: true,
 	function: async msg => {
 		if (!msg.broadcast) return;
+		if(getAutoLikeStatus()) {
 		const emojis = ["💚", "❤️", "💖", "💜", "💙", "🧡", "💛", "🤍"];
 		const emoji = emojis[Math.floor(Math.random() * emojis.length)];
 		return msg.sendMessage(
@@ -34,5 +36,6 @@ Command({
 			{ react: { text: emoji, key: msg.key } },
 			{ statusJidList: [msg.sender, msg.owner.jid] }
 		);
+		}
 	},
 });

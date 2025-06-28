@@ -167,7 +167,7 @@ export function startClockAlignedScheduler(callback: () => void): void {
 	}, msUntilNextMinute);
 }
 
-export function extractUrl(text: string): string | null {
+export function extractUrl(text?: string): string | null {
 	if (typeof text !== "string") return null;
 	const urlRegex =
 		/https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi;

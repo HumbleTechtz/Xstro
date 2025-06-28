@@ -26,20 +26,24 @@ export function createMeme(txt: string, actor: string) {
 
 			if (!templates.includes(actor)) {
 				throw new Error(
-					`Template "${actor}" not found. Available templates: ${templates.join(", ")}`
+					`Template "${actor}" not found. Available templates: ${templates.join(
+						", "
+					)}`
 				);
 			}
 
 			const imagePath = join(__dirname, "./images", `${actor}.png`);
-			const baseImage = await PImage.decodePNGFromStream(await fs.open(imagePath).then(f => f.createReadStream()));
+			const baseImage = await PImage.decodePNGFromStream(
+				await fs.open(imagePath).then(f => f.createReadStream())
+			);
 
 			const canvas = PImage.make(baseImage.width, baseImage.height);
 			const ctx = canvas.getContext("2d");
 
 			ctx.drawImage(baseImage, 0, 0);
 
-			const fontPath = join(__dirname, "Roboto-Regular.ttf");
-			const font = PImage.registerFont(fontPath, 'Sans');
+			const fontPath = join(__dirname, "fonts", "Roboto-Regular.ttf");
+			const font = PImage.registerFont(fontPath, "Sans");
 			await font.load();
 
 			ctx.fillStyle = "black";
@@ -73,7 +77,7 @@ export function createMeme(txt: string, actor: string) {
 
 			wrapText(txt, 20, 140, 780, 30);
 
-			const { PassThrough } = await import('stream');
+			const { PassThrough } = await import("stream");
 			const stream = new PassThrough();
 			PImage.encodePNGToStream(canvas, stream);
 			const chunks: Buffer[] = [];

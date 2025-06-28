@@ -6,7 +6,7 @@ export const getJson = async <T>(
 	url: string,
 	options: HttpOptions = {}
 ): Promise<T> => {
-	const response = await fetch(url, {
+	return await fetch(url, {
 		method: "GET",
 		headers: {
 			Accept: "application/json, text/plain, */*",
@@ -26,13 +26,9 @@ export const getJson = async <T>(
 			...options.headers,
 		},
 		...options,
-	});
-
-	if (!response.ok) {
-		throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-	}
-
-	return response.json();
+	})
+		.then(res => res.json())
+		.catch(console.error);
 };
 
 export const postJson = async <T = any, D = any>(

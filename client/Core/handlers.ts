@@ -17,17 +17,23 @@ const verify = (cmd: any, message: Serialize) => {
 	return "valid";
 };
 
-function executeCommand(cmd: any, message: Serialize, args?: string) {
-	return new Promise<void>(resolve => {
+async function executeCommand(cmd: any, message: Serialize, args?: string) {
+	try {
 		const result = verify(cmd, message);
 		if (result === "valid") {
-			Promise.resolve(cmd.function(message, args)).then(resolve);
+			await Promise.resolve(cmd.function(message, args)).catch(async err => {
+				console.error(err);
+			});
 		} else if (result) {
-			Promise.resolve(message.send(result)).then(() => resolve());
-		} else {
-			resolve();
+			await Promise.resolve(message.send(result)).catch(console.error);
 		}
-	});
+	} catch (e) {
+		console.error(e);
+		try {
+		} catch (e) {
+			console.error(e);
+		}
+	}
 }
 
 const text = async (message: Serialize) => {
