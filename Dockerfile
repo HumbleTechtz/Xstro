@@ -6,7 +6,15 @@ RUN apt-get update && \
     apt-get install -y \
     git \
     build-essential \
-    ffmpeg && \
+    ffmpeg \
+    libnspr4 \
+    libnss3 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libcups2 \
+    libatspi2.0-0 \
+    libxcomposite1 \
+    libxdamage1 && \
     rm -rf /var/lib/apt/lists/*
 
 COPY --from=node /usr/local/bin/node /usr/local/bin/node
@@ -17,6 +25,6 @@ RUN git clone https://github.com/AstroX11/whatsapp-bot /whatsapp-bot
 WORKDIR /whatsapp-bot
 
 RUN bun install
-RUN bunx playwright install 
+RUN bunx playwright install
 
 CMD ["bun", "start"]
