@@ -1,6 +1,6 @@
 import { spawn } from "child_process";
-import database from "./client/Core/database";
-import config from "./config";
+import database from "./Core/database";
+import config from "../config";
 
 Bun.serve({
 	port: config.PORT,
@@ -14,7 +14,7 @@ Bun.serve({
 });
 
 const manageClient = () => {
-	spawn("bun", ["run", "./client/Core/client"], {
+	spawn("bun", ["run", "./Core/client"], {
 		stdio: ["inherit", "inherit", "ignore"],
 	}).on("exit", code =>
 		code === 0 ? manageClient() : (database.close(), process.exit(code))
