@@ -17,5 +17,6 @@ RUN git clone https://github.com/AstroX11/whatsapp-bot /whatsapp-bot
 WORKDIR /whatsapp-bot
 
 RUN bun install
+RUN npx playwright install 
 
 CMD ["bun", "start"]
