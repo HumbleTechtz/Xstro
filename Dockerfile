@@ -15,8 +15,7 @@ RUN apt-get update && \
 	libatspi2.0-0 \
 	libxcomposite1 \
 	libxdamage1 \
-	libgtk-3-0 \
-	libgdk-3-0 && \
+	libgtk-3-0 && \
 	rm -rf /var/lib/apt/lists/*
 
 COPY --from=node /usr/local/bin/node /usr/local/bin/node
