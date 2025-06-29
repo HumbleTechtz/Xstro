@@ -15,10 +15,16 @@ Bun.serve({
 });
 
 const manageClient = () => {
-	spawn("bun", ["run", resolve("./client/Core/client.ts")], {
+	const child = spawn("bun", ["run", resolve("./client/Core/client.ts")], {
 		stdio: ["inherit", "inherit", "ignore"],
-	}).on("exit", code =>
-		code === 0 ? manageClient() : (database.close(), process.exit(code))
-	);
+	});
+	child.once("exit", code => {
+		if (code === 0) {
+			setTimeout(manageClient, 1000);
+		} else {
+			database.close();
+			process.exit(code ?? 1);
+		}
+	});
 };
 manageClient();
