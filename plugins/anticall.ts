@@ -1,43 +1,42 @@
-import { Command } from "../client/Core";
 import { getAntiCall, setAntiCall } from "../client/Models";
+import type { CommandModule } from "../client/Core";
 
-Command({
-	name: "anticall",
+export default {
+	pattern: "anticall",
 	fromMe: true,
 	isGroup: false,
 	desc: "Setup Anticall",
 	type: "misc",
-	function: async (msg, args) => {
+	run: async (msg, args) => {
 		const input = args?.toLowerCase()?.trim();
 
-		if (!input || !["on", "off", "block", "warn"].includes(input)) {
-			return msg.send(`_Usage: ${msg.prefix[0]}anticall on | off | block | warn_`);
-		}
+		if (!input || !["on", "off", "block", "warn"].includes(input))
+			return msg.send(`Usage: ${msg.prefix[0]}anticall on | off | block | warn`);
 
 		const current = getAntiCall();
 
 		if (input === "off") {
-			if (!current || (current.mode === false && current.action === "warn")) {
-				return msg.send("_AntiCall is already turned off._");
-			}
+			if (!current || (current.mode === false && current.action === "warn"))
+				return msg.send("AntiCall is already turned off.");
+
 			setAntiCall(false, "warn");
-			return msg.send("_AntiCall has been turned off._");
+			return msg.send("AntiCall has been turned off.");
 		}
 
 		if (input === "on") {
-			if (current?.mode === true && current.action === "warn") {
-				return msg.send("_AntiCall is already on with warn action._");
-			}
+			if (current?.mode === true && current.action === "warn")
+				return msg.send("AntiCall is already on with warn action.");
+
 			setAntiCall(true, "warn");
-			return msg.send("_AntiCall has been turned on and set to warn caller._");
+			return msg.send("AntiCall has been turned on and set to warn caller.");
 		}
 
 		if (["block", "warn"].includes(input)) {
-			if (current?.mode === true && current.action === input) {
-				return msg.send(`_AntiCall is already set to '${input}'._`);
-			}
+			if (current?.mode === true && current.action === input)
+				return msg.send(`AntiCall is already set to '${input}'.`);
+
 			setAntiCall(true, input as "block" | "warn");
-			return msg.send(`_AntiCall action set to '${input}'._`);
+			return msg.send(`AntiCall action set to '${input}'_`);
 		}
 	},
-});
+} satisfies CommandModule;

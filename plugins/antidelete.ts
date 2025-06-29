@@ -1,13 +1,13 @@
-import { Command } from "../client/Core";
 import { setAntidelete } from "../client/Models";
+import type { CommandModule } from "../client/Core";
 
-Command({
-	name: "antidelete",
+export default {
+	pattern: "antidelete",
 	fromMe: true,
 	isGroup: false,
 	desc: "Recover deleted messages",
 	type: "misc",
-	function: async (msg, match) => {
+	run: async (msg, match) => {
 		if (!match) {
 			return msg.send(
 				[
@@ -22,13 +22,13 @@ Command({
 
 		if (cmd === "on")
 			return setAntidelete(true)
-				? msg.send("_Antidelete enabled_")
-				: msg.send("_Antidelete is already enabled_");
+				? msg.send("Antidelete enabled.")
+				: msg.send("Antidelete is already enabled.");
 
 		if (cmd === "off")
 			return setAntidelete(false)
-				? msg.send("_Antidelete disabled_")
-				: msg.send("_Antidelete is already disabled_");
+				? msg.send("Antidelete disabled.")
+				: msg.send("Antidelete is already disabled.");
 
 		return msg.send(
 			[
@@ -38,4 +38,4 @@ Command({
 			].join("\n")
 		);
 	},
-});
+} satisfies CommandModule;

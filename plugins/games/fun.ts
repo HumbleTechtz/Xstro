@@ -1,4 +1,3 @@
-import { Command } from "../../client/Core/";
 import {
 	fact,
 	getAdvice,
@@ -12,124 +11,95 @@ import {
 	getQuote,
 	getRizz,
 } from "../../client/Utils";
+import type { CommandModule } from "../../client/Core";
 
-Command({
-	name: "rizz",
-	fromMe: false,
-	isGroup: false,
-	desc: "Rizz your babe lol",
-	type: "fun",
-	function: async msg => {
-		return await msg.send(await getRizz());
+export default [
+	{
+		pattern: "rizz",
+		desc: "Rizz your babe lol",
+		type: "fun",
+		fromMe: false,
+		isGroup: false,
+		run: async msg => msg.send(await getRizz()),
 	},
-});
-
-Command({
-	name: "insult",
-	fromMe: false,
-	isGroup: false,
-	desc: "Insult one",
-	type: "fun",
-	function: async msg => {
-		return await msg.send(await getInsult());
+	{
+		pattern: "insult",
+		desc: "Insult one",
+		type: "fun",
+		fromMe: false,
+		isGroup: false,
+		run: async msg => msg.send(await getInsult()),
 	},
-});
-
-Command({
-	name: "joke",
-	fromMe: false,
-	isGroup: false,
-	desc: "Get a random joke",
-	type: "fun",
-	function: async msg => {
-		return await msg.send(await getJoke());
+	{
+		pattern: "joke",
+		desc: "Get a random joke",
+		type: "fun",
+		fromMe: false,
+		isGroup: false,
+		run: async msg => msg.send(await getJoke()),
 	},
-});
-
-Command({
-	name: "advice",
-	fromMe: false,
-	isGroup: false,
-	desc: "Get a random piece of advice",
-	type: "fun",
-	function: async msg => {
-		return await msg.send(await getAdvice());
+	{
+		pattern: "advice",
+		desc: "Get a random piece of advice",
+		type: "fun",
+		fromMe: false,
+		isGroup: false,
+		run: async msg => msg.send(await getAdvice()),
 	},
-});
-
-Command({
-	name: "fact",
-	fromMe: false,
-	isGroup: false,
-	desc: "Get a random fact",
-	type: "fun",
-	function: async msg => {
-		return await msg.send(await fact());
+	{
+		pattern: "fact",
+		desc: "Get a random fact",
+		type: "fun",
+		fromMe: false,
+		isGroup: false,
+		run: async msg => msg.send(await fact()),
 	},
-});
-
-Command({
-	name: "quote",
-	fromMe: false,
-	isGroup: false,
-	desc: "Get an inspirational quote",
-	type: "fun",
-	function: async msg => {
-		return await msg.send(await getQuote());
+	{
+		pattern: "quote",
+		desc: "Get an inspirational quote",
+		type: "fun",
+		fromMe: false,
+		isGroup: false,
+		run: async msg => msg.send(await getQuote()),
 	},
-});
-
-Command({
-	name: "catfact",
-	fromMe: false,
-	isGroup: false,
-	desc: "Get a random cat fact",
-	type: "fun",
-	function: async msg => {
-		return await msg.send(await getCatFact());
+	{
+		pattern: "catfact",
+		desc: "Get a random cat fact",
+		type: "fun",
+		fromMe: false,
+		isGroup: false,
+		run: async msg => msg.send(await getCatFact()),
 	},
-});
-
-Command({
-	name: "dogfact",
-	fromMe: false,
-	isGroup: false,
-	desc: "Get a random dog fact",
-	type: "fun",
-	function: async msg => {
-		return await msg.send(await getDogFact());
+	{
+		pattern: "dogfact",
+		desc: "Get a random dog fact",
+		type: "fun",
+		fromMe: false,
+		isGroup: false,
+		run: async msg => msg.send(await getDogFact()),
 	},
-});
-
-Command({
-	name: "number",
-	fromMe: false,
-	isGroup: false,
-	desc: "Get a random number fact",
-	type: "fun",
-	function: async msg => {
-		return await msg.send(await getNumberFact());
+	{
+		pattern: "number",
+		desc: "Get a random number fact",
+		type: "fun",
+		fromMe: false,
+		isGroup: false,
+		run: async msg => msg.send(await getNumberFact()),
 	},
-});
-
-Command({
-	name: "affirmation",
-	fromMe: false,
-	isGroup: false,
-	desc: "Get a positive affirmation",
-	type: "fun",
-	function: async msg => {
-		return await msg.send(await getAffirmation());
+	{
+		pattern: "affirmation",
+		desc: "Get a positive affirmation",
+		type: "fun",
+		fromMe: false,
+		isGroup: false,
+		run: async msg => msg.send(await getAffirmation()),
 	},
-});
-
-Command({
-	name: "kanye",
-	fromMe: false,
-	isGroup: false,
-	desc: "Get a Kanye West quote",
-	type: "fun",
-	function: async msg => {
-		return await msg.send(await getKanyeQuote());
+	{
+		pattern: "kanye",
+		desc: "Get a Kanye West quote",
+		type: "fun",
+		fromMe: false,
+		isGroup: false,
+		run: async msg => msg.send(await getKanyeQuote()),
 	},
-});
+] satisfies CommandModule[];

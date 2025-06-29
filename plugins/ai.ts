@@ -1,15 +1,15 @@
-import { Command } from "../client/Core";
 import { chatAi } from "../client/Utils";
+import type { CommandModule } from "../client/Core";
 
-Command({
-	name: "ai",
-	fromMe: false,
-	isGroup: false,
+export default {
+	pattern: "ai",
 	desc: "Chat with Ai",
 	type: "ai",
-	function: async (msg, args) => {
+	fromMe: false,
+	isGroup: false,
+	run: async (msg, args) => {
 		args = args ?? msg.quoted?.text!;
 		if (!args) return msg.send(`_${msg.pushName} hello_`);
-		return await msg.send(await chatAi(args));
+		return msg.send(await chatAi(args));
 	},
-});
+} satisfies CommandModule;

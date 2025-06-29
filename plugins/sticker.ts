@@ -1,57 +1,57 @@
-import { Command, commands } from "../client/Core";
 import { removeStickerCmd, setStickerCmd } from "../client/Models";
+import { commandMap } from "../client/Core";
+import type { CommandModule } from "../client/Core";
 
-Command({
-	name: "setcmd",
-	fromMe: true,
-	isGroup: false,
-	desc: "Use stickers to run a command",
-	type: "misc",
-	function: async (message, match) => {
-		const msg = message?.quoted;
-		if (!msg || !msg.sticker) {
-			return await message.send("_Reply to a sticker message_");
-		}
-		if (!match) {
-			return await message.send("_Provide a command name to set for sticker_");
-		}
-		const fileSha256 =
-			msg.message?.stickerMessage?.fileSha256 ??
-			msg.message?.lottieStickerMessage?.message?.stickerMessage?.fileSha256;
+export default [
+	{
+		pattern: "setcmd",
+		fromMe: true,
+		isGroup: false,
+		desc: "Use stickers to run a command",
+		type: "misc",
+		run: async (message, match) => {
+			const msg = message?.quoted;
+			if (!msg?.sticker) return await message.send("Reply a sticker");
 
-		const filesha256 = fileSha256
-			? Buffer.from(new Uint8Array(fileSha256)).toString("base64")
-			: undefined;
+			if (!match) return await message.send("Provide a command name as sticker");
 
-		const cmdname = match?.trim().toLowerCase();
-		const cmds = commands.map(
-			cmd => cmd.name?.toString().split(/[\p{S}\p{P}]/gu)[5]
-		);
+			const fileSha256 =
+				msg.message?.stickerMessage?.fileSha256 ??
+				msg.message?.lottieStickerMessage?.message?.stickerMessage?.fileSha256;
 
-		if (!cmds.includes(cmdname)) {
-			return await message.send("_This command does not exist_");
-		}
-		setStickerCmd(filesha256!, cmdname);
-		return await message.send("_Sticker cmd set for " + match + "_");
+			if (!fileSha256) return;
+
+			const filesha256 = Buffer.from(new Uint8Array(fileSha256)).toString(
+				"base64"
+			);
+			const cmdname = match.trim().toLowerCase();
+			const exists = [...commandMap.keys()].includes(cmdname);
+
+			if (!exists) return await message.send("This command does not exist");
+
+			setStickerCmd(filesha256, cmdname);
+			return await message.send(`Sticker trigger set for ${cmdname}`);
+		},
 	},
-});
+	{
+		pattern: "delcmd",
+		fromMe: true,
+		isGroup: false,
+		desc: "Remove a sticker cmd",
+		type: "misc",
+		run: async (message, match) => {
+			if (!match) return message.send("Provide a command name, eg ping");
 
-Command({
-	name: "delcmd",
-	fromMe: true,
-	isGroup: false,
-	desc: "Remove a sticker cmd",
-	type: "misc",
-	function: async (message, match) => {
-		if (!match) return message.send("_Provide a command name, eg ping_");
-		const cmdname = match?.trim().toLowerCase();
-		const cmds = commands.map(
-			cmd => cmd.name?.toString().split(/[\p{S}\p{P}]/gu)[5]
-		);
-		if (!cmds.includes(cmdname))
-			return await message.send("_This command does not exist_");
-		const set = removeStickerCmd(cmdname);
-		if (!set) return await message.send("_That cmd was not set in sticker cmd_");
-		return await message.send(`_${cmdname} has been removed from Sticker Cmd_`);
+			const cmdname = match.trim().toLowerCase();
+			const exists = [...commandMap.keys()].includes(cmdname);
+
+			if (!exists) return await message.send("This command doesn't exist");
+
+			const removed = removeStickerCmd(cmdname);
+			if (!removed)
+				return await message.send("That command wasn't used for sticker");
+
+			return await message.send(`${cmdname}  removed from Sticker`);
+		},
 	},
-});
+] satisfies CommandModule[];

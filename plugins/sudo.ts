@@ -1,56 +1,56 @@
-import { Command } from "../client/Core";
-import { SetSudo, delSudo, getSudo, isSudo } from "../client/Models";
 import language from "../client/Utils/language";
+import { SetSudo, delSudo, getSudo, isSudo } from "../client/Models";
+import type { CommandModule } from "../client/Core";
 
-Command({
-	name: "setsudo",
-	fromMe: true,
-	isGroup: false,
-	desc: "Sudo a user",
-	type: "settings",
-	function: async (msg, args) => {
-		const user = await msg.userId(args);
-		if (!user) return msg.send(language.PROVIDE_USER);
+export default [
+	{
+		pattern: "setsudo",
+		fromMe: true,
+		isGroup: false,
+		desc: "Sudo a user",
+		type: "settings",
+		run: async (msg, args) => {
+			const user = await msg.userId(args);
+			if (!user) return msg.send(language.PROVIDE_USER);
 
-		const { jid, lid } = await msg.userInfo(user);
-		if (!jid || !lid) return msg.send(language.JID_LID_FAIL);
+			const { jid, lid } = await msg.userInfo(user);
+			if (!jid || !lid) return msg.send(language.JID_LID_FAIL);
 
-		if (isSudo(jid)) return msg.send(language.CMD.SUDO.EXISTS);
-		SetSudo(jid, lid);
-		return msg.send(language.CMD.SUDO.UPDATED);
+			if (isSudo(jid)) return msg.send(language.CMD.SUDO.EXISTS);
+			SetSudo(jid, lid);
+			return msg.send(language.CMD.SUDO.UPDATED);
+		},
 	},
-});
+	{
+		pattern: "delsudo",
+		fromMe: true,
+		isGroup: false,
+		desc: "Remove sudo user",
+		type: "settings",
+		run: async (msg, args) => {
+			const user = await msg.userId(args);
+			if (!user) return msg.send(language.PROVIDE_USER);
 
-Command({
-	name: "delsudo",
-	fromMe: true,
-	isGroup: false,
-	desc: "Remove sudo user",
-	type: "settings",
-	function: async (msg, args) => {
-		const user = await msg.userId(args);
-		if (!user) return msg.send(language.PROVIDE_USER);
+			const { jid } = await msg.userInfo(user);
+			if (!jid) return msg.send(language.JID_LID_FAIL);
 
-		const { jid } = await msg.userInfo(user);
-		if (!jid) return msg.send(language.JID_LID_FAIL);
-
-		if (!isSudo(jid)) return msg.send(language.CMD.SUDO.NOT_SUDO);
-		delSudo(jid);
-		return msg.send(language.CMD.SUDO.REMOVED);
+			if (!isSudo(jid)) return msg.send(language.CMD.SUDO.NOT_SUDO);
+			delSudo(jid);
+			return msg.send(language.CMD.SUDO.REMOVED);
+		},
 	},
-});
+	{
+		pattern: "getsudo",
+		fromMe: true,
+		isGroup: false,
+		desc: "List sudo users",
+		type: "settings",
+		run: async msg => {
+			const sudo = getSudo("jid");
+			if (!sudo.length) return msg.send(language.CMD.SUDO.NAN);
 
-Command({
-	name: "getsudo",
-	fromMe: true,
-	isGroup: false,
-	desc: "List sudo users",
-	type: "settings",
-	function: async msg => {
-		const sudo = getSudo("jid");
-		if (!sudo.length) return msg.send(language.CMD.SUDO.NAN);
-
-		const users = sudo.map(j => `@${j.split("@")[0]}`).join("\n");
-		return msg.send(`${users}`, { mentions: sudo });
+			const users = sudo.map(j => `@${j.split("@")[0]}`).join("\n");
+			return msg.send(users, { mentions: sudo });
+		},
 	},
-});
+] satisfies CommandModule[];

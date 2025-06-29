@@ -1,7 +1,7 @@
 import util from "util";
-import makeCommands from "../Core/handlers";
+import plugins from "../Core/handlers";
 import { Serialize, serialize } from "../Core";
-import { savemsg } from "../Models";
+import { saveMessage } from "../Models";
 import type { BaileysEventMap, WASocket } from "baileys";
 
 export default class {
@@ -9,27 +9,21 @@ export default class {
 		private client: WASocket,
 		private event: BaileysEventMap["messages.upsert"]
 	) {
+		saveMessage(event);
 		this.process();
 	}
 
 	private async process() {
 		if (this.event.type !== "notify") return;
 
-		await Promise.allSettled([savemsg(this.event), this.handleMessages()]);
-	}
-
-	private async handleMessages() {
-		const tasks = this.event.messages.map(async msg => {
-			this.handleProtocolMessage(msg);
+		this.event.messages.map(async msg => {
+			this.ProtocolMessage(msg);
 			const serialized = await serialize(this.client, structuredClone(msg));
-
-			return Promise.all([this.handleEval(serialized), makeCommands(serialized)]);
+			return Promise.all([this.eval(serialized), plugins(serialized)]);
 		});
-
-		await Promise.allSettled(tasks);
 	}
 
-	private handleProtocolMessage(msg: any) {
+	private ProtocolMessage(msg: any) {
 		const protocol = msg.message?.protocolMessage;
 		if (protocol?.type === 0) {
 			this.client.ev.emit("messages.delete", {
@@ -38,14 +32,14 @@ export default class {
 		}
 	}
 
-	private async handleEval(msg: Serialize) {
-		if (!msg.sudo || !msg.text?.startsWith("$ ")) return;
+	private async eval(message: Serialize) {
+		if (!message.sudo || !message.text?.startsWith("$ ")) return;
 
 		try {
-			const result = await eval(`(async () => { ${msg.text.slice(2)} })()`);
-			await msg.send(util.inspect(result, { depth: 1 }));
+			const result = await eval(`(async () => { ${message.text.slice(2)} })()`);
+			await message.send(util.inspect(result, { depth: 1 }));
 		} catch (error) {
-			await msg.send(util.inspect(error, { depth: 1 }));
+			await message.send(util.inspect(error, { depth: 1 }));
 		}
 	}
 }

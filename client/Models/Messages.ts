@@ -9,7 +9,7 @@ database.exec(`
 	)
 `);
 
-export function savemsg(event: BaileysEventMap["messages.upsert"]) {
+export function saveMessage(event: BaileysEventMap["messages.upsert"]) {
 	if (!event?.messages?.[0]?.key?.id) return;
 	const id = event.messages[0].key.id;
 	const requestId = event.requestId ?? null;

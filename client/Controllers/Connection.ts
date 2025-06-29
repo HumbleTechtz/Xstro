@@ -37,7 +37,7 @@ export default class {
 	}
 
 	private async handleConnecting() {
-		await syncPlugins("../../plugins", [".ts"]);
+		const info = await syncPlugins("../../plugins", [".ts"]);
 	}
 
 	private async handleClose(

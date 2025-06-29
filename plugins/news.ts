@@ -1,38 +1,38 @@
-import { Command } from "../client/Core";
-import { getAPNews, getTradeNews, getWABeta } from "../client/Utils";
+import { getAPNews, getWABeta, getTradeNews } from "../client/Utils";
+import type { CommandModule } from "../client/Core";
 
-Command({
-	name: "news",
-	fromMe: false,
-	isGroup: false,
-	desc: "Get News from Associated Press",
-	type: "news",
-	function: async message => {
-		const news = await getAPNews();
-		return await message.send(news);
+export default [
+	{
+		pattern: "news",
+		fromMe: false,
+		isGroup: false,
+		desc: "Get News from Associated Press",
+		type: "news",
+		run: async message => {
+			const news = await getAPNews();
+			return message.send(news);
+		},
 	},
-});
-
-Command({
-	name: "wabeta",
-	fromMe: false,
-	isGroup: false,
-	desc: "Get news from WABeta",
-	type: "news",
-	function: async message => {
-		const news = await getWABeta();
-		return await message.send(news);
+	{
+		pattern: "wabeta",
+		fromMe: false,
+		isGroup: false,
+		desc: "Get news from WABeta",
+		type: "news",
+		run: async message => {
+			const news = await getWABeta();
+			return message.send(news);
+		},
 	},
-});
-
-Command({
-	name: "forex",
-	fromMe: false,
-	isGroup: false,
-	desc: "Get techincal forex info",
-	type: "news",
-	function: async message => {
-		const news = await getTradeNews();
-		return await message.send(news);
+	{
+		pattern: "forex",
+		fromMe: false,
+		isGroup: false,
+		desc: "Get techincal forex info",
+		type: "news",
+		run: async message => {
+			const news = await getTradeNews();
+			return message.send(news);
+		},
 	},
-});
+] satisfies CommandModule[];

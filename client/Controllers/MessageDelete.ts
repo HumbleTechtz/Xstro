@@ -6,9 +6,8 @@
  */
 
 import { isJidGroup } from "baileys";
+import { forwardMessage } from "../Core/send_msg";
 import { getAntidelete, loadMessage } from "../Models";
-import { forwardMessage, isMediaMessage } from "../Core/send_msg";
-import { text_from_message } from "../Utils";
 import type { BaileysEventMap, WASocket } from "baileys";
 
 export default class {
@@ -20,35 +19,20 @@ export default class {
 		this.event();
 	}
 	private async event() {
-		const shouldDelete = getAntidelete();
-		if (!shouldDelete) return;
+		if (getAntidelete()) {
+			if ("keys" in this.update) {
+				const keys = this.update.keys;
 
-		if ("keys" in this.update) {
-			const keys = this.update.keys;
+				for (const key of keys) {
+					const msg = loadMessage(key);
 
-			for (const key of keys) {
-				const store = loadMessage(key);
+					if (msg && !msg.key.fromMe) {
+						const jid = String(
+							isJidGroup(msg.key.remoteJid!) ? msg.key.remoteJid : this.client.user?.id
+						);
 
-				if (store && !store.key.fromMe) {
-					const remoteJid = store.key.remoteJid;
-					const userId = this.client.user?.id;
-					const jid = isJidGroup(remoteJid!) ? remoteJid : userId;
-
-					if (isMediaMessage(store)) {
-						return await forwardMessage(this.client, jid!, store, {
-							quoted: store,
-						});
+						return await forwardMessage(this.client, jid, msg, { quoted: msg });
 					}
-
-					return await this.client.sendMessage(
-						jid!,
-						{
-							text:
-								"*ᴀɴᴛɪᴅᴇʟᴇᴛᴇ ғᴏᴜɴᴅ ᴀ ᴍᴇssᴀɢᴇ!*\nᴍᴇssᴀɢᴇ: " +
-								(text_from_message(store.message!) ?? ""),
-						},
-						{ quoted: store ?? undefined }
-					);
 				}
 			}
 		}

@@ -1,53 +1,52 @@
 import { delay } from "baileys";
-import { Command } from "../client/Core";
 import { formatRuntime, restart, shutdown } from "../client/Utils";
+import type { CommandModule } from "../client/Core";
 
-Command({
-	name: "ping",
-	fromMe: false,
-	isGroup: false,
-	desc: "Ping the bot",
-	type: "system",
-	function: async message => {
-		const start = Date.now();
-		const msg = await message.send("Pong!");
-		const end = Date.now();
-		return await msg.edit(`\`\`\`${end - start} ms\`\`\``);
+export default [
+	{
+		pattern: "ping",
+		fromMe: false,
+		isGroup: false,
+		desc: "Ping the bot",
+		type: "system",
+		run: async message => {
+			const start = Date.now();
+			const msg = await message.send("Pong!");
+			const end = Date.now();
+			return await msg.edit(`\`\`\`${end - start} ms\`\`\``);
+		},
 	},
-});
-
-Command({
-	name: "runtime",
-	fromMe: false,
-	isGroup: false,
-	desc: "Get bot runtime",
-	type: "system",
-	function: async message => {
-		return await message.send(formatRuntime(process.uptime()));
+	{
+		pattern: "runtime",
+		fromMe: false,
+		isGroup: false,
+		desc: "Get bot runtime",
+		type: "system",
+		run: async message => {
+			return await message.send(formatRuntime(process.uptime()));
+		},
 	},
-});
-
-Command({
-	name: "restart",
-	fromMe: true,
-	isGroup: false,
-	desc: "Restart the process",
-	type: "system",
-	function: async message => {
-		await delay(2000);
-		await message.send("Restarting");
-		restart();
+	{
+		pattern: "restart",
+		fromMe: true,
+		isGroup: false,
+		desc: "Restart the process",
+		type: "system",
+		run: async message => {
+			await delay(2000);
+			await message.send("Restarting");
+			restart();
+		},
 	},
-});
-
-Command({
-	name: "shutdown",
-	fromMe: true,
-	isGroup: false,
-	desc: "Shut down bot",
-	type: "system",
-	function: async msg => {
-		await msg.send("Bye");
-		shutdown();
+	{
+		pattern: "shutdown",
+		fromMe: true,
+		isGroup: false,
+		desc: "Shut down bot",
+		type: "system",
+		run: async msg => {
+			await msg.send("Shutting down");
+			shutdown();
+		},
 	},
-});
+] satisfies CommandModule[];

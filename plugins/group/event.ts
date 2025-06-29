@@ -1,17 +1,17 @@
-import { Command } from "../../client/Core/";
 import {
 	setGroupEvent,
 	getGroupEvent,
 	delGroupEvent,
 } from "../../client/Models";
+import type { CommandModule } from "../../client/Core";
 
-Command({
-	name: "event",
+export default {
+	pattern: "event",
 	fromMe: true,
 	isGroup: true,
 	desc: "Enable or disable group event mode",
 	type: "group",
-	function: async (msg, args) => {
+	run: async (msg, args) => {
 		const groupJid = msg.chat;
 
 		if (!args) {
@@ -32,4 +32,4 @@ Command({
 
 		return msg.send("_Usage: event <on|off>_");
 	},
-});
+} satisfies CommandModule;

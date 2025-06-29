@@ -10,6 +10,10 @@ export async function sleep(ms: number): Promise<void> {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+export function escapeRegex(text: string): string {
+	return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 export function isUrl(text: string): boolean {
 	if (typeof text !== "string" || !text.trim()) return false;
 	try {

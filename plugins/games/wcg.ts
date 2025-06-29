@@ -1,126 +1,125 @@
 import { isLidUser } from "baileys";
-import { Command } from "../../client/Core/";
 import { updateLeaderboard } from "../../client/Models";
 import type { Serialize } from "../../client/Core/serialize";
+import type { CommandModule } from "../../client/Core";
 
 const games = new Map<string, Wcg>();
 const pending = new Map<string, { jids: string[]; timers: NodeJS.Timeout[] }>();
 
-Command({
-	name: "wcg",
-	fromMe: false,
-	isGroup: false,
-	desc: "Play Word Chain Game",
-	type: "games",
-	function: async (message, match) => {
-		const jid = message.chat;
+export default [
+	{
+		pattern: "wcg",
+		fromMe: false,
+		isGroup: false,
+		desc: "Play Word Chain Game",
+		type: "games",
+		run: async (message, match) => {
+			const jid = message.chat;
 
-		if (match === "end") {
-			if (games.has(jid)) {
-				const game = games.get(jid)!;
-				const ev = await game.endGame(jid, true);
-				return message.send(ev, {
-					mentions: game.originalPlayers,
-				});
+			if (match === "end") {
+				if (games.has(jid)) {
+					const game = games.get(jid)!;
+					const ev = await game.endGame(jid, true);
+					return message.send(ev, {
+						mentions: game.originalPlayers,
+					});
+				}
+				return message.send("```No active Word Chain Game to end.```");
 			}
-			return message.send("```No active Word Chain Game to end.```");
-		}
 
-		if (games.has(jid))
-			return message.send("```A Word Chain Game is already in progress.```");
-		if (pending.has(jid))
-			return message.send(
-				"```A Word Chain Game is already gathering challengers.```"
+			if (games.has(jid))
+				return message.send("```A Word Chain Game is already in progress.```");
+			if (pending.has(jid))
+				return message.send(
+					"```A Word Chain Game is already gathering challengers.```"
+				);
+
+			pending.set(jid, { jids: [], timers: [] });
+
+			await message.send(
+				'```Word Chain Game starting! Type "join" to participate.```'
 			);
 
-		pending.set(jid, { jids: [], timers: [] });
+			let countdown = 30;
+			let lastCountdown = 30;
 
-		await message.send(
-			'```Word Chain Game starting! Type "join" to participate.```'
-		);
+			const countdownInterval = setInterval(async () => {
+				if (countdown <= 0) {
+					clearInterval(countdownInterval);
+					return;
+				}
 
-		let countdown = 30;
-		let lastCountdown = 30;
+				if (
+					countdown !== lastCountdown &&
+					(countdown === 30 || countdown === 20 || countdown === 10)
+				) {
+					await message.send(`\`\`\`Game starting in ${countdown} seconds.\`\`\``);
+					lastCountdown = countdown;
+				}
+				countdown -= 10;
+			}, 10000);
 
-		const countdownInterval = setInterval(async () => {
-			if (countdown <= 0) {
+			const startTimer = setTimeout(async () => {
 				clearInterval(countdownInterval);
+				const p = pending.get(jid)!;
+				pending.delete(jid);
+				p.timers.forEach(t => clearTimeout(t));
+
+				if (!p.jids.includes(message.sender)) p.jids.push(message.sender);
+
+				const game = new Wcg(message);
+				const result = await game.startGame(p.jids, jid);
+				if (result) return message.send(result, { mentions: p.jids });
+
+				games.set(jid, game);
+				const playersText = p.jids.map(id => `@${id.split("@")[0]}`).join(", ");
+				await message.send(
+					`\`\`\`Word Chain Game started! Challengers: ${playersText}\`\`\``,
+					{ mentions: p.jids }
+				);
+			}, 30000);
+
+			pending.get(jid)!.timers.push(startTimer);
+		},
+	},
+	{
+		on: true,
+		dontAddCommandList: true,
+		run: async message => {
+			const jid = message.chat;
+			const text = message.text?.trim().toLowerCase();
+			if (!text) return;
+
+			if (
+				text.includes("game started!") ||
+				text.includes("word chain game") ||
+				!message.sender ||
+				/\s/.test(text)
+			)
+				return;
+
+			if (text === "join" && pending.has(jid)) {
+				const p = pending.get(jid)!;
+				if (!p.jids.includes(message.sender)) {
+					p.jids.push(message.sender);
+					return message.send(
+						`\`\`\`@${message.sender.split("@")[0]} joined the Match.\`\`\``,
+						{ mentions: [message.sender] }
+					);
+				}
 				return;
 			}
 
-			if (
-				countdown !== lastCountdown &&
-				(countdown === 30 || countdown === 20 || countdown === 10)
-			) {
-				await message.send(
-					`\`\`\`Game starting in ${countdown} seconds.\`\`\``
-				);
-				lastCountdown = countdown;
+			if (games.has(jid)) {
+				const game = games.get(jid)!;
+				const res = await game.playWord(text, message.sender);
+				if (res.text) {
+					return message.send(res.text, { mentions: res.mentions });
+				}
 			}
-			countdown -= 10;
-		}, 10000);
-
-		const startTimer = setTimeout(async () => {
-			clearInterval(countdownInterval);
-			const p = pending.get(jid)!;
-			pending.delete(jid);
-			p.timers.forEach(t => clearTimeout(t));
-
-			if (!p.jids.includes(message.sender)) p.jids.push(message.sender);
-
-			const game = new Wcg(message);
-			const result = await game.startGame(p.jids, jid);
-			if (result) return message.send(result, { mentions: p.jids });
-
-			games.set(jid, game);
-			const playersText = p.jids.map(id => `@${id.split("@")[0]}`).join(", ");
-			await message.send(
-				`\`\`\`Word Chain Game started! Challengers: ${playersText}\`\`\``,
-				{ mentions: p.jids }
-			);
-		}, 30000);
-
-		pending.get(jid)!.timers.push(startTimer);
+		},
 	},
-});
-
-Command({
-	on: true,
-	dontAddCommandList: true,
-	function: async message => {
-		const jid = message.chat;
-		const text = message.text?.trim().toLowerCase();
-		if (!text) return;
-
-		if (
-			text.includes("game started!") ||
-			text.includes("word chain game") ||
-			!message.sender ||
-			/\s/.test(text)
-		)
-			return;
-
-		if (text === "join" && pending.has(jid)) {
-			const p = pending.get(jid)!;
-			if (!p.jids.includes(message.sender)) {
-				p.jids.push(message.sender);
-				return message.send(
-					`\`\`\`@${message.sender.split("@")[0]} joined the Match.\`\`\``,
-					{ mentions: [message.sender] }
-				);
-			}
-			return;
-		}
-
-		if (games.has(jid)) {
-			const game = games.get(jid)!;
-			const res = await game.playWord(text, message.sender);
-			if (res.text) {
-				return message.send(res.text, { mentions: res.mentions });
-			}
-		}
-	},
-});
+] satisfies CommandModule[];
 
 class Wcg {
 	message: Serialize;
@@ -371,9 +370,7 @@ class Wcg {
 			result = `\`\`\`The Word Chain Game has concluded!\n\nFinal standings:\n${scoreText}\`\`\``;
 		}
 
-		const validPlayers = this.originalPlayers.filter(userId =>
-			isLidUser(userId)
-		);
+		const validPlayers = this.originalPlayers.filter(userId => isLidUser(userId));
 		await updateLeaderboard(
 			validPlayers.map(userId => ({
 				userId,
@@ -398,9 +395,7 @@ class Wcg {
 
 		const result: string = `\`\`\`The Word Chain Game has ended due to inactivity!\n\nFinal standings:\n${scoreText}\`\`\``;
 
-		const validPlayers = this.originalPlayers.filter(userId =>
-			isLidUser(userId)
-		);
+		const validPlayers = this.originalPlayers.filter(userId => isLidUser(userId));
 		await updateLeaderboard(
 			validPlayers.map(userId => ({
 				userId,

@@ -1,18 +1,19 @@
-import { Command } from "../client/Core";
 import { getAlive, SetAlive } from "../client/Models";
 import { formatRuntime, fact, getAdvice, getQuote } from "../client/Utils";
+import type { CommandModule } from "../client/Core";
 
-Command({
-	name: "alive",
+export default {
+	pattern: "alive",
 	fromMe: false,
 	isGroup: false,
 	desc: "Get Alive message",
 	type: "misc",
-	function: async (msg, match) => {
+	run: async (msg, match) => {
 		if (match) SetAlive(match);
+
 		let aliveMsg = getAlive();
 
-		const replacements: { [key: string]: string | Promise<string> } = {
+		const replacements: Record<string, string | Promise<string>> = {
 			"@user": `@${msg.sender.split("@")[0]}`,
 			"@owner": msg.owner?.jid ? `@${msg.owner.jid.split("@")[0]}` : "",
 			"@fact": fact(),
@@ -23,19 +24,17 @@ Command({
 		};
 
 		const mentions = [];
-		for (const key of ["@user", "@owner"]) {
-			if (aliveMsg.includes(key) && replacements[key]) {
-				mentions.push(key === "@user" ? msg.sender : msg.owner.jid);
-			}
-		}
+		if (aliveMsg.includes("@user")) mentions.push(msg.sender);
+		if (aliveMsg.includes("@owner") && msg.owner?.jid)
+			mentions.push(msg.owner.jid);
 
 		for (const [key, value] of Object.entries(replacements)) {
 			if (aliveMsg.includes(key)) {
-				const replacement = typeof value === "string" ? value : await value;
-				aliveMsg = aliveMsg.replace(key, replacement);
+				const rep = typeof value === "string" ? value : await value;
+				aliveMsg = aliveMsg.replace(key, rep);
 			}
 		}
 
-		return await msg.send(aliveMsg, { jid: msg.chat, mentions });
+		return msg.send(aliveMsg, { jid: msg.chat, mentions });
 	},
-});
+} satisfies CommandModule;

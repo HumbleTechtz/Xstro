@@ -1,13 +1,13 @@
-import { Command } from "../../client/Core/";
 import { setGoodBye, getGoodBye, delGoodBye } from "../../client/Models";
+import type { CommandModule } from "../../client/Core";
 
-Command({
-	name: "goodbye",
+export default {
+	pattern: "goodbye",
 	fromMe: true,
 	isGroup: true,
 	desc: "Set, get, or remove goodbye message",
 	type: "group",
-	function: async (msg, args) => {
+	run: async (msg, args) => {
 		const groupJid = msg.chat;
 
 		if (!args) {
@@ -29,4 +29,4 @@ Command({
 		setGoodBye(groupJid, args);
 		return msg.send("_Goodbye message set._");
 	},
-});
+} satisfies CommandModule;

@@ -1,21 +1,21 @@
 import config from "../config";
 import { platform, totalmem, freemem } from "os";
-import { Command, commands } from "../client/Core";
+import { commandMap } from "../client/Core";
 import { fancy, formatBytes, formatRuntime } from "../client/Utils";
+import type { CommandModule } from "../client/Core";
 
-Command({
-	name: "menu",
-	fromMe: false,
-	desc: "Show All Commands",
-	dontAddCommandList: true,
-	function: async message => {
-		const cmds = commands.filter(
-			cmd =>
-				cmd.name &&
-				!cmd.dontAddCommandList &&
-				!cmd.name.toString().includes("undefined")
-		).length;
-		let menuInfo = `\`\`\`╭─── ${config.BOT_NAME ?? `χѕтяσ`} ────
+const commands = [...commandMap.values()].filter(c => !c.dontAddCommandList);
+
+export default [
+	{
+		pattern: "menu",
+		fromMe: false,
+		desc: "Show All Commands",
+		dontAddCommandList: true,
+		run: async message => {
+			const cmds = commands.filter(cmd => cmd.pattern).length;
+
+			let menuInfo = `\`\`\`╭─── ${config.BOT_NAME ?? `χѕтяσ`} ────
 │ User: ${message.pushName?.trim() ?? `Unknown`}
 │ Owner: ${config.OWNER_NAME ?? `αѕтяσχ11`}
 │ Plugins: ${cmds}
@@ -27,62 +27,48 @@ Command({
 │ Date: ${new Date().toLocaleDateString("en-US")}
 │ Time: ${new Date().toLocaleTimeString("en-US", { timeZone: process.env.TZ })}
 │ Node: ${process.version}
-╰─────────────\`\`\`\n`.trim();
+╰─────────────\`\`\`\n`;
 
-		menuInfo += "\n";
-		const commandsByType = commands
-			.filter(cmd => cmd.name && !cmd.dontAddCommandList)
-			.reduce((acc: any, cmd) => {
+			const byType: Record<string, string[]> = {};
+
+			for (const cmd of commands) {
 				const type = cmd.type ?? "misc";
-				if (!acc[type]) {
-					acc[type] = [];
+				const name = cmd.pattern?.toLowerCase();
+				if (!name) continue;
+				if (!byType[type]) byType[type] = [];
+				byType[type].push(name);
+			}
+
+			let total = 1;
+			for (const type of Object.keys(byType).sort()) {
+				menuInfo += `╭──── *${fancy(type)}* ────\n`;
+				for (const name of byType[type].sort()) {
+					menuInfo += `│${fancy(total++)}· ${fancy(name)}\n`;
 				}
-				acc[type].push(cmd.name?.toString().toLowerCase().split(/\W+/)[2]);
-				return acc;
-			}, {});
+				menuInfo += `╰────────────\n`;
+			}
 
-		const sortedTypes = Object.keys(commandsByType).sort();
-
-		let totalCommands = 1;
-
-		sortedTypes.forEach(type => {
-			const sortedCommands = commandsByType[type].sort();
-			menuInfo += `╭──── *${fancy(type)}* ────\n`;
-			sortedCommands.forEach((cmd: string) => {
-				menuInfo += `│${fancy(totalCommands as unknown as string)}· ${fancy(
-					cmd
-				)}\n`;
-				totalCommands++;
-			});
-			menuInfo += `╰────────────\n`;
-		});
-		return await message.send(menuInfo.trim());
+			return message.send(menuInfo.trim());
+		},
 	},
-});
+	{
+		pattern: "help",
+		fromMe: false,
+		isGroup: false,
+		desc: "Get all command names and descriptions",
+		dontAddCommandList: true,
+		run: async message => {
+			const help = commands
+				.map(cmd => {
+					const name = cmd.pattern;
+					if (!name) return null;
+					return `- ${name}: ${cmd.desc || "No description"}`;
+				})
+				.filter(Boolean)
+				.sort()
+				.join("\n");
 
-Command({
-	name: "help",
-	fromMe: false,
-	isGroup: false,
-	desc: "Get all command names and descriptions",
-	dontAddCommandList: true,
-	function: async message => {
-		let help = "";
-		const filteredCommands = commands.filter(cmd => !cmd.dontAddCommandList);
-
-		const commandList = filteredCommands
-			.map(cmd => {
-				const cmdName = cmd.name?.toString().split(/[\p{S}\p{P}]/gu)[5];
-				if (!cmdName) return null;
-				return { name: cmdName, desc: cmd.desc || "No description" };
-			})
-			.filter(Boolean)
-			.sort((a, b) => a!.name.localeCompare(b!.name));
-
-		for (const cmd of commandList) {
-			help += `- ${cmd?.name}: ${cmd?.desc}\n`;
-		}
-
-		return await message.send(help.trim());
+			return message.send(help.trim());
+		},
 	},
-});
+] satisfies CommandModule[];

@@ -1,190 +1,171 @@
-import { Command } from "../client/Core";
+import type { CommandModule } from "../client/Core";
 
-Command({
-	name: "cpin",
-	fromMe: true,
-	isGroup: false,
-	desc: "Pin a chat",
-	type: "chats",
-	function: async message => {
-		await message.chatModify({ pin: true }, message.chat);
-		return message.send("Pined.");
+export default [
+	{
+		pattern: "cpin",
+		fromMe: true,
+		isGroup: false,
+		desc: "Pin a chat",
+		type: "chats",
+		run: async msg => {
+			await msg.chatModify({ pin: true }, msg.chat);
+			return msg.send("Pined.");
+		},
 	},
-});
-
-Command({
-	name: "cunpin",
-	fromMe: true,
-	isGroup: false,
-	desc: "Unpin a chat",
-	type: "chats",
-	function: async message => {
-		await message.chatModify({ pin: false }, message.chat);
-		return message.send("Unpined.");
+	{
+		pattern: "cunpin",
+		fromMe: true,
+		isGroup: false,
+		desc: "Unpin a chat",
+		type: "chats",
+		run: async msg => {
+			await msg.chatModify({ pin: false }, msg.chat);
+			return msg.send("Unpined.");
+		},
 	},
-});
-
-Command({
-	name: "archive",
-	fromMe: true,
-	isGroup: false,
-	desc: "Archive a chat",
-	type: "chats",
-	function: async message => {
-		await message.chatModify(
-			{
-				archive: true,
-				lastMessages: [
-					{ key: message.key, messageTimestamp: message.messageTimestamp },
-				],
-			},
-			message.chat
-		);
-		return message.send("Archived.");
-	},
-});
-
-Command({
-	name: "unarchive",
-	fromMe: true,
-	isGroup: false,
-	desc: "Unarchive a chat",
-	type: "chats",
-	function: async message => {
-		await message.chatModify(
-			{
-				archive: false,
-				lastMessages: [
-					{ key: message.key, messageTimestamp: message.messageTimestamp },
-				],
-			},
-			message.chat
-		);
-		return message.send("Unarchived.");
-	},
-});
-
-Command({
-	name: "clear",
-	fromMe: true,
-	isGroup: false,
-	desc: "Clear a chat",
-	type: "chats",
-	function: async message => {
-		await message.chatModify(
-			{
-				delete: true,
-				lastMessages: [
-					{ key: message.key, messageTimestamp: message.messageTimestamp },
-				],
-			},
-			message.chat
-		);
-		return message.send("Cleared.");
-	},
-});
-
-Command({
-	name: "delete",
-	fromMe: true,
-	isGroup: false,
-	desc: "Delete a chat",
-	type: "chats",
-	function: async message => {
-		return await message.chatModify(
-			{
-				delete: true,
-				lastMessages: [
-					{ key: message.key, messageTimestamp: message.messageTimestamp },
-				],
-			},
-			message.chat
-		);
-	},
-});
-
-Command({
-	name: "star",
-	fromMe: true,
-	isGroup: false,
-	desc: "Star a message",
-	type: "chats",
-	function: async msg => {
-		if (!msg.quoted) {
-			return msg.send("Reply a message to star");
-		}
-		const { id, fromMe } = msg.quoted.key as { id: string; fromMe: boolean };
-
-		await msg.chatModify(
-			{
-				star: {
-					messages: [{ id, fromMe }],
-					star: true,
+	{
+		pattern: "archive",
+		fromMe: true,
+		isGroup: false,
+		desc: "Archive a chat",
+		type: "chats",
+		run: async msg => {
+			await msg.chatModify(
+				{
+					archive: true,
+					lastMessages: [{ key: msg.key, messageTimestamp: msg.messageTimestamp }],
 				},
-			},
-			msg.chat
-		);
-		return msg.send("Starred.");
+				msg.chat
+			);
+			return msg.send("Archived.");
+		},
 	},
-});
-
-Command({
-	name: "unstar",
-	fromMe: true,
-	isGroup: false,
-	desc: "Unstar a message",
-	type: "chats",
-	function: async msg => {
-		if (!msg.quoted) {
-			return msg.send("Reply a message to unstar");
-		}
-		const { id, fromMe } = msg.quoted.key as { id: string; fromMe: boolean };
-
-		await msg.chatModify(
-			{
-				star: {
-					messages: [{ id, fromMe }],
-					star: false,
+	{
+		pattern: "unarchive",
+		fromMe: true,
+		isGroup: false,
+		desc: "Unarchive a chat",
+		type: "chats",
+		run: async msg => {
+			await msg.chatModify(
+				{
+					archive: false,
+					lastMessages: [{ key: msg.key, messageTimestamp: msg.messageTimestamp }],
 				},
-			},
-			msg.chat
-		);
-		return msg.send("Unstarred.");
+				msg.chat
+			);
+			return msg.send("Unarchived.");
+		},
 	},
-});
+	{
+		pattern: "clear",
+		fromMe: true,
+		isGroup: false,
+		desc: "Clear a chat",
+		type: "chats",
+		run: async msg => {
+			await msg.chatModify(
+				{
+					delete: true,
+					lastMessages: [{ key: msg.key, messageTimestamp: msg.messageTimestamp }],
+				},
+				msg.chat
+			);
+			return msg.send("Cleared.");
+		},
+	},
+	{
+		pattern: "delete",
+		fromMe: true,
+		isGroup: false,
+		desc: "Delete a chat",
+		type: "chats",
+		run: async msg => {
+			return msg.chatModify(
+				{
+					delete: true,
+					lastMessages: [{ key: msg.key, messageTimestamp: msg.messageTimestamp }],
+				},
+				msg.chat
+			);
+		},
+	},
+	{
+		pattern: "star",
+		fromMe: true,
+		isGroup: false,
+		desc: "Star a message",
+		type: "chats",
+		run: async msg => {
+			if (!msg.quoted) return msg.send("Reply a message");
 
-Command({
-	name: "pin",
-	fromMe: false,
-	isGroup: false,
-	desc: "Pin a message",
-	type: "chats",
-	function: async message => {
-		if (!message.quoted) {
-			return message.send("Reply a message to pin it.");
-		}
-		return await message.sendMessage(message.chat, {
-			pin: message.quoted.key,
-			type: 1,
-			time: 604800,
-		});
-	},
-});
+			const { id, fromMe } = msg.quoted.key as { id: string; fromMe: boolean };
 
-Command({
-	name: "unpin",
-	fromMe: false,
-	isGroup: false,
-	desc: "Unpin a message",
-	type: "chats",
-	function: async message => {
-		if (!message.quoted) {
-			return message.send("Reply a message to pin it.");
-		}
-		return await message.sendMessage(message.chat, {
-			pin: message.quoted.key,
-			type: 2,
-			time: undefined,
-		});
+			await msg.chatModify(
+				{
+					star: {
+						messages: [{ id, fromMe }],
+						star: true,
+					},
+				},
+				msg.chat
+			);
+			return msg.send("Starred.");
+		},
 	},
-});
+	{
+		pattern: "unstar",
+		fromMe: true,
+		isGroup: false,
+		desc: "Unstar a message",
+		type: "chats",
+		run: async msg => {
+			if (!msg.quoted) return msg.send("Reply a message to unstar");
+
+			const { id, fromMe } = msg.quoted.key as { id: string; fromMe: boolean };
+
+			await msg.chatModify(
+				{
+					star: {
+						messages: [{ id, fromMe }],
+						star: false,
+					},
+				},
+				msg.chat
+			);
+			return msg.send("Unstarred.");
+		},
+	},
+	{
+		pattern: "pin",
+		fromMe: false,
+		isGroup: false,
+		desc: "Pin a message",
+		type: "chats",
+		run: async msg => {
+			if (!msg.quoted) return msg.send("Reply a message");
+
+			return msg.sendMessage(msg.chat, {
+				pin: msg.quoted.key,
+				type: 1,
+				time: 604800,
+			});
+		},
+	},
+	{
+		pattern: "unpin",
+		fromMe: false,
+		isGroup: false,
+		desc: "Unpin a message",
+		type: "chats",
+		run: async msg => {
+			if (!msg.quoted) return msg.send("Reply a message");
+
+			return msg.sendMessage(msg.chat, {
+				pin: msg.quoted.key,
+				type: 2,
+				time: undefined,
+			});
+		},
+	},
+] satisfies CommandModule[];

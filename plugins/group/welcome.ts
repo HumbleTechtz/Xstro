@@ -1,13 +1,13 @@
-import { Command } from "../../client/Core/";
 import { setWelcome, getWelcome, delWelcome } from "../../client/Models";
+import type { CommandModule } from "../../client/Core";
 
-Command({
-	name: "welcome",
+export default {
+	pattern: "welcome",
 	fromMe: true,
 	isGroup: true,
 	desc: "Set, get, or remove welcome message",
 	type: "group",
-	function: async (msg, args) => {
+	run: async (msg, args) => {
 		const groupJid = msg.chat;
 
 		if (!args) {
@@ -29,4 +29,4 @@ Command({
 		setWelcome(groupJid, args);
 		return msg.send("_Welcome message set._");
 	},
-});
+} satisfies CommandModule;

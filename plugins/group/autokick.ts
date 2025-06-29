@@ -1,14 +1,14 @@
-import { Command } from "../../client/Core/";
-import { addAutoKick, delAutoKick, getAllAutoKicks } from "../../client/Models";
 import lang from "../../client/Utils/language";
+import { addAutoKick, delAutoKick, getAllAutoKicks } from "../../client/Models";
+import type { CommandModule } from "../../client/Core";
 
-Command({
-	name: "autokick",
+export default {
+	pattern: "autokick",
 	fromMe: true,
 	isGroup: true,
 	desc: "Manage autokick list (add, del, list)",
 	type: "group",
-	function: async (msg, args) => {
+	run: async (msg, args) => {
 		if (!msg.isAdmin) return msg.send(lang.BOT_NOT_ADMIN);
 		if (!msg.isBotAdmin) return msg.send(lang.BOT_NOT_ADMIN);
 		if (!args) {
@@ -57,4 +57,4 @@ Command({
 
 		return msg.send("_Use `add`, `del`, or `list`._");
 	},
-});
+} satisfies CommandModule;

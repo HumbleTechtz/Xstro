@@ -1,20 +1,17 @@
-import { Command } from "../../client/Core/";
 import { getLeaderboard } from "../../client/Models";
+import type { CommandModule } from "../../client/Core";
 
-Command({
-	name: "leaderboard",
-	fromMe: false,
-	isGroup: false,
+export default {
+	pattern: "leaderboard",
 	desc: "View the game leaderboard",
 	type: "games",
-	function: async msg => {
+	fromMe: false,
+	isGroup: false,
+	run: async msg => {
 		const lbEntries = await getLeaderboard();
-		if (!lbEntries || lbEntries.length === 0) {
-			await msg.send("No leaderboard data available.");
-			return;
-		}
+		if (!lbEntries?.length) return msg.send("No leaderboard data available.");
 
-		const rankOrder = [
+		const ranks = [
 			"legend",
 			"master",
 			"diamond",
@@ -24,71 +21,22 @@ Command({
 			"bronze",
 		];
 		lbEntries.sort((a, b) => {
-			const rankDiff = rankOrder.indexOf(a.rank) - rankOrder.indexOf(b.rank);
-			return rankDiff !== 0 ? rankDiff : b.score - a.score;
+			const r = ranks.indexOf(a.rank) - ranks.indexOf(b.rank);
+			return r !== 0 ? r : b.score - a.score;
 		});
 
-		const legends = lbEntries.filter(e => e.rank === "legend");
-		const master = lbEntries.filter(e => e.rank === "master");
-		const diamond = lbEntries.filter(e => e.rank === "diamond");
-		const platinum = lbEntries.filter(e => e.rank === "platinum");
-		const gold = lbEntries.filter(e => e.rank === "gold");
-		const silver = lbEntries.filter(e => e.rank === "silver");
-		const bronze = lbEntries.filter(e => e.rank === "bronze");
-
-		const legendsText =
-			legends.length > 0
-				? `Legends:\n${legends
+		let text = "LeaderBoard\n\n";
+		for (const rank of ranks) {
+			const group = lbEntries.filter(e => e.rank === rank);
+			text += group.length
+				? `${rank[0].toUpperCase() + rank.slice(1)}:\n${group
 						.map((e, i) => `${i + 1}. @${e.userId.split("@")[0]}: ${e.score}`)
 						.join("\n")}\n`
-				: "Legends:\n---\n";
+				: `${rank[0].toUpperCase() + rank.slice(1)}:\n---\n`;
+		}
 
-		const masterText =
-			master.length > 0
-				? `Master:\n${master
-						.map((e, i) => `${i + 1}. @${e.userId.split("@")[0]}: ${e.score}`)
-						.join("\n")}\n`
-				: "Master:\n---\n";
-
-		const diamondText =
-			diamond.length > 0
-				? `Diamond:\n${diamond
-						.map((e, i) => `${i + 1}. @${e.userId.split("@")[0]}: ${e.score}`)
-						.join("\n")}\n`
-				: "Diamond:\n---\n";
-
-		const platinumText =
-			platinum.length > 0
-				? `Platinum:\n${platinum
-						.map((e, i) => `${i + 1}. @${e.userId.split("@")[0]}: ${e.score}`)
-						.join("\n")}\n`
-				: "Platinum:\n---\n";
-
-		const goldText =
-			gold.length > 0
-				? `Gold:\n${gold
-						.map((e, i) => `${i + 1}. @${e.userId.split("@")[0]}: ${e.score}`)
-						.join("\n")}\n`
-				: "Gold:\n---\n";
-
-		const silverText =
-			silver.length > 0
-				? `Silver:\n${silver
-						.map((e, i) => `${i + 1}. @${e.userId.split("@")[0]}: ${e.score}`)
-						.join("\n")}\n`
-				: "Silver:\n---\n";
-
-		const bronzeText =
-			bronze.length > 0
-				? `Bronze:\n${bronze
-						.map((e, i) => `${i + 1}. @${e.userId.split("@")[0]}: ${e.score}`)
-						.join("\n")}\n`
-				: "Bronze:\n---\n";
-
-		const formatted = `LeaderBoard\n\n${legendsText}${masterText}${diamondText}${platinumText}${goldText}${silverText}${bronzeText}`;
-
-		const userIds = lbEntries.map(entry => entry.userId);
-
-		await msg.send("```" + formatted + "```", { mentions: userIds });
+		return msg.send("```" + text.trim() + "```", {
+			mentions: lbEntries.map(e => e.userId),
+		});
 	},
-});
+} satisfies CommandModule;
