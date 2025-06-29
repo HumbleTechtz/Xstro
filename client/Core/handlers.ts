@@ -1,9 +1,19 @@
-import { commandMap } from "./plugin";
-import { getStickerCmd } from "../Models";
+import lang from "../Utils/language";
+import { commandMap, CommandModule } from "./plugin";
+import { canProceed, getStickerCmd } from "../Models";
 import type { Serialize } from "./serialize";
 
-const exec = (cmd: any, msg: Serialize, match?: string) =>
+const exec = (cmd: CommandModule, msg: Serialize, match?: string) =>
 	cmd.run(msg, match).catch(console.error);
+
+const verify = (cmd: CommandModule, message: Serialize) => {
+	if (message.mode && !message.sudo) return null;
+	if (cmd.fromMe && !message.sudo) return lang.FOR_SUDO_USERS;
+	if (cmd.isGroup && !message.isGroup) return lang.FOR_GROUPS_ONLY;
+	if (!message.sudo && !canProceed(message.sender))
+		return lang.RATE_LIMIT_REACHED;
+	return "valid";
+};
 
 const handleText = async (msg: Serialize) => {
 	if (!msg?.text) return;
@@ -15,6 +25,9 @@ const handleText = async (msg: Serialize) => {
 
 	for (const [, cmd] of commandMap) {
 		if (!cmd.patternRegex) continue;
+
+		const result = verify(cmd, msg);
+		if (result !== "valid") continue;
 
 		const match = body.match(cmd.patternRegex);
 		if (match) return exec(cmd, msg, match[2]);
@@ -34,6 +47,9 @@ const handleSticker = (msg: Serialize) => {
 
 	for (const [, cmd] of commandMap) {
 		if (!cmd.patternRegex) continue;
+
+		const result = verify(cmd, msg);
+		if (result !== "valid") continue;
 
 		const match = cmdText.match(cmd.patternRegex);
 		if (match) return exec(cmd, msg, match[2]);
