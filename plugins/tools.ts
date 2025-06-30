@@ -1,4 +1,6 @@
+import { openAsBlob } from "node:fs";
 import language from "../client/Utils/language";
+import { removeBg } from "../client/Utils";
 import type { CommandModule } from "../client/Core";
 
 export default [
@@ -24,6 +26,22 @@ export default [
 			const pp = await message.profilePictureUrl(user, "image");
 			if (!pp) return message.send(`_No profile photo found_`);
 			return await message.send(pp);
+		},
+	},
+	{
+		pattern: "rmbg",
+		fromMe: false,
+		isGroup: false,
+		desc: "Remove a background from an image",
+		type: "tools",
+		run: async msg => {
+			const m = msg.quoted;
+			if (!m || !m.image) return msg.send("Reply an image");
+
+			const blob = await openAsBlob(
+				await msg.download({ message: m, save: true })
+			);
+			return await msg.send(Buffer.from(await removeBg(blob)));
 		},
 	},
 ] satisfies CommandModule[];

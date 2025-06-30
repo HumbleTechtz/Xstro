@@ -8,7 +8,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 export interface CommandModule {
 	pattern?: string;
 	aliases?: string[];
-	run: (msg: Serialize, match?: string) => Promise<unknown>;
+	run: (instance: Serialize, argument?: string) => Promise<unknown>;
 	on?: string | boolean;
 	fromMe?: boolean;
 	isGroup?: boolean;

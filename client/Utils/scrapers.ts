@@ -188,17 +188,20 @@ export const searchWeb = async (query: string): Promise<string> => {
 		.join("\n\n");
 };
 
-export const Pinterest = async (url: string): Promise<string | null> => {
-	const proc = Bun.spawn(
-		["bun", "run", "tsx", resolve("client/Utils/pinterest.ts"), url],
-		{
-			stdout: "pipe",
-			stderr: "pipe",
-			cwd: process.cwd(),
-		}
-	);
+export async function removeBg(blob: Blob) {
+	const formData = new FormData();
+	formData.append("size", "auto");
+	formData.append("image_file", blob);
 
-	const out = await new Response(proc.stdout).text();
-	const trimmed = out.trim();
-	return trimmed.length ? trimmed : null;
-};
+	const response = await fetch("https://api.remove.bg/v1.0/removebg", {
+		method: "POST",
+		headers: { "X-Api-Key": "rzhLwHssmJpmxPQ9bNp9nSyd" },
+		body: formData,
+	});
+
+	if (response.ok) {
+		return await response.arrayBuffer();
+	} else {
+		throw new Error(`${response.status}: ${response.statusText}`);
+	}
+}
