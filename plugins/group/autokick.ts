@@ -38,7 +38,7 @@ export default {
 
 		const { jid, lid, exists } = await msg
 			.onWhatsApp(parsedUser)
-			.then((v: string[]) => v![0]);
+			.then(v => v![0]);
 		if (!exists) return msg.send("_User does not exist on WhatsApp_");
 
 		if (subcmd === "add") {

@@ -5,7 +5,7 @@
  * @copyright Copyright (c) 2025 AstroX11
  */
 
-import { getAntiCall } from "../Models";
+import { getAntiCall } from "../schemas";
 import type { BaileysEventMap, WASocket } from "baileys";
 
 export default class {

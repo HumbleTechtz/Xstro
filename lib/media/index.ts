@@ -3,7 +3,7 @@ import path from "path";
 import { cwd } from "process";
 
 export const logo = await readFile(
-	path.join(cwd(), "client", "Media", "images", "social.png")
+	path.join(cwd(), "lib", "media", "images", "social.png")
 );
 
 export * from "./ffmpeg";

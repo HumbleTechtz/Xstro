@@ -7,7 +7,7 @@
 
 import lang from "../common/language";
 import { logo } from "../media";
-import { getGroupEvent } from "../schemas/GroupEvents";
+import { getGroupEvent } from "../schemas";
 import type { BaileysEventMap, WASocket } from "baileys";
 
 export default class {

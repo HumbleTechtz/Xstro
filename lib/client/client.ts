@@ -15,9 +15,9 @@ import {
 import events from "./events";
 import hooks from "./hooks";
 import pair from "./pair";
-import useSqliteAuthState from "../schemas/AuthState";
-import { getMessage, cachedGroupMetadata } from "../Models";
-import { MemoryCache, Logger } from "../Utils";
+import useSqliteAuthState from "../schemas/session";
+import { getMessage, cachedGroupMetadata } from "../schemas";
+import { MemoryCache, Logger } from "../common";
 
 (async () => {
 	const cache = new MemoryCache();

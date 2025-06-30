@@ -13,7 +13,6 @@ import {
 	getDevice,
 	isJidGroup,
 	isJidNewsletter,
-	isJidUser,
 	jidNormalizedUser,
 	normalizeMessageContent,
 	WAContextInfo,
@@ -22,7 +21,7 @@ import {
 	type WAMessage,
 	type WASocket,
 } from "baileys";
-import { getDataType, isAdmin, isBotAdmin, text_from_message } from "../utils";
+import { getDataType, isAdmin, isBotAdmin, text_from_message } from "../common";
 import {
 	forwardMessage,
 	isMediaMessage,

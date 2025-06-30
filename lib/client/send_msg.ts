@@ -1,4 +1,4 @@
-import { getDataType, isUrl, urlContent } from "../utils";
+import { getDataType, isUrl, urlContent } from "../common";
 import {
 	getContentType,
 	type AnyMessageContent,

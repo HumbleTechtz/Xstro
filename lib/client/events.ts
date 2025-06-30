@@ -5,12 +5,12 @@
  * @copyright Copyright (c) 2025 AstroX11
  */
 
-import ConnectionUpdate from "../Controllers/Connection";
-import MessageUpsert from "../Controllers/MessageUpsert";
-import GroupParticipant from "../Controllers/GroupParticipant";
-import Calls from "../Controllers/Calls";
-import GroupRequests from "../Controllers/GroupRequests";
-import MessageDelete from "../Controllers/MessageDelete";
+import ConnectionUpdate from "../handlers/Connection";
+import MessageUpsert from "../handlers/MessageUpsert";
+import GroupParticipant from "../handlers/GroupParticipant";
+import Calls from "../handlers/Calls";
+import GroupRequests from "../handlers/GroupRequests";
+import MessageDelete from "../handlers/MessageDelete";
 import type { BaileysEventMap, WASocket } from "baileys";
 
 export default function (

@@ -342,7 +342,7 @@ export default [
 			if (!requests || requests.length === 0) {
 				return message.send("_No join requests found_");
 			}
-			const participants = requests.map((p: { id: string }) => p.id);
+			const participants = requests.map(p => p.id);
 			return await message.send(
 				`_Join requests: ${participants.length}_\n\n` +
 					participants.map((p: string) => `@${p.split("@")[0]}`).join("\n"),
@@ -363,7 +363,7 @@ export default [
 			if (!requests || requests.length === 0) {
 				return message.send("_No join requests found_");
 			}
-			const participants = requests.map((p: { id: string }) => p.id);
+			const participants = requests.map((p: any) => p.id);
 			await message.groupRequestParticipantsUpdate(
 				message.chat,
 				participants,
@@ -392,7 +392,7 @@ export default [
 			if (!requests || requests.length === 0) {
 				return message.send("_No join requests found_");
 			}
-			const participants = requests.map((p: { id: string }) => p.id);
+			const participants = requests.map(p => p.id);
 			await message.groupRequestParticipantsUpdate(
 				message.chat,
 				participants,

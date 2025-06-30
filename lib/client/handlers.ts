@@ -1,8 +1,8 @@
 import lang from "../common/language";
 import { commandMap, CommandModule } from "./plugin";
-import { canProceed, getStickerCmd } from "../Models";
-import type { Serialize } from "./serialize";
+import { canProceed, getStickerCmd } from "../schemas";
 import { delay } from "baileys";
+import type { Serialize } from "./serialize";
 
 const exec = (cmd: CommandModule, msg: Serialize, match?: string) =>
 	cmd.run(msg, match).catch(console.error);

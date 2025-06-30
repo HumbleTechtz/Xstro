@@ -1,7 +1,7 @@
 import { join, extname, dirname } from "path";
 import { fileURLToPath, pathToFileURL } from "url";
 import { readdir } from "fs/promises";
-import type { Serialize } from "../lib/serialize";
+import type { Serialize } from "./serialize";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

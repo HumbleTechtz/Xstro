@@ -6,12 +6,12 @@
  */
 
 import lang from "../common/language";
-import { getCurrentTimeString, startClockAlignedScheduler } from "../Utils";
+import { getCurrentTimeString, startClockAlignedScheduler } from "../common";
 import {
 	updateMetaGroup,
 	cachedGroupMetadataAll,
 	getAutoMute,
-} from "../Models";
+} from "../schemas";
 import type { GroupMetadata, WASocket } from "baileys";
 
 export default function (sock: WASocket) {

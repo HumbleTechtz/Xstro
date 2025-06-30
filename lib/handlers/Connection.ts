@@ -7,9 +7,9 @@
 
 import { Boom } from "@hapi/boom";
 import { DisconnectReason, jidNormalizedUser } from "baileys";
-import { syncPlugins } from "../lib";
+import { syncPlugins } from "../client";
 import { restart } from "../common";
-import { SetSudo, auth, getBoot, setBoot } from "../Models";
+import { SetSudo, auth, getBoot, setBoot } from "../schemas";
 import type { BaileysEventMap, WASocket } from "baileys";
 
 export default class {

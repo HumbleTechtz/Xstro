@@ -7,7 +7,7 @@
 
 import lang from "../common/language";
 import { logo } from "../media";
-import { getGoodBye, getWelcome, getAutoKick, getGroupEvent } from "../Models";
+import { getGoodBye, getWelcome, getAutoKick, getGroupEvent } from "../schemas";
 import {
 	fact,
 	getAdvice,
@@ -15,7 +15,7 @@ import {
 	getJoke,
 	getQuote,
 	getRizz,
-} from "../Utils";
+} from "../common";
 import type { BaileysEventMap, WASocket } from "baileys";
 
 export default class {

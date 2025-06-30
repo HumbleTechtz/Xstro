@@ -1,7 +1,7 @@
 import util from "util";
-import plugins from "../lib/handlers";
-import { Serialize, serialize } from "../lib";
-import { saveMessage } from "../Models";
+import plugins from "../client/handlers";
+import { Serialize, serialize } from "../client";
+import { saveMessage } from "../schemas";
 import type { BaileysEventMap, WASocket } from "baileys";
 
 export default class {
