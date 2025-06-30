@@ -15,7 +15,7 @@ Bun.serve({
 });
 
 const manageClient = () => {
-	const child = spawn("bun", ["run", resolve("./lib/client/lib.ts")], {
+	const child = spawn("bun", ["run", resolve("./lib/client/client")], {
 		stdio: ["inherit", "inherit", "ignore"],
 	});
 	child.once("exit", code => {
