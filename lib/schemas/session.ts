@@ -1,4 +1,4 @@
-import database from "../lib/database";
+import database from "../client/database";
 import { BufferJSON, initAuthCreds, WAProto } from "baileys";
 import type { AuthenticationCreds, SignalDataTypeMap } from "baileys";
 
@@ -86,7 +86,7 @@ export default function () {
 				},
 			},
 		},
-		saveCreds: async() => {
+		saveCreds: async () => {
 			writeData(creds, "creds");
 		},
 	};

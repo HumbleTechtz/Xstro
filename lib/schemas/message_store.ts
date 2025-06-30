@@ -1,4 +1,4 @@
-import database from "../lib/database";
+import database from "../client/database";
 import { WAProto, type BaileysEventMap, type WAMessageKey } from "baileys";
 
 database.exec(`

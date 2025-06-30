@@ -1,4 +1,4 @@
-import database from "../lib/database";
+import database from "../client/database";
 
 database.exec(`
 	CREATE TABLE IF NOT EXISTS group_event (

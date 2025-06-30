@@ -1,4 +1,4 @@
-import database from "../lib/database";
+import database from "../client/database";
 import type { GroupMetadata } from "baileys";
 
 database.exec(`
