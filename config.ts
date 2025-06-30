@@ -1,4 +1,4 @@
-import { config } from "./core/Utils";
+import { config } from "./lib/common";
 
 config({ path: [".env", "config.env"], override: true });
 

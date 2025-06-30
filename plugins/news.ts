@@ -1,5 +1,5 @@
-import { getAPNews, getWABeta, getTradeNews } from "../core/Utils";
-import type { CommandModule } from "../core/Core";
+import { getAPNews, getWABeta, getTradeNews } from "../lib/common";
+import type { CommandModule } from "../lib/client";
 
 export default [
 	{

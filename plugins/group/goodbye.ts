@@ -1,5 +1,5 @@
-import { setGoodBye, getGoodBye, delGoodBye } from "../../core/Models";
-import type { CommandModule } from "../../core/Core";
+import { setGoodBye, getGoodBye, delGoodBye } from "../../lib/schemas";
+import type { CommandModule } from "../../lib/client";
 
 export default {
 	pattern: "goodbye",

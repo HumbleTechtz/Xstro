@@ -1,5 +1,5 @@
-import { searchWeb } from "../core/Utils";
-import type { CommandModule } from "../core/Core";
+import { searchWeb } from "../lib/common";
+import type { CommandModule } from "../lib/client";
 
 export default [
 	{

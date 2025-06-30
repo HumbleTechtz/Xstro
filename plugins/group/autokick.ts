@@ -1,6 +1,6 @@
-import lang from "../../core/Utils/language";
-import { addAutoKick, delAutoKick, getAllAutoKicks } from "../../core/Models";
-import type { CommandModule } from "../../core/Core";
+import lang from "../../lib/common/language";
+import { addAutoKick, delAutoKick, getAllAutoKicks } from "../../lib/schemas";
+import type { CommandModule } from "../../lib/client";
 
 export default {
 	pattern: "autokick",
@@ -38,7 +38,7 @@ export default {
 
 		const { jid, lid, exists } = await msg
 			.onWhatsApp(parsedUser)
-			.then(v => v![0]);
+			.then((v: string[]) => v![0]);
 		if (!exists) return msg.send("_User does not exist on WhatsApp_");
 
 		if (subcmd === "add") {

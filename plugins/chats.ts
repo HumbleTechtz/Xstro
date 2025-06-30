@@ -1,4 +1,4 @@
-import type { CommandModule } from "../core/Core";
+import type { CommandModule } from "../lib/client";
 
 export default [
 	{

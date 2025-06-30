@@ -1,6 +1,6 @@
-import { removeStickerCmd, setStickerCmd } from "../core/Models";
-import { commandMap } from "../core/Core";
-import type { CommandModule } from "../core/Core";
+import { removeStickerCmd, setStickerCmd } from "../lib/schemas";
+import { commandMap } from "../lib/client";
+import type { CommandModule } from "../lib/client";
 
 export default [
 	{

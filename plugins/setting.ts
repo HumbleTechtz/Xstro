@@ -1,5 +1,5 @@
-import { setPrefix, setMode, getMode } from "../core/Models";
-import type { CommandModule } from "../core/Core";
+import { setPrefix, setMode, getMode } from "../lib/schemas";
+import type { CommandModule } from "../lib/client";
 
 export default [
 	{

@@ -1,7 +1,7 @@
 import { openAsBlob } from "node:fs";
-import language from "../core/Utils/language";
-import { removeBg } from "../core/Utils";
-import type { CommandModule } from "../core/Core";
+import language from "../lib/common/language";
+import { removeBg } from "../lib/common";
+import type { CommandModule } from "../lib/client";
 
 export default [
 	{

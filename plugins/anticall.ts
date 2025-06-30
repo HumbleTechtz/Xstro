@@ -1,5 +1,5 @@
-import { getAntiCall, setAntiCall } from "../core/Models";
-import type { CommandModule } from "../core/Core";
+import { getAntiCall, setAntiCall } from "../lib/schemas";
+import type { CommandModule } from "../lib/client";
 
 export default {
 	pattern: "anticall",

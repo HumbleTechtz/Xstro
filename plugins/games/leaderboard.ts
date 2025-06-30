@@ -1,5 +1,5 @@
-import { getLeaderboard } from "../../core/Models";
-import type { CommandModule } from "../../core/Core";
+import { getLeaderboard } from "../../lib/schemas";
+import type { CommandModule } from "../../lib/client";
 
 export default {
 	pattern: "leaderboard",

@@ -1,6 +1,6 @@
-import lang from "../../core/Utils/language";
-import { cachedGroupMetadata } from "../../core/Models";
-import type { CommandModule } from "../../core/Core";
+import lang from "../../lib/common/language";
+import { cachedGroupMetadata } from "../../lib/schemas";
+import type { CommandModule } from "../../lib/client";
 
 export default [
 	{
@@ -342,10 +342,10 @@ export default [
 			if (!requests || requests.length === 0) {
 				return message.send("_No join requests found_");
 			}
-			const participants = requests.map(p => p.id);
+			const participants = requests.map((p: { id: string }) => p.id);
 			return await message.send(
 				`_Join requests: ${participants.length}_\n\n` +
-					participants.map(p => `@${p.split("@")[0]}`).join("\n"),
+					participants.map((p: string) => `@${p.split("@")[0]}`).join("\n"),
 				{
 					mentions: participants,
 				}
@@ -363,7 +363,7 @@ export default [
 			if (!requests || requests.length === 0) {
 				return message.send("_No join requests found_");
 			}
-			const participants = requests.map(p => p.id);
+			const participants = requests.map((p: { id: string }) => p.id);
 			await message.groupRequestParticipantsUpdate(
 				message.chat,
 				participants,
@@ -371,7 +371,7 @@ export default [
 			);
 			return await message.send(
 				`_Approved members: ${participants
-					.map(p => `@${p.split("@")[0]}`)
+					.map((p: string) => `@${p.split("@")[0]}`)
 					.join(", ")}_`,
 				{
 					mentions: participants,
@@ -392,15 +392,15 @@ export default [
 			if (!requests || requests.length === 0) {
 				return message.send("_No join requests found_");
 			}
-			const participants = requests.map(p => p.id);
+			const participants = requests.map((p: { id: string }) => p.id);
 			await message.groupRequestParticipantsUpdate(
 				message.chat,
 				participants,
 				"reject"
 			);
 			return await message.send(
-				`_Rejected members: ${participants
-					.map(p => `@${p.split("@")[0]}`)
+				`Rejected members:\n ${participants
+					.map((p: string) => `@${p.split("@")[0]}`)
 					.join(", ")}_`,
 				{
 					mentions: participants,

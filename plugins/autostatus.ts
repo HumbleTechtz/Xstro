@@ -1,5 +1,5 @@
-import { getAutoLikeStatus, setAutoLikeStatus } from "../core/Models";
-import type { CommandModule } from "../core/Core";
+import { getAutoLikeStatus, setAutoLikeStatus } from "../lib/schemas";
+import type { CommandModule } from "../lib/client";
 
 export default [
 	{

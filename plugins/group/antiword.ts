@@ -1,6 +1,6 @@
-import { setAntiWord, getAntiword } from "../../core/Models";
-import { escapeRegex } from "../../core/Utils";
-import type { CommandModule } from "../../core/Core";
+import { setAntiWord, getAntiword } from "../../lib/schemas";
+import { escapeRegex } from "../../lib/common";
+import type { CommandModule } from "../../lib/client";
 
 export default [
 	{

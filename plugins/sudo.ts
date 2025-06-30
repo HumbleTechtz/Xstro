@@ -1,6 +1,6 @@
-import language from "../core/Utils/language";
-import { SetSudo, delSudo, getSudo, isSudo } from "../core/Models";
-import type { CommandModule } from "../core/Core";
+import language from "../lib/common/language";
+import { SetSudo, delSudo, getSudo, isSudo } from "../lib/schemas";
+import type { CommandModule } from "../lib/client";
 
 export default [
 	{
