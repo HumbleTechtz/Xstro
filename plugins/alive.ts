@@ -1,6 +1,6 @@
-import { getAlive, SetAlive } from "../client/Models";
-import { formatRuntime, fact, getAdvice, getQuote } from "../client/Utils";
-import type { CommandModule } from "../client/Core";
+import { getAlive, SetAlive } from "../core/Models";
+import { formatRuntime, fact, getAdvice, getQuote } from "../core/Utils";
+import type { CommandModule } from "../core/Core";
 
 export default {
 	pattern: "alive",

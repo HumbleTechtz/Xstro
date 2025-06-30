@@ -1,4 +1,4 @@
-import database from "../Core/database";
+import database from "../core/database";
 
 database.exec(`
 	CREATE TABLE IF NOT EXISTS antidelete (

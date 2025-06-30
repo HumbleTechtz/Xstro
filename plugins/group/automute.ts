@@ -1,6 +1,6 @@
-import { setAutoMute, delAutoMute, getAutoMute } from "../../client/Models";
-import { isValidTimeString } from "../../client/Utils/constants";
-import type { CommandModule } from "../../client/Core";
+import { setAutoMute, delAutoMute, getAutoMute } from "../../core/Models";
+import { isValidTimeString } from "../../core/Utils/constants";
+import type { CommandModule } from "../../core/Core";
 
 export default [
 	{

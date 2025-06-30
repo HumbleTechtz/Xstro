@@ -1,5 +1,5 @@
-import { chatAi } from "../client/Utils";
-import type { CommandModule } from "../client/Core";
+import { chatAi } from "../core/Utils";
+import type { CommandModule } from "../core/Core";
 
 export default {
 	pattern: "ai",

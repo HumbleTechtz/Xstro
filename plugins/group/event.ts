@@ -2,8 +2,8 @@ import {
 	setGroupEvent,
 	getGroupEvent,
 	delGroupEvent,
-} from "../../client/Models";
-import type { CommandModule } from "../../client/Core";
+} from "../../core/Models";
+import type { CommandModule } from "../../core/Core";
 
 export default {
 	pattern: "event",

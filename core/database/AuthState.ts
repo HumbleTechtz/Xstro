@@ -1,4 +1,4 @@
-import database from "../Core/database";
+import database from "../core/database";
 import { BufferJSON, initAuthCreds, WAProto } from "baileys";
 import type { AuthenticationCreds, SignalDataTypeMap } from "baileys";
 

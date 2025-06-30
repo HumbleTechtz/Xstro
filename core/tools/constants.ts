@@ -1,5 +1,5 @@
-import { cachedGroupMetadata } from "../Models";
-import { Serialize } from "../Core/serialize";
+import { cachedGroupMetadata } from "../database";
+import { Serialize } from "../core/serialize";
 import { Boom } from "@hapi/boom";
 import { WAMessageContent } from "baileys";
 

@@ -1,6 +1,6 @@
-import { setFilter, delFilter, getAllFilters } from "../client/Models";
+import { setFilter, delFilter, getAllFilters } from "../core/Models";
 import { escapeRegex } from "./group/antiword";
-import type { CommandModule, Serialize } from "../client/Core";
+import type { CommandModule, Serialize } from "../core/Core";
 
 function checkGroupFilterTrigger(msg: Serialize, text: string) {
 	const mentioned = [...text.matchAll(/@(\w+)/g)].map(m => m[1]);

@@ -1,6 +1,6 @@
-import { writeExif } from "../client/Media";
-import { getDataType } from "../client/Utils";
-import type { CommandModule } from "../client/Core";
+import { writeExif } from "../core/Media";
+import { getDataType } from "../core/Utils";
+import type { CommandModule } from "../core/Core";
 
 export default [
 	{

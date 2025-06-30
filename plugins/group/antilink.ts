@@ -1,5 +1,5 @@
-import { delAntilink, getAntilink, setAntilink } from "../../client/Models";
-import type { CommandModule } from "../../client/Core/";
+import { delAntilink, getAntilink, setAntilink } from "../../core/Models";
+import type { CommandModule } from "../../core/Core/";
 
 export default [
 	{

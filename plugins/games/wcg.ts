@@ -1,7 +1,7 @@
 import { isLidUser } from "baileys";
-import { updateLeaderboard } from "../../client/Models";
-import type { Serialize } from "../../client/Core/serialize";
-import type { CommandModule } from "../../client/Core";
+import { updateLeaderboard } from "../../core/Models";
+import type { Serialize } from "../../core/Core/serialize";
+import type { CommandModule } from "../../core/Core";
 
 const games = new Map<string, Wcg>();
 const pending = new Map<string, { jids: string[]; timers: NodeJS.Timeout[] }>();

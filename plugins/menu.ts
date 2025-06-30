@@ -1,8 +1,8 @@
 import config from "../config";
 import { platform, totalmem, freemem } from "os";
-import { commandMap } from "../client/Core";
-import { fancy, formatBytes, formatRuntime } from "../client/Utils";
-import type { CommandModule } from "../client/Core";
+import { commandMap } from "../core/Core";
+import { fancy, formatBytes, formatRuntime } from "../core/Utils";
+import type { CommandModule } from "../core/Core";
 
 const commands = [...commandMap.values()].filter(c => !c.dontAddCommandList);
 

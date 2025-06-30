@@ -1,6 +1,6 @@
-import language from "../client/Utils/language";
-import { delBan, getBan, setBan, isBanned } from "../client/Models";
-import type { CommandModule } from "../client/Core";
+import language from "../core/Utils/language";
+import { delBan, getBan, setBan, isBanned } from "../core/Models";
+import type { CommandModule } from "../core/Core";
 
 export default [
 	{

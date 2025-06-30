@@ -1,4 +1,4 @@
-import { config } from "./client/Utils";
+import { config } from "./core/Utils";
 
 config({ path: [".env", "config.env"], override: true });
 

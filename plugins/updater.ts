@@ -1,5 +1,5 @@
-import { restart, update } from "../client/Utils";
-import type { CommandModule } from "../client/Core";
+import { restart, update } from "../core/Utils";
+import type { CommandModule } from "../core/Core";
 
 export default [
 	{

@@ -10,7 +10,7 @@
 	"homepage": "https://github.com/AstroX11/whatsapp-bot#readme",
 	"author": "AstroX11 <devastro0010@gmail.com>",
 	"scripts": {
-		"start": "bun ./client/app.ts"
+		"start": "bun ./core/app.ts"
 	},
 	"dependencies": {
 		"@hapi/boom": "^10.0.1",

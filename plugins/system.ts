@@ -1,6 +1,6 @@
 import { delay } from "baileys";
-import { formatRuntime, restart, shutdown } from "../client/Utils";
-import type { CommandModule } from "../client/Core";
+import { formatRuntime, restart, shutdown } from "../core/Utils";
+import type { CommandModule } from "../core/Core";
 
 export default [
 	{

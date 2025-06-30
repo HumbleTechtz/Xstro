@@ -1,5 +1,5 @@
-import { setAntidelete } from "../client/Models";
-import type { CommandModule } from "../client/Core";
+import { setAntidelete } from "../core/Models";
+import type { CommandModule } from "../core/Core";
 
 export default {
 	pattern: "antidelete",

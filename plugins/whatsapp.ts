@@ -1,5 +1,5 @@
 import { delay } from "baileys";
-import type { CommandModule } from "../client/Core";
+import type { CommandModule } from "../core/Core";
 
 export default [
 	{

@@ -1,6 +1,6 @@
-import lang from "../../client/Utils/language";
-import { cachedGroupMetadata } from "../../client/Models";
-import type { CommandModule } from "../../client/Core";
+import lang from "../../core/Utils/language";
+import { cachedGroupMetadata } from "../../core/Models";
+import type { CommandModule } from "../../core/Core";
 
 export default [
 	{

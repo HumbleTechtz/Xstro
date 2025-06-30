@@ -1,5 +1,5 @@
-import { createMeme } from "../client/Media";
-import type { CommandModule } from "../client/Core";
+import { createMeme } from "../core/Media";
+import type { CommandModule } from "../core/Core";
 
 const makers = [
 	"elon",

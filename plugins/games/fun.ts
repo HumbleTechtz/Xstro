@@ -10,8 +10,8 @@ import {
 	getNumberFact,
 	getQuote,
 	getRizz,
-} from "../../client/Utils";
-import type { CommandModule } from "../../client/Core";
+} from "../../core/Utils";
+import type { CommandModule } from "../../core/Core";
 
 export default [
 	{

@@ -1,5 +1,5 @@
-import { setWelcome, getWelcome, delWelcome } from "../../client/Models";
-import type { CommandModule } from "../../client/Core";
+import { setWelcome, getWelcome, delWelcome } from "../../core/Models";
+import type { CommandModule } from "../../core/Core";
 
 export default {
 	pattern: "welcome",

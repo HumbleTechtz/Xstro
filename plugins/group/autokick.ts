@@ -1,6 +1,6 @@
-import lang from "../../client/Utils/language";
-import { addAutoKick, delAutoKick, getAllAutoKicks } from "../../client/Models";
-import type { CommandModule } from "../../client/Core";
+import lang from "../../core/Utils/language";
+import { addAutoKick, delAutoKick, getAllAutoKicks } from "../../core/Models";
+import type { CommandModule } from "../../core/Core";
 
 export default {
 	pattern: "autokick",

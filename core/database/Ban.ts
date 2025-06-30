@@ -1,4 +1,4 @@
-import database from "../Core/database";
+import database from "../core/database";
 import { isJidUser, isLidUser } from "baileys";
 
 database.exec(`
