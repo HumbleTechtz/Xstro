@@ -17,7 +17,6 @@ export default [
 
 			let menuInfo = `\`\`\`╭─── ${config.BOT_NAME ?? `χѕтяσ`} ────
 │ User: ${message.pushName?.trim() ?? `Unknown`}
-│ Owner: ${config.OWNER_NAME ?? `αѕтяσχ11`}
 │ Plugins: ${cmds}
 │ Mode: ${message.mode ? "Private" : "Public"}
 │ Uptime: ${formatRuntime(process.uptime())}
@@ -26,7 +25,6 @@ export default [
 │ Day: ${new Date().toLocaleDateString("en-US", { weekday: "long" })}
 │ Date: ${new Date().toLocaleDateString("en-US")}
 │ Time: ${new Date().toLocaleTimeString("en-US", { timeZone: process.env.TZ })}
-│ Node: ${process.version}
 ╰─────────────\`\`\`\n`;
 
 			const byType: Record<string, string[]> = {};
