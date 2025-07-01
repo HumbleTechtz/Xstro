@@ -68,6 +68,23 @@ export default [
 		},
 	},
 	{
+		pattern: "fullpp",
+		fromMe: true,
+		isGroup: false,
+		desc: "Update your profile image with High Res",
+		type: "whatsapp",
+		run: async message => {
+			const msg = message.quoted;
+			if (!msg || !msg.image) return message.send("Reply an Image");
+			const media = await message.download();
+			await message.updateProfilePicture(message.owner.jid, media as Buffer, {
+				width: 320,
+				height: 720,
+			});
+			return message.send("Profile Photo Updated");
+		},
+	},
+	{
 		pattern: "vv",
 		fromMe: true,
 		isGroup: false,
