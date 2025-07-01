@@ -8,4 +8,5 @@ export const logo = await readFile(
 
 export * from "./ffmpeg";
 export * from "./meme";
+export * from "./sharp";
 export * from "./webpmux";

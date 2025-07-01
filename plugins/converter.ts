@@ -1,5 +1,5 @@
-import { writeExif } from "../lib/media";
 import { getDataType } from "../lib/common";
+import { flipImage, writeExif, type FlipDirection } from "../lib/media";
 import type { CommandModule } from "../lib/client";
 
 export default [
@@ -55,6 +55,31 @@ export default [
 					),
 				},
 			});
+		},
+	},
+	{
+		pattern: "flip",
+		fromMe: false,
+		isGroup: false,
+		desc: "flip a media message",
+		type: "media",
+		run: async (msg, args) => {
+			if (
+				!args ||
+				!["left", "right", "horizontal", "vertical"].includes(
+					args.trim().toLowerCase()
+				)
+			)
+				return msg.send(
+					`Usage:\n` +
+						`${msg.prefix}flip right | left | vertical | horizontal\n` +
+						`Ensure you reply an image.`
+				);
+			if (!msg.quoted?.image) return msg.send("Reply an image");
+			args = args.trim().toLowerCase();
+			return await msg.send(
+				await flipImage((await msg.download()) as Buffer, args as FlipDirection)
+			);
 		},
 	},
 ] satisfies CommandModule[];

@@ -54,6 +54,9 @@ export default function (
 				};
 				new Contact(socket, { ...event });
 			}
+			if (events["newsletter-settings.update"]) {
+				console.log(events["newsletter-settings.update"])
+			}
 		}
 	);
 }

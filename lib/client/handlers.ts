@@ -1,7 +1,6 @@
 import lang from "../common/language";
 import { commandMap, CommandModule } from "./plugin";
 import { canProceed, getStickerCmd } from "../schemas";
-import { delay } from "baileys";
 import type { Serialize } from "./serialize";
 
 const exec = (cmd: CommandModule, msg: Serialize, match?: string) =>
@@ -23,7 +22,6 @@ const handleText = async (msg: Serialize) => {
 	if (!prefix) return;
 
 	const body = msg.text.slice(prefix.length);
-	(await msg.react("⌛")) && (await delay(500));
 
 	for (const [, cmd] of commandMap) {
 		if (!cmd.patternRegex) continue;
@@ -32,11 +30,7 @@ const handleText = async (msg: Serialize) => {
 		if (result !== "valid") continue;
 
 		const match = body.match(cmd.patternRegex);
-		await msg.react("✴️");
-		if (match) {
-			await exec(cmd, msg, match[2]);
-			return await msg.react("✅");
-		}
+		if (match) return exec(cmd, msg, match[2]);
 	}
 };
 
