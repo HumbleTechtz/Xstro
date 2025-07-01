@@ -12,6 +12,8 @@ import Calls from "../handlers/Calls";
 import GroupRequests from "../handlers/GroupRequests";
 import MessageDelete from "../handlers/MessageDelete";
 import type { BaileysEventMap, WASocket } from "baileys";
+import Contact from "../handlers/Contact";
+import MessageHistory from "../handlers/MessageHistory";
 
 export default function (
 	socket: WASocket,
@@ -41,6 +43,17 @@ export default function (
 
 			if (events["messages.delete"])
 				new MessageDelete(socket, events["messages.delete"]);
+
+			if (events["messaging-history.set"])
+				new MessageHistory(socket, events["messaging-history.set"]);
+
+			if (events["contacts.update"] || events["contacts.upsert"]) {
+				const event = {
+					upsert: events["contacts.upsert"] ?? [],
+					update: events["contacts.update"] ?? [],
+				};
+				new Contact(socket, { ...event });
+			}
 		}
 	);
 }
