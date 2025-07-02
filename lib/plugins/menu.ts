@@ -4,7 +4,19 @@ import { commandMap } from "../client";
 import { fancy, formatBytes, formatRuntime } from "../common";
 import type { CommandModule } from "../client";
 
-const commands = [...commandMap.values()].filter(c => !c.dontAddCommandList);
+const getUniqueCommands = () => {
+	const seen = new Set<string>();
+	const unique: CommandModule[] = [];
+
+	for (const cmd of commandMap.values()) {
+		if (!cmd.dontAddCommandList && cmd.pattern && !seen.has(cmd.pattern)) {
+			seen.add(cmd.pattern);
+			unique.push(cmd);
+		}
+	}
+
+	return unique;
+};
 
 export default [
 	{
@@ -13,11 +25,11 @@ export default [
 		desc: "Show All Commands",
 		dontAddCommandList: true,
 		run: async message => {
-			const cmds = commands.filter(cmd => cmd.pattern).length;
+			const commands = getUniqueCommands();
 
 			let menuInfo = `\`\`\`╭─── ${config.BOT_NAME ?? `χѕтяσ`} ────
 │ User: ${message.pushName?.trim() ?? `Unknown`}
-│ Plugins: ${cmds}
+│ Plugins: ${commands.length}
 │ Mode: ${message.mode ? "Private" : "Public"}
 │ Uptime: ${formatRuntime(process.uptime())}
 │ Platform: ${platform()}
@@ -32,9 +44,8 @@ export default [
 			for (const cmd of commands) {
 				const type = cmd.type ?? "misc";
 				const name = cmd.pattern?.toLowerCase();
-				if (!name) continue;
-				if (!byType[type]) byType[type] = [];
-				byType[type].push(name);
+				byType[type] = byType[type] || [];
+				byType[type].push(name!);
 			}
 
 			let total = 1;
@@ -56,13 +67,10 @@ export default [
 		desc: "Get all command names and descriptions",
 		dontAddCommandList: true,
 		run: async message => {
+			const commands = getUniqueCommands();
+
 			const help = commands
-				.map(cmd => {
-					const name = cmd.pattern;
-					if (!name) return null;
-					return `- ${name}: ${cmd.desc || "No description"}`;
-				})
-				.filter(Boolean)
+				.map(cmd => `- ${cmd.pattern}: ${cmd.desc || "No description"}`)
 				.sort()
 				.join("\n");
 

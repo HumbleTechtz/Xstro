@@ -28,6 +28,7 @@ export default [
 	},
 	{
 		pattern: "restart",
+		aliases: ["reboot"],
 		fromMe: true,
 		isGroup: false,
 		desc: "Restart the process",
