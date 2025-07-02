@@ -7,9 +7,10 @@
 
 import { Boom } from "@hapi/boom";
 import { DisconnectReason, jidNormalizedUser } from "baileys";
+import database from "../client/database";
 import { syncPlugins } from "../client";
 import { restart } from "../common";
-import { SetSudo, auth, getBoot, setBoot } from "../schemas";
+import { SetSudo } from "../schemas";
 import type { BaileysEventMap, WASocket } from "baileys";
 
 export default class {
@@ -37,7 +38,7 @@ export default class {
 	}
 
 	private async handleConnecting() {
-		const info = await syncPlugins("../../plugins", [".ts"]);
+		await syncPlugins("../plugins", [".ts"]);
 	}
 
 	private async handleClose(
@@ -45,36 +46,30 @@ export default class {
 	) {
 		const error = lastDisconnect?.error as Boom;
 		const reason = error?.output?.statusCode;
+		const clearAuth = () => database.run("DELETE FROM auth");
 
-		const resetReasons = [
-			DisconnectReason.connectionClosed,
-			DisconnectReason.connectionLost,
-			DisconnectReason.timedOut,
-			DisconnectReason.connectionReplaced,
-		];
-
-		const resetWithClearStateReasons = [
-			DisconnectReason.loggedOut,
-			DisconnectReason.badSession,
-		];
-
-		resetReasons.includes(reason)
-			? console.warn(`Disconnected: ${reason}`)
-			: resetWithClearStateReasons.includes(reason)
-			? (console.error(`Critical error: ${reason}`),
-			  this.client.logout(),
-			  auth().truncate(),
-			  setBoot(true))
-			: reason === DisconnectReason.restartRequired
-			? setBoot(true)
-			: console.error("Disconnected:", reason);
-
-		restart();
+		if (
+			reason === DisconnectReason.connectionClosed ||
+			reason === DisconnectReason.connectionLost ||
+			reason === DisconnectReason.timedOut ||
+			reason === DisconnectReason.connectionReplaced
+		) {
+			console.warn(`Disconnected: ${reason}`);
+			restart();
+		} else if (
+			reason === DisconnectReason.loggedOut ||
+			reason === DisconnectReason.badSession
+		) {
+			console.error(`Critical error: ${reason}`);
+			clearAuth();
+			restart();
+		} else {
+			console.error("Disconnected:", reason);
+			restart();
+		}
 	}
 
 	private async handleOpen() {
-		getBoot() && (setBoot(false), restart());
-
 		SetSudo(
 			jidNormalizedUser(this.client?.user?.id),
 			jidNormalizedUser(this.client?.user?.lid)

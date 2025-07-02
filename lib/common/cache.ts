@@ -1,9 +1,4 @@
-export type CacheStore = {
-	get<T>(key: string): T | undefined;
-	set<T>(key: string, value: T): void;
-	del(key: string): void;
-	flushAll(): void;
-};
+import type { CacheStore } from "baileys";
 
 export class MemoryCache implements CacheStore {
 	private store = new Map<string, unknown>();

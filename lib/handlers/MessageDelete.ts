@@ -6,7 +6,7 @@
  */
 
 import { isJidGroup } from "baileys";
-import { forwardMessage } from "../client/send_msg";
+import { forwardMessage } from "../client";
 import { getAntidelete, loadMessage } from "../schemas";
 import type { BaileysEventMap, WASocket } from "baileys";
 

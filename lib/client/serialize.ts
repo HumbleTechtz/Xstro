@@ -21,13 +21,8 @@ import {
 	type WAMessage,
 	type WASocket,
 } from "baileys";
+import { forwardMessage, isMediaMessage, sendMessage, type mtype } from ".";
 import { getDataType, isAdmin, isBotAdmin, text_from_message } from "../common";
-import {
-	forwardMessage,
-	isMediaMessage,
-	sendMessage,
-	type mtype,
-} from "./send_msg";
 import { isSudo, getSettings, cachedGroupMetadata } from "../schemas";
 
 const msg_default_payload = async (

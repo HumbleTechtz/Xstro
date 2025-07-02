@@ -1,18 +1,7 @@
 import { spawn } from "node:child_process";
 import { resolve } from "node:path/posix";
 import database from "./client/database";
-import config from "../config";
-
-Bun.serve({
-	port: config.PORT,
-	routes: {
-		"/": {
-			GET: () => {
-				return new Response("Server Active");
-			},
-		},
-	},
-});
+import "./download/api/src";
 
 const manageClient = () => {
 	const child = spawn("bun", ["run", resolve("./lib/client/client")], {

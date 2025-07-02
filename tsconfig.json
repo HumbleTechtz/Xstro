@@ -2,6 +2,8 @@
 	"compilerOptions": {
 		"target": "ESNext",
 		"module": "preserve",
+		"allowJs": true,
+		"checkJs": false,
 		"rootDir": ".",
 		"strict": true,
 		"skipLibCheck": true,
@@ -9,5 +11,5 @@
 		"noEmit": true,
 		"forceConsistentCasingInFileNames": true
 	},
-	"include": ["lib/**/*", "plugins/**/**/*"]
+	"include": ["lib/**/**/*"]
 }

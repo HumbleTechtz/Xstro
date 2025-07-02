@@ -6,7 +6,6 @@ export * from "./antiword";
 export * from "./autokick";
 export * from "./automute";
 export * from "./ban";
-export * from "./boot";
 export * from "./contact";
 export * from "./filters";
 export * from "./group_cache";

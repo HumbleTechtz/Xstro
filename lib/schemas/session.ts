@@ -91,9 +91,3 @@ export default function () {
 		},
 	};
 }
-
-export function auth() {
-	return {
-		truncate: () => database.run("DELETE FROM auth"),
-	};
-}
