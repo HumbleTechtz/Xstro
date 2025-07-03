@@ -27,7 +27,7 @@ export default async function query(
 		) {
 			return {
 				status: "error",
-				url: "Unavailable media",
+				url: "_Failed to download_",
 				filename: "",
 			};
 		}
