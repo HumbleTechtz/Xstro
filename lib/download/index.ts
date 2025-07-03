@@ -20,6 +20,18 @@ export default async function query(
 
 		const data = await response.json();
 
+		// Check for error status or error key in response
+		if (
+			data.status === "error" ||
+			Object.prototype.hasOwnProperty.call(data, "error")
+		) {
+			return {
+				status: "error",
+				url: "Unavailable media",
+				filename: "",
+			};
+		}
+
 		if (Array.isArray(data.tunnel) && data.output?.filename) {
 			const tunnelUrl = `${data.tunnel[0]}&file=${data.output.filename}`;
 			return {
@@ -32,6 +44,10 @@ export default async function query(
 		return data as { status: string; url: string; filename: string };
 	} catch (error) {
 		console.error(error);
-		throw error;
+		return {
+			status: "error",
+			url: "Unavailable media",
+			filename: "",
+		};
 	}
 }
