@@ -1,6 +1,7 @@
 import lang from "../../common/language";
 import { cachedGroupMetadata } from "../../schemas";
 import type { CommandModule } from "../../client";
+import { ms } from "zod/v4/locales";
 
 export default [
 	{
@@ -153,6 +154,30 @@ export default [
 				},
 				{}
 			);
+		},
+	},
+	{
+		pattern: "gpp",
+		fromMe: true,
+		isGroup: true,
+		desc: "Update group photo",
+		type: "group",
+		run: async msg => {
+			if (!msg.quoted?.image) return msg.send("Reply an image");
+			await msg.updateProfilePicture(msg.chat, (await msg.download()) as Buffer);
+			return await msg.send("Group photo updated.");
+		},
+	},
+	{
+		pattern: "rgpp",
+		fromMe: true,
+		isGroup: true,
+		desc: "Remove group photo",
+		type: "group",
+		run: async msg => {
+			if (!msg.quoted?.image) return msg.send("Reply an image");
+			await msg.removeProfilePicture(msg.chat);
+			return await msg.send("Group photo updated.");
 		},
 	},
 	{
