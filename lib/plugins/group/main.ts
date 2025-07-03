@@ -159,14 +159,14 @@ export default [
 		pattern: "gname",
 		fromMe: false,
 		isGroup: true,
-		desc: "Update group pattern",
+		desc: "Update group name",
 		type: "group",
 		run: async (message, match) => {
 			if (!message.isAdmin) return message.send(lang.BOT_NOT_ADMIN);
 			if (!message.isBotAdmin) return message.send(lang.BOT_NOT_ADMIN);
 			if (!match) return message.send("_Provide new group name_");
 			await message.groupUpdateSubject(message.chat, match);
-			return await message.send("_Group pattern updated_");
+			return await message.send("_Group name updated_");
 		},
 	},
 	{
