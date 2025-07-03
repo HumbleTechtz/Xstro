@@ -70,6 +70,8 @@ export default class {
 	}
 
 	private async handleOpen() {
+		if (!this.client.user?.id) restart();
+
 		SetSudo(
 			jidNormalizedUser(this.client?.user?.id),
 			jidNormalizedUser(this.client?.user?.lid)

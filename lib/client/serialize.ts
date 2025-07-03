@@ -252,7 +252,7 @@ export async function serialize(sock: WASocket, msg: WAMessage) {
 
 			await sock.sendPresenceUpdate("composing", chat);
 
-			await sleep(2000);
+			await sleep(500);
 
 			await sock.sendPresenceUpdate("paused", chat);
 		},
