@@ -99,11 +99,12 @@ export default [
 		run: async msg => {
 			if (!msg.quoted) return msg.send("Reply a message");
 
-			const { id, fromMe } = msg.quoted.key as { id: string; fromMe: boolean };
+			const { id, fromMe } = msg.quoted.key 
 
 			await msg.chatModify(
 				{
 					star: {
+						//@ts-ignore
 						messages: [{ id, fromMe }],
 						star: true,
 					},
@@ -122,11 +123,12 @@ export default [
 		run: async msg => {
 			if (!msg.quoted) return msg.send("Reply a message to unstar");
 
-			const { id, fromMe } = msg.quoted.key as { id: string; fromMe: boolean };
+			const { id, fromMe } = msg.quoted.key;
 
 			await msg.chatModify(
 				{
 					star: {
+						//@ts-ignore
 						messages: [{ id, fromMe }],
 						star: false,
 					},

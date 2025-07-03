@@ -34,7 +34,7 @@ export default [
 		type: "whatsapp",
 		run: async (message, match) => {
 			const jid = await message.userId(match);
-			if (!jid) return message.send("```No user specified to block```");
+			if (!jid) return message.send("provide user to block");
 			await message.send("```Blocked```");
 			await delay(300);
 			return message.updateBlockStatus(jid, "block");
@@ -48,7 +48,7 @@ export default [
 		type: "whatsapp",
 		run: async (message, match) => {
 			const jid = await message.userId(match);
-			if (!jid) return message.send("```No user specified to unblock```");
+			if (!jid) return message.send("provide user to unblock");
 			await message.updateBlockStatus(jid, "unblock");
 			return await message.send("```Unblocked```");
 		},
@@ -57,14 +57,25 @@ export default [
 		pattern: "pp",
 		fromMe: true,
 		isGroup: false,
-		desc: "Update Your Profile Image",
+		desc: "Update your profile image",
 		type: "whatsapp",
 		run: async message => {
 			const msg = message.quoted;
-			if (!msg || !msg.image) return message.send("```Reply an Image```");
+			if (!msg || !msg.image) return message.send("Reply an image");
 			const media = await message.download();
 			await message.updateProfilePicture(message.owner.jid, media as Buffer);
 			return message.send("```Profile Photo Updated```");
+		},
+	},
+	{
+		pattern: "rpp",
+		fromMe: true,
+		isGroup: false,
+		desc: "Remove your profile image",
+		type: "whatsapp",
+		run: async message => {
+			await message.removeProfilePicture(message.owner.jid);
+			return message.send("Profile photo updated")
 		},
 	},
 	{
