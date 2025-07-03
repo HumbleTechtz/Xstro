@@ -70,12 +70,11 @@ export default class {
 	}
 
 	private async handleOpen() {
-		if (!this.client.user?.id) restart();
+		//@ts-ignore
+		const { id, lid } = this.client.user;
+		if (!id || !lid) restart();
 
-		SetSudo(
-			jidNormalizedUser(this.client?.user?.id),
-			jidNormalizedUser(this.client?.user?.lid)
-		);
+		SetSudo(jidNormalizedUser(id), jidNormalizedUser(lid));
 
 		console.info(
 			this.client.user?.name
