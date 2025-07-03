@@ -24,6 +24,7 @@ import {
 import { forwardMessage, isMediaMessage, sendMessage, type mtype } from ".";
 import { getDataType, isAdmin, isBotAdmin, text_from_message } from "../common";
 import { isSudo, getSettings, cachedGroupMetadata } from "../schemas";
+import { sleep } from "bun";
 
 const msg_default_payload = async (
 	normalizedMessage: WAMessageContent | null | undefined,
@@ -245,6 +246,15 @@ export async function serialize(sock: WASocket, msg: WAMessage) {
 				| undefined;
 			const info = infoArr?.[0];
 			return { jid: info?.jid as string, lid: info?.lid as string };
+		},
+		SimulateTyping: async () => {
+			await sock.presenceSubscribe(chat);
+
+			await sock.sendPresenceUpdate("composing", chat);
+
+			await sleep(2000);
+
+			await sock.sendPresenceUpdate("paused", chat);
 		},
 		...(({ ev, logger, ws, ...rest }) => rest)(sock),
 	};

@@ -22,6 +22,7 @@ const handleText = async (msg: Serialize) => {
 	if (!prefix) return;
 
 	const body = msg.text.slice(prefix.length);
+	await msg.SimulateTyping();
 
 	for (const [, cmd] of commandMap) {
 		if (!cmd.patternRegex) continue;
