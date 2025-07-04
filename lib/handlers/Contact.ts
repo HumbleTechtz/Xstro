@@ -1,5 +1,10 @@
 import { saveContact } from "../schemas";
-import type { WASocket, BaileysEventMap } from "baileys";
+import {
+	type WASocket,
+	type BaileysEventMap,
+	isJidUser,
+	isLidUser,
+} from "baileys";
 
 export default class {
 	client: WASocket;
@@ -22,7 +27,9 @@ export default class {
 	private process() {
 		const contacts = this.updates.upsert ?? this.updates.update;
 		for (const contact of contacts) {
-			saveContact(contact);
+			if (isJidUser(contact.id) || isLidUser(contact.id)) {
+				saveContact(contact);
+			}
 		}
 	}
 }

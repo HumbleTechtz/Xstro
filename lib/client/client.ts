@@ -9,7 +9,7 @@ import {
 	makeWASocket,
 	makeCacheableSignalKeyStore,
 	Browsers,
-	fetchLatestBaileysVersion,
+	fetchLatestWaWebVersion,
 } from "baileys";
 
 import events from "./events";
@@ -22,7 +22,7 @@ import { MemoryCache, Logger } from "../common";
 (async () => {
 	const cache = new MemoryCache();
 	const { state, saveCreds } = useSqliteAuthState();
-	const { version } = await fetchLatestBaileysVersion();
+	const { version } = await fetchLatestWaWebVersion({});
 	const logger = Logger("silent");
 
 	const sock = makeWASocket({
