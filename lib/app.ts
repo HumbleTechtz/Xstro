@@ -4,7 +4,7 @@ import database from "./client/database";
 import "./download/api/src";
 
 const app = () => {
-	const child = spawn("bun", ["run", resolve("./lib/client/client")], {
+	const child = spawn("bun", [resolve("./lib/client/client")], {
 		stdio: ["inherit", "inherit", "ignore"],
 	});
 	child.once("exit", code => {
