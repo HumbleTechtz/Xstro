@@ -11,5 +11,5 @@
 		"noEmit": true,
 		"forceConsistentCasingInFileNames": true
 	},
-	"include": ["lib/**/**/*"]
+	"include": ["lib/**/**/*", "src/cache.ts", "src/auth.ts", "src/group.ts"]
 }
