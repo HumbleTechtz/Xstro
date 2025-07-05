@@ -51,7 +51,7 @@ export default class {
 		const jid = message.chat;
 		const sender = message.pushName || "unknown";
 		const group = message.isGroup ? cachedGroupMetadata(jid).subject : null;
-		const content = message.text || message.type;
+		const content = message.text || message.msg_type
 		const now = new Date();
 		const time = now.toLocaleTimeString("en-US", { hour12: false });
 		const day = now.toDateString();
