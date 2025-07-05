@@ -66,7 +66,7 @@ export default [
 		run: async msg => {
 			await msg.chatModify(
 				{
-					delete: true,
+					clear: true,
 					lastMessages: [{ key: msg.key, messageTimestamp: msg.messageTimestamp }],
 				},
 				msg.chat
