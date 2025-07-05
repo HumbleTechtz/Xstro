@@ -1,30 +1,28 @@
 import type { CacheStore } from "baileys";
 
-export default class Cache implements CacheStore {
-	private store = new Map<string, unknown>();
-	private stats = { hits: 0, misses: 0, sets: 0, deletes: 0 };
+export default (): CacheStore => {
+	const store = new Map<string, unknown>();
+	const stats = { hits: 0, misses: 0, sets: 0, deletes: 0 };
 
-	get<T>(key: string): T | undefined {
-		const value = this.store.get(key) as T | undefined;
-		value !== undefined ? this.stats.hits++ : this.stats.misses++;
-		return value;
-	}
+	return {
+		get<T>(key: string): T | undefined {
+			const value = store.get(key) as T | undefined;
+			value !== undefined ? stats.hits++ : stats.misses++;
+			return value;
+		},
 
-	set<T>(key: string, value: T): void {
-		this.store.set(key, value);
-		this.stats.sets++;
-	}
+		set<T>(key: string, value: T): void {
+			store.set(key, value);
+			stats.sets++;
+		},
 
-	del(key: string): void {
-		this.store.delete(key) && this.stats.deletes++;
-	}
+		del(key: string): void {
+			store.delete(key) && stats.deletes++;
+		},
 
-	flushAll(): void {
-		this.store.clear();
-		this.stats = { hits: 0, misses: 0, sets: 0, deletes: 0 };
-	}
-
-	getStats() {
-		return { ...this.stats, size: this.store.size };
-	}
-}
+		flushAll(): void {
+			store.clear();
+			stats.hits = stats.misses = stats.sets = stats.deletes = 0;
+		},
+	};
+};

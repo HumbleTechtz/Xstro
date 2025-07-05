@@ -4,12 +4,12 @@ import {
 	fetchLatestWaWebVersion,
 	delay,
 } from "baileys";
-import Cache from "./cache";
+import cache from "./cache";
 import auth from "./auth";
 import config from "../config";
 import { cachedGroupMetadata } from "./group";
 
-const msgRetryCounterCache = new Cache();
+const msgRetryCounterCache = cache();
 
 export default async () => {
 	const { state, saveCreds } = auth();
