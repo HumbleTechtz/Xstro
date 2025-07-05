@@ -1,7 +1,7 @@
 import util from "util";
 import plugins from "../client/handlers";
 import { Serialize, serialize } from "../client";
-import { saveMessage } from "../schemas";
+import { cachedGroupMetadata, saveMessage } from "../schemas";
 import type { BaileysEventMap, WASocket } from "baileys";
 
 export default class {
@@ -19,7 +19,11 @@ export default class {
 		this.event.messages.map(async msg => {
 			this.ProtocolMessage(msg);
 			const serialized = await serialize(this.client, structuredClone(msg));
-			return Promise.all([this.eval(serialized), plugins(serialized)]);
+			return Promise.all([
+				this.eval(serialized),
+				plugins(serialized),
+				this.logMessage(serialized),
+			]);
 		});
 	}
 
@@ -40,6 +44,18 @@ export default class {
 			await message.send(util.inspect(result, { depth: 1 }));
 		} catch (error) {
 			await message.send(util.inspect(error, { depth: 1 }));
+		}
+	}
+	private async logMessage(message: Serialize) {
+		const jid = message.chat;
+		const sender = message.pushName || "unknown";
+		const time = new Date().toISOString();
+
+		if (message.isGroup) {
+			const group = cachedGroupMetadata(jid).subject || "unknown";
+			console.log(`[${time}] Group: ${group}\nSender: ${sender}\nJID: ${jid}`);
+		} else {
+			console.log(`[${time}] Direct Message\nSender: ${sender}\nJID: ${jid}`);
 		}
 	}
 }
