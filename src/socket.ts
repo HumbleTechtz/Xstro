@@ -4,8 +4,9 @@ import {
 	fetchLatestWaWebVersion,
 	delay,
 } from "baileys";
-import cache from "./cache";
 import auth from "./auth";
+import cache from "./cache";
+import event from "./event";
 import config from "../config";
 import { cachedGroupMetadata } from "./group";
 
@@ -37,4 +38,5 @@ export default async () => {
 			);
 		});
 	}
+	return event(sock, saveCreds);
 };
