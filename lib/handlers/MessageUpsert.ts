@@ -1,4 +1,5 @@
 import util from "util";
+import chalk from "chalk";
 import plugins from "../client/handlers";
 import { Serialize, serialize } from "../client";
 import { cachedGroupMetadata, saveMessage } from "../schemas";
@@ -49,13 +50,28 @@ export default class {
 	private async logMessage(message: Serialize) {
 		const jid = message.chat;
 		const sender = message.pushName || "unknown";
-		const time = new Date().toISOString();
+		const group = message.isGroup ? cachedGroupMetadata(jid).subject : null;
+		const content = message.text || message.type;
+		const now = new Date();
+		const time = now.toLocaleTimeString("en-US", { hour12: false });
+		const day = now.toDateString();
 
-		if (message.isGroup) {
-			const group = cachedGroupMetadata(jid).subject || "unknown";
-			console.log(`[${time}] Group: ${group}\nSender: ${sender}\nJID: ${jid}`);
-		} else {
-			console.log(`[${time}] Direct Message\nSender: ${sender}\nJID: ${jid}`);
-		}
+		const border = chalk.yellow("─".repeat(42));
+		const header = chalk.yellow(`╭${border}╮`);
+		const footer = chalk.yellow(`╰${border}╯`);
+
+		const line = (label: string, value: string) =>
+			chalk.yellow("│ ") + chalk.yellow.bold(label.padEnd(9)) + value;
+
+		const log = [
+			header,
+			...(group ? [line("GROUP:", group)] : []),
+			line("FROM:", sender),
+			line("MESSAGE:", content),
+			line("TIME:", `${day}, ${time}`),
+			footer,
+		];
+
+		console.log(log.join("\n"));
 	}
 }

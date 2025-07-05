@@ -17,6 +17,7 @@
 		"@hapi/boom": "^10.0.1",
 		"@imput/psl": "^2.0.4",
 		"baileys": "https://github.com/AstroX11/WAWebAPI/releases/download/release/baileys-stable.tgz",
+		"chalk": "^5.4.1",
 		"cheerio": "^1.1.0",
 		"content-disposition-header": "0.6.0",
 		"cors": "^2.8.5",
