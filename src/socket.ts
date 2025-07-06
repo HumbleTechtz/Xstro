@@ -28,11 +28,10 @@ const sock = makeWASocket({
 });
 
 if (!sock.authState?.creds?.registered) {
-	const phone = config.USER_NUMBER?.replace(/\D/g, "");
-	if (!phone) Red("Phone number required."), process.exit(1);
+	if (!config.USER_NUMBER) Red("Phone number required."), process.exit(1);
 	await delay(2000);
-	Green(`PAIR:`, await sock.requestPairingCode(phone, "ASTROX11"));
+	Green(`PAIR:`, await sock.requestPairingCode(config.USER_NUMBER?.replace(/\D/g, ""), "ASTROX11"));
 	while (!sock.authState?.creds?.registered) await delay(1000);
 }
 
-event(sock, saveCreds);
+await event(sock, saveCreds).catch(console.error);

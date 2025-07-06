@@ -5,11 +5,16 @@
 		"allowJs": true,
 		"checkJs": false,
 		"rootDir": ".",
+		"baseUrl": ".",
+		"paths": {
+			"@types": ["types/index.ts"],
+			"@types/*": ["types/*"]
+		},
 		"strict": true,
 		"skipLibCheck": true,
 		"noImplicitThis": true,
 		"noEmit": true,
 		"forceConsistentCasingInFileNames": true
 	},
-	"include": ["lib/**/**/*", "src/cache.ts", "src/auth.ts", "src/group.ts"]
+	"include": ["lib/**/**/*", "src/**/**/*"]
 }
