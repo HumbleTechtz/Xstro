@@ -1,6 +1,6 @@
 import type { ILogger } from "baileys/lib/Utils/logger";
 
-export default function logger(
+const Logger = function (
 	level = "info",
 	context: Record<string, unknown> = {}
 ): ILogger {
@@ -23,11 +23,13 @@ export default function logger(
 	return {
 		level,
 		child: (obj: Record<string, unknown>) =>
-			logger(level, { ...context, ...obj }),
+			Logger(level, { ...context, ...obj }),
 		trace: (obj: unknown, msg?: string) => log("trace", obj, msg),
 		debug: (obj: unknown, msg?: string) => log("debug", obj, msg),
 		info: (obj: unknown, msg?: string) => log("info", obj, msg),
 		warn: (obj: unknown, msg?: string) => log("warn", obj, msg),
 		error: (obj: unknown, msg?: string) => log("error", obj, msg),
 	};
-}
+};
+
+export const logger = Logger("silent");
