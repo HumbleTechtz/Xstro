@@ -3,28 +3,13 @@ import { fileURLToPath, pathToFileURL } from "url";
 import { readdir } from "fs/promises";
 import { watch, FSWatcher } from "fs";
 import { Green, Red, Yellow } from "./console";
-import type { Serialize } from "./serialize";
+import { InternalCommand, CommandModule } from "@types";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-
-export interface CommandModule {
-	pattern?: string;
-	aliases?: string[];
-	run: (instance: Serialize, argument?: string) => Promise<unknown>;
-	on?: string | boolean;
-	fromMe?: boolean;
-	isGroup?: boolean;
-	desc?: string;
-	type?: string;
-	dontAddCommandList?: boolean;
-}
-
-type InternalCommand = CommandModule & { patternRegex?: RegExp };
 
 export class CommandSystem {
 	private commands = new Map<string, InternalCommand>();
 	private watchers = new Map<string, FSWatcher>();
-	private pluginDir = "";
 	private pluginExtensions: string[] = [];
 
 	register(cmd: CommandModule) {
@@ -45,7 +30,7 @@ export class CommandSystem {
 	private async reloadPlugins() {
 		Yellow("Reloading plugins...");
 		this.commands.clear();
-		await this.scan(this.pluginDir);
+		await this.loadPlugins();
 		Green(`Loaded ${this.commands.size} commands`);
 	}
 
@@ -93,12 +78,11 @@ export class CommandSystem {
 		}
 	}
 
-	async loadPlugins(dir: string, extensions: string[] = [""]) {
-		const root = join(__dirname, dir);
+	async loadPlugins() {
+		const root = join(__dirname, "../assets/plugins");
 		Green(root);
 
-		this.pluginDir = root;
-		this.pluginExtensions = extensions;
+		this.pluginExtensions = [".ts"];
 		this.commands.clear();
 
 		await this.scan(root);
@@ -119,5 +103,4 @@ export const commandSystem = new CommandSystem();
 export const { commandMap } = commandSystem;
 export const registerCommand = (cmd: CommandModule) =>
 	commandSystem.register(cmd);
-export const loadPlugins = (dir: string, extensions?: string[]) =>
-	commandSystem.loadPlugins(dir, extensions);
+export const loadPlugins = () => commandSystem.loadPlugins();

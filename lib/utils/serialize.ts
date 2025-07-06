@@ -5,6 +5,7 @@ import type {
 	WAMessageContent,
 	WASocket,
 } from "baileys";
+import { extractTxt } from "./constants";
 
 export async function serialize(sock: WASocket, msg: WAMessage) {
 	let { key, message, broadcast, pushName } = msg;
@@ -56,6 +57,7 @@ export async function serialize(sock: WASocket, msg: WAMessage) {
 				? owner.jid
 				: key.remoteJid,
 		message: message,
+		text: extractTxt(message),
 		mentions: quoted?.mentionedJid,
 		image: Boolean(message?.imageMessage),
 		video: Boolean(message?.videoMessage),
@@ -74,6 +76,7 @@ export async function serialize(sock: WASocket, msg: WAMessage) {
 					broadcast: Boolean(quoted?.remoteJid),
 					sender: quoted.participant,
 					message: quotedM,
+					text: extractTxt(message),
 					//@ts-ignore
 					viewonce: quotedM?.[quotedType]?.viewOnce as boolean,
 					image: Boolean(quotedM?.imageMessage),
