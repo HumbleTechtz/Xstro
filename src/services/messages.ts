@@ -1,10 +1,4 @@
-import {
-	Green,
-	logSeralized,
-	saveUpserts,
-	serialize,
-	type Serialize,
-} from "lib";
+import { Green, logSeralized, saveUpserts, serialize } from "lib";
 import type { BaileysEventMap, WASocket } from "baileys";
 
 export async function messageUpsert(
