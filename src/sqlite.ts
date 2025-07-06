@@ -9,4 +9,4 @@ sqlite.exec(`
 	PRAGMA synchronous = OFF;
 `);
 
-export default sqlite;
+export  {sqlite};

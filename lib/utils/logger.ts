@@ -1,4 +1,7 @@
+import chalk from "chalk";
+import { cachedGroupMetadata } from "src";
 import type { ILogger } from "baileys/lib/Utils/logger";
+import type { Serialize } from "./serialize";
 
 const Logger = function (
 	level = "info",
@@ -33,3 +36,30 @@ const Logger = function (
 };
 
 export const logger = Logger("silent");
+
+export async function logSeralized(message: Serialize) {
+	const group = message.isGroup
+		? await cachedGroupMetadata(message.chat!).then(r => r?.subject)
+		: null;
+	const now = new Date();
+	const time = now.toLocaleTimeString("en-US", { hour12: false });
+	const day = now.toDateString();
+
+	const border = chalk.yellow("─".repeat(42));
+	const header = chalk.yellow(`╭${border}╮`);
+	const footer = chalk.yellow(`╰${border}╯`);
+
+	const line = (label: string, value: string) =>
+		chalk.yellow("│ ") + chalk.yellow.bold(label.padEnd(9)) + value;
+
+	const log = [
+		header,
+		...(group ? [line("GROUP:", group ?? "")] : []),
+		line("FROM:", message.pushName ?? ""),
+		line("MESSAGE:", message.mtype ?? ""),
+		line("TIME:", `${day}, ${time}`),
+		footer,
+	];
+
+	console.log(log.join("\n"));
+}

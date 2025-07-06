@@ -1,3 +1,3 @@
 export * from "./connection";
-export * from "./background";
+export * from "./hooks";
 export * from "./messages";

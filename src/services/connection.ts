@@ -1,5 +1,5 @@
 import { exit } from "node:process";
-import sqlite from "../sqlite";
+import { sqlite } from "../sqlite";
 import { Boom } from "@hapi/boom";
 import type { WASocket, BaileysEventMap, Contact } from "baileys";
 

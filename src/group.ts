@@ -1,4 +1,4 @@
-import sqlite from "./sqlite";
+import { sqlite } from "./sqlite";
 import type { GroupMetadata } from "baileys";
 
 sqlite.exec(`

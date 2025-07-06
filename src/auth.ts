@@ -1,4 +1,4 @@
-import sqlite from './sqlite'
+import { sqlite } from "./sqlite";
 import { BufferJSON, initAuthCreds, WAProto } from "baileys";
 import type { AuthenticationCreds, SignalDataTypeMap } from "baileys";
 
