@@ -1,6 +1,7 @@
-import { socketHooks } from "lib";
+import { loadPlugins, socketHooks } from "lib";
 import type { WASocket } from "baileys";
 
 export async function background(jobs: WASocket) {
+	await loadPlugins("../assets/plugins");
 	return socketHooks(jobs);
 }

@@ -1,6 +1,7 @@
 import { exit } from "node:process";
 import { sqlite } from "../sqlite";
 import { Boom } from "@hapi/boom";
+import { Green, Yellow } from "lib";
 import type { WASocket, BaileysEventMap, Contact } from "baileys";
 
 export async function connection(
@@ -10,7 +11,7 @@ export async function connection(
 	const { connection, lastDisconnect } = ev;
 	switch (connection) {
 		case "connecting":
-			console.log("connecting...");
+			Yellow("connecting...");
 			break;
 		case "close":
 			const error = lastDisconnect?.error as Boom;
@@ -20,8 +21,7 @@ export async function connection(
 
 			exit();
 		case "open":
-			const { id, lid } = sock.user as Contact;
-			console.log("connection open.");
+			Green("connection open.");
 			break;
 	}
 }

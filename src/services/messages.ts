@@ -1,4 +1,10 @@
-import { logSeralized, saveUpserts, serialize, type Serialize } from "lib";
+import {
+	Green,
+	logSeralized,
+	saveUpserts,
+	serialize,
+	type Serialize,
+} from "lib";
 import type { BaileysEventMap, WASocket } from "baileys";
 
 export async function messageUpsert(
@@ -20,12 +26,12 @@ export async function messageUpdate(
 	sock: WASocket,
 	event: BaileysEventMap["messages.update"]
 ) {
-	console.log("Message updated:", event);
+	Green("Message updated:", event);
 }
 
 export async function messageDlt(
 	sock: WASocket,
 	event: BaileysEventMap["messages.delete"]
 ) {
-	console.log("Message deleted:", event);
+	Green("Message deleted:", event);
 }

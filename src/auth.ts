@@ -1,4 +1,5 @@
 import { sqlite } from "./sqlite";
+import { Red } from "lib";
 import { BufferJSON, initAuthCreds, WAProto } from "baileys";
 import type { AuthenticationCreds, SignalDataTypeMap } from "baileys";
 
@@ -63,10 +64,7 @@ export default function () {
 								try {
 									value = WAProto.Message.AppStateSyncKeyData.fromObject(value);
 								} catch (e) {
-									console.error(
-										`Failed to decode AppStateSyncKeyData for ID "${id}":`,
-										e
-									);
+									Red(`Failed to decode AppStateSyncKeyData for ID "${id}":`, e);
 								}
 							}
 							data[id] = value as SignalDataTypeMap[T];
