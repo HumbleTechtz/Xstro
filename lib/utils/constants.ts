@@ -1,4 +1,4 @@
-import type { WAMessageContent } from "baileys";
+import { getContentType, type WAMessage, type WAMessageContent } from "baileys";
 
 export function extractTxt(
 	message?: WAMessageContent
@@ -28,3 +28,17 @@ export function extractTxt(
 		get(message, "protocolMessage.editedMessage.documentMessage.caption")
 	);
 }
+
+export const isMediaMessage = (message: WAMessage): boolean => {
+	const mediaMessageTypes = [
+		"imageMessage",
+		"videoMessage",
+		"audioMessage",
+		"documentMessage",
+	] as const;
+	const content = getContentType(message?.message ?? {});
+	return (
+		typeof content === "string" &&
+		mediaMessageTypes.includes(content as (typeof mediaMessageTypes)[number])
+	);
+};
