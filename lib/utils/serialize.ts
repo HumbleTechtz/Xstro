@@ -1,15 +1,11 @@
-import {
-	getContentType,
-	jidNormalizedUser,
-	normalizeMessageContent,
-} from "baileys";
+import { jidNormalizedUser, normalizeMessageContent } from "baileys";
 import type {
 	WAContextInfo,
 	WAMessage,
 	WAMessageContent,
 	WASocket,
 } from "baileys";
-import { extractTxt, isMediaMessage } from "./constants";
+import { extractTxt } from "./constants";
 
 export async function serialize(sock: WASocket, msg: WAMessage) {
 	let { key, message, broadcast, pushName } = msg;
@@ -69,6 +65,7 @@ export async function serialize(sock: WASocket, msg: WAMessage) {
 		document: Boolean(message?.documentMessage),
 		sticker: Boolean(message?.stickerMessage || message?.lottieStickerMessage),
 		viewonce: key.isViewOnce,
+		messageTimestamp: msg.messageTimestamp,
 		quoted: quoted
 			? {
 					key: {
@@ -90,34 +87,6 @@ export async function serialize(sock: WASocket, msg: WAMessage) {
 					sticker: Boolean(quotedM?.stickerMessage || message?.lottieStickerMessage),
 			  }
 			: undefined,
-		send: async (content: any, type?: "text" | "video" | "audio" | "image") => {
-			if (type) {
-			}
-			return await serialize(
-				sock,
-				//@ts-ignore
-				await sock.sendMessage(chat, { text: content.toString() })
-			);
-		},
-		edit: async function (text: string, msg?: WAMessage) {
-			const m = msg ?? this.quoted ?? this;
-			if (isMediaMessage(m)) {
-				return await sock.sendMessage(
-					chat!,
-					getContentType(m.message!) === "imageMessage"
-						? {
-								image: { url: m.message?.imageMessage?.url! },
-								caption: text,
-								edit: m.key,
-						  }
-						: {
-								video: { url: m.message?.videoMessage?.url! },
-								caption: text,
-								edit: m.key,
-						  }
-				);
-			}
-		},
 	};
 }
 

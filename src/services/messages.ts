@@ -1,19 +1,19 @@
 import { Green, logSeralized, saveUpserts, serialize, execute } from "lib";
-import type { BaileysEventMap, WASocket } from "baileys";
+import type { WASocket, BaileysEventMap } from "baileys";
 
 export async function messageUpsert(
 	sock: WASocket,
 	event: BaileysEventMap["messages.upsert"]
 ) {
-	const parsed = await serialize(sock, event.messages[0]);
-	const protocol = parsed ? parsed.message?.protocolMessage : undefined;
+	const msg = await serialize(sock, event.messages[0]);
+	const protocol = msg ? msg.message?.protocolMessage : undefined;
 
 	if (protocol?.type === 0)
 		sock.ev.emit("messages.delete", {
 			keys: [{ ...protocol.key }],
 		});
 
-	await Promise.all([execute(parsed), saveUpserts(event), logSeralized(parsed)]);
+	await Promise.all([execute(msg), saveUpserts(event), logSeralized(msg)]);
 }
 
 export async function messageUpdate(
