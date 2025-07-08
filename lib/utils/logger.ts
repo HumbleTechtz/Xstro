@@ -45,21 +45,16 @@ export async function logSeralized(message: Serialize) {
 	const time = now.toLocaleTimeString("en-US", { hour12: false });
 	const day = now.toDateString();
 
-	const border = Yellow("─".repeat(42));
-	const header = Yellow(`╭${border}╮`);
-	const footer = Yellow(`╰${border}╯`);
-
-	const line = (label: string, value: string) =>
-		Yellow("│ " + label.padEnd(9) + value);
+	const line = (label: string, value: string) => `│ ${label.padEnd(9)}${value}`;
 
 	const log = [
-		header,
+		"╭────────────────────────────",
 		...(group ? [line("GROUP:", group ?? "")] : []),
 		line("FROM:", message.pushName ?? ""),
 		line("MESSAGE:", message.mtype as string),
 		line("TIME:", `${day}, ${time}`),
-		footer,
+		"╰────────────────────────────",
 	];
 
-	console.log(log.join("\n"));
+	console.info(log.join("\n"));
 }
