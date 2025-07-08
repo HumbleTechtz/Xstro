@@ -1,7 +1,6 @@
 import { cachedGroupMetadata } from "src";
 import type { ILogger } from "baileys/lib/Utils/logger";
 import type { Serialize } from "./serialize";
-import { Yellow } from "./console";
 
 const Logger = function (
 	level = "info",
