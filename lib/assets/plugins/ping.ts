@@ -1,4 +1,3 @@
-import { Green, Yellow } from "lib/utils";
 import type { CommandModule } from "@types";
 
 export default {
@@ -11,6 +10,6 @@ export default {
 		const start = Date.now();
 		const msg = await message.send("Pong!");
 		const end = Date.now();
-		return msg.edit(`\`\`\`${end - start} ms\`\`\``);
+		return await message.edit(`\`\`\`${end - start} ms\`\`\``, msg);
 	},
 } satisfies CommandModule;

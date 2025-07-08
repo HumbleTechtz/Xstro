@@ -12,7 +12,7 @@ export const cachedGroupMetadata = async (jid: string) => {
 	const row = sqlite
 		.query("SELECT data FROM group_metadata WHERE jid = ?")
 		.get(jid) as { data: string | null } | null;
-	if (!row?.data) throw new Error("No metadata found for jid: " + jid);
+	if (!row?.data) return undefined;
 	return JSON.parse(row.data) as GroupMetadata | undefined;
 };
 

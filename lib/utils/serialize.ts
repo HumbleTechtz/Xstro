@@ -1,11 +1,13 @@
 import { jidNormalizedUser, normalizeMessageContent } from "baileys";
+import { extractTxt } from "./constants";
+import { downloadMessage, edit, send, deleteM, forwardM } from "./sock";
+import type { sendOptions } from "./sock";
 import type {
 	WAContextInfo,
 	WAMessage,
 	WAMessageContent,
 	WASocket,
 } from "baileys";
-import { extractTxt } from "./constants";
 
 export async function serialize(sock: WASocket, msg: WAMessage) {
 	let { key, message, broadcast, pushName } = msg;
@@ -66,7 +68,7 @@ export async function serialize(sock: WASocket, msg: WAMessage) {
 		sticker: Boolean(message?.stickerMessage || message?.lottieStickerMessage),
 		viewonce: key.isViewOnce,
 		messageTimestamp: msg.messageTimestamp,
-		quoted: quoted
+		quoted: quoted && quoted.stanzaId
 			? {
 					key: {
 						remoteJid: key.remoteJid,
@@ -87,6 +89,29 @@ export async function serialize(sock: WASocket, msg: WAMessage) {
 					sticker: Boolean(quotedM?.stickerMessage || message?.lottieStickerMessage),
 			  }
 			: undefined,
+		send: async function (content: any, opts: sendOptions = { to: chat! }) {
+			return await serialize(sock, await send(sock, content, opts));
+		},
+		edit: async function (text: string, msg?: WAMessage) {
+			msg = msg ?? this.quoted ?? this;
+			return await serialize(sock, await edit(sock, text, msg));
+		},
+		download: async function (message?: WAMessage, save?: boolean) {
+			message = message ?? this.quoted ?? this;
+			return await downloadMessage({ message, save });
+		},
+		delete: async function (msg?: WAMessage) {
+			msg = msg ?? this.quoted ?? this;
+			return await deleteM(sock, msg);
+		},
+		forward: async function (
+			jid: string,
+			message?: WAMessage,
+			options?: WAContextInfo & { quoted: WAMessage }
+		) {
+			message = message ?? this.quoted ?? this;
+			return await forwardM(sock, jid, message, options);
+		},
 	};
 }
 

@@ -42,3 +42,12 @@ export const isMediaMessage = (message: WAMessage): boolean => {
 		mediaMessageTypes.includes(content as (typeof mediaMessageTypes)[number])
 	);
 };
+
+export const isUrl = (str: string) => {
+	try {
+		new URL(str);
+		return true;
+	} catch {
+		return false;
+	}
+};
