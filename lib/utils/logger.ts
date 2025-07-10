@@ -35,25 +35,3 @@ const Logger = function (
 };
 
 export const logger = Logger("silent");
-
-export async function logSeralized(message: Serialize) {
-	const group = message.isGroup
-		? await cachedGroupMetadata(message.chat!).then(r => r?.subject)
-		: null;
-	const now = new Date();
-	const time = now.toLocaleTimeString("en-US", { hour12: false });
-	const day = now.toDateString();
-
-	const line = (label: string, value: string) => `│ ${label.padEnd(9)}${value}`;
-
-	const log = [
-		"╭────────────────────────────",
-		...(group ? [line("GROUP:", group ?? "")] : []),
-		line("FROM:", message.pushName ?? ""),
-		line("MESSAGE:", message.mtype as string),
-		line("TIME:", `${day}, ${time}`),
-		"╰────────────────────────────",
-	];
-
-	console.info(log.join("\n"));
-}

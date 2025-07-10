@@ -8,10 +8,8 @@
 	},
 	"dependencies": {
 		"baileys": "https://github.com/AstroX11/WAWebAPI/releases/download/release/baileys-stable.tgz",
-		"cheerio": "^1.1.0",
 		"node-webpmux": "^3.2.1",
-		"pg": "^8.16.3",
-		"pureimage": "^0.4.18"
+		"pg": "^8.16.3"
 	},
 	"devDependencies": {
 		"@types/bun": "latest",

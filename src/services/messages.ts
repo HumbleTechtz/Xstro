@@ -1,4 +1,4 @@
-import { Green, logSeralized, saveUpserts, serialize, execute } from "lib";
+import { Green, saveUpserts, serialize, execute } from "lib";
 import type { WASocket, BaileysEventMap } from "baileys";
 
 export async function messageUpsert(
@@ -17,7 +17,7 @@ export async function messageUpsert(
 			});
 		}
 
-		await Promise.all([execute(msg), saveUpserts(event), logSeralized(msg)]);
+		await Promise.all([execute(msg), saveUpserts(event)]);
 	}
 }
 
