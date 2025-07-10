@@ -1,6 +1,6 @@
 import { jidNormalizedUser, normalizeMessageContent } from "baileys";
 import { extractTxt } from "./constants";
-import { downloadMessage, edit, send, deleteM, forwardM } from "./sock";
+import { downloadMessage, edit, send, deleteM, forwardM, userId } from "./sock";
 import type { sendOptions } from "./sock";
 import type {
 	WAContextInfo,
@@ -11,6 +11,7 @@ import type {
 
 export async function serialize(sock: WASocket, msg: WAMessage) {
 	let { key, message, broadcast, pushName } = msg;
+	const { logger, ev, ws, authState, signalRepository, user, ...socket } = sock;
 
 	message = normalizeMessageContent(message);
 	broadcast = Boolean(broadcast);
@@ -68,27 +69,30 @@ export async function serialize(sock: WASocket, msg: WAMessage) {
 		sticker: Boolean(message?.stickerMessage || message?.lottieStickerMessage),
 		viewonce: key.isViewOnce,
 		messageTimestamp: msg.messageTimestamp,
-		quoted: quoted && quoted.stanzaId
-			? {
-					key: {
-						remoteJid: key.remoteJid,
-						fromMe: [owner.jid, owner.lid].includes(quoted.participant!),
-						id: quoted.stanzaId,
-						participant: isGroup ? quoted.participant : undefined,
-					},
-					broadcast: Boolean(quoted?.remoteJid),
-					sender: quoted.participant,
-					message: quotedM,
-					text: extractTxt(message),
-					//@ts-ignore
-					viewonce: quotedM?.[quotedType]?.viewOnce as boolean,
-					image: Boolean(quotedM?.imageMessage),
-					video: Boolean(quotedM?.videoMessage),
-					audio: Boolean(quotedM?.audioMessage),
-					document: Boolean(quotedM?.documentMessage),
-					sticker: Boolean(quotedM?.stickerMessage || message?.lottieStickerMessage),
-			  }
-			: undefined,
+		quoted:
+			quoted && quoted.stanzaId
+				? {
+						key: {
+							remoteJid: key.remoteJid,
+							fromMe: [owner.jid, owner.lid].includes(quoted.participant!),
+							id: quoted.stanzaId,
+							participant: isGroup ? quoted.participant : undefined,
+						},
+						broadcast: Boolean(quoted?.remoteJid),
+						sender: quoted.participant,
+						message: quotedM,
+						text: extractTxt(message),
+						//@ts-ignore
+						viewonce: quotedM?.[quotedType]?.viewOnce as boolean,
+						image: Boolean(quotedM?.imageMessage),
+						video: Boolean(quotedM?.videoMessage),
+						audio: Boolean(quotedM?.audioMessage),
+						document: Boolean(quotedM?.documentMessage),
+						sticker: Boolean(
+							quotedM?.stickerMessage || message?.lottieStickerMessage
+						),
+				  }
+				: undefined,
 		send: async function (content: any, opts: sendOptions = { to: chat! }) {
 			return await serialize(sock, await send(sock, content, opts));
 		},
@@ -112,6 +116,10 @@ export async function serialize(sock: WASocket, msg: WAMessage) {
 			message = message ?? this.quoted ?? this;
 			return await forwardM(sock, jid, message, options);
 		},
+		user: async function (id?: string) {
+			return await userId(this, id);
+		},
+		...socket,
 	};
 }
 

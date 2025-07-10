@@ -5,15 +5,20 @@ export async function messageUpsert(
 	sock: WASocket,
 	event: BaileysEventMap["messages.upsert"]
 ) {
-	const msg = await serialize(sock, event.messages[0]);
-	const protocol = msg ? msg.message?.protocolMessage : undefined;
+	for (const message of event.messages) {
+		if (!message || typeof message !== "object") continue;
 
-	if (protocol?.type === 0)
-		sock.ev.emit("messages.delete", {
-			keys: [{ ...protocol.key }],
-		});
+		const msg = await serialize(sock, message);
+		const protocol = msg?.message?.protocolMessage;
 
-	await Promise.all([execute(msg), saveUpserts(event), logSeralized(msg)]);
+		if (protocol?.type === 0) {
+			sock.ev.emit("messages.delete", {
+				keys: [{ ...protocol.key }],
+			});
+		}
+
+		await Promise.all([execute(msg), saveUpserts(event), logSeralized(msg)]);
+	}
 }
 
 export async function messageUpdate(

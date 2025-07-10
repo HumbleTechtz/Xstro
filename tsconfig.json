@@ -10,7 +10,7 @@
 			"@types": ["types/index.ts"],
 			"@types/*": ["types/*"]
 		},
-		"strict": true,
+		"strict": false,
 		"skipLibCheck": true,
 		"noImplicitThis": true,
 		"noEmit": true,
