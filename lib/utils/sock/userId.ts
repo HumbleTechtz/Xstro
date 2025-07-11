@@ -1,4 +1,4 @@
-import { cachedGroupMetadata } from "src";
+import { groupMetadata } from "src";
 import { Serialize } from "../serialize";
 
 export async function userId(client: Serialize, user?: string) {
@@ -21,9 +21,7 @@ export async function userId(client: Serialize, user?: string) {
 	}
 
 	if (client.isGroup) {
-		const { participants, addressingMode } = await cachedGroupMetadata(
-			client.chat
-		);
+		const { participants, addressingMode } = groupMetadata(client.chat);
 		const found = participants.find(p =>
 			addressingMode === "pn"
 				? p.jid === resolvedId || p.lid === resolvedId

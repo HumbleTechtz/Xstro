@@ -4,8 +4,7 @@
 	"description": "Simple WA bot.",
 	"author": "devastro0010@gmail.com",
 	"scripts": {
-		"start": "bun entry.mts start",
-		"stop": "bun entry.mts stop"
+		"start": "bun entry.mts"
 	},
 	"dependencies": {
 		"audio-decode": "^2.2.3",

@@ -8,13 +8,33 @@ sqlite.exec(`
 	)
 `);
 
-export const cachedGroupMetadata = async (jid: string) => {
+export const groupMetadata = (jid: string): GroupMetadata | undefined => {
 	const row = sqlite
 		.query("SELECT data FROM group_metadata WHERE jid = ?")
 		.get(jid) as { data: string | null } | null;
+
 	if (!row?.data) return undefined;
-	return JSON.parse(row.data) as GroupMetadata | undefined;
+
+	return JSON.parse(row.data) as GroupMetadata;
 };
+
+export function cachedGroupMetadata(
+	jid: string
+): Promise<GroupMetadata | undefined> {
+	return new Promise((resolve, reject) => {
+		try {
+			const row = sqlite
+				.query("SELECT data FROM group_metadata WHERE jid = ?")
+				.get(jid) as { data: string | null } | null;
+
+			if (!row?.data) return resolve(undefined);
+
+			resolve(JSON.parse(row.data) as GroupMetadata);
+		} catch (err) {
+			reject(err instanceof Error ? err : new Error("Unknown error"));
+		}
+	});
+}
 
 export const cachedGroupMetadataAll = (): Record<string, GroupMetadata> =>
 	Object.fromEntries(

@@ -1,5 +1,6 @@
 import { readFileSync, existsSync, watchFile } from "node:fs";
 import { resolve } from "node:path";
+import { Red } from "lib";
 import { ConfigState, ConfigOptions } from "@types";
 
 class Watcher {
@@ -41,7 +42,9 @@ class Watcher {
 
 	private updateState() {
 		const newState: ConfigState = {
-			USER_NUMBER: process.env.USER_NUMBER,
+			USER_NUMBER: process.env.USER_NUMBER
+				? process.env.USER_NUMBER.replace(/\D/g, "")
+				: process.env.USER_NUMBER,
 			OWNER_NAME: process.env.OWNER_NAME,
 			BOT_NAME: process.env.BOT_NAME,
 			PORT: Number(process.env.PORT ?? 8000),
@@ -68,6 +71,7 @@ class Watcher {
 	}
 
 	get() {
+		if (!this.state.USER_NUMBER) Red("Phone number required."), process.exit(1);
 		return this.state;
 	}
 

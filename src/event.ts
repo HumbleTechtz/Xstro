@@ -1,11 +1,5 @@
 import { WASocket } from "baileys";
-import {
-	background,
-	connection,
-	messageUpsert,
-	messageUpdate,
-	messageDlt,
-} from "./services";
+import { background, connection, messageUpsert, messageDlt } from "./services";
 
 export default async (sock: WASocket, saveCreds: { (): void }) => {
 	return await Promise.all([
@@ -20,10 +14,6 @@ export default async (sock: WASocket, saveCreds: { (): void }) => {
 
 			if (ev["messages.upsert"]) {
 				await messageUpsert(sock, ev["messages.upsert"]);
-			}
-
-			if (ev["messages.update"]) {
-				await messageUpdate(sock, ev["messages.update"]);
 			}
 
 			if (ev["messages.delete"]) {

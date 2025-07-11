@@ -1,7 +1,7 @@
-import { cachedGroupMetadata } from "src";
+import { groupMetadata } from "src";
 
-export async function isAdmin(jid: string, participant: string) {
-	const metadata = await cachedGroupMetadata(jid);
+export function isAdmin(jid: string, participant: string) {
+	const metadata = groupMetadata(jid);
 	if (!metadata) return false;
 	const allAdmins = metadata.participants
 		.filter(v => v.admin !== null)
@@ -9,11 +9,8 @@ export async function isAdmin(jid: string, participant: string) {
 	return allAdmins.includes(participant);
 }
 
-export async function isBotAdmin(
-	owner: { jid: string; lid: string },
-	jid: string
-) {
-	const metadata = await cachedGroupMetadata(jid);
+export function isBotAdmin(owner: { jid: string; lid: string }, jid: string) {
+	const metadata = groupMetadata(jid);
 	if (!metadata) return false;
 	const allAdmins = metadata.participants
 		.filter(v => v.admin !== null)

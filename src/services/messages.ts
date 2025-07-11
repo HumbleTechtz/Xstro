@@ -21,13 +21,6 @@ export async function messageUpsert(
 	}
 }
 
-export async function messageUpdate(
-	sock: WASocket,
-	event: BaileysEventMap["messages.update"]
-) {
-	Green("Message updated:", event);
-}
-
 export async function messageDlt(
 	sock: WASocket,
 	event: BaileysEventMap["messages.delete"]

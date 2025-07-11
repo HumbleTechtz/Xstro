@@ -9,7 +9,7 @@ import cache from "./cache";
 import event from "./event";
 import config from "../config";
 import { cachedGroupMetadata } from "./group";
-import { Green, Red, logger } from "lib";
+import { Green, logger } from "lib";
 
 const msgRetryCounterCache = cache();
 
@@ -28,15 +28,7 @@ const sock = makeWASocket({
 });
 
 if (!sock.authState?.creds?.registered) {
-	if (!config.USER_NUMBER) Red("Phone number required."), process.exit(1);
-	await delay(2000);
-	Green(
-		`PAIR:`,
-		await sock.requestPairingCode(
-			config.USER_NUMBER?.replace(/\D/g, ""),
-			"ASTROX11"
-		)
-	);
+	Green(`PAIR:`, await sock.requestPairingCode(config.USER_NUMBER, "ASTROX11"));
 	while (!sock.authState?.creds?.registered) await delay(1000);
 }
 

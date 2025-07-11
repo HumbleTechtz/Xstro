@@ -5,13 +5,13 @@ import { isBotAdmin } from "../admin";
 export async function deleteM(sock: WASocket, msg: WAMessage) {
 	const canDeleteForAll =
 		isJidGroup(msg.key.remoteJid!) &&
-		(await isBotAdmin(
+		isBotAdmin(
 			{
 				jid: jidNormalizedUser(sock.user?.jid),
 				lid: jidNormalizedUser(sock.user?.lid),
 			},
 			msg.key.remoteJid!
-		))
+		)
 			? true
 			: false;
 	if (!canDeleteForAll) {

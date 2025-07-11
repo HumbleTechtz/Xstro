@@ -8,6 +8,7 @@ import type {
 	WAMessageContent,
 	WASocket,
 } from "baileys";
+import { isAdmin, isBotAdmin } from "./admin";
 
 export async function serialize(sock: WASocket, msg: WAMessage) {
 	let { key, message, broadcast, pushName } = msg;
@@ -60,13 +61,15 @@ export async function serialize(sock: WASocket, msg: WAMessage) {
 				? owner.jid
 				: key.remoteJid,
 		message: message,
+		isAdmin: isGroup ? isAdmin(chat, key.participant) : null,
+		isBotAdmin: isGroup ? isBotAdmin(owner, chat) : null,
 		text: extractTxt(message),
 		mentions: quoted?.mentionedJid,
-		image: Boolean(message?.imageMessage),
-		video: Boolean(message?.videoMessage),
-		audio: Boolean(message?.audioMessage),
-		document: Boolean(message?.documentMessage),
-		sticker: Boolean(message?.stickerMessage || message?.lottieStickerMessage),
+		image: !!message?.imageMessage,
+		video: !!message?.videoMessage,
+		audio: !!message?.audioMessage,
+		document: !!message?.documentMessage,
+		sticker: !!(message?.stickerMessage || message?.lottieStickerMessage),
 		viewonce: key.isViewOnce,
 		messageTimestamp: msg.messageTimestamp,
 		quoted:
@@ -83,14 +86,12 @@ export async function serialize(sock: WASocket, msg: WAMessage) {
 						message: quotedM,
 						text: extractTxt(message),
 						//@ts-ignore
-						viewonce: quotedM?.[quotedType]?.viewOnce as boolean,
-						image: Boolean(quotedM?.imageMessage),
-						video: Boolean(quotedM?.videoMessage),
-						audio: Boolean(quotedM?.audioMessage),
-						document: Boolean(quotedM?.documentMessage),
-						sticker: Boolean(
-							quotedM?.stickerMessage || message?.lottieStickerMessage
-						),
+						viewonce: !!quotedM?.[quotedType]?.viewOnce,
+						image: !!quotedM?.imageMessage,
+						video: !!quotedM?.videoMessage,
+						audio: !!quotedM?.audioMessage,
+						document: !!quotedM?.documentMessage,
+						sticker: !!(quotedM?.stickerMessage || message?.lottieStickerMessage),
 				  }
 				: undefined,
 		send: async function (content: any, opts: sendOptions = { to: chat! }) {
