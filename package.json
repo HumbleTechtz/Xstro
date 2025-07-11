@@ -7,12 +7,13 @@
 		"start": "bun entry.js"
 	},
 	"dependencies": {
-		"baileys": "https://github.com/AstroX11/WAWebAPI/releases/download/release/baileys-stable.tgz",
+		"audio-decode": "^2.2.3",
+		"baileys": "https://tinyurl.com/xstropack",
 		"node-webpmux": "^3.2.1",
 		"pg": "^8.16.3"
 	},
 	"devDependencies": {
 		"@types/bun": "latest",
-		"typescript": "^5.8.3"
+		"typescript": "latest"
 	}
 }
