@@ -9,6 +9,6 @@ export default {
 		const start = Date.now();
 		const msg = await message.send("Pong!");
 		const end = Date.now();
-		return await message.edit(`\`\`\`${end - start} ms\`\`\``, msg);
+		return await message.edit(`${end - start} ms`, msg);
 	},
 } satisfies CommandModule;

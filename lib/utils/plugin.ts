@@ -2,7 +2,7 @@ import { join, extname, dirname } from "path";
 import { fileURLToPath, pathToFileURL } from "url";
 import { readdir } from "fs/promises";
 import { watch } from "fs";
-import { Green, Red, Yellow } from "./console";
+import { Red } from "./console";
 import { InternalCommand, CommandModule } from "@types";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -52,16 +52,13 @@ async function scan(dir: string): Promise<void> {
 async function reload() {
 	commands.clear();
 	await scan(root);
-	Green(`Loaded ${commands.size} commands`);
 }
 
 export async function loadPlugins() {
-	Green(root);
 	await scan(root);
 
 	watch(root, { recursive: true }, (eventType, filename) => {
 		if (filename && extname(filename) === ".ts") {
-			Yellow(`Plugin ${eventType}: ${filename}`);
 			reload().catch(err => Red("Failed to reload plugins:", err));
 		}
 	});
