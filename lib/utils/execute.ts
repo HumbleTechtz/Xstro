@@ -2,8 +2,8 @@ import { commandMap } from "./plugin";
 import type { CommandModule } from "@types";
 import type { Serialize } from "./serialize";
 
-const exec = (cmd: CommandModule, msg: Serialize, match?: string) =>
-	cmd.handler(msg, match).catch(console.error);
+const exec = async (cmd: CommandModule, msg: Serialize, match?: string) =>
+	await cmd.handler(msg, match).catch(console.error);
 
 const handleText = async (msg: Serialize) => {
 	if (!msg?.text) return;
@@ -12,11 +12,11 @@ const handleText = async (msg: Serialize) => {
 		if (!cmd.patternRegex) continue;
 
 		const match = msg.text.match(cmd.patternRegex);
-		if (match) return exec(cmd, msg, match[2]);
+		if (match) return await exec(cmd, msg, match[2]);
 	}
 };
 
-// const handleSticker = (msg: Serialize) => {
+// const handleSticker = async (msg: Serialize) => {
 // 	const sha =
 // 		msg?.message?.stickerMessage?.fileSha256 ??
 // 		msg?.message?.lottieStickerMessage?.message?.stickerMessage?.fileSha256;
@@ -31,13 +31,13 @@ const handleText = async (msg: Serialize) => {
 // 		if (!cmd.patternRegex) continue;
 
 // 		const match = cmdText.match(cmd.patternRegex);
-// 		if (match) return exec(cmd, msg, match[2]);
+// 		if (match) return await exec(cmd, msg, match[2]);
 // 	}
 // };
 
-const handleEvent = (msg: Serialize) => {
+const handleEvent = async (msg: Serialize) => {
 	for (const [, cmd] of commandMap) {
-		if (cmd?.on) exec(cmd, msg);
+		if (cmd?.on) await exec(cmd, msg);
 	}
 };
 
