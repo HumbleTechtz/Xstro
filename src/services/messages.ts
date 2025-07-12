@@ -1,4 +1,12 @@
-import { Green, saveUpserts, serialize, execute } from "lib";
+import {
+	Green,
+	saveUpserts,
+	serialize,
+	execute,
+	Serialize,
+	getprefix,
+	isSudo,
+} from "lib";
 import type { WASocket, BaileysEventMap } from "baileys";
 
 export async function messageUpsert(
@@ -17,7 +25,7 @@ export async function messageUpsert(
 			});
 		}
 
-		await Promise.all([execute(msg), saveUpserts(event)]);
+		await Promise.allSettled([_callCommands(msg), saveUpserts(event)]);
 	}
 }
 
@@ -26,4 +34,15 @@ export async function messageDlt(
 	event: BaileysEventMap["messages.delete"]
 ) {
 	Green("Message deleted:", event);
+}
+
+function _callCommands(msg: Serialize) {
+	const prefix = getprefix();
+	if (!!prefix && /\S/.test(prefix)) {
+		if (!msg.text.startsWith(prefix)) return;
+	}
+
+	console.log(msg.text);
+
+	return execute(msg);
 }

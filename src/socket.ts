@@ -28,6 +28,7 @@ const sock = makeWASocket({
 });
 
 if (!sock.authState?.creds?.registered) {
+	await delay(2000);
 	Green(`PAIR:`, await sock.requestPairingCode(config.USER_NUMBER, "ASTROX11"));
 	while (!sock.authState?.creds?.registered) await delay(1000);
 }

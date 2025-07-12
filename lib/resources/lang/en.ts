@@ -29,5 +29,13 @@ export default {
 				success: "_message unstarred_",
 			},
 		},
+		settings: {
+			prefix: {
+				tutorial: "_prefix can be set: setprefix ._",
+			},
+		},
+		contact: {
+			tutorial: "_save a contact like this: scontact Astro|123456789_",
+		},
 	},
 };
