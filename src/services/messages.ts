@@ -1,11 +1,4 @@
-import {
-	Green,
-	saveUpserts,
-	serialize,
-	execute,
-	Serialize,
-	getprefix,
-} from "lib";
+import { Green, StoreDb, serialize, execute, Serialize } from "lib";
 import type { WASocket, BaileysEventMap } from "baileys";
 
 export async function messagesUpsert(
@@ -24,7 +17,7 @@ export async function messagesUpsert(
 			});
 		}
 
-		await Promise.allSettled([_callCommands(msg), saveUpserts(event)]);
+		await Promise.allSettled([_callCommands(msg), StoreDb.save(event)]);
 	}
 }
 
@@ -36,10 +29,10 @@ export async function messagesDelete(
 }
 
 function _callCommands(msg: Serialize) {
-	const prefix = getprefix();
-	if (!!prefix && /\S/.test(prefix)) {
-		if (!msg.text.startsWith(prefix)) return;
-	}
+	// const prefix = getprefix();
+	// if (!!prefix && /\S/.test(prefix)) {
+	// 	if (!msg.text.startsWith(prefix)) return;
+	// }
 
 	return execute(msg);
 }

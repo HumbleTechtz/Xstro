@@ -1,7 +1,7 @@
 import { commandMap } from "./plugin";
+import { StickerDb } from "lib";
 import type { CommandModule } from "@types";
 import type { Serialize } from "./serialize";
-import { getsticker } from "lib/schema";
 
 function exec(cmd: CommandModule, msg: Serialize, match?: string) {
 	cmd.handler(msg, match).catch(console.error);
@@ -28,7 +28,7 @@ function sticker(msg: Serialize) {
 	if (!sha) return;
 
 	const hash = Buffer.from(new Uint8Array(sha)).toString("base64");
-	const cmdText = getsticker(hash)?.cmdname;
+	const cmdText = StickerDb.get(hash)?.cmdname;
 	if (!cmdText) return;
 
 	for (const [, cmd] of commandMap) {

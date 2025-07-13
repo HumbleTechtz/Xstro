@@ -1,5 +1,6 @@
-export * from "./contact";
-export * from "./settings";
-export * from "./sticker";
-export * from "./store";
-export * from "./sudo";
+export { default as AliveDb } from "./alive";
+export { default as AntiDelDb } from "./antidel";
+export { default as ContactDb } from "./contact";
+export { default as StickerDb } from "./sticker";
+export { default as StoreDb } from "./store";
+export { default as SudoDb } from "./sudo";

@@ -9,7 +9,7 @@ import cache from "./cache";
 import event from "./event";
 import config from "../config";
 import { cachedGroupMetadata } from "./group";
-import { Green, logger } from "lib";
+import { Green, logger, StoreDb } from "lib";
 
 const msgRetryCounterCache = cache();
 
@@ -25,6 +25,7 @@ const sock = makeWASocket({
 	logger,
 	msgRetryCounterCache,
 	cachedGroupMetadata,
+	getMessage: StoreDb.get,
 });
 
 if (!sock.authState?.creds?.registered) {
