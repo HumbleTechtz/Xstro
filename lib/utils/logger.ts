@@ -1,4 +1,5 @@
 import type { ILogger } from "baileys/lib/Utils/logger";
+import { Yellow } from "./console";
 
 const Logger = function (
 	level = "info",
@@ -15,7 +16,7 @@ const Logger = function (
 		const objStr = typeof obj === "string" ? obj : JSON.stringify(obj);
 		const message = msg ? `${objStr} ${msg}` : objStr;
 
-		console.log(
+		Yellow(
 			`[${timestamp}] ${logLevel.toUpperCase()} ${contextStr} ${message}`
 		);
 	};
@@ -32,4 +33,4 @@ const Logger = function (
 	};
 };
 
-export const logger = Logger("silent");
+export const logger = Logger("debug");

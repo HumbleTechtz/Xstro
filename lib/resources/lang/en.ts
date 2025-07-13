@@ -1,6 +1,11 @@
 export default {
 	warn: { invaild_user: "_provide user number_" },
 	reply_msg: "_reply a message_",
+	db_initialized: "Database Initialized for Socket",
+	update: {
+		uptodate: "Latest: true",
+		outofdate: "Please update to Latest Version",
+	},
 	plugin: {
 		groups: {
 			add: {

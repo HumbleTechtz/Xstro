@@ -4,10 +4,10 @@ import { Boom } from "@hapi/boom";
 import { Green, Yellow } from "lib";
 import type { WASocket, BaileysEventMap, Contact } from "baileys";
 
-export async function connection(
+export default async (
 	ev: BaileysEventMap["connection.update"],
 	sock: WASocket
-) {
+) => {
 	const { connection, lastDisconnect } = ev;
 	switch (connection) {
 		case "connecting":
@@ -24,4 +24,4 @@ export async function connection(
 			Green("connection open.");
 			break;
 	}
-}
+};

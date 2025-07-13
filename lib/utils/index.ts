@@ -6,3 +6,4 @@ export * from "./fetch";
 export * from "./logger";
 export * from "./plugin";
 export * from "./serialize";
+export * from "./updater";

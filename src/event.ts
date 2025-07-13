@@ -1,10 +1,14 @@
-import { WASocket } from "baileys";
-import { background, connection, messageUpsert, messageDlt } from "./services";
+import { Contact, WASocket } from "baileys";
+import {
+	hooks,
+	connection,
+	messagesUpsert,
+	messagesDelete,
+	contact,
+} from "./services";
 
 export default async (sock: WASocket, saveCreds: { (): void }) => {
-	return await Promise.all([
-		background(sock),
-
+	return await Promise.allSettled([
 		sock.ev.process(async ev => {
 			if (ev["creds.update"]) saveCreds();
 
@@ -13,12 +17,23 @@ export default async (sock: WASocket, saveCreds: { (): void }) => {
 			}
 
 			if (ev["messages.upsert"]) {
-				await messageUpsert(sock, ev["messages.upsert"]);
+				await messagesUpsert(sock, ev["messages.upsert"]);
 			}
 
 			if (ev["messages.delete"]) {
-				await messageDlt(sock, ev["messages.delete"]);
+				await messagesDelete(sock, ev["messages.delete"]);
+			}
+			if (ev["messaging-history.set"]) {
+				const { contacts } = ev["messaging-history.set"];
+				Promise.allSettled([contact(contacts)]);
+			}
+			if (ev["contacts.update"]) {
+				contact(ev["contacts.update"] as Contact[]);
+			}
+			if (ev["contacts.upsert"]) {
+				contact(ev["contacts.upsert"]);
 			}
 		}),
+		hooks(sock),
 	]);
 };

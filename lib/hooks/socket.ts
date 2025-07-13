@@ -2,19 +2,32 @@ import { updateMetaGroup } from "src";
 import type { GroupMetadata, WASocket } from "baileys";
 
 export function socketHooks(sock: WASocket) {
-	setTimeout(async () => {
-		fetchAndUpdateGroups(sock);
-		setInterval(fetchAndUpdateGroups, 45 * 1000);
-	}, 5000);
+	const UPDATE_INTERVAL = 45 * 1000;
+	const INITIAL_DELAY = 5000;
+	let intervalId: NodeJS.Timeout;
+
+	setTimeout(() => {
+		intervalId = setInterval(() => fetchAndUpdateGroups(sock), UPDATE_INTERVAL);
+	}, INITIAL_DELAY);
+
+	return () => clearInterval(intervalId);
 }
 
 export const fetchAndUpdateGroups = async (sock: WASocket) => {
 	try {
-		if (!sock.authState?.creds?.registered) return;
+		if (!sock.authState?.creds) return;
 
 		const data = await sock.groupFetchAllParticipating();
 		for (const [jid, metadata] of Object.entries(data)) {
-			updateMetaGroup(jid, metadata as GroupMetadata);
+			if (isGroupMetadata(metadata)) {
+				updateMetaGroup(jid, metadata);
+			}
 		}
-	} catch {}
+	} catch (error) {
+		console.error("Error in fetchAndUpdateGroups:", error);
+	}
 };
+
+function isGroupMetadata(metadata: any): metadata is GroupMetadata {
+	return metadata && typeof metadata === "object" && "id" in metadata;
+}

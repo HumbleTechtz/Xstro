@@ -10,7 +10,6 @@ export default {
 	desc: "Set custom handler",
 	type: "settings",
 	handler: async (msg, args) => {
-		console.log(`Arguments:`, args);
 		args = args ?? null;
 		if (!args) msg.send(en.plugin.settings.prefix.tutorial), await delay(500);
 		setprefix(args);

@@ -5,11 +5,10 @@ import {
 	execute,
 	Serialize,
 	getprefix,
-	isSudo,
 } from "lib";
 import type { WASocket, BaileysEventMap } from "baileys";
 
-export async function messageUpsert(
+export async function messagesUpsert(
 	sock: WASocket,
 	event: BaileysEventMap["messages.upsert"]
 ) {
@@ -29,7 +28,7 @@ export async function messageUpsert(
 	}
 }
 
-export async function messageDlt(
+export async function messagesDelete(
 	sock: WASocket,
 	event: BaileysEventMap["messages.delete"]
 ) {
@@ -41,8 +40,6 @@ function _callCommands(msg: Serialize) {
 	if (!!prefix && /\S/.test(prefix)) {
 		if (!msg.text.startsWith(prefix)) return;
 	}
-
-	console.log(msg.text);
 
 	return execute(msg);
 }
