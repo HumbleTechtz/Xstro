@@ -8,9 +8,7 @@ export default [
 		desc: "fetch Jid/Lid",
 		type: "debug",
 		handler: msg => {
-			return msg.send(
-				`🆔 Chat JID: ${msg.chat || msg.sender || "❌ Chat JID not found"}`
-			);
+			return msg.send(msg?.quoted?.sender ?? msg.chat ?? msg.sender);
 		},
 	},
 ] satisfies CommandModule[];
