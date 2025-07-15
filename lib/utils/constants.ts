@@ -67,3 +67,51 @@ export function getFormattedBio(): string {
 	const quote = getQuote();
 	return `${quote} | 📅 ${date} | 🕒 ${time} | ⚡ Powered by Xstro Bot`;
 }
+
+export function fancy(text: any): string {
+	const fancyMap: Record<string, string> = {
+		a: "ᴀ",
+		b: "ʙ",
+		c: "ᴄ",
+		d: "ᴅ",
+		e: "ᴇ",
+		f: "ғ",
+		g: "ɢ",
+		h: "ʜ",
+		i: "ɪ",
+		j: "ᴊ",
+		k: "ᴋ",
+		l: "ʟ",
+		m: "ᴍ",
+		n: "ɴ",
+		o: "ᴏ",
+		p: "ᴘ",
+		q: "ǫ",
+		r: "ʀ",
+		s: "s",
+		t: "ᴛ",
+		u: "ᴜ",
+		v: "ᴠ",
+		w: "ᴡ",
+		x: "x",
+		y: "ʏ",
+		z: "ᴢ",
+
+		"0": "𝟬",
+		"1": "𝟭",
+		"2": "𝟮",
+		"3": "𝟯",
+		"4": "𝟰",
+		"5": "𝟱",
+		"6": "𝟲",
+		"7": "𝟳",
+		"8": "𝟴",
+		"9": "𝟵",
+	};
+
+	return String(text)
+		.toLowerCase()
+		.split("")
+		.map(char => fancyMap[char] || char)
+		.join("");
+}

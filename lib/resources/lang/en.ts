@@ -4,6 +4,7 @@ export default {
 	db_initialized: "Database Synced",
 	bot_not_admin: "_i am not an admin of this group!_",
 	sender_not_admin: "_you are not a group admin!_",
+	cmd_not_exists: "_This command does not exist_",
 	update: {
 		uptodate: "Latest: true",
 		outofdate: "Please update to Latest Version",
@@ -21,8 +22,8 @@ export default {
 			kickall: {
 				success: "_all non-admin participants removed from group_",
 			},
-			newgc:{
-			no_name: '_no name was provided_'
+			newgc: {
+				no_name: "_no name was provided_",
 			},
 			gpp: {
 				no_image: "_reply an image_",
@@ -91,6 +92,19 @@ export default {
 		},
 		contact: {
 			tutorial: "_save a contact like this: scontact Astro|123456789_",
+		},
+		sticker: {
+			not_replied: "_reply a sticker_",
+			no_name_chose: "_provide a command name as sticker_",
+			remove_option_null: "_provide a command name, eg ping_",
+			cmd_not_used: "_that command wasn't used for sticker_",
+		},
+		ban: {
+			already: "_user already banned from using commands_",
+			user_banned: "_user is now banned from using commands_",
+			not_banned: "_user was not banned before_",
+			user_unbanned: "_ban lifted, you can now use bot commands_",
+			none: "_no users where banned from using cmds_",
 		},
 	},
 };

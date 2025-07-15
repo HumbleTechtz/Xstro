@@ -9,6 +9,7 @@ export { default as ContactDb } from "./contact";
 export { default as filtersDb } from "./filters";
 export { default as Greetings } from "./greetings";
 export { default as GroupDb } from "./group";
+export * from './leaderboard'
 export { default as Settings } from "./settings";
 export { default as StickerDb } from "./sticker";
 export { default as StoreDb } from "./store";
