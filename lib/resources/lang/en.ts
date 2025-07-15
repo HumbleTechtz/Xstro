@@ -2,6 +2,8 @@ export default {
 	warn: { invaild_user: "_provide user number_" },
 	reply_msg: "_reply a message_",
 	db_initialized: "Database Synced",
+	bot_not_admin: "_i am not an admin of this group!_",
+	sender_not_admin: "_you are not a group admin!_",
 	update: {
 		uptodate: "Latest: true",
 		outofdate: "Please update to Latest Version",
@@ -15,6 +17,54 @@ export default {
 			kick: {
 				success: "_participant kicked from group_",
 				fail: "_failed to kick participant_",
+			},
+			kickall: {
+				success: "_all non-admin participants removed from group_",
+			},
+			newgc:{
+			no_name: '_no name was provided_'
+			},
+			gpp: {
+				no_image: "_reply an image_",
+				success: "_group photo updated_",
+			},
+			rgpp: {
+				success: "_group photo removed_",
+			},
+			gname: {
+				no_name: "_provide new group name_",
+				success: "_group name updated_",
+			},
+			gdesc: {
+				no_desc: "_provide new group description_",
+				success: "_group description updated_",
+			},
+			mute: {
+				already_muted: "_group already muted_",
+				success: "_group muted, only admins can send messages_",
+			},
+			unmute: {
+				already_unmuted: "_group already unmuted_",
+				success: "_group unmuted, all members can send messages_",
+			},
+			lock: {
+				already_locked: "_group settings already restricted_",
+				success: "_group settings restricted to admins_",
+			},
+			unlock: {
+				already_unlocked: "_group settings already unrestricted_",
+				success: "_group settings unrestricted_",
+			},
+			approval: {
+				on: "_approval mode on_",
+				off: "_approval mode off_",
+			},
+			poll: {
+				no_question: "_provide a question and options_",
+				min_options: "_add at least 2 options_",
+			},
+			requests: {
+				none: "_no join requests found_",
 			},
 		},
 		chats: {
