@@ -1,5 +1,6 @@
 import { updateMetaGroup } from "src";
-import { Red } from "lib";
+import { getFormattedBio, Red } from "lib";
+import { startClockAlignedScheduler } from "./timer";
 import type { GroupMetadata, WASocket } from "baileys";
 
 export function socketHooks(sock: WASocket) {
@@ -10,6 +11,11 @@ export function socketHooks(sock: WASocket) {
 	setTimeout(() => {
 		intervalId = setInterval(() => fetchAndUpdateGroups(sock), UPDATE_INTERVAL);
 	}, INITIAL_DELAY);
+
+	startClockAlignedScheduler(async () => {
+		const newBio = getFormattedBio();
+		await sock.updateProfileStatus(newBio);
+	});
 
 	return () => clearInterval(intervalId);
 }

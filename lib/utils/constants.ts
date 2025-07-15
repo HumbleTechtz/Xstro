@@ -1,4 +1,5 @@
 import { getContentType, type WAMessage, type WAMessageContent } from "baileys";
+import { getQuote } from "lib/resources";
 
 export function extractTxt(
 	message?: WAMessageContent
@@ -58,3 +59,11 @@ export const formatRuntime = (uptime: number): string => {
 	const seconds = Math.floor(uptime % 60);
 	return `${hours}h ${minutes}m ${seconds}s`;
 };
+
+export function getFormattedBio(): string {
+	const now = new Date();
+	const date = now.toLocaleDateString("en-PK");
+	const time = now.toLocaleTimeString("en-PK");
+	const quote = getQuote();
+	return `${quote} | 📅 ${date} | 🕒 ${time} | ⚡ Powered by Xstro Bot`;
+}
