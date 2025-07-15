@@ -3,7 +3,7 @@ import { extractUrlFromText } from "baileys";
 
 export default {
 	pattern: "instagram",
-	aliases: ["ig"],
+	aliases: ["ig", "insta"],
 	fromMe: false,
 	isGroup: false,
 	desc: "Download Instagram videos",
@@ -14,25 +14,26 @@ export default {
 
 		if (
 			!url ||
-			!/^https?:\/\/(?:www\.)?instagram\.com\/[^\/\s]+\/(reel|p|tv)\/[a-zA-Z0-9._%-]+\/?$/i.test(url)
+			!/^https?:\/\/(?:www\.)?instagram\.com\/[^\/\s]+\/(reel|p|tv)\/[a-zA-Z0-9._%-]+\/?$/i.test(
+				url
+			)
 		) {
 			return msg.send("Provide a valid Instagram link!");
 		}
 
-		const res = await fetch("https://api.cobalt.tools/", {
-			method: "POST",
-			headers: {
-				"content-type": "application/json",
-				accept: "application/json",
-				"accept-encoding": "identity",          // ← ask for NO compression
-				authorization:
-					"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJkWTA1YzVUQiIsInN1YiI6Ilo0UEZqMjQtIiwiZXhwIjoxNzUyNTYzODg4fQ.uhjxyD9dY-A7yYAnAWpK1twv-gVOuV8FiaFP_bQFchE",
-			},
-			body: JSON.stringify({ url, localProcessing: "preferred" }),
-		})
+		const res = await fetch(
+			`https://bk9.fun/download/instagram?url=${encodeURIComponent(url)}`,
+			{
+				method: "GET",
+			}
+		);
 
-		console.log(res)
+		const data = await res.json();
 
-		return msg.send(res?.url ?? "❌ Failed to fetch media.");
+		if (!data.status || !data.BK9?.[0]?.url) {
+			return msg.send("❌ Failed to fetch media.");
+		}
+
+		return msg.send(data.BK9[0].url);
 	},
 } satisfies CommandModule;
