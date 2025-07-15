@@ -1,7 +1,7 @@
 export default {
 	warn: { invaild_user: "_provide user number_" },
 	reply_msg: "_reply a message_",
-	db_initialized: "Database Initialized for Socket",
+	db_initialized: "Database Synced",
 	update: {
 		uptodate: "Latest: true",
 		outofdate: "Please update to Latest Version",

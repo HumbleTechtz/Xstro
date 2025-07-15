@@ -2,7 +2,6 @@ import {
 	makeWASocket,
 	makeCacheableSignalKeyStore,
 	fetchLatestWaWebVersion,
-	delay,
 } from "baileys";
 import auth from "./auth";
 import cache from "./cache";
@@ -29,9 +28,10 @@ const sock = makeWASocket({
 });
 
 if (!sock.authState?.creds?.registered) {
-	await delay(2000);
+	await new Promise(r => setTimeout(r, 2000));
 	Green(`PAIR:`, await sock.requestPairingCode(config.USER_NUMBER, "ASTROX11"));
-	while (!sock.authState?.creds?.registered) await delay(1000);
+	while (!sock.authState?.creds?.registered)
+		await new Promise(r => setTimeout(r, 2000));
 }
 
 await event(sock, saveCreds).catch(Red);
