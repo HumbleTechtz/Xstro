@@ -14,8 +14,8 @@ export function socketHooks(sock: WASocket) {
 			for (const [jid, metadata] of Object.entries(data)) {
 				updateMetaGroup(jid, metadata);
 			}
-		} catch (error) {
-			Red(error);
+		} catch (e) {
+			Red(e);
 		}
 	};
 
