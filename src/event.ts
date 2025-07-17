@@ -7,11 +7,9 @@ import {
 	contact,
 } from "./services";
 
-export default async (sock: WASocket, saveCreds: { (): void }) => {
+export default async (sock: WASocket) => {
 	return await Promise.allSettled([
 		sock.ev.process(async ev => {
-			if (ev["creds.update"]) saveCreds();
-
 			if (ev["connection.update"]) {
 				await connection(ev["connection.update"], sock);
 			}

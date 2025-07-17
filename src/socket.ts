@@ -8,7 +8,7 @@ import { Green, logger, Red, StoreDb } from "lib";
 
 const msgRetryCounterCache = cache();
 
-const { state, saveCreds } = auth();
+const { state } = auth();
 const { version } = await fetchLatestWaWebVersion({});
 
 const sock = makeWASocket({
@@ -30,4 +30,4 @@ if (!sock.authState?.creds?.registered) {
 		await new Promise(r => setTimeout(r, 2000));
 }
 
-await event(sock, saveCreds).catch(Red);
+await event(sock).catch(Red);
