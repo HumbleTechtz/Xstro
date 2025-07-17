@@ -11,6 +11,6 @@ export default {
 		const quoted = msg.quoted;
 		if (!quoted) return msg.send(en.reply_msg);
 		await msg.forward(msg.owner.jid, quoted, { quoted: msg });
-		return msg.send(en.plugin.forward.success);
+		return msg.send(en.plugin.save.success);
 	},
 } satisfies CommandModule;

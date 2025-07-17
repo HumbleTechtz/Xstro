@@ -1,5 +1,5 @@
 import { jidNormalizedUser, normalizeMessageContent } from "baileys";
-import { extractTxt, isAdmin, isBotAdmin, Settings } from "lib";
+import { extractTxt, isAdmin, isBotAdmin, Settings, SudoDb } from "lib";
 import { downloadMessage, edit, send, deleteM, forwardM, userId } from "./sock";
 import type { sendOptions } from "./sock";
 import type {
@@ -24,6 +24,13 @@ export async function serialize(sock: WASocket, msg: WAMessage) {
 		lid: jidNormalizedUser(sock.user?.lid),
 	};
 
+	const sender =
+		isGroup || broadcast
+			? key.participant
+			: key.fromMe
+			? owner.jid
+			: key.remoteJid;
+
 	const mtype = Object.keys(message ?? "").find(
 		k =>
 			(k === "conversation" || k.includes("Message")) &&
@@ -46,6 +53,7 @@ export async function serialize(sock: WASocket, msg: WAMessage) {
 	}
 
 	const prefix = Settings.prefix.get();
+	const sudo = SudoDb.check(sender);
 
 	return {
 		chat,
@@ -56,13 +64,9 @@ export async function serialize(sock: WASocket, msg: WAMessage) {
 		mtype,
 		pushName,
 		prefix,
-		sender:
-			isGroup || broadcast
-				? key.participant
-				: key.fromMe
-				? owner.jid
-				: key.remoteJid,
+		sender,
 		message: message,
+		sudo,
 		isAdmin: isGroup ? isAdmin(chat, key.participant) : null,
 		isBotAdmin: isGroup ? isBotAdmin(owner, chat) : null,
 		text: extractTxt(message),
@@ -87,6 +91,7 @@ export async function serialize(sock: WASocket, msg: WAMessage) {
 						sender: quoted.participant,
 						message: quotedM,
 						mtype: quotedType,
+						sudo: SudoDb.check(quoted.participant),
 						text: extractTxt(message),
 						//@ts-ignore
 						viewonce: !!quotedM?.[quotedType]?.viewOnce,

@@ -1,9 +1,11 @@
 import pp from "lib/assets/pp";
 
 export default {
-meta: {
-	lang: "en",
-	botname: 'Xstro', desc: 'Simple WhatsApp Bot',},
+	meta: {
+		lang: "en",
+		botname: "Xstro",
+		desc: "Simple WhatsApp Bot",
+	},
 	warn: { invaild_user: "_provide user number_" },
 	reply_msg: "_reply a message_",
 	reply_image: "_reply an image_",
@@ -129,6 +131,9 @@ meta: {
 		edit: {
 			success: "_message edited_",
 			not_own_message: "_you can only edit your own messages_",
+		},
+		save: {
+			success: "_done!_",
 		},
 	},
 };
