@@ -1,8 +1,4 @@
-import {
-	makeWASocket,
-	makeCacheableSignalKeyStore,
-	fetchLatestWaWebVersion,
-} from "baileys";
+import makeWASocket, { fetchLatestWaWebVersion } from "baileys";
 import auth from "./auth";
 import cache from "./cache";
 import event from "./event";
@@ -18,7 +14,7 @@ const { version } = await fetchLatestWaWebVersion({});
 const sock = makeWASocket({
 	auth: {
 		creds: state.creds,
-		keys: makeCacheableSignalKeyStore(state.keys, logger),
+		keys: state.keys,
 	},
 	version,
 	logger,
