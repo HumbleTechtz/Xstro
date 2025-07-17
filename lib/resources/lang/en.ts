@@ -1,6 +1,9 @@
+import pp from "lib/assets/pp";
+
 export default {
 	warn: { invaild_user: "_provide user number_" },
 	reply_msg: "_reply a message_",
+	reply_image: "_reply an image_",
 	db_initialized: "Database Synced",
 	bot_not_admin: "_i am not an admin of this group!_",
 	sender_not_admin: "_you are not a group admin!_",
@@ -105,6 +108,22 @@ export default {
 			not_banned: "_user was not banned before_",
 			user_unbanned: "_ban lifted, you can now use bot commands_",
 			none: "_no users where banned from using cmds_",
+		},
+		block: {
+			blocked: "_blocked!_",
+			unblocked: "_unblocked!_",
+		},
+		pp: {
+			success: "_profile photo updated_",
+		},
+		forward: {
+			success: "_message forwarded_",
+			no_message: "_no message quoted to forward_",
+			invalid_user: "_provide a valid user number_",
+		},
+		edit: {
+			success: "_message edited_",
+			not_own_message: "_you can only edit your own messages_",
 		},
 	},
 };

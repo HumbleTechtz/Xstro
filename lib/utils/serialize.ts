@@ -86,6 +86,7 @@ export async function serialize(sock: WASocket, msg: WAMessage) {
 						broadcast: Boolean(quoted?.remoteJid),
 						sender: quoted.participant,
 						message: quotedM,
+						mtype: quotedType,
 						text: extractTxt(message),
 						//@ts-ignore
 						viewonce: !!quotedM?.[quotedType]?.viewOnce,
