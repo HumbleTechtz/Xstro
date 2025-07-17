@@ -1,6 +1,7 @@
 import { CommandModule } from "@types";
 import { isLidUser } from "baileys";
 import { Serialize, updateLeaderboard } from "lib";
+import { userId as user } from "lib/utils/sock";
 
 const games = new Map<string, Wcg>();
 const pending = new Map<string, { jids: string[]; timers: NodeJS.Timeout[] }>();
@@ -377,11 +378,15 @@ class Wcg {
 			result = `\`\`\`The Word Chain Game has concluded!\n\nFinal standings:\n${scoreText}\`\`\``;
 		}
 
-		const validPlayers = this.originalPlayers.filter(userId => isLidUser(userId));
+		const validPlayers = await Promise.all(
+			this.originalPlayers.map(
+				async userId => await user(this.message, userId).then(info => info.lid)
+			)
+		);
 		await updateLeaderboard(
-			validPlayers.map(userId => ({
-				userId,
-				score: this.scores.get(userId) || 0,
+			this.originalPlayers.map(jid => ({
+				userId: validPlayers[this.originalPlayers.indexOf(jid)],
+				score: this.scores.get(jid) || 0,
 			}))
 		);
 
@@ -402,11 +407,15 @@ class Wcg {
 
 		const result: string = `\`\`\`The Word Chain Game has ended due to inactivity!\n\nFinal standings:\n${scoreText}\`\`\``;
 
-		const validPlayers = this.originalPlayers.filter(userId => isLidUser(userId));
+		const validPlayers = await Promise.all(
+			this.originalPlayers.map(
+				async userId => await user(this.message, userId).then(info => info.lid)
+			)
+		);
 		await updateLeaderboard(
-			validPlayers.map(userId => ({
-				userId,
-				score: this.scores.get(userId) || 0,
+			this.originalPlayers.map(jid => ({
+				userId: validPlayers[this.originalPlayers.indexOf(jid)],
+				score: this.scores.get(jid) || 0,
 			}))
 		);
 

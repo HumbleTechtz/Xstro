@@ -9,48 +9,43 @@ const pool = new Pool({
 	keepAlive: true,
 });
 
-async function PostgreDB() {
-	await pool.query(`
-	CREATE TABLE IF NOT EXISTS leaderboard (
-		userid VARCHAR(255) PRIMARY KEY,
-		score INTEGER NOT NULL,
-		rank VARCHAR(50) NOT NULL DEFAULT 'bronze'
-	)`);
-}
-
-PostgreDB().catch(console.error);
-
-enum UserRank {
-	LEGEND = 1,
-	MASTER = 2,
-	DIAMOND = 3,
-	PLATINUM = 4,
-	GOLD = 5,
-	SILVER = 6,
-	BRONZE = 7,
-}
-
 const SCORE_THRESHOLDS = {
-	LEGEND: 7000,
-	MASTER: 5400,
-	DIAMOND: 3200,
-	PLATINUM: 800,
-	GOLD: 600,
-	SILVER: 500,
-	BRONZE: 0,
+	legend: 7000,
+	master: 5400,
+	diamond: 3200,
+	platinum: 800,
+	gold: 600,
+	silver: 500,
+	bronze: 0,
 };
 
+const HIGH_RANKS = ["legend", "master", "diamond"];
+
+await pool
+	.query(
+		`
+		CREATE TABLE IF NOT EXISTS leaderboard (
+			userid VARCHAR(255) PRIMARY KEY,
+			score INTEGER NOT NULL,
+			rank VARCHAR(50) NOT NULL DEFAULT 'bronze'
+		)
+	`
+	)
+	.catch(console.error);
+
 function determineRank(score: number): string {
-	if (score >= SCORE_THRESHOLDS.LEGEND) return "legend";
-	if (score >= SCORE_THRESHOLDS.MASTER) return "master";
-	if (score >= SCORE_THRESHOLDS.DIAMOND) return "diamond";
-	if (score >= SCORE_THRESHOLDS.PLATINUM) return "platinum";
-	if (score >= SCORE_THRESHOLDS.GOLD) return "gold";
-	if (score >= SCORE_THRESHOLDS.SILVER) return "silver";
+	if (score >= SCORE_THRESHOLDS.legend) return "legend";
+	if (score >= SCORE_THRESHOLDS.master) return "master";
+	if (score >= SCORE_THRESHOLDS.diamond) return "diamond";
+	if (score >= SCORE_THRESHOLDS.platinum) return "platinum";
+	if (score >= SCORE_THRESHOLDS.gold) return "gold";
+	if (score >= SCORE_THRESHOLDS.silver) return "silver";
 	return "bronze";
 }
 
-async function updateLeaderboard(users: { userId: string; score: number }[]) {
+export async function updateLeaderboard(
+	users: { userId: string; score: number }[]
+) {
 	const { rows: currentLeaderboard } = await pool.query(
 		"SELECT userid, score, rank FROM leaderboard"
 	);
@@ -62,27 +57,22 @@ async function updateLeaderboard(users: { userId: string; score: number }[]) {
 		.map(u => u.userId);
 
 	for (const user of users) {
-		const entry = dbMap.get(user.userId);
-		//@ts-ignore
-		const currentScore = typeof entry?.score === "number" ? entry.score : 0;
-		//@ts-ignore
+		const entry = dbMap.get(user.userId) as
+			| { userid: string; score: number; rank: string }
+			| undefined;
+		const currentScore = entry?.score || 0;
 		const currentRank = entry?.rank || "bronze";
 
 		let roundScore = user.score;
 
 		if (top3.includes(user.userId)) roundScore *= 1.02;
-
-		if (["legend", "master", "diamond"].includes(String(currentRank)))
-			roundScore *= 1.05;
+		if (HIGH_RANKS.includes(currentRank)) roundScore *= 1.05;
 
 		let finalScore;
 		if (top3.includes(user.userId)) {
 			finalScore = currentScore + Math.floor(roundScore);
 		} else {
-			const isHighRank = ["legend", "master", "diamond"].includes(
-				String(currentRank)
-			);
-			const penaltyMultiplier = isHighRank ? 0.85 : 0.92;
+			const penaltyMultiplier = HIGH_RANKS.includes(currentRank) ? 0.85 : 0.92;
 			finalScore = currentScore + Math.floor(roundScore * penaltyMultiplier);
 		}
 
@@ -112,11 +102,11 @@ async function updateLeaderboard(users: { userId: string; score: number }[]) {
 	}));
 }
 
-async function resetLeaderboard() {
+export async function resetLeaderboard() {
 	await pool.query("DELETE FROM leaderboard");
 }
 
-async function getLeaderboard(): Promise<
+export async function getLeaderboard(): Promise<
 	{
 		userId: string;
 		score: number;
@@ -132,5 +122,3 @@ async function getLeaderboard(): Promise<
 		rank: String(u.rank ?? "bronze"),
 	}));
 }
-
-export { updateLeaderboard, resetLeaderboard, UserRank, getLeaderboard };
