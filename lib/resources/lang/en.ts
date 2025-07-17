@@ -1,6 +1,9 @@
 import pp from "lib/assets/pp";
 
 export default {
+meta: {
+	lang: "en",
+	botname: 'Xstro', desc: 'Simple WhatsApp Bot',},
 	warn: { invaild_user: "_provide user number_" },
 	reply_msg: "_reply a message_",
 	reply_image: "_reply an image_",
@@ -8,6 +11,8 @@ export default {
 	bot_not_admin: "_i am not an admin of this group!_",
 	sender_not_admin: "_you are not a group admin!_",
 	cmd_not_exists: "_This command does not exist_",
+	group_muted: "_group is now muted_",
+	group_unmuted: "_group is now unmuted_",
 	update: {
 		uptodate: "Latest: true",
 		outofdate: "Please update to Latest Version",

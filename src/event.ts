@@ -5,6 +5,8 @@ import {
 	messagesUpsert,
 	messagesDelete,
 	contact,
+	participants,
+	groupRequests,
 } from "./services";
 
 export default async (sock: WASocket) => {
@@ -30,6 +32,12 @@ export default async (sock: WASocket) => {
 			}
 			if (ev["contacts.upsert"]) {
 				contact(ev["contacts.upsert"]);
+			}
+			if (ev["group-participants.update"]) {
+				await participants(sock, ev["group-participants.update"]);
+			}
+			if (ev["group.join-request"]) {
+				await groupRequests(sock, ev["group.join-request"]);
 			}
 		}),
 		hooks(sock),

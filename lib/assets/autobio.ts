@@ -1,13 +1,16 @@
+import { AutoBioDb } from "lib";
 import type { CommandModule } from "@types";
-import { getFormattedBio } from "lib";
 
 export default {
 	pattern: "autobio",
 	fromMe: true,
-	desc: "Update bot bio with a random coding quote",
+	desc: "Toggle autobio on/off",
 	type: "misc",
 	handler: async msg => {
-		const newBio = getFormattedBio();
-		await msg.updateProfileStatus(newBio);
+		const current = AutoBioDb.get();
+		const next = current ? 0 : 1;
+		AutoBioDb.set(next);
+
+		await msg.send(`_Autobio is now ${next === 1 ? "on" : "off"}_`);
 	},
 } satisfies CommandModule;

@@ -1,18 +1,19 @@
 import { updateMetaGroup } from "src";
-import { getFormattedBio, Red } from "lib";
+import { AutoBioDb, getBio, Red } from "lib";
+import { groupAutoMute } from "./automute";
 import { startClockAlignedScheduler } from "./timer";
-import type { GroupMetadata, WASocket } from "baileys";
+import type { WASocket } from "baileys";
 
 export function socketHooks(sock: WASocket) {
 	const schedulerCallback = async () => {
-		await sock.updateProfileStatus(getFormattedBio());
-
 		try {
-			if (!sock.authState?.creds) return;
-
-			const data = await sock.groupFetchAllParticipating();
-			for (const [jid, metadata] of Object.entries(data)) {
-				updateMetaGroup(jid, metadata);
+			if (AutoBioDb.get()) await sock.updateProfileStatus(getBio());
+			if (!sock.authState?.creds.registered) {
+				await groupAutoMute(sock);
+				const data = await sock.groupFetchAllParticipating();
+				for (const [jid, metadata] of Object.entries(data)) {
+					updateMetaGroup(jid, metadata);
+				}
 			}
 		} catch (e) {
 			Red(e);

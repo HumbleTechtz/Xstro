@@ -60,12 +60,12 @@ export const formatRuntime = (uptime: number): string => {
 	return `${hours}h ${minutes}m ${seconds}s`;
 };
 
-export function getFormattedBio(): string {
+export function getBio(): string {
 	const now = new Date();
 	const date = now.toLocaleDateString("en-PK");
 	const time = now.toLocaleTimeString("en-PK");
 	const quote = getQuote();
-	return `${quote} | 📅 ${date} | 🕒 ${time} | ⚡ Powered by Xstro Bot`;
+	return `${quote} | 📅 ${date} | 🕒 ${time} | ⚡ Powered Xstro`;
 }
 
 export function fancy(text: any): string {
