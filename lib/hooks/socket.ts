@@ -4,37 +4,20 @@ import { startClockAlignedScheduler } from "./timer";
 import type { GroupMetadata, WASocket } from "baileys";
 
 export function socketHooks(sock: WASocket) {
-	const UPDATE_INTERVAL = 45 * 1000;
-	const INITIAL_DELAY = 5000;
-	let intervalId: NodeJS.Timeout;
+	const schedulerCallback = async () => {
+		await sock.updateProfileStatus(getFormattedBio());
 
-	setTimeout(() => {
-		intervalId = setInterval(() => fetchAndUpdateGroups(sock), UPDATE_INTERVAL);
-	}, INITIAL_DELAY);
+		try {
+			if (!sock.authState?.creds) return;
 
-	startClockAlignedScheduler(async () => {
-		const newBio = getFormattedBio();
-		await sock.updateProfileStatus(newBio);
-	});
-
-	return () => clearInterval(intervalId);
-}
-
-export const fetchAndUpdateGroups = async (sock: WASocket) => {
-	try {
-		if (!sock.authState?.creds) return;
-
-		const data = await sock.groupFetchAllParticipating();
-		for (const [jid, metadata] of Object.entries(data)) {
-			if (isGroupMetadata(metadata)) {
+			const data = await sock.groupFetchAllParticipating();
+			for (const [jid, metadata] of Object.entries(data)) {
 				updateMetaGroup(jid, metadata);
 			}
+		} catch (error) {
+			Red(error);
 		}
-	} catch (error) {
-		Red(error);
-	}
-};
+	};
 
-function isGroupMetadata(metadata: any): metadata is GroupMetadata {
-	return metadata && typeof metadata === "object" && "id" in metadata;
+	return startClockAlignedScheduler(schedulerCallback);
 }
