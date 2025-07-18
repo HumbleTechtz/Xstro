@@ -2,10 +2,11 @@ import { Readable } from "stream";
 import { isUrl } from "../constants";
 import { getBuffer } from "../fetch";
 import { DataType } from "../datatype";
+import { Red } from "../console";
 import type { WAContextInfo, WAMessage, WASocket } from "baileys";
 
 export type sendOptions = {
-	to: string;
+	to?: string;
 	type?: "text" | "image" | "video" | "audio" | "sticker" | "document";
 	mimetype?: string;
 	ptt?: boolean;
@@ -23,7 +24,12 @@ export async function send(
 	let data = content;
 
 	if (typeof data === "string" && isUrl(data)) {
-		data = await getBuffer(data);
+		try {
+			data = await getBuffer(data);
+		} catch (error) {
+			Red("Failed to fetch URL, treating as text:", error);
+			return await sock.sendMessage(options.to, { text: data.toString() });
+		}
 	}
 
 	const mtype =
@@ -35,7 +41,7 @@ export async function send(
 
 	return (await sock.sendMessage(options.to, {
 		...payload,
-		contextInfo: { mentionedJid: options.mentions, ...options },
+		contextInfo: { mentionedJid: options.mentions, ...options.contextInfo },
 	})) as WAMessage;
 }
 

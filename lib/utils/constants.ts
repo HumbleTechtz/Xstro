@@ -44,14 +44,15 @@ export const isMediaMessage = (message: WAMessage): boolean => {
 	);
 };
 
-export const isUrl = (str: string) => {
-	try {
-		new URL(str);
-		return true;
-	} catch {
-		return false;
-	}
-};
+export function isUrl(str: string): boolean {
+	// Quick checks to eliminate non-URLs faster
+	if (str.length > 2048) return false; // URLs are typically shorter
+	if (str.includes("\n") || str.includes(" ")) return false; // URLs don't contain spaces or newlines
+
+	// Check for URL-like patterns quickly
+	const urlPattern = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
+	return urlPattern.test(str);
+}
 
 export const formatRuntime = (uptime: number): string => {
 	const hours = Math.floor(uptime / 3600);

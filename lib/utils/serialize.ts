@@ -53,7 +53,7 @@ export async function serialize(sock: WASocket, msg: WAMessage) {
 	}
 
 	const prefix = Settings.prefix.get();
-	const sudo = SudoDb.check(sender);
+	const sudo = SudoDb.check(sender) || [owner.jid, owner.lid].includes(sender);
 
 	return {
 		chat,
@@ -91,7 +91,9 @@ export async function serialize(sock: WASocket, msg: WAMessage) {
 						sender: quoted.participant,
 						message: quotedM,
 						mtype: quotedType,
-						sudo: SudoDb.check(quoted.participant),
+						sudo:
+							SudoDb.check(quoted.participant) ||
+							[owner.jid, owner.lid].includes(quoted.participant!),
 						text: extractTxt(message),
 						//@ts-ignore
 						viewonce: !!quotedM?.[quotedType]?.viewOnce,
