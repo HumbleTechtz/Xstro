@@ -1,26 +1,19 @@
-import { fork } from "child_process";
-import { Red, Yellow } from "./lib/utils/console";
+import { fork } from "node:child_process";
+import { log } from "node:console";
+import { exit } from "node:process";
 
-let restarting = false;
+function start() {
+	const child = fork("./client");
 
-const start = () => {
-	const child = fork("./src/socket");
-
-	child.on("exit", (code, signal) => {
-		Red(`Error: ${code}: Signal: ${signal}`);
-		if (!restarting) {
-			Yellow("Restarting...");
-			start();
-		}
+	child.once("exit", code => {
+		if (code && code > 0) return start();
+		exit();
 	});
 
-	child.on("error", err => {
-		Red("Error:", err);
-		if (!restarting) {
-			Red("Restarting due to error...");
-			start();
-		}
+	child.once("error", err => {
+		log(err);
+		return start();
 	});
-};
+}
 
 start();

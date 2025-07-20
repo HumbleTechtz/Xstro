@@ -1,5 +1,6 @@
-import { isJidUser, isLidUser, type Contact } from "baileys";
-import { ContactDb } from "lib";
+import { isJidUser, isLidUser } from "baileys";
+import { ContactDb } from "..";
+import type { Contact } from "baileys";
 
 export default (contacts: Contact[]) => {
 	for (const contact of contacts) {

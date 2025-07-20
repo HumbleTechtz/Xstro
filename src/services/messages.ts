@@ -1,6 +1,6 @@
 import { isJidGroup } from "baileys";
-import { Green, StoreDb, serialize, execute, Serialize, AntiDelDb } from "lib";
-import { forwardM } from "lib/utils/sock";
+import {  StoreDb, serialize, execute, Serialize, AntiDelDb } from "..";
+import { forwardM } from "../lib/utils/sock";
 import type { BaileysEventMap, WASocket } from "baileys";
 
 export async function messagesUpsert(

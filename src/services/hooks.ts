@@ -1,4 +1,4 @@
-import { checkGitRepoUpToDate, loadPlugins, socketHooks } from "lib";
+import { checkGitRepoUpToDate, loadPlugins, socketHooks } from "..";
 import type { WASocket } from "baileys";
 
 export default async (socket: WASocket) => {

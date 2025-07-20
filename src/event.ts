@@ -11,33 +11,33 @@ import {
 
 export default async (sock: WASocket) => {
 	return await Promise.allSettled([
-		sock.ev.process(async ev => {
-			if (ev["connection.update"]) {
-				await connection(ev["connection.update"], sock);
+		sock.ev.process(async event => {
+			if (event["connection.update"]) {
+				await connection(event["connection.update"]);
 			}
 
-			if (ev["messages.upsert"]) {
-				await messagesUpsert(sock, ev["messages.upsert"]);
+			if (event["messages.upsert"]) {
+				await messagesUpsert(sock, event["messages.upsert"]);
 			}
 
-			if (ev["messages.delete"]) {
-				await messagesDelete(sock, ev["messages.delete"]);
+			if (event["messages.delete"]) {
+				await messagesDelete(sock, event["messages.delete"]);
 			}
-			if (ev["messaging-history.set"]) {
-				const { contacts } = ev["messaging-history.set"];
-				Promise.allSettled([contact(contacts)]);
+			if (event["messaging-history.set"]) {
+				const { contacts } = event["messaging-history.set"];
+				contact(contacts);
 			}
-			if (ev["contacts.update"]) {
-				contact(ev["contacts.update"] as Contact[]);
+			if (event["contacts.update"]) {
+				contact(event["contacts.update"] as Contact[]);
 			}
-			if (ev["contacts.upsert"]) {
-				contact(ev["contacts.upsert"]);
+			if (event["contacts.upsert"]) {
+				contact(event["contacts.upsert"]);
 			}
-			if (ev["group-participants.update"]) {
-				await participants(sock, ev["group-participants.update"]);
+			if (event["group-participants.update"]) {
+				await participants(sock, event["group-participants.update"]);
 			}
-			if (ev["group.join-request"]) {
-				await groupRequests(sock, ev["group.join-request"]);
+			if (event["group.join-request"]) {
+				await groupRequests(sock, event["group.join-request"]);
 			}
 		}),
 		hooks(sock),

@@ -2,17 +2,15 @@
 	"compilerOptions": {
 		"target": "ESNext",
 		"module": "preserve",
+		"noEmit": true,
+		"strict": false,
 		"rootDir": ".",
 		"baseUrl": ".",
-		"paths": {
-			"@types": ["types/index.ts"],
-			"@types/*": ["types/*"]
-		},
-		"strict": false,
 		"skipLibCheck": true,
 		"noImplicitThis": true,
-		"noEmit": true,
+		"paths": {
+			"@types/*": ["src/types/*"]
+		},
 		"forceConsistentCasingInFileNames": true
-	},
-	"include": ["lib/**/**/*", "src/**/**/*"]
+	}
 }

@@ -1,0 +1,41 @@
+name: Bun CI Workflow
+
+on:
+ push:
+  branches: ["stable"]
+ pull_request:
+  branches: ["stable"]
+
+jobs:
+ build-and-run:
+  runs-on: ubuntu-latest
+
+  steps:
+   - name: Checkout repository
+     uses: actions/checkout@v4
+
+   - name: Set up Bun
+     uses: oven-sh/setup-bun@v1
+     with:
+      bun-version: latest
+
+   - name: Generate USER_NUMBER
+     id: generate_user_number
+     run: echo "USER_NUMBER=$(shuf -i 100000000-9999999999999999999 -n 1)" >> $GITHUB_ENV
+
+   - name: USER_NUMBER Info
+     run: echo "The generated USER_NUMBER is $USER_NUMBER"
+
+   - name: Install dependencies with Bun
+     run: bun install
+
+   - name: Start Bun application for 20 seconds
+     run: |
+      bun start & # Run bun start in the background
+      BUN_PID=$! # Get the process ID of bun start
+      echo "Bun process started with PID: $BUN_PID"
+      sleep 20 # Wait for 20 seconds
+      echo "20 seconds elapsed. Terminating Bun process..."
+      kill $BUN_PID # Terminate the bun process
+      echo "Bun process terminated."
+     continue-on-error: true

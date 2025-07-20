@@ -1,4 +1,4 @@
-import { en, GroupDb, logo, Red } from "lib";
+import { en, GroupDb, logo, Red } from "..";
 import type { BaileysEventMap, WASocket } from "baileys";
 
 export default async (

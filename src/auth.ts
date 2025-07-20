@@ -1,5 +1,5 @@
 import { sqlite } from "./sqlite";
-import { Red } from "lib";
+import { Red } from "./lib";
 import { BufferJSON, initAuthCreds, WAProto } from "baileys";
 import type { AuthenticationCreds, SignalDataTypeMap } from "baileys";
 
@@ -84,7 +84,7 @@ export default () => {
 				},
 			},
 		},
-		saveCreds: async () => {
+		saveCreds: () => {
 			writeData(creds, "creds");
 		},
 	};

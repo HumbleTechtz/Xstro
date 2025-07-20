@@ -1,13 +1,13 @@
 import {
-	AutoKickDb,
 	en,
 	getFact,
 	getInsult,
 	getQuote,
 	Greetings,
 	GroupDb,
+	AutoKickDb,
 	logo,
-} from "lib";
+} from "..";
 import type { BaileysEventMap, WASocket } from "baileys";
 
 export default async (

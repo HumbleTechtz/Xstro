@@ -1,7 +1,7 @@
 {
 	"name": "xstro",
-	"version": "24.0.0",
-	"description": "Simple WA bot.",
+	"version": "25.0.0",
+	"description": "Simple WA Client.",
 	"author": "devastro0010@gmail.com",
 	"scripts": {
 		"start": "bun entry.mts"
