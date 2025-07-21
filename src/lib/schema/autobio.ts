@@ -1,38 +1,43 @@
-import { sqlite } from "src";
+import { DataTypes, Model } from "sequelize";
+import sqlite from "../../sqlite.ts";
 
-sqlite.exec(`
-  CREATE TABLE IF NOT EXISTS autobio (
-    status INTEGER
-  )
-`);
+class Autobio extends Model {
+	declare status: number;
+}
+
+await Autobio.init(
+	{
+		status: {
+			type: DataTypes.INTEGER,
+			allowNull: true,
+		},
+	},
+	{
+		tableName: "autobio",
+		sequelize: sqlite,
+		timestamps: false,
+	}
+).sync();
 
 export default {
-	set: (status: 1 | 0) => {
-		const exists = sqlite.query("SELECT 1 FROM autobio").get();
-
+	set: async (status: 1 | 0) => {
+		const exists = await Autobio.findOne();
 		if (exists) {
-			sqlite.run("UPDATE autobio SET status = ?", [status]);
+			exists.status = status;
+			await exists.save();
 		} else {
-			sqlite.run("INSERT INTO autobio (status) VALUES (?)", [status]);
+			await Autobio.create({ status });
 		}
-
 		return true;
 	},
 
-	get: () => {
-		const result = sqlite.query("SELECT status FROM autobio").get() as {
-			status: 1 | 0;
-		} | null;
-
+	get: async () => {
+		const result = await Autobio.findOne();
 		return !!result?.status;
 	},
 
-	del: () => {
-		sqlite.run("DELETE FROM autobio");
-		const result = sqlite.query("SELECT changes() AS changes").get();
-		if (result && typeof result === "object" && "changes" in result) {
-			return (result as { changes: number }).changes;
-		}
-		return 0;
+	del: async () => {
+		const deleted = await Autobio.destroy({ where: {} });
+		return deleted;
 	},
 };

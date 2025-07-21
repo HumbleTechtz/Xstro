@@ -1,5 +1,7 @@
-import { en, StickerDb, commandMap } from "..";
-import type { CommandModule } from "src/Types";
+import { en } from "../resources/index.ts";
+import { commandMap } from "../utils/plugin.ts";
+import { StickerDb } from "../schema/index.ts";
+import type { CommandModule } from "../../Types/index.ts";
 
 export default [
 	{
@@ -28,7 +30,7 @@ export default [
 
 			if (!exists) return await message.send(en.cmd_not_exists);
 
-			StickerDb.set(filesha256, cmdname);
+			await StickerDb.set(filesha256, cmdname);
 			return await message.send(`_Sticker cmd set for ${cmdname}_`);
 		},
 	},
@@ -46,7 +48,7 @@ export default [
 
 			if (!exists) return await message.send(en.cmd_not_exists);
 
-			const removed = StickerDb.remove(cmdname);
+			const removed = await StickerDb.remove(cmdname);
 			if (!removed) return await message.send(en.plugin.sticker.cmd_not_used);
 
 			return await message.send(`_${cmdname} removed from Sticker_`);

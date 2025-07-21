@@ -1,61 +1,53 @@
-import { sqlite } from "src";
+import { DataTypes, Model } from "sequelize";
+import sqlite from "../../sqlite.ts";
 
-sqlite.exec(`
-  CREATE TABLE IF NOT EXISTS alive_message (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    message TEXT NOT NULL
-  )
-`);
+class AliveMessage extends Model {
+	declare id: number;
+	declare message: string;
+}
+
+await AliveMessage.init(
+	{
+		id: {
+			type: DataTypes.INTEGER,
+			autoIncrement: true,
+			primaryKey: true,
+		},
+		message: {
+			type: DataTypes.TEXT,
+			allowNull: false,
+		},
+	},
+	{
+		tableName: "alive_message",
+		sequelize: sqlite,
+		timestamps: false,
+	}
+).sync();
 
 export default {
-	set: (message: string) => {
-		const exists = sqlite
-			.query("SELECT 1 FROM alive_message WHERE id = ?")
-			.get(1);
+	set: async (message: string) => {
+		const [entry, created] = await AliveMessage.findOrCreate({
+			where: { id: 1 },
+			defaults: { message },
+		});
 
-		if (exists) {
-			sqlite.run("UPDATE alive_message SET message = ? WHERE id = ?", [
-				message,
-				1,
-			]);
-			return {
-				changes: (
-					sqlite.query("SELECT changes() AS changes").get() as {
-						changes: number;
-					}
-				).changes,
-			};
+		if (!created) {
+			entry.message = message;
+			await entry.save();
+			return { changes: 1 };
 		}
 
-		sqlite.run("INSERT INTO alive_message (message) VALUES (?)", [message]);
-		return {
-			changes: (
-				sqlite.query("SELECT changes() AS changes").get() as { changes: number }
-			).changes,
-		};
+		return { changes: 1 };
 	},
 
-	get: () => {
-		const result = sqlite
-			.query("SELECT message FROM alive_message WHERE id = ?")
-			.get(1) as { message?: string } | null;
-		return result?.message ?? "_I am alive_";
+	get: async () => {
+		const entry = await AliveMessage.findByPk(1);
+		return entry?.message ?? "_I am alive_";
 	},
 
-	del: () => {
-		const exists = sqlite
-			.query("SELECT 1 FROM alive_message WHERE id = ?")
-			.get(1);
-		if (exists) {
-			sqlite.run("DELETE FROM alive_message WHERE id = ?", [1]);
-			return {
-				changes: (
-					sqlite.query("SELECT changes() AS changes").get() as {
-						changes: number;
-					}
-				).changes,
-			};
-		}
-		return;
+	del: async () => {
+		const deleted = await AliveMessage.destroy({ where: { id: 1 } });
+		return deleted ? { changes: 1 } : undefined;
 	},
 };

@@ -1,45 +1,52 @@
-import { sqlite } from "src";
+import { DataTypes, Model } from "sequelize";
+import sqlite from "../../sqlite.ts";
 
-sqlite.exec(`
-  CREATE TABLE IF NOT EXISTS antilink (
-    jid TEXT NOT NULL UNIQUE,
-    mode INTEGER,
-    links TEXT
-  )
-`);
+class Antilink extends Model {
+	declare jid: string;
+	declare mode: number;
+	declare links: string | null;
+}
+
+await Antilink.init(
+	{
+		jid: {
+			type: DataTypes.TEXT,
+			primaryKey: true,
+			unique: true,
+			allowNull: false,
+		},
+		mode: {
+			type: DataTypes.INTEGER,
+			allowNull: true,
+		},
+		links: {
+			type: DataTypes.TEXT,
+			allowNull: true,
+		},
+	},
+	{
+		tableName: "antilink",
+		sequelize: sqlite,
+		timestamps: false,
+	}
+).sync();
 
 export default {
-	set: (jid: string, mode: boolean, links?: string[]) => {
-		const existing = sqlite
-			.query("SELECT 1 FROM antilink WHERE jid = ?")
-			.get(jid);
-
+	set: async (jid: string, mode: boolean, links?: string[]) => {
 		const linksValue = links ? JSON.stringify(links) : null;
+		const existing = await Antilink.findByPk(jid);
 
 		if (existing) {
-			sqlite.run("UPDATE antilink SET mode = ?, links = ? WHERE jid = ?", [
-				mode ? 1 : 0,
-				linksValue,
-				jid,
-			]);
+			existing.mode = mode ? 1 : 0;
+			existing.links = linksValue;
+			await existing.save();
 		} else {
-			sqlite.run("INSERT INTO antilink (jid, mode, links) VALUES (?, ?, ?)", [
-				jid,
-				mode ? 1 : 0,
-				linksValue,
-			]);
+			await Antilink.create({ jid, mode: mode ? 1 : 0, links: linksValue });
 		}
 	},
 
-	get: (jid: string) => {
-		const record = sqlite
-			.query("SELECT jid, mode, links FROM antilink WHERE jid = ?")
-			.get(jid) as {
-			jid: string;
-			mode: number | null;
-			links: string | null;
-		} | null;
-
+	get: async (jid: string) => {
+		const record = await Antilink.findByPk(jid);
 		if (!record) return null;
 
 		return {
@@ -49,15 +56,12 @@ export default {
 		};
 	},
 
-	remove: (jid: string) => {
-		sqlite.run("DELETE FROM antilink WHERE jid = ?", [jid]);
+	remove: async (jid: string) => {
+		await Antilink.destroy({ where: { jid } });
 	},
 
-	isActive: (jid: string) => {
-		const record = sqlite
-			.query("SELECT mode FROM antilink WHERE jid = ?")
-			.get(jid) as { mode: number } | null;
-
+	isActive: async (jid: string) => {
+		const record = await Antilink.findByPk(jid);
 		return record ? Boolean(record.mode) : false;
 	},
 };

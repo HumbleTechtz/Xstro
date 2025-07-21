@@ -1,4 +1,5 @@
-import type { CommandModule } from "src/Types";
+import { restart, shutdown } from "../utils/constants.ts";
+import type { CommandModule } from "../../Types/index.ts";
 
 export default [
 	{
@@ -10,7 +11,7 @@ export default [
 		type: "system",
 		handler: async msg => {
 			await msg.send("Restarting...");
-			process.exit(0);
+			restart();
 		},
 	},
 	{
@@ -21,7 +22,7 @@ export default [
 		type: "system",
 		handler: async msg => {
 			await msg.send("Shutting down...");
-			process.exit(1);
+			shutdown();
 		},
 	},
 ] satisfies CommandModule[];

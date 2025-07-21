@@ -1,14 +1,36 @@
-import { sqlite } from "src";
+import { DataTypes, Model } from "sequelize";
+import sqlite from "../../sqlite.ts";
 
-sqlite.exec(`
-  CREATE TABLE IF NOT EXISTS group_join (
-    groupJid TEXT PRIMARY KEY,
-    welcome TEXT,
-    goodbye TEXT
-  )
-`);
+class GroupJoin extends Model {
+	declare groupJid: string;
+	declare welcome: string | null;
+	declare goodbye: string | null;
+}
 
-function transformRecord(record: any) {
+await GroupJoin.init(
+	{
+		groupJid: {
+			type: DataTypes.TEXT,
+			primaryKey: true,
+			allowNull: false,
+		},
+		welcome: {
+			type: DataTypes.TEXT,
+			allowNull: true,
+		},
+		goodbye: {
+			type: DataTypes.TEXT,
+			allowNull: true,
+		},
+	},
+	{
+		tableName: "group_join",
+		sequelize: sqlite,
+		timestamps: false,
+	}
+).sync();
+
+function transformRecord(record: GroupJoin) {
 	return {
 		groupJid: record.groupJid,
 		welcome: record.welcome || null,
@@ -18,88 +40,68 @@ function transformRecord(record: any) {
 
 export default {
 	welcome: {
-		set: (id: string, text: string) => {
+		set: async (id: string, text: string) => {
 			const normalizedId = id.trim();
-			const params = { welcome: text };
+			const existing = await GroupJoin.findByPk(normalizedId);
 
-			const exists = sqlite
-				.query("SELECT 1 FROM group_join WHERE groupJid = ?")
-				.get(normalizedId);
-
-			if (exists) {
-				sqlite.run("UPDATE group_join SET welcome = ? WHERE groupJid = ?", [
-					params.welcome,
-					normalizedId,
-				]);
+			if (existing) {
+				existing.welcome = text;
+				await existing.save();
 			} else {
-				sqlite.run("INSERT INTO group_join (groupJid, welcome) VALUES (?, ?)", [
-					normalizedId,
-					params.welcome,
-				]);
+				await GroupJoin.create({ groupJid: normalizedId, welcome: text });
 			}
 
-			return { groupJid: normalizedId, welcome: params.welcome, goodbye: null };
+			return { groupJid: normalizedId, welcome: text, goodbye: null };
 		},
 
-		get: (id: string) => {
+		get: async (id: string) => {
 			const normalizedId = id.trim();
-			const record = sqlite
-				.query("SELECT * FROM group_join WHERE groupJid = ?")
-				.get(normalizedId);
-
-			return record ? transformRecord(record).welcome : null;
+			const record = await GroupJoin.findByPk(normalizedId);
+			return record ? record.welcome || null : null;
 		},
 
-		del: (id: string) => {
+		del: async (id: string) => {
 			const normalizedId = id.trim();
-			const result = sqlite.run(
-				"UPDATE group_join SET welcome = NULL WHERE groupJid = ?",
-				[normalizedId]
-			);
-			return { success: result.changes > 0, groupJid: normalizedId };
+			const existing = await GroupJoin.findByPk(normalizedId);
+			if (!existing) return { success: false, groupJid: normalizedId };
+
+			existing.welcome = null;
+			await existing.save();
+
+			return { success: true, groupJid: normalizedId };
 		},
 	},
 
 	goodbye: {
-		set: (id: string, text: string) => {
+		set: async (id: string, text: string) => {
 			const normalizedId = id.trim();
-			const params = { goodbye: text };
+			const existing = await GroupJoin.findByPk(normalizedId);
 
-			const exists = sqlite
-				.query("SELECT 1 FROM group_join WHERE groupJid = ?")
-				.get(normalizedId);
-
-			if (exists) {
-				sqlite.run("UPDATE group_join SET goodbye = ? WHERE groupJid = ?", [
-					params.goodbye,
-					normalizedId,
-				]);
+			if (existing) {
+				existing.goodbye = text;
+				await existing.save();
 			} else {
-				sqlite.run("INSERT INTO group_join (groupJid, goodbye) VALUES (?, ?)", [
-					normalizedId,
-					params.goodbye,
-				]);
+				await GroupJoin.create({ groupJid: normalizedId, goodbye: text });
 			}
 
-			return { groupJid: normalizedId, welcome: null, goodbye: params.goodbye };
+			return { groupJid: normalizedId, welcome: null, goodbye: text };
 		},
 
-		get: (id: string) => {
+		get: async (id: string) => {
 			const normalizedId = id.trim();
-			const record = sqlite
-				.query("SELECT * FROM group_join WHERE groupJid = ?")
-				.get(normalizedId);
-
-			return record ? transformRecord(record).goodbye : null;
+			const record = await GroupJoin.findByPk(normalizedId);
+			return record ? record.goodbye || null : null;
 		},
 
-		del: (id: string) => {
+		del: async (id: string) => {
 			const normalizedId = id.trim();
-			const result = sqlite.run(
-				"UPDATE group_join SET goodbye = NULL WHERE groupJid = ?",
-				[normalizedId]
-			);
-			return { success: result.changes > 0, groupJid: normalizedId };
+			const existing = await GroupJoin.findByPk(normalizedId);
+			if (!existing) return { success: false, groupJid: normalizedId };
+
+			existing.goodbye = null;
+			await existing.save();
+
+			return { success: true, groupJid: normalizedId };
 		},
 	},
 };

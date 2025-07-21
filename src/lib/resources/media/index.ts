@@ -1,1 +1,1 @@
-export * from "./ffmpeg";
+export * from "./ffmpeg/index.ts";

@@ -2,7 +2,7 @@ import { randomBytes } from "crypto";
 import { tmpdir } from "os";
 import { join, parse } from "path";
 import { writeFileSync, readFileSync, unlinkSync } from "fs";
-import { runFFmpeg } from "./process";
+import { runFFmpeg } from "./process.ts";
 
 export async function ImgToWebp(
 	input: string | Buffer

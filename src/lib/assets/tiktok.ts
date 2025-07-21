@@ -1,6 +1,6 @@
 import { extractUrlFromText } from "baileys";
-import { getBuffer } from "..";
-import type { CommandModule } from "src/Types";
+import { getBuffer } from "../utils/fetch.ts";
+import type { CommandModule } from "../../Types/index.ts";
 
 export default {
 	pattern: "tiktok",

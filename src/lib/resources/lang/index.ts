@@ -1,3 +1,3 @@
-import en from "./en";
+import en from "./en.ts";
 
 export { en };

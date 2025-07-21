@@ -1,7 +1,7 @@
 import { execSync } from "child_process";
-import { Green, Red, Yellow } from "./console";
+import { Green, Red, Yellow } from "./console.ts";
 import { cwd } from "process";
-import { en } from "..";
+import { en } from "../resources/index.ts";
 
 export function checkGitRepoUpToDate(
 	repoPath?: string,

@@ -1,6 +1,6 @@
 import { readFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
-import { ConfigState } from "src/Types";
+import type { ConfigState } from "./../../Types/index.ts/index.ts";
 
 function loadEnv(paths: string[] = [".env"]) {
 	paths.forEach(file => {

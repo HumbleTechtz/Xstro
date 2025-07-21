@@ -1,5 +1,5 @@
 import { getContentType } from "baileys";
-import { getQuote } from "..";
+import { getQuote } from "../resources/index.ts";
 import type { WAMessage, WAMessageContent } from "baileys";
 
 export const restart = () => process.exit(1);

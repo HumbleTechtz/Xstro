@@ -1,7 +1,16 @@
 import { jidNormalizedUser, normalizeMessageContent } from "baileys";
-import { extractTxt, isAdmin, isBotAdmin, Settings, SudoDb } from "..";
-import { downloadMessage, edit, send, deleteM, forwardM, userId } from "./sock";
-import type { sendOptions } from "./sock";
+import { Settings, SudoDb } from "../schema/index.ts";
+import {
+	downloadMessage,
+	edit,
+	send,
+	deleteM,
+	forwardM,
+	userId,
+} from "./sock/index.ts";
+import { isAdmin, isBotAdmin } from "./admin.ts";
+import { extractTxt } from "./constants.ts";
+import type { sendOptions } from "./sock/index.ts";
 import type {
 	WAContextInfo,
 	WAMessage,
@@ -52,8 +61,9 @@ export async function serialize(sock: WASocket, msg: WAMessage) {
 		quotedM = quoted ? quoted.quotedMessage : undefined;
 	}
 
-	const prefix = Settings.prefix.get();
-	const sudo = SudoDb.check(sender) || [owner.jid, owner.lid].includes(sender);
+	const prefix = await Settings.prefix.get();
+	const sudo =
+		(await SudoDb.check(sender)) || [owner.jid, owner.lid].includes(sender);
 
 	return {
 		chat,
@@ -67,7 +77,7 @@ export async function serialize(sock: WASocket, msg: WAMessage) {
 		sender,
 		message: message,
 		sudo,
-		isAdmin: isGroup ? isAdmin(chat, key.participant) : null,
+		isAdmin: isGroup ? await isAdmin(chat, key.participant) : null,
 		isBotAdmin: isGroup ? isBotAdmin(owner, chat) : null,
 		text: extractTxt(message),
 		mentions: quoted?.mentionedJid,

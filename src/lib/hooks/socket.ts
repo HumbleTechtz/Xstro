@@ -1,10 +1,12 @@
-import { updateMetaGroup } from "../..";
-import { AutoBioDb, getBio, Red } from "..";
-import { groupAutoMute } from "./automute";
-import { startClockAlignedScheduler } from "./timer";
+import { updateMetaGroup } from "../../group.ts";
+import { AutoBioDb } from "../schema/index.ts";
+import { Red } from "../utils/console.ts";
+import { getBio } from "../utils/constants.ts";
+import { groupAutoMute } from "./automute.ts";
+import { startClockAlignedScheduler } from "./timer.ts";
 import type { WASocket } from "baileys";
 
-export function socketHooks(sock: WASocket) {
+export function registersocketHooks(sock: WASocket) {
 	const schedulerCallback = async () => {
 		try {
 			if (AutoBioDb.get()) await sock.updateProfileStatus(getBio());

@@ -1,6 +1,7 @@
-import { Serialize, updateLeaderboard } from "..";
-import { userId as user } from "../utils/sock";
-import type { CommandModule } from "src/Types";
+import { userId as user } from "../utils/sock/index.ts";
+import { updateLeaderboard } from "../schema/leaderboard.ts";
+import type { Serialize } from "../utils/serialize.ts";
+import type { CommandModule } from "../../Types/index.ts";
 
 const games = new Map<string, Wcg>();
 const pending = new Map<string, { jids: string[]; timers: NodeJS.Timeout[] }>();

@@ -2,7 +2,7 @@ import { createReadStream } from "fs";
 import { Readable } from "stream";
 import { spawn } from "child_process";
 import { toBuffer } from "baileys";
-import type { ILogger } from "baileys/lib/Utils/logger";
+import { ILogger } from "baileys/lib/Utils/logger.js";
 
 export async function PTT(
 	input: Buffer | string | Readable,

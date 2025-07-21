@@ -1,13 +1,14 @@
-import { AutoMuteDb, en } from "..";
-import { cachedGroupMetadataAll } from "../..";
-import { getCurrentTimeString } from "./timer";
+import { AutoMuteDb } from "../schema/index.ts";
+import { en } from "../resources/index.ts";
+import { cachedGroupMetadataAll } from "../../group.ts";
+import { getCurrentTimeString } from "./timer.ts";
 import type { GroupMetadata, WASocket } from "baileys";
 
 export async function groupAutoMute(client: WASocket) {
 	const currentTime = getCurrentTimeString();
 
-	for (const [jid] of Object.entries(cachedGroupMetadataAll())) {
-		const automute = AutoMuteDb.get(jid);
+	for (const [jid] of Object.entries(await cachedGroupMetadataAll())) {
+		const automute = await AutoMuteDb.get(jid);
 		if (!automute) continue;
 
 		const isGroupLocked = await client.groupMetadata(jid).then(

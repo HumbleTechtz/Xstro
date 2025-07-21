@@ -1,52 +1,77 @@
-import { sqlite } from "src";
+import { DataTypes, Model, Op } from "sequelize";
+import sqlite from "../../sqlite.ts";
 import { isJidUser, isLidUser } from "baileys";
 
-sqlite.exec(`
-  CREATE TABLE IF NOT EXISTS ban_user (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    jid TEXT UNIQUE,
-    lid TEXT
-  )
-`);
+class BanUser extends Model {
+	declare id: number;
+	declare jid: string | null;
+	declare lid: string | null;
+}
+
+await BanUser.init(
+	{
+		id: {
+			type: DataTypes.INTEGER,
+			autoIncrement: true,
+			primaryKey: true,
+		},
+		jid: {
+			type: DataTypes.TEXT,
+			unique: true,
+			allowNull: true,
+		},
+		lid: {
+			type: DataTypes.TEXT,
+			allowNull: true,
+		},
+	},
+	{
+		tableName: "ban_user",
+		sequelize: sqlite,
+		timestamps: false,
+	}
+).sync();
 
 export default {
-	add: (jid: string, lid: string) => {
+	add: async (jid: string, lid: string) => {
 		if (!isJidUser(jid) || !isLidUser(lid)) return;
 
-		const exists = sqlite.query("SELECT 1 FROM ban_user WHERE jid = ?").get(jid);
+		const exists = await BanUser.findOne({ where: { jid } });
 		if (!exists) {
-			sqlite.run("INSERT INTO ban_user (jid, lid) VALUES (?, ?)", [jid, lid]);
+			await BanUser.create({ jid, lid });
 		}
 		return { jid, lid };
 	},
 
-	list: (banType: "jid" | "lid" = "jid") => {
-		return sqlite
-			.query(`SELECT ${banType} FROM ban_user WHERE ${banType} IS NOT NULL`)
-			.all()
-			.map(row => row[banType])
-			.filter(Boolean) as string[];
+	list: async (banType: "jid" | "lid" = "jid") => {
+		const records = await BanUser.findAll({
+			attributes: [banType],
+			where: {
+				[banType]: { [Op.not]: null },
+			},
+		});
+		return records
+			.map(r => r.getDataValue(banType))
+			.filter((v): v is string => Boolean(v));
 	},
 
-	remove: (user: string) => {
+	remove: async (user: string) => {
 		const field = isJidUser(user) ? "jid" : isLidUser(user) ? "lid" : undefined;
 		if (!field) throw new Error("Invalid user format");
 
-		sqlite.run(`DELETE FROM ban_user WHERE ${field} = ?`, [user]);
+		await BanUser.destroy({ where: { [field]: user } });
 		return { success: true, user };
 	},
 
-	check: (user: string) => {
+	check: async (user: string) => {
 		const field = isJidUser(user) ? "jid" : isLidUser(user) ? "lid" : undefined;
 		if (!field) return false;
 
-		return !!sqlite.query(`SELECT 1 FROM ban_user WHERE ${field} = ?`).get(user);
+		const exists = await BanUser.findOne({ where: { [field]: user } });
+		return !!exists;
 	},
 
-	count: () => {
-		const result = sqlite
-			.query("SELECT COUNT(*) as count FROM ban_user")
-			.get() as { count: number };
-		return result.count;
+	count: async () => {
+		return await BanUser.count();
 	},
 };

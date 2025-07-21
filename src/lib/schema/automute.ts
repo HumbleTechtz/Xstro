@@ -1,62 +1,63 @@
-import { sqlite } from "src";
+import { DataTypes, Model } from "sequelize";
+import sqlite from "../../sqlite.ts";
 
-sqlite.exec(`
-  CREATE TABLE IF NOT EXISTS automute (
-    jid TEXT PRIMARY KEY,
-    startTime TEXT,
-    endTime TEXT
-  )
-`);
+class Automute extends Model {
+	declare jid: string;
+	declare startTime: string;
+	declare endTime: string | null;
+}
+
+await Automute.init(
+	{
+		jid: {
+			type: DataTypes.TEXT,
+			primaryKey: true,
+			allowNull: false,
+		},
+		startTime: {
+			type: DataTypes.TEXT,
+			allowNull: false,
+		},
+		endTime: {
+			type: DataTypes.TEXT,
+			allowNull: true,
+		},
+	},
+	{
+		tableName: "automute",
+		sequelize: sqlite,
+		timestamps: false,
+	}
+).sync();
 
 export default {
-	set: (jid: string, startTime: string, endTime?: string) => {
-		const existing = sqlite
-			.query("SELECT 1 FROM automute WHERE jid = ?")
-			.get(jid);
+	set: async (jid: string, startTime: string, endTime?: string) => {
+		const existing = await Automute.findByPk(jid);
 
 		if (existing) {
-			sqlite.run("UPDATE automute SET startTime = ?, endTime = ? WHERE jid = ?", [
-				startTime,
-				endTime ?? null,
-				jid,
-			]);
+			existing.startTime = startTime;
+			existing.endTime = endTime ?? null;
+			await existing.save();
 		} else {
-			sqlite.run(
-				"INSERT INTO automute (jid, startTime, endTime) VALUES (?, ?, ?)",
-				[jid, startTime, endTime ?? null]
-			);
+			await Automute.create({ jid, startTime, endTime: endTime ?? null });
 		}
 
 		return true;
 	},
 
-	remove: (jid: string) => {
-		sqlite.run("DELETE FROM automute WHERE jid = ?", [jid]);
-		const result = sqlite.query("SELECT changes() AS changes").get();
-		if (result && typeof result === "object" && "changes" in result) {
-			return (result as { changes: number }).changes;
-		}
-		return 0;
+	remove: async (jid: string) => {
+		const deleted = await Automute.destroy({ where: { jid } });
+		return deleted;
 	},
 
-	get: (jid: string) => {
-		const result = sqlite
-			.query("SELECT jid, startTime, endTime FROM automute WHERE jid = ?")
-			.get(jid) as {
-			jid: string;
-			startTime: string | null;
-			endTime: string | null;
-		} | null;
+	get: async (jid: string) => {
+		const result = await Automute.findByPk(jid) as {startTime:string;endTime: string};
 		return result ?? null;
 	},
 
-	list: () => {
-		return sqlite
-			.query("SELECT jid, startTime, endTime FROM automute")
-			.all() as Array<{
-			jid: string;
-			startTime: string;
-			endTime: string | null;
-		}>;
+	list: async () => {
+		return await Automute.findAll({
+			attributes: ["jid", "startTime", "endTime"],
+		});
 	},
 };

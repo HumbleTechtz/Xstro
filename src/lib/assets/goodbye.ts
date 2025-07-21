@@ -1,5 +1,6 @@
-import { Greetings } from "..";
-import type { CommandModule } from "src/Types";
+import { Greetings } from "../schema/index.ts";
+import { en } from "../resources/index.ts";
+import type { CommandModule } from "../../Types/index.ts";
 
 export default {
 	pattern: "goodbye",
@@ -10,23 +11,25 @@ export default {
 	handler: async (msg, args) => {
 		const groupJid = msg.chat;
 
-		if (!args) {
+		if (!args?.trim()) {
 			const current = Greetings.goodbye.get(groupJid);
 			const state = current ? "ON" : "OFF";
-			const text = current || "_No goodbye message set._";
+			const text = current || en.plugin.goodbye.none;
 			return msg.send(`_Goodbye is ${state}_\n\n${text}`);
 		}
 
-		if (args.toLowerCase().trim() === "off") {
+		const input = args.trim().toLowerCase();
+
+		if (input === "off") {
 			Greetings.goodbye.del(groupJid);
-			return msg.send("_Goodbye message removed._");
+			return msg.send(en.plugin.goodbye.removed);
 		}
 
-		if (args.toLowerCase().trim() === "on") {
-			return msg.send("```Provide the goodbye message after setting on.```");
+		if (input === "on") {
+			return msg.send(en.plugin.goodbye.no_content);
 		}
 
 		Greetings.goodbye.set(groupJid, args);
-		return msg.send("_Goodbye message set._");
+		return msg.send(en.plugin.goodbye.set);
 	},
 } satisfies CommandModule;

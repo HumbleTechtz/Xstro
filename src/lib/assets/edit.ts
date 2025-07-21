@@ -1,5 +1,5 @@
-import { en } from "..";
-import type { CommandModule } from "src/Types";
+import { en } from "../resources/index.ts";
+import type { CommandModule } from "../../Types/index.ts";
 
 export default {
 	pattern: "edit",

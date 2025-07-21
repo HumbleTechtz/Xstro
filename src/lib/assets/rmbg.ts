@@ -1,4 +1,4 @@
-import type { CommandModule } from "src/Types";
+import type { CommandModule } from "../../Types/index.ts";
 
 async function removeBg(blob: Blob): Promise<ArrayBuffer> {
 	const formData = new FormData();

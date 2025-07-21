@@ -1,5 +1,6 @@
-import { Greetings } from "..";
-import type { CommandModule } from "src/Types";
+import { Greetings } from "../schema/index.ts";
+import { en } from "../resources/index.ts";
+import type { CommandModule } from "../../Types/index.ts";
 
 export default {
 	pattern: "welcome",
@@ -10,23 +11,25 @@ export default {
 	handler: async (msg, args) => {
 		const groupJid = msg.chat;
 
-		if (!args) {
-			const current = Greetings.welcome.get(groupJid);
-			const state = current ? "ON" : "OFF";
-			const text = current || "_No welcome message set._";
-			return msg.send(`_Welcome is ${state.toLowerCase()}_\n\n${text}`);
+		if (!args?.trim()) {
+			const current = await Greetings.welcome.get(groupJid);
+			const state = current ? "on" : "off";
+			const text = current || en.plugin.welcome.none;
+			return msg.send(`_Welcome is ${state}_\n\n${text}`);
 		}
 
-		if (args.toLowerCase().trim() === "off") {
-			Greetings.welcome.del(groupJid);
-			return msg.send("_Welcome message removed._");
+		const input = args.trim().toLowerCase();
+
+		if (input === "off") {
+			await Greetings.welcome.del(groupJid);
+			return msg.send(en.plugin.welcome.removed);
 		}
 
-		if (args.toLowerCase().trim() === "on") {
-			return msg.send("```Provide the welcome message after on.```");
+		if (input === "on") {
+			return msg.send(en.plugin.welcome.no_content);
 		}
 
-		Greetings.welcome.set(groupJid, args);
-		return msg.send("_Welcome message set._");
+		await Greetings.welcome.set(groupJid, args);
+		return msg.send(en.plugin.welcome.set);
 	},
 } satisfies CommandModule;

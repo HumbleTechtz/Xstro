@@ -1,15 +1,43 @@
-import { sqlite } from "src";
+import { DataTypes, Model, Op } from "sequelize";
+import sqlite from "../../sqlite.ts";
 
-sqlite.exec(`
-  CREATE TABLE IF NOT EXISTS filters (
-    name TEXT NOT NULL UNIQUE,
-    response TEXT,
-    status INTEGER DEFAULT 0,
-    isGroup INTEGER
-  )
-`);
+class Filter extends Model {
+	declare name: string;
+	declare response: string | null;
+	declare status: number;
+	declare isGroup: number | null;
+}
 
-function transformRecord(record: any) {
+await Filter.init(
+	{
+		name: {
+			type: DataTypes.TEXT,
+			primaryKey: true,
+			unique: true,
+			allowNull: false,
+		},
+		response: {
+			type: DataTypes.TEXT,
+			allowNull: true,
+		},
+		status: {
+			type: DataTypes.INTEGER,
+			defaultValue: 0,
+			allowNull: false,
+		},
+		isGroup: {
+			type: DataTypes.INTEGER,
+			allowNull: true,
+		},
+	},
+	{
+		tableName: "filters",
+		sequelize: sqlite,
+		timestamps: false,
+	}
+).sync();
+
+function transformRecord(record: Filter) {
 	return {
 		name: record.name,
 		response: record.response || null,
@@ -19,7 +47,12 @@ function transformRecord(record: any) {
 }
 
 export default {
-	set: (name: string, response: string, status: boolean, isGroup = false) => {
+	set: async (
+		name: string,
+		response: string,
+		status: boolean,
+		isGroup = false
+	) => {
 		const normalizedName = name.trim().toLowerCase();
 		const params = {
 			response,
@@ -27,76 +60,52 @@ export default {
 			isGroup: isGroup ? 1 : 0,
 		};
 
-		const exists = sqlite
-			.query("SELECT 1 FROM filters WHERE name = ?")
-			.get(normalizedName);
-
-		if (exists) {
-			sqlite.run(
-				"UPDATE filters SET response = ?, status = ?, isGroup = ? WHERE name = ?",
-				[params.response, params.status, params.isGroup, normalizedName]
-			);
+		const existing = await Filter.findByPk(normalizedName);
+		if (existing) {
+			existing.response = params.response;
+			existing.status = params.status;
+			existing.isGroup = params.isGroup;
+			await existing.save();
 		} else {
-			sqlite.run(
-				"INSERT INTO filters (name, response, status, isGroup) VALUES (?, ?, ?, ?)",
-				[normalizedName, params.response, params.status, params.isGroup]
-			);
+			await Filter.create({ name: normalizedName, ...params });
 		}
 
 		return { name: normalizedName, ...params };
 	},
 
-	get: (name: string) => {
+	get: async (name: string) => {
 		const normalizedName = name.trim().toLowerCase();
-		const record = sqlite
-			.query("SELECT * FROM filters WHERE name = ?")
-			.get(normalizedName);
-
+		const record = await Filter.findByPk(normalizedName);
 		return record ? transformRecord(record) : null;
 	},
 
-	getAll: () => {
-		const records = sqlite.query("SELECT * FROM filters WHERE status = 1").all();
-
+	getAll: async () => {
+		const records = await Filter.findAll({ where: { status: 1 } });
 		return records.map(transformRecord);
 	},
 
-	getActive: (isGroup?: boolean) => {
-		let query = "SELECT * FROM filters WHERE status = 1";
-		const params = [];
+	getActive: async (isGroup?: boolean) => {
+		const where: any = { status: 1 };
+		if (isGroup !== undefined) where.isGroup = isGroup ? 1 : 0;
 
-		if (isGroup !== undefined) {
-			query += " AND isGroup = ?";
-			params.push(isGroup ? 1 : 0);
-		}
-
-		return sqlite
-			.query(query)
-			.all(params as any)
-			.map(transformRecord);
+		const records = await Filter.findAll({ where });
+		return records.map(transformRecord);
 	},
 
-	remove: (name: string) => {
+	remove: async (name: string) => {
 		const normalizedName = name.trim().toLowerCase();
-		const result = sqlite.run("DELETE FROM filters WHERE name = ?", [
-			normalizedName,
-		]);
-		return { success: result.changes > 0, name: normalizedName };
+		const deleted = await Filter.destroy({ where: { name: normalizedName } });
+		return { success: deleted > 0, name: normalizedName };
 	},
 
-	toggle: (name: string, status?: boolean) => {
+	toggle: async (name: string, status?: boolean) => {
 		const normalizedName = name.trim().toLowerCase();
-		const current = sqlite
-			.query("SELECT status FROM filters WHERE name = ?")
-			.get(normalizedName) as { status: any };
+		const record = await Filter.findByPk(normalizedName);
+		if (!record) return null;
 
-		if (!current) return null;
-
-		const newStatus = status !== undefined ? status : !Boolean(current.status);
-		sqlite.run("UPDATE filters SET status = ? WHERE name = ?", [
-			newStatus ? 1 : 0,
-			normalizedName,
-		]);
+		const newStatus = status !== undefined ? status : !Boolean(record.status);
+		record.status = newStatus ? 1 : 0;
+		await record.save();
 
 		return { name: normalizedName, status: newStatus };
 	},

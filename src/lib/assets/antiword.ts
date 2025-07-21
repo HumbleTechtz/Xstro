@@ -1,5 +1,6 @@
-import { AntiWordDb } from "..";
-import type { CommandModule } from "src/Types";
+import { AntiWordDb } from "../schema/index.ts";
+import { en } from "../resources/index.ts";
+import type { CommandModule } from "../../Types/index.ts";
 
 export default [
 	{
@@ -11,29 +12,31 @@ export default [
 			const jid = message.chat;
 			const prefix = message.prefix[0];
 
-			if (!match) {
-				return message.send(`Usage:
-${prefix}antiword on/off — Enable/Disable the filter
-${prefix}antiword get — Show blocked words
-${prefix}antiword set word1, word2 — Set blocked words`);
-			}
+			const usage = [
+				"Usage:",
+				`${prefix}antiword on/off — Enable/Disable the filter`,
+				`${prefix}antiword get — Show blocked words`,
+				`${prefix}antiword set word1, word2 — Set blocked words`,
+			].join("\n");
+
+			if (!match) return message.send(usage);
 
 			const [cmd, ...rest] = match.trim().split(" ");
 			const lcCmd = cmd?.toLowerCase();
 
 			if (lcCmd === "on" || lcCmd === "off") {
-				AntiWordDb.set(jid, lcCmd === "on", []);
+				await AntiWordDb.set(jid, lcCmd === "on", []);
 				return message.send(
-					`_Antiword filter has been ${lcCmd === "on" ? "enabled" : "disabled"}._`
+					lcCmd === "on" ? en.plugin.antiword.enabled : en.plugin.antiword.disabled
 				);
 			}
 
 			if (lcCmd === "get") {
-				const { words = [] } = AntiWordDb.get(jid) || {};
+				const { words = [] } = await AntiWordDb.get(jid) || {};
 				return message.send(
-					words?.length
+					words.length
 						? `📛 Blocked words (${words.length}):\n${words.join(", ")}`
-						: "_No blocked words are set._"
+						: en.plugin.antiword.none
 				);
 			}
 
@@ -43,31 +46,28 @@ ${prefix}antiword set word1, word2 — Set blocked words`);
 					.split(",")
 					.map(w => w.trim())
 					.filter(Boolean);
-				if (!words.length) return message.send("_No valid words detected._");
-				AntiWordDb.set(jid, true, words);
-				return message.send(
-					`_Antiword list updated with ${words.length} word(s)._`
-				);
+				if (!words.length) return message.send(en.plugin.antiword.invalid);
+				await AntiWordDb.set(jid, true, words);
+				return message.send(`_Antiword list updated with ${words.length} word(s)._`);
 			}
 
-			return message.send('❓ Invalid command. Use "on", "off", "get", or "set".');
+			return message.send(en.plugin.antiword.invalid_command);
 		},
 	},
 	{
 		on: true,
 		dontAddCommandList: true,
 		handler: async msg => {
-			if (!msg.isGroup || !msg?.text) return;
-			if (msg.key.fromMe) return;
+			if (!msg.isGroup || !msg.text || msg.key.fromMe) return;
 			if (msg.isAdmin || !msg.isBotAdmin) return;
 
-			const record = AntiWordDb.get(msg.chat);
+			const record = await AntiWordDb.get(msg.chat);
 			if (!record?.status || !record.words?.length) return;
 
 			const lowerText = msg.text.toLowerCase();
-			const matched = record.words.find((word: string) => {
-				return new RegExp(`\\b${escapeRegex(word)}\\b`, "i").test(lowerText);
-			});
+			const matched = record.words.find(word =>
+				new RegExp(`\\b${escapeRegex(word)}\\b`, "i").test(lowerText)
+			);
 
 			if (matched) {
 				await msg.delete(msg);
@@ -77,6 +77,6 @@ ${prefix}antiword set word1, word2 — Set blocked words`);
 	},
 ] satisfies CommandModule[];
 
-export function escapeRegex(text: string): string {
+function escapeRegex(text: string): string {
 	return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }

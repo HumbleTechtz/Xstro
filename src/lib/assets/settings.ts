@@ -1,5 +1,5 @@
-import { Settings } from "..";
-import type { CommandModule } from "src/Types";
+import { Settings } from "../schema/index.ts";
+import type { CommandModule } from "../../Types/index.ts";
 
 export default [
 	{
@@ -10,7 +10,7 @@ export default [
 		type: "misc",
 		handler: async (msg, args) => {
 			if (!args) return msg.send(`_Usage: setprefix *#,_`);
-			Settings.prefix.set([...args.split("")]);
+			await Settings.prefix.set([...args.split("")]);
 			return msg.send(`_Bot prefix updated to "${args}"_\nUsage: ${args[0]}ping`);
 		},
 	},
@@ -22,7 +22,7 @@ export default [
 		type: "misc",
 		handler: async (msg, match) => {
 			const mode = match?.toLowerCase().trim();
-			const current = Settings.mode.get();
+			const current = await Settings.mode.get();
 			if (!["private", "public"].includes(mode!))
 				return msg.send(`Usage:\nmode private\nmode public`);
 			const updated = mode === "private";

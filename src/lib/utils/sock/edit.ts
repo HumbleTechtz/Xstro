@@ -1,5 +1,6 @@
-import { isMediaMessage } from "../constants";
-import { getContentType, type WAMessage, type WASocket } from "baileys";
+import { isMediaMessage } from "../constants.ts";
+import { getContentType } from "baileys";
+import type { WASocket, WAMessage } from "baileys";
 
 export async function edit(sock: WASocket, text: string, msg: WAMessage) {
 	if (isMediaMessage(msg)) {

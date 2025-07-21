@@ -1,5 +1,6 @@
-import { AntiCallDb } from "..";
-import type { CommandModule } from "src/Types";
+import { AntiCallDb } from "../schema/index.ts";
+import { en } from "../resources/index.ts";
+import type { CommandModule } from "../../Types/index.ts";
 
 export default {
 	pattern: "anticall",
@@ -13,30 +14,30 @@ export default {
 		if (!input || !["on", "off", "block", "warn"].includes(input))
 			return msg.send(`Usage: anticall on | off | block | warn`);
 
-		const current = AntiCallDb.get();
+		const current = await AntiCallDb.get();
 
 		if (input === "off") {
 			if (!current || (current.mode === false && current.action === "warn"))
-				return msg.send("AntiCall is already turned off.");
+				return msg.send(en.plugin.anticall.already_off);
 
-			AntiCallDb.set(false, "warn");
-			return msg.send("AntiCall has been turned off.");
+			await AntiCallDb.set(false, "warn");
+			return msg.send(en.plugin.anticall.set_off);
 		}
 
 		if (input === "on") {
 			if (current?.mode === true && current.action === "warn")
-				return msg.send("AntiCall is already on with warn action.");
+				return msg.send(en.plugin.anticall.already_set_warn);
 
-			AntiCallDb.set(true, "warn");
-			return msg.send("AntiCall has been turned on and set to warn caller.");
+			await AntiCallDb.set(true, "warn");
+			return msg.send(en.plugin.anticall.set_warn);
 		}
 
 		if (["block", "warn"].includes(input)) {
 			if (current?.mode === true && current.action === input)
-				return msg.send(`AntiCall is already set to '${input}'.`);
+				return msg.send(`_AntiCall is already set to '${input}'._`);
 
-			AntiCallDb.set(true, input as "block" | "warn");
-			return msg.send(`AntiCall action set to '${input}'_`);
+			await AntiCallDb.set(true, input as "block" | "warn");
+			return await msg.send(`_AntiCall action set to '${input}'_`);
 		}
 	},
 } satisfies CommandModule;

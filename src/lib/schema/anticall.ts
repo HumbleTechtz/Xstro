@@ -1,17 +1,32 @@
-import { sqlite } from "src";
+import { DataTypes, Model } from "sequelize";
+import sqlite from "../../sqlite.ts";
 
-sqlite.exec(`
-  CREATE TABLE IF NOT EXISTS anticall (
-    mode INTEGER,
-    action TEXT NOT NULL
-  )
-`);
+class Anticall extends Model {
+	declare mode: number;
+	declare action: string;
+}
+
+await Anticall.init(
+	{
+		mode: {
+			type: DataTypes.INTEGER,
+			allowNull: true,
+		},
+		action: {
+			type: DataTypes.TEXT,
+			allowNull: false,
+		},
+	},
+	{
+		tableName: "anticall",
+		sequelize: sqlite,
+		timestamps: false,
+	}
+).sync();
 
 export default {
-	get: () => {
-		const record = sqlite
-			.query("SELECT mode, action FROM anticall LIMIT 1")
-			.get() as { mode: number | null; action: string } | null;
+	get: async () => {
+		const record = await Anticall.findOne();
 		if (record) {
 			return {
 				mode: record.mode != null ? Boolean(record.mode) : null,
@@ -21,24 +36,18 @@ export default {
 		return null;
 	},
 
-	set: function (mode: boolean, action: "block" | "warn") {
-		const current = this.get();
+	set: async function (mode: boolean, action: "block" | "warn") {
+		const current = await this.get();
 		if (current && current.mode === mode && current.action === action) {
 			return false;
 		}
-		sqlite.run("DELETE FROM anticall");
-		sqlite.run("INSERT INTO anticall (mode, action) VALUES (?, ?)", [
-			mode ? 1 : 0,
-			action,
-		]);
+		await Anticall.destroy({ where: {} });
+		await Anticall.create({ mode: mode ? 1 : 0, action });
 		return true;
 	},
 
-	remove: () => {
-		sqlite.run("DELETE FROM anticall");
-		const result = sqlite.query("SELECT changes() AS changes").get();
-		return result && typeof result === "object" && "changes" in result
-			? (result as { changes: number }).changes
-			: 0;
+	remove: async () => {
+		const deleted = await Anticall.destroy({ where: {} });
+		return deleted;
 	},
 };

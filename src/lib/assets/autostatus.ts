@@ -1,5 +1,5 @@
-import { Settings } from "..";
-import type { CommandModule } from "src/Types";
+import { Settings } from "../schema/index.ts";
+import type { CommandModule } from "../../Types/index.ts";
 
 export default [
 	{
@@ -14,14 +14,14 @@ export default [
 				return msg.send("_Please specify 'on' or 'off'._");
 			}
 
-			const current = Settings.autoLikeStatus.get();
+			const current = await Settings.autoLikeStatus.get();
 			const desired = option === "on";
 
 			if (current === desired) {
 				return msg.send(`_Auto-like status is already ${option}_`);
 			}
 
-			Settings.autoLikeStatus.set(desired);
+			await Settings.autoLikeStatus.set(desired);
 			return msg.send(`_Auto-like status is now ${option}_`);
 		},
 	},
@@ -29,7 +29,7 @@ export default [
 		on: true,
 		dontAddCommandList: true,
 		handler: async msg => {
-			if (msg.broadcast && Settings.autoLikeStatus.get()) {
+			if (msg.broadcast && (await Settings.autoLikeStatus.get())) {
 				const emojis = ["💚", "❤️", "💖", "💜", "💙", "🧡", "💛", "🤍"];
 				const emoji = emojis[Math.floor(Math.random() * emojis.length)];
 

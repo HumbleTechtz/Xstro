@@ -1,6 +1,6 @@
-import { sleep } from "bun";
-import { en } from "..";
-import type { CommandModule } from "src/Types";
+import { delay } from "baileys";
+import { en } from "../resources/index.ts";
+import type { CommandModule } from "../../Types/index.ts";
 
 export default [
 	{
@@ -13,8 +13,8 @@ export default [
 			const jid = await msg.user(args);
 			if (!jid) return msg.send(en.warn.invaild_user);
 			await msg.send(en.plugin.block.blocked);
-			await sleep(300);
-			return msg.updateBlockStatus(jid.id, "block");
+			await delay(300);
+			return await msg.updateBlockStatus(jid.id, "block");
 		},
 	},
 	{

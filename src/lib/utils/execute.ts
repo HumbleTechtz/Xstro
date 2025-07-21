@@ -1,13 +1,14 @@
-import { commandMap } from "./plugin";
-import { Red, StickerDb } from "..";
-import type { CommandModule } from "src/Types";
-import type { Serialize } from "./serialize";
+import { commandMap } from "./plugin.ts";
+import { Red } from "./console.ts";
+import { StickerDb } from "../schema/index.ts";
+import type { CommandModule } from "../../Types/index.ts";
+import type { Serialize } from "./serialize.ts";
 
-function exec(cmd: CommandModule, msg: Serialize, match?: string) {
+async function exec(cmd: CommandModule, msg: Serialize, match?: string) {
 	cmd.handler(msg, match).catch(Red);
 }
 
-function text(msg: Serialize) {
+async function text(msg: Serialize) {
 	if (!msg?.text) return;
 
 	for (const [, cmd] of commandMap) {
@@ -18,7 +19,7 @@ function text(msg: Serialize) {
 	}
 }
 
-function sticker(msg: Serialize) {
+async function sticker(msg: Serialize) {
 	const sha =
 		msg?.message?.stickerMessage?.fileSha256 ??
 		msg?.message?.lottieStickerMessage?.message?.stickerMessage?.fileSha256;
@@ -26,7 +27,7 @@ function sticker(msg: Serialize) {
 	if (!sha) return;
 
 	const hash = Buffer.from(new Uint8Array(sha)).toString("base64");
-	const cmdText = StickerDb.get(hash)?.cmdname;
+	const cmdText = (await StickerDb.get(hash))?.cmdname;
 	if (!cmdText) return;
 
 	for (const [, cmd] of commandMap) {
@@ -37,8 +38,8 @@ function sticker(msg: Serialize) {
 	}
 }
 
-function event(msg: Serialize) {
-	for (const [, cmd] of commandMap) if (cmd?.on) exec(cmd, msg);
+async function event(msg: Serialize) {
+	for (const [, cmd] of commandMap) if (cmd?.on) await exec(cmd, msg);
 }
 
 export async function execute(msg: Serialize) {

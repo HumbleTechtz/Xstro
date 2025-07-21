@@ -2,8 +2,8 @@ import { join, extname, dirname } from "path";
 import { fileURLToPath, pathToFileURL } from "url";
 import { readdir } from "fs/promises";
 import { watch } from "fs";
-import { Red } from "./console";
-import { InternalCommand, CommandModule } from "src/Types";
+import { Red } from "./console.ts";
+import { InternalCommand, CommandModule } from "../../Types/index.ts";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const commands = new Map<string, InternalCommand>();

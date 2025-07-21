@@ -1,5 +1,5 @@
-import { getLeaderboard } from "..";
-import type { CommandModule } from "src/Types";
+import { getLeaderboard } from "../schema/index.ts";
+import type { CommandModule } from "../../Types/index.ts";
 
 export default {
 	pattern: "leaderboard",

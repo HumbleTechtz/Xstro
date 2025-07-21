@@ -1,43 +1,54 @@
-import { sqlite } from "src";
-import { WAProto, type BaileysEventMap, type WAMessageKey } from "baileys";
+import { DataTypes, Model } from "sequelize";
+import { WAMessage, WAProto, type WAMessageKey } from "baileys";
+import sqlite from "../../sqlite.ts";
 
-sqlite.exec(`
-  CREATE TABLE IF NOT EXISTS messages (
-    id TEXT PRIMARY KEY,
-    messages TEXT,
-    requestId TEXT
-  )
-`);
+class Message extends Model {
+	declare id: string;
+	declare messages: string;
+}
+
+await Message.init(
+	{
+		id: {
+			type: DataTypes.STRING,
+			primaryKey: true,
+		},
+		messages: {
+			type: DataTypes.TEXT,
+			allowNull: false,
+		},
+	},
+	{
+		tableName: "messages",
+		sequelize: sqlite,
+		timestamps: false,
+	}
+).sync();
 
 export default {
-	save: (event: BaileysEventMap["messages.upsert"]) => {
-		if (!event?.messages?.[0]?.key?.id) return;
-		const id = event.messages[0].key.id;
-		const requestId = event.requestId ?? null;
-
+	save: async (message: WAMessage) => {
+		if (!message?.key?.id) return;
+		const id = message.key.id;
 		try {
-			sqlite.run(
-				"INSERT INTO messages (id, messages, requestId) VALUES (?, ?, ?)",
-				[id, JSON.stringify(event.messages[0]), requestId]
-			);
+			await Message.create({
+				id,
+				messages: JSON.stringify(message),
+			});
 		} catch {}
 	},
 
-	load: (key: WAMessageKey) => {
-		const exists = sqlite
-			.query("SELECT messages FROM messages WHERE id = ?")
-			.get(key.id!) as {
-			id: string;
-			messages: string | null;
-			requestId: string | null;
-		} | null;
-
-		if (exists?.messages) {
-			return (
-				WAProto.WebMessageInfo.fromObject(JSON.parse(exists.messages)) || undefined
-			);
+	load: async (key: WAMessageKey) => {
+		if (!key.id) return undefined;
+		const record = await Message.findByPk(key.id);
+		if (!record?.messages) return undefined;
+		try {
+			const parsed = JSON.parse(record.messages);
+			return WAProto.WebMessageInfo.fromObject(parsed);
+		} catch {
+			return undefined;
 		}
 	},
+
 	get: async (key: WAMessageKey): Promise<WAProto.IMessage | undefined> => {
 		if (!key) return undefined;
 		return WAProto.Message.fromObject({});

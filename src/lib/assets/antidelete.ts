@@ -1,5 +1,6 @@
-import { AntiDelDb } from "..";
-import type { CommandModule } from "src/Types";
+import { AntiDelDb } from "../schema/index.ts";
+import type { CommandModule } from "../../Types/index.ts";
+import { en } from "../resources/index.ts";
 
 export default {
 	pattern: "antidelete",
@@ -15,14 +16,14 @@ export default {
 		const cmd = match.trim().toLowerCase();
 
 		if (cmd === "on")
-			return AntiDelDb.set(true)
-				? msg.send("Antidelete enabled.")
-				: msg.send("Antidelete is already enabled.");
+			return (await AntiDelDb.set(true))
+				? msg.send(en.plugin.antidel.enabled)
+				: msg.send(en.plugin.antidel.already_enabled);
 
 		if (cmd === "off")
-			return AntiDelDb.set(false)
-				? msg.send("Antidelete disabled.")
-				: msg.send("Antidelete is already disabled.");
+			return (await AntiDelDb.set(false))
+				? msg.send(en.plugin.antidel.disabled)
+				: msg.send(en.plugin.antidel.already_disabled);
 
 		return msg.send(["Usage:", `antidelete on`, `antidelete off`].join("\n"));
 	},

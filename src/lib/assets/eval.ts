@@ -1,5 +1,5 @@
 import util from "util";
-import type { CommandModule } from "src/Types";
+import type { CommandModule } from "../../Types/index.ts";
 
 export default {
 	on: "eval",

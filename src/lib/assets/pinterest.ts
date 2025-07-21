@@ -1,5 +1,5 @@
 import { extractUrlFromText } from "baileys";
-import type { CommandModule } from "src/Types";
+import type { CommandModule } from "../../Types/index.ts";
 
 export default {
 	pattern: "pinterest",

@@ -1,5 +1,5 @@
-import { AutoBioDb } from "..";
-import type { CommandModule } from "src/Types";
+import { AutoBioDb } from "../schema/index.ts";
+import type { CommandModule } from "../../Types/index.ts";
 
 export default {
 	pattern: "autobio",

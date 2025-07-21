@@ -1,17 +1,17 @@
 import { isJidGroup, jidNormalizedUser, WAMessage, WASocket } from "baileys";
-import { isMediaMessage } from "../constants";
-import { isBotAdmin } from "../admin";
+import { isMediaMessage } from "../constants.ts";
+import { isBotAdmin } from "../admin.ts";
 
 export async function deleteM(sock: WASocket, msg: WAMessage) {
 	const canDeleteForAll =
 		isJidGroup(msg.key.remoteJid!) &&
-		isBotAdmin(
+		(await isBotAdmin(
 			{
 				jid: jidNormalizedUser(sock.user?.jid),
 				lid: jidNormalizedUser(sock.user?.lid),
 			},
 			msg.key.remoteJid!
-		)
+		))
 			? true
 			: false;
 	if (!canDeleteForAll) {

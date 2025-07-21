@@ -1,5 +1,3 @@
-import pp from "lib/assets/pp";
-
 export default {
 	meta: {
 		lang: "en",
@@ -20,6 +18,55 @@ export default {
 		outofdate: "Please update to Latest Version",
 	},
 	plugin: {
+		anticall: {
+			already_off: "_AntiCall is already turned off._",
+			set_off: "_AntiCall has been turned off._",
+			already_set_warn: "_AntiCall is already on with warn action._",
+			set_warn: "_AntiCall has been turned on and set to warn caller._",
+		},
+		antidel: {
+			enabled: "_Antidelete enabled._",
+			already_enabled: "_Antidelete is already enabled._",
+			disabled: "_Antidelete disabled._",
+			already_disabled: "_Antidelete already disabled_",
+		},
+		antilink: {
+			enabled: "_Antilink turned on_",
+			disabled: "_Antilink turned off_",
+			need_links: "_You need to add some specific links to prohibit_",
+			link_warning: "_Links are not allowed here_",
+		},
+		antiword: {
+			enabled: "_Antiword filter has been enabled._",
+			disabled: "_Antiword filter has been disabled._",
+			none: "_No blocked words are set._",
+			invalid: "_No valid words detected._",
+			invalid_command: '_❓ Invalid command. Use "on", "off", "get", or "set"._',
+		},
+		automute: {
+			amute_usage: "Usage: amute 5:30pm",
+			aunmute_usage: "Usage: aunmute 6:30am",
+			invalid_format: "Invalid time format. Use format like `5:30pm` or `7:00am`.",
+			deleted: "_Automute setting deleted for this group._",
+			not_found: "_No automute setting found for this group._",
+		},
+		event: {
+			enabled: "_Group event mode enabled_",
+			disabled: "_Group event mode disabled_",
+			usage: "_Usage: event <on|off>_",
+		},
+		goodbye: {
+			none: "_No goodbye message set._",
+			removed: "_Goodbye message removed._",
+			no_content: "```Provide the goodbye message after setting on.```",
+			set: "_Goodbye message set._",
+		},
+		welcome: {
+			none: "_No welcome message set._",
+			removed: "_Welcome message removed._",
+			no_content: "```Provide the welcome message after on.```",
+			set: "_Welcome message set._",
+		},
 		groups: {
 			add: {
 				success: "_participant add to group_",

@@ -1,5 +1,5 @@
-import { groupMetadata } from "src";
-import { Serialize } from "../serialize";
+import { groupMetadata } from "../../../group.ts";
+import type { Serialize } from "../serialize.ts";
 
 export async function userId(client: Serialize, user?: string) {
 	let resolvedId: string | undefined;
@@ -21,15 +21,15 @@ export async function userId(client: Serialize, user?: string) {
 	}
 
 	if (client.isGroup) {
-		const { participants, addressingMode } = groupMetadata(client.chat);
+		const { participants, addressingMode } = await groupMetadata(client.chat);
 		const found = participants.find(p =>
 			addressingMode === "pn"
 				? p.jid === resolvedId || p.lid === resolvedId
 				: p.lid === resolvedId || p.jid === resolvedId
 		);
 		return {
-			jid: found?.jid as string,
-			lid: found?.lid as string,
+			jid: found?.jid,
+			lid: found?.lid,
 			id: found?.jid || found?.lid || resolvedId,
 		};
 	}
@@ -40,8 +40,8 @@ export async function userId(client: Serialize, user?: string) {
 	const info = infoArr?.[0];
 
 	return {
-		jid: info?.jid as string,
-		lid: info?.lid as string,
+		jid: info?.jid,
+		lid: info?.lid,
 		id: info?.jid || info?.lid || resolvedId,
 	};
 }

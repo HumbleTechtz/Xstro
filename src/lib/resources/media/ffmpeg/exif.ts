@@ -3,7 +3,7 @@ import path from "path";
 import { tmpdir } from "os";
 import Crypto from "crypto";
 import webp from "node-webpmux";
-import { ImgToWebp, videoToWebp } from "./webp";
+import { ImgToWebp, videoToWebp } from "./webp.ts";
 
 type MediaInput = Buffer | string;
 type Metadata = {

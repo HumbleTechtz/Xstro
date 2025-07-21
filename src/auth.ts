@@ -1,52 +1,51 @@
-import { sqlite } from "./sqlite";
-import { Red } from "./lib";
+import { DataTypes, Model } from "sequelize";
 import { BufferJSON, initAuthCreds, WAProto } from "baileys";
+import sqlite from "./sqlite.ts";
 import type { AuthenticationCreds, SignalDataTypeMap } from "baileys";
 
-sqlite.exec(`
-	CREATE TABLE IF NOT EXISTS auth (
-	name TEXT PRIMARY KEY,
-	data TEXT
-	);
-`);
+class Auth extends Model {
+	declare name: string;
+	declare data: string;
+}
 
-export default () => {
-	function writeData(data: any, name: string) {
-		const exists = sqlite.query("SELECT 1 FROM auth WHERE name = ?").get(name);
+await Auth.init(
+	{
+		name: {
+			type: DataTypes.STRING,
+			primaryKey: true,
+		},
+		data: {
+			type: DataTypes.TEXT,
+		},
+	},
+	{
+		tableName: "auth",
+		sequelize: sqlite,
+		timestamps: false,
+	}
+).sync();
+
+export default async () => {
+	async function writeData(data: any, name: string) {
 		const serializedData = JSON.stringify(data, BufferJSON.replacer);
-
-		if (exists) {
-			sqlite.run("UPDATE auth SET data = ? WHERE name = ?", [
-				serializedData,
-				name,
-			]);
-		} else {
-			sqlite.run("INSERT INTO auth (name, data) VALUES (?, ?)", [
-				name,
-				serializedData,
-			]);
-		}
+		await Auth.upsert({ name, data: serializedData });
 	}
 
-	function readData(name: string) {
-		const exists = sqlite
-			.query("SELECT data FROM auth WHERE name = ?")
-			.get(name) as {
-			name: string;
-			data: string | null;
-		} | null;
+	async function readData(name: string) {
+		const entry = await Auth.findByPk(name);
 		try {
-			return exists?.data ? JSON.parse(exists.data, BufferJSON.reviver) : null;
+			return entry?.data ? JSON.parse(entry.data, BufferJSON.reviver) : null;
 		} catch {
 			return null;
 		}
 	}
 
-	async function removeData(name: string): Promise<void> {
-		sqlite.run("DELETE FROM auth WHERE name = ?", [name]);
+	async function removeData(name: string) {
+		await Auth.destroy({ where: { name } });
 	}
 
-	const creds: AuthenticationCreds = readData("creds") || initAuthCreds();
+	const creds: AuthenticationCreds =
+		(await readData("creds")) || initAuthCreds();
 
 	return {
 		state: {
@@ -64,7 +63,10 @@ export default () => {
 								try {
 									value = WAProto.Message.AppStateSyncKeyData.fromObject(value);
 								} catch (e) {
-									Red(`Failed to decode AppStateSyncKeyData for ID "${id}":`, e);
+									console.error(
+										`Failed to decode AppStateSyncKeyData for ID "${id}":`,
+										e
+									);
 								}
 							}
 							data[id] = value as SignalDataTypeMap[T];
@@ -84,8 +86,8 @@ export default () => {
 				},
 			},
 		},
-		saveCreds: () => {
-			writeData(creds, "creds");
+		saveCreds: async () => {
+			await writeData(creds, "creds");
 		},
 	};
 };

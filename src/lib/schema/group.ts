@@ -1,86 +1,73 @@
-import { sqlite } from "src";
+import { DataTypes, Model } from "sequelize";
+import sqlite from "../../sqlite.ts";
 
-sqlite.exec(`
-  CREATE TABLE IF NOT EXISTS group_event (
-    groupJid TEXT PRIMARY KEY,
-    mode INTEGER
-  )
-`);
+class GroupEvent extends Model {
+	declare groupJid: string;
+	declare mode: number;
+}
+
+await GroupEvent.init(
+	{
+		groupJid: {
+			type: DataTypes.TEXT,
+			primaryKey: true,
+			allowNull: false,
+		},
+		mode: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+			defaultValue: 0,
+		},
+	},
+	{
+		tableName: "group_event",
+		sequelize: sqlite,
+		timestamps: false,
+	}
+).sync();
 
 export default {
-	set: (groupJid: string, enabled: boolean) => {
+	set: async (groupJid: string, enabled: boolean) => {
 		const mode = enabled ? 1 : 0;
-		const exists = sqlite
-			.query("SELECT 1 FROM group_event WHERE groupJid = ?")
-			.get(groupJid);
+		const existing = await GroupEvent.findByPk(groupJid);
 
-		if (exists) {
-			sqlite.run("UPDATE group_event SET mode = ? WHERE groupJid = ?", [
-				mode,
-				groupJid,
-			]);
+		if (existing) {
+			existing.mode = mode;
+			await existing.save();
 		} else {
-			sqlite.run("INSERT INTO group_event (groupJid, mode) VALUES (?, ?)", [
-				groupJid,
-				mode,
-			]);
+			await GroupEvent.create({ groupJid, mode });
 		}
 
 		return { groupJid, enabled };
 	},
 
-	get: (groupJid: string) => {
-		const result = sqlite
-			.query("SELECT mode FROM group_event WHERE groupJid = ?")
-			.get(groupJid) as { mode: number } | null;
-
-		return result ? Boolean(result.mode) : false;
+	get: async (groupJid: string) => {
+		const record = await GroupEvent.findByPk(groupJid);
+		return record ? Boolean(record.mode) : false;
 	},
 
-	remove: (groupJid: string) => {
-		const result = sqlite.run("DELETE FROM group_event WHERE groupJid = ?", [
-			groupJid,
-		]);
-		return { success: result.changes > 0, groupJid };
+	remove: async (groupJid: string) => {
+		const deleted = await GroupEvent.destroy({ where: { groupJid } });
+		return { success: deleted > 0, groupJid };
 	},
 
-	list: (enabled?: boolean) => {
-		let query = "SELECT groupJid, mode FROM group_event";
-		const params = [];
-
-		if (enabled !== undefined) {
-			query += " WHERE mode = ?";
-			params.push(enabled ? 1 : 0);
-		}
-
-		return sqlite
-			.query(query)
-			.all(params as any)
-			.map((row: { groupJid: string; mode: number }) => ({
-				groupJid: row.groupJid,
-				enabled: Boolean(row.mode),
-			}));
+	list: async (enabled?: boolean) => {
+		const where = enabled === undefined ? undefined : { mode: enabled ? 1 : 0 };
+		const rows = await GroupEvent.findAll({ where });
+		return rows.map(r => ({ groupJid: r.groupJid, enabled: Boolean(r.mode) }));
 	},
 
-	toggle: (groupJid: string) => {
-		const current = sqlite
-			.query("SELECT mode FROM group_event WHERE groupJid = ?")
-			.get(groupJid) as { mode: number };
+	toggle: async (groupJid: string) => {
+		const record = await GroupEvent.findByPk(groupJid);
 
-		if (!current) {
-			sqlite.run("INSERT INTO group_event (groupJid, mode) VALUES (?, ?)", [
-				groupJid,
-				1,
-			]);
+		if (!record) {
+			await GroupEvent.create({ groupJid, mode: 1 });
 			return { groupJid, enabled: true };
 		}
 
-		const newMode = current.mode ? 0 : 1;
-		sqlite.run("UPDATE group_event SET mode = ? WHERE groupJid = ?", [
-			newMode,
-			groupJid,
-		]);
+		record.mode = record.mode ? 0 : 1;
+		await record.save();
 
-		return { groupJid, enabled: Boolean(newMode) };
+		return { groupJid, enabled: Boolean(record.mode) };
 	},
 };

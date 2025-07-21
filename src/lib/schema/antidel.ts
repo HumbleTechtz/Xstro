@@ -1,33 +1,39 @@
-import { sqlite } from "src";
+import { DataTypes, Model } from "sequelize";
+import sqlite from "../../sqlite.ts";
 
-sqlite.exec(`
-  CREATE TABLE IF NOT EXISTS antidelete (
-    mode INTEGER
-  )
-`);
+class Antidelete extends Model {
+	declare mode: number;
+}
+
+await Antidelete.init(
+	{
+		mode: {
+			type: DataTypes.INTEGER,
+			allowNull: true,
+		},
+	},
+	{
+		tableName: "antidelete",
+		sequelize: sqlite,
+		timestamps: false,
+	}
+).sync();
 
 export default {
-	set: (mode: boolean) => {
-		const record = sqlite.query("SELECT mode FROM antidelete LIMIT 1").get() as {
-			mode: boolean | null;
-		} | null;
-
+	set: async (mode: boolean) => {
+		const record = await Antidelete.findOne();
 		if (!record) {
-			sqlite.run("INSERT INTO antidelete (mode) VALUES (?)", [mode ? 1 : 0]);
+			await Antidelete.create({ mode: mode ? 1 : 0 });
 			return true;
 		}
-
-		if (record.mode === mode) return false;
-
-		sqlite.run("DELETE FROM antidelete");
-		sqlite.run("INSERT INTO antidelete (mode) VALUES (?)", [mode ? 1 : 0]);
+		if (Boolean(record.mode) === mode) return false;
+		await Antidelete.destroy({ where: {} });
+		await Antidelete.create({ mode: mode ? 1 : 0 });
 		return true;
 	},
 
-	get: () => {
-		const record = sqlite.query("SELECT mode FROM antidelete LIMIT 1").get() as {
-			mode: boolean | null;
-		} | null;
+	get: async () => {
+		const record = await Antidelete.findOne();
 		return Boolean(record?.mode);
 	},
 };

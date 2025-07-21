@@ -1,15 +1,44 @@
-import { sqlite } from "src";
+import { DataTypes, Model } from "sequelize";
+import sqlite from "../../sqlite.ts";
 
-sqlite.exec(`
-  CREATE TABLE IF NOT EXISTS settings (
-    id INTEGER PRIMARY KEY,
-    prefix TEXT NOT NULL DEFAULT '["."]',
-    mode INTEGER NOT NULL DEFAULT 1,
-    autoLikeStatus INTEGER NOT NULL DEFAULT 0
-  )
-`);
+class Settings extends Model {
+	declare id: number;
+	declare prefix: string;
+	declare mode: number;
+	declare autoLikeStatus: number;
+}
 
-function transformRecord(record: any) {
+await Settings.init(
+	{
+		id: {
+			type: DataTypes.INTEGER,
+			primaryKey: true,
+			autoIncrement: true,
+		},
+		prefix: {
+			type: DataTypes.TEXT,
+			allowNull: false,
+			defaultValue: '["."]',
+		},
+		mode: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+			defaultValue: 1,
+		},
+		autoLikeStatus: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+			defaultValue: 0,
+		},
+	},
+	{
+		tableName: "settings",
+		sequelize: sqlite,
+		timestamps: false,
+	}
+).sync();
+
+function transformRecord(record: Settings) {
 	return {
 		prefix: JSON.parse(record.prefix),
 		mode: Boolean(record.mode),
@@ -19,129 +48,139 @@ function transformRecord(record: any) {
 
 export default {
 	prefix: {
-		set: (payload: string[]) => {
-			const { prefix, mode, autoLikeStatus } = transformRecord(
-				sqlite
-					.query("SELECT prefix, mode, autoLikeStatus FROM settings WHERE id = ?")
-					.get(1)
-			);
+		set: async (payload: string[]) => {
+			const record = await Settings.findByPk(1);
+			if (!record) {
+				await Settings.create({
+					id: 1,
+					prefix: JSON.stringify(payload),
+					mode: 1,
+					autoLikeStatus: 0,
+				});
+				return { prefix: payload, mode: true, autoLikeStatus: false };
+			}
+
+			const { prefix, mode, autoLikeStatus } = transformRecord(record);
 			const updated = Array.from(new Set([...prefix, ...payload]));
-			sqlite.run(
-				"UPDATE settings SET prefix = ?, mode = ?, autoLikeStatus = ? WHERE id = ?",
-				[JSON.stringify(updated), mode ? 1 : 0, autoLikeStatus ? 1 : 0, 1]
-			);
+
+			record.prefix = JSON.stringify(updated);
+			await record.save();
+
 			return { prefix: updated, mode, autoLikeStatus };
 		},
 
-		get: () => {
-			const config = sqlite
-				.query("SELECT prefix FROM settings WHERE id = ?")
-				.get(1) as { prefix: string };
-			return config ? JSON.parse(config.prefix) : ["."];
+		get: async () => {
+			const record = await Settings.findByPk(1);
+			if (!record) return ["."];
+			return JSON.parse(record.prefix);
 		},
 
-		del: () => {
-			const { mode, autoLikeStatus } = transformRecord(
-				sqlite
-					.query("SELECT prefix, mode, autoLikeStatus FROM settings WHERE id = ?")
-					.get(1)
-			);
+		del: async () => {
+			const record = await Settings.findByPk(1);
+			if (!record) return { prefix: ["."], mode: true, autoLikeStatus: false };
+
+			const { mode, autoLikeStatus } = transformRecord(record);
 			const defaultPrefix = ["."];
-			sqlite.run(
-				"UPDATE settings SET prefix = ?, mode = ?, autoLikeStatus = ? WHERE id = ?",
-				[JSON.stringify(defaultPrefix), mode ? 1 : 0, autoLikeStatus ? 1 : 0, 1]
-			);
+			record.prefix = JSON.stringify(defaultPrefix);
+			await record.save();
+
 			return { prefix: defaultPrefix, mode, autoLikeStatus };
 		},
 	},
 
 	mode: {
-		set: (mode: boolean) => {
-			const { prefix, autoLikeStatus } = transformRecord(
-				sqlite
-					.query("SELECT prefix, mode, autoLikeStatus FROM settings WHERE id = ?")
-					.get(1)
-			);
-			sqlite.run(
-				"UPDATE settings SET mode = ?, prefix = ?, autoLikeStatus = ? WHERE id = ?",
-				[mode ? 1 : 0, JSON.stringify(prefix), autoLikeStatus ? 1 : 0, 1]
-			);
+		set: async (mode: boolean) => {
+			const record = await Settings.findByPk(1);
+			if (!record) {
+				await Settings.create({
+					id: 1,
+					prefix: '["."]',
+					mode: mode ? 1 : 0,
+					autoLikeStatus: 0,
+				});
+				return { prefix: ["."], mode, autoLikeStatus: false };
+			}
+
+			const { prefix, autoLikeStatus } = transformRecord(record);
+			record.mode = mode ? 1 : 0;
+			await record.save();
+
 			return { prefix, mode, autoLikeStatus };
 		},
 
-		get: () => {
-			const config = sqlite
-				.query("SELECT mode FROM settings WHERE id = ?")
-				.get(1) as { mode: number };
-			return config ? Boolean(config.mode) : true;
+		get: async () => {
+			const record = await Settings.findByPk(1);
+			if (!record) return true;
+			return Boolean(record.mode);
 		},
 
-		del: () => {
-			const { prefix, autoLikeStatus } = transformRecord(
-				sqlite
-					.query("SELECT prefix, mode, autoLikeStatus FROM settings WHERE id = ?")
-					.get(1)
-			);
+		del: async () => {
+			const record = await Settings.findByPk(1);
+			if (!record) return { prefix: ["."], mode: true, autoLikeStatus: false };
+
+			const { prefix, autoLikeStatus } = transformRecord(record);
 			const defaultMode = true;
-			sqlite.run(
-				"UPDATE settings SET mode = ?, prefix = ?, autoLikeStatus = ? WHERE id = ?",
-				[defaultMode ? 1 : 0, JSON.stringify(prefix), autoLikeStatus ? 1 : 0, 1]
-			);
+
+			record.mode = defaultMode ? 1 : 0;
+			await record.save();
+
 			return { prefix, mode: defaultMode, autoLikeStatus };
 		},
 	},
 
 	autoLikeStatus: {
-		set: (status: boolean) => {
-			const { prefix, mode } = transformRecord(
-				sqlite
-					.query("SELECT prefix, mode, autoLikeStatus FROM settings WHERE id = ?")
-					.get(1)
-			);
-			sqlite.run(
-				"UPDATE settings SET prefix = ?, mode = ?, autoLikeStatus = ? WHERE id = ?",
-				[JSON.stringify(prefix), mode ? 1 : 0, status ? 1 : 0, 1]
-			);
+		set: async (status: boolean) => {
+			const record = await Settings.findByPk(1);
+			if (!record) {
+				await Settings.create({
+					id: 1,
+					prefix: '["."]',
+					mode: 1,
+					autoLikeStatus: status ? 1 : 0,
+				});
+				return { prefix: ["."], mode: true, autoLikeStatus: status };
+			}
+
+			const { prefix, mode } = transformRecord(record);
+			record.autoLikeStatus = status ? 1 : 0;
+			await record.save();
+
 			return { prefix, mode, autoLikeStatus: status };
 		},
 
-		get: () => {
-			const config = sqlite
-				.query("SELECT autoLikeStatus FROM settings WHERE id = ?")
-				.get(1) as { autoLikeStatus: number };
-			return config ? Boolean(config.autoLikeStatus) : false;
+		get: async () => {
+			const record = await Settings.findByPk(1);
+			if (!record) return false;
+			return Boolean(record.autoLikeStatus);
 		},
 
-		del: () => {
-			const { prefix, mode } = transformRecord(
-				sqlite
-					.query("SELECT prefix, mode, autoLikeStatus FROM settings WHERE id = ?")
-					.get(1)
-			);
+		del: async () => {
+			const record = await Settings.findByPk(1);
+			if (!record) return { prefix: ["."], mode: true, autoLikeStatus: false };
+
+			const { prefix, mode } = transformRecord(record);
 			const defaultAutoLikeStatus = false;
-			sqlite.run(
-				"UPDATE settings SET prefix = ?, mode = ?, autoLikeStatus = ? WHERE id = ?",
-				[JSON.stringify(prefix), mode ? 1 : 0, defaultAutoLikeStatus ? 1 : 0, 1]
-			);
+
+			record.autoLikeStatus = defaultAutoLikeStatus ? 1 : 0;
+			await record.save();
+
 			return { prefix, mode, autoLikeStatus: defaultAutoLikeStatus };
 		},
 	},
 
-	get: () => {
-		let config = sqlite
-			.query("SELECT prefix, mode, autoLikeStatus FROM settings WHERE id = ?")
-			.get(1);
+	get: async () => {
+		let record = await Settings.findByPk(1);
 
-		if (!config) {
-			sqlite.run(
-				"INSERT INTO settings (id, prefix, mode, autoLikeStatus) VALUES (?, ?, ?, ?)",
-				[1, JSON.stringify(["."]), 1, 0]
-			);
-			config = sqlite
-				.query("SELECT prefix, mode, autoLikeStatus FROM settings WHERE id = ?")
-				.get(1);
+		if (!record) {
+			await Settings.create({
+				id: 1,
+				prefix: '["."]',
+				mode: 1,
+				autoLikeStatus: 0,
+			});
+			record = await Settings.findByPk(1);
 		}
 
-		return transformRecord(config);
+		return transformRecord(record!);
 	},
 };

@@ -1,8 +1,8 @@
 import { Readable } from "stream";
-import { isUrl } from "../constants";
-import { getBuffer } from "../fetch";
-import { DataType } from "../datatype";
-import { Red } from "../console";
+import { isUrl } from "../constants.ts";
+import { getBuffer } from "../fetch.ts";
+import { DataType } from "../datatype.ts";
+import { Red } from "../console.ts";
 import type { WAContextInfo, WAMessage, WASocket } from "baileys";
 
 export type sendOptions = {

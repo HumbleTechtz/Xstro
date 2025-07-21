@@ -1,16 +1,13 @@
 import makeWASocket, { delay, fetchLatestWaWebVersion } from "baileys";
-import { sleep } from "bun";
-import auth from "./auth";
-import cache from "./cache";
-import event from "./event";
-import config from "../config";
-import { cachedGroupMetadata } from "./group";
-import { Green, logger, Red, StoreDb, Yellow } from "./lib";
+import auth from "./auth.ts";
+import config from "../config.ts";
+import registerSocketEvents from "./events.ts";
+import { cachedGroupMetadata } from "./group.ts";
+import { StoreDb } from "./lib/schema/index.ts";
+import { registersocketHooks } from "./lib/hooks/socket.ts";
 
-const msgRetryCounterCache = cache();
-
-async function start() {
-	const { state } = auth();
+export default async function startSock() {
+	const { state, saveCreds } = await auth();
 	const { version } = await fetchLatestWaWebVersion({});
 
 	const sock = makeWASocket({
@@ -19,19 +16,20 @@ async function start() {
 			keys: state.keys,
 		},
 		version,
-		logger,
-		msgRetryCounterCache,
 		cachedGroupMetadata,
 		getMessage: StoreDb.get,
 	});
 
-	if (!sock.authState?.creds?.registered) {
-		await sleep(2000);
-		Yellow("PAIRING...");
-		Green(await sock.requestPairingCode(config.USER_NUMBER, "ASTROX11"));
-		while (!sock.authState?.creds?.registered) await sleep(2000);
+	if (!sock?.authState?.creds?.registered) {
+		await delay(3000);
+		const code = await sock.requestPairingCode(config.USER_NUMBER);
+		console.log(`Pairing code:`, code);
 	}
 
-	await event(sock).catch(Red);
+	registerSocketEvents(sock, saveCreds);
+	registersocketHooks(sock);
+
+	return sock;
 }
-start();
+
+startSock();

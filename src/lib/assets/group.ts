@@ -1,7 +1,7 @@
 import { isJidUser, isLidUser } from "baileys";
-import { en } from "..";
-import { groupMetadata, updateMetaGroup } from "../..";
-import type { CommandModule } from "src/Types";
+import { en } from "../resources/index.ts";
+import { groupMetadata, updateMetaGroup } from "../../group.ts";
+import type { CommandModule } from "../../Types/index.ts";
 
 export default [
 	{
@@ -18,7 +18,7 @@ export default [
 				return msg.send(en.warn.invaild_user);
 			await msg.groupParticipantsUpdate(msg.chat, [user.id], "add");
 			updateMetaGroup(msg.chat, await msg.groupMetadata(msg.chat));
-			const groupInfo = groupMetadata(msg.chat);
+			const groupInfo = await groupMetadata(msg.chat);
 			const participants = groupInfo.participants.flatMap(p => [p.jid, p.lid]);
 			if (!participants.includes(user.id))
 				return msg.send(en.plugin.groups.add.fail);
@@ -50,7 +50,7 @@ export default [
 		handler: async msg => {
 			if (!msg.isAdmin) return msg.send(en.sender_not_admin);
 			if (!msg.isBotAdmin) return msg.send(en.bot_not_admin);
-			const groupData = groupMetadata(msg.chat);
+			const groupData = await groupMetadata(msg.chat);
 			const participants = groupData.participants
 				.filter(p => !p.admin && p.admin !== "superadmin")
 				.map(p => p.id);
@@ -70,7 +70,7 @@ export default [
 			const user = await msg.user(args);
 			if (!isJidUser(user.id) && !isLidUser(user.id))
 				return msg.send(en.warn.invaild_user);
-			const groupData = groupMetadata(msg.chat);
+			const groupData = await groupMetadata(msg.chat);
 			const admins = groupData.participants.filter(v => v.admin).map(v => v.id);
 			if (admins.includes(user.id)) {
 				return msg.send(`_@${user.id.split("@")[0]} is already admin_`, {
@@ -97,7 +97,7 @@ export default [
 			const user = await msg.user(args);
 			if (!isJidUser(user.id) && !isLidUser(user.id))
 				return msg.send(en.warn.invaild_user);
-			const groupData = groupMetadata(msg.chat);
+			const groupData = await groupMetadata(msg.chat);
 			const admins = groupData.participants.filter(v => v.admin).map(v => v.id);
 			if (!admins.includes(user.id)) {
 				return msg.send(`_@${user.id.split("@")[0]} is not admin_`, {
@@ -144,7 +144,7 @@ export default [
 		desc: "Mention entire group",
 		type: "group",
 		handler: async (msg, args) => {
-			const { participants } = groupMetadata(msg.chat);
+			const { participants } = await groupMetadata(msg.chat);
 			return await msg.relayMessage(
 				msg.chat,
 				{
@@ -220,7 +220,7 @@ export default [
 		handler: async msg => {
 			if (!msg.isAdmin) return msg.send(en.sender_not_admin);
 			if (!msg.isBotAdmin) return msg.send(en.bot_not_admin);
-			const metadata = groupMetadata(msg.chat);
+			const metadata = await groupMetadata(msg.chat);
 			if (metadata.announce) return msg.send(en.plugin.groups.mute.already_muted);
 			await msg.groupSettingUpdate(msg.chat, "announcement");
 			return await msg.send(en.plugin.groups.mute.success);
@@ -235,7 +235,7 @@ export default [
 		handler: async msg => {
 			if (!msg.isAdmin) return msg.send(en.sender_not_admin);
 			if (!msg.isBotAdmin) return msg.send(en.bot_not_admin);
-			const metadata = groupMetadata(msg.chat);
+			const metadata = await groupMetadata(msg.chat);
 			if (!metadata.announce)
 				return msg.send(en.plugin.groups.unmute.already_unmuted);
 			await msg.groupSettingUpdate(msg.chat, "not_announcement");
@@ -251,7 +251,7 @@ export default [
 		handler: async msg => {
 			if (!msg.isAdmin) return msg.send(en.sender_not_admin);
 			if (!msg.isBotAdmin) return msg.send(en.bot_not_admin);
-			const metadata = groupMetadata(msg.chat);
+			const metadata = await groupMetadata(msg.chat);
 			if (metadata.restrict) return msg.send(en.plugin.groups.lock.already_locked);
 			await msg.groupSettingUpdate(msg.chat, "locked");
 			return await msg.send(en.plugin.groups.lock.success);
@@ -266,7 +266,7 @@ export default [
 		handler: async msg => {
 			if (!msg.isAdmin) return msg.send(en.sender_not_admin);
 			if (!msg.isBotAdmin) return msg.send(en.bot_not_admin);
-			const metadata = groupMetadata(msg.chat);
+			const metadata = await groupMetadata(msg.chat);
 			if (!metadata.restrict)
 				return msg.send(en.plugin.groups.unlock.already_unlocked);
 			await msg.groupSettingUpdate(msg.chat, "unlocked");

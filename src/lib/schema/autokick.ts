@@ -1,61 +1,63 @@
-import { sqlite } from "src";
+import { DataTypes, Model } from "sequelize";
+import sqlite from "../../sqlite.ts";
 
-sqlite.exec(`
-  CREATE TABLE IF NOT EXISTS autokick (
-    groupJid TEXT PRIMARY KEY,
-    jid TEXT,
-    lid TEXT
-  )
-`);
+class Autokick extends Model {
+	declare groupJid: string;
+	declare jid: string | null;
+	declare lid: string | null;
+}
+
+await Autokick.init(
+	{
+		groupJid: {
+			type: DataTypes.TEXT,
+			primaryKey: true,
+			allowNull: false,
+		},
+		jid: {
+			type: DataTypes.TEXT,
+			allowNull: true,
+		},
+		lid: {
+			type: DataTypes.TEXT,
+			allowNull: true,
+		},
+	},
+	{
+		tableName: "autokick",
+		sequelize: sqlite,
+		timestamps: false,
+	}
+).sync();
 
 export default {
-	set: (groupJid: string, jid: string | null, lid: string | null) => {
-		const exists = sqlite
-			.query("SELECT 1 FROM autokick WHERE groupJid = ?")
-			.get(groupJid);
+	set: async (groupJid: string, jid: string | null, lid: string | null) => {
+		const exists = await Autokick.findByPk(groupJid);
 
 		if (exists) {
-			sqlite.run("UPDATE autokick SET jid = ?, lid = ? WHERE groupJid = ?", [
-				jid,
-				lid,
-				groupJid,
-			]);
+			exists.jid = jid;
+			exists.lid = lid;
+			await exists.save();
 		} else {
-			sqlite.run("INSERT INTO autokick (groupJid, jid, lid) VALUES (?, ?, ?)", [
-				groupJid,
-				jid,
-				lid,
-			]);
+			await Autokick.create({ groupJid, jid, lid });
 		}
-
 		return true;
 	},
 
-	remove: (groupJid: string) => {
-		sqlite.run("DELETE FROM autokick WHERE groupJid = ?", [groupJid]);
-		const result = sqlite.query("SELECT changes() AS changes").get();
-		if (result && typeof result === "object" && "changes" in result) {
-			return (result as { changes: number }).changes;
-		}
-		return 0;
+	remove: async (groupJid: string) => {
+		const deleted = await Autokick.destroy({ where: { groupJid } });
+		return deleted;
 	},
 
-	get: (groupJid: string, id: string) => {
-		const result = sqlite
-			.query("SELECT jid, lid FROM autokick WHERE groupJid = ?")
-			.get(groupJid) as { jid: string; lid: string } | null;
-
+	get: async (groupJid: string, id: string) => {
+		const result = await Autokick.findByPk(groupJid);
 		if (!result) return false;
 		return result.jid === id || result.lid === id;
 	},
 
-	list: () => {
-		return sqlite
-			.query("SELECT groupJid, jid, lid FROM autokick")
-			.all() as Array<{
-			groupJid: string;
-			jid: string | null;
-			lid: string | null;
-		}>;
+	list: async () => {
+		return await Autokick.findAll({
+			attributes: ["groupJid", "jid", "lid"],
+		});
 	},
 };

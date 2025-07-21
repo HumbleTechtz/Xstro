@@ -1,6 +1,7 @@
 import { isJidUser, isLidUser } from "baileys";
-import { en, AutoKickDb } from "..";
-import type { CommandModule } from "src/Types";
+import { en } from "../resources/index.ts";
+import { AutoKickDb } from "../schema/index.ts";
+import type { CommandModule } from "../../Types/index.ts";
 
 export default {
 	pattern: "autokick",
@@ -19,7 +20,7 @@ export default {
 		const groupJid = msg.chat;
 
 		if (subcmd === "list") {
-			const allEntries = AutoKickDb.list();
+			const allEntries = await AutoKickDb.list();
 			const entry = allEntries.find(e => e.groupJid === groupJid);
 
 			if (!entry || (!entry.jid && !entry.lid)) {

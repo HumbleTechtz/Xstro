@@ -1,61 +1,71 @@
-import { sqlite } from "./sqlite";
+import { DataTypes, Model } from "sequelize";
+import sqlite from "./sqlite.ts";
 import type { GroupMetadata } from "baileys";
 
-sqlite.exec(`
-	CREATE TABLE IF NOT EXISTS group_metadata (
-		jid TEXT PRIMARY KEY UNIQUE,
-		data TEXT
-	)
-`);
+class GroupMetadataModel extends Model {
+	declare jid: string;
+	declare data: string | null;
+}
 
-export const groupMetadata = (jid: string): GroupMetadata | undefined => {
-	const row = sqlite
-		.query("SELECT data FROM group_metadata WHERE jid = ?")
-		.get(jid) as { data: string | null } | null;
+await GroupMetadataModel.init(
+	{
+		jid: {
+			type: DataTypes.STRING,
+			primaryKey: true,
+			unique: true,
+		},
+		data: {
+			type: DataTypes.TEXT,
+			allowNull: true,
+		},
+	},
+	{
+		tableName: "group_metadata",
+		sequelize: sqlite,
+		timestamps: false,
+	}
+).sync();
 
+export const groupMetadata = async (
+	jid: string
+): Promise<GroupMetadata | undefined> => {
+	const row = await GroupMetadataModel.findByPk(jid);
 	if (!row?.data) return undefined;
-
 	return JSON.parse(row.data) as GroupMetadata;
 };
 
-export function cachedGroupMetadata(
+export const cachedGroupMetadata = async (
 	jid: string
-): Promise<GroupMetadata | undefined> {
-	return new Promise((resolve, reject) => {
-		try {
-			const row = sqlite
-				.query("SELECT data FROM group_metadata WHERE jid = ?")
-				.get(jid) as { data: string | null } | null;
+): Promise<GroupMetadata | undefined> => {
+	try {
+		const row = await GroupMetadataModel.findByPk(jid);
+		if (!row?.data) return undefined;
+		return JSON.parse(row.data) as GroupMetadata;
+	} catch {
+		return undefined;
+	}
+};
 
-			if (!row?.data) return resolve(undefined);
-
-			resolve(JSON.parse(row.data) as GroupMetadata);
-		} catch (err) {
-			reject(err instanceof Error ? err : new Error("Unknown error"));
+export const cachedGroupMetadataAll = async (): Promise<
+	Record<string, GroupMetadata>
+> => {
+	const rows = await GroupMetadataModel.findAll();
+	const result: Record<string, GroupMetadata> = {};
+	for (const row of rows) {
+		if (row.data) {
+			result[row.jid] = JSON.parse(row.data);
 		}
-	});
-}
+	}
+	return result;
+};
 
-export const cachedGroupMetadataAll = (): Record<string, GroupMetadata> =>
-	Object.fromEntries(
-		(
-			sqlite.query("SELECT jid, data FROM group_metadata").all() as {
-				jid: string;
-				data: string | null;
-			}[]
-		)
-			.filter(({ data }) => data)
-			.map(({ jid, data }) => [jid, JSON.parse(data!)])
-	);
-
-export const updateMetaGroup = (jid: string, data: GroupMetadata) => {
+export const updateMetaGroup = async (jid: string, data: GroupMetadata) => {
 	if (!jid || !data) return;
 	const serialized = JSON.stringify(data);
-	const exists = sqlite
-		.query("SELECT 1 FROM group_metadata WHERE jid = ?")
-		.get(jid);
-	const query = exists
-		? "UPDATE group_metadata SET data = ? WHERE jid = ?"
-		: "INSERT INTO group_metadata (data, jid) VALUES (?, ?)";
-	sqlite.run(query, [serialized, jid]);
+	const exists = await GroupMetadataModel.findByPk(jid);
+	if (exists) {
+		await exists.update({ data: serialized });
+	} else {
+		await GroupMetadataModel.create({ jid, data: serialized });
+	}
 };

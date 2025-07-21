@@ -1,5 +1,6 @@
-import { AntilinkDb } from "..";
-import type { CommandModule } from "src/Types";
+import { AntilinkDb } from "../schema/index.ts";
+import { en } from "../resources/index.ts";
+import type { CommandModule } from "../../Types/index.ts";
 
 export default [
 	{
@@ -9,74 +10,63 @@ export default [
 		desc: "Setup Antilink for Group Chat",
 		type: "group",
 		handler: async (msg, args) => {
-			const { prefix } = msg;
-			if (!args) {
-				return await msg.send(
-					`
-Usage:
-antilink on
-antilink off
-antilink mode kick | delete
-antilink set chat.whatsapp.com,google.com`
-				);
+			const usage = [
+				"Usage:",
+				"antilink on",
+				"antilink off",
+				"antilink mode kick | delete",
+				"antilink set chat.whatsapp.com,google.com",
+			].join("\n");
+
+			if (!args) return msg.send(usage);
+
+			const [cmd, ...rest] = args.toLowerCase().trim().split(" ");
+
+			if (cmd === "on") {
+				await AntilinkDb.set(msg.chat, true);
+				return msg.send(en.plugin.antilink.enabled);
 			}
 
-			args = args.toLowerCase().trim();
-			const choice = args.split(" ");
-			if (choice[0] === "on") {
-				AntilinkDb.set(msg.chat, true);
-				return await msg.send("_Antilink turned on_");
-			}
-			if (choice[0] === "off") {
-				AntilinkDb.remove(msg.chat);
-				return await msg.send("_Antilink turned off_");
+			if (cmd === "off") {
+				await AntilinkDb.remove(msg.chat);
+				return msg.send(en.plugin.antilink.disabled);
 			}
 
-			if (choice[0] === "mode") {
-				if (choice[1] !== "kick" && choice[1] !== "delete")
-					return await msg.send(
-						`\`\`\`Usage:\n${prefix}antilink mode kick\nOR\n${prefix}antilink mode delete\`\`\``
+			if (cmd === "mode") {
+				if (rest[0] !== "kick" && rest[0] !== "delete") {
+					return msg.send(
+						["Usage:,antilink mode kick OR, antilink mode delete"].join("\n")
 					);
-				AntilinkDb.set(msg.chat, choice[1] === "kick" ? true : false);
-				return await msg.send(
-					"_Antilink mode is now set to " + choice[1] + " participant_"
-				);
+				}
+				await AntilinkDb.set(msg.chat, rest[0] === "kick" ? true : false);
+				return msg.send(`_Antilink mode is now set to ${rest[0]} participant_`);
 			}
 
-			if (choice[0] === "set") {
-				if (!choice?.[1])
-					return await msg.send("_You need to add some specific links to prohibit_");
-				AntilinkDb.set(msg.chat, true, choice.slice(1));
-				return await msg.send(
-					`_Antilink set to handle ${choice.slice(1).length} links_`
-				);
+			if (cmd === "set") {
+				if (!rest.length) return msg.send(en.plugin.antilink.need_links);
+				await AntilinkDb.set(msg.chat, true, rest);
+				return msg.send(`_Antilink set to handle ${rest.length} links_`);
 			}
+
+			return msg.send(usage);
 		},
 	},
 	{
 		on: true,
 		dontAddCommandList: true,
 		handler: async msg => {
-			if (!msg.isGroup || !msg?.text) return;
-			if (msg.key.fromMe) return;
+			if (!msg.isGroup || !msg.text || msg.key.fromMe) return;
 			if (msg.isAdmin || !msg.isBotAdmin) return;
 
-			const antilink = AntilinkDb.get(msg.chat);
+			const antilink = await AntilinkDb.get(msg.chat);
 			if (!antilink) return;
 
 			const text = msg.text.toLowerCase();
-			let hasProhibitedLink = false;
+			const hasLink =
+				antilink.links?.some(link => text.includes(link.toLowerCase())) ||
+				/https?:\/\/([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?/i.test(text);
 
-			if (antilink.links?.length) {
-				hasProhibitedLink = antilink.links.some((link: string) =>
-					text.includes(link.toLowerCase())
-				);
-			} else {
-				hasProhibitedLink =
-					/https?:\/\/([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?/i.test(text);
-			}
-
-			if (!hasProhibitedLink) return;
+			if (!hasLink) return;
 
 			await msg.delete(msg);
 
@@ -87,7 +77,7 @@ antilink set chat.whatsapp.com,google.com`
 					to: msg.chat,
 				});
 			} else {
-				await msg.send("_Links are not allowed here_");
+				await msg.send(en.plugin.antilink.link_warning);
 			}
 		},
 	},

@@ -1,5 +1,5 @@
 import { downloadMediaMessage, WAMessage } from "baileys";
-import { DataType } from "../datatype";
+import { DataType } from "../datatype.ts";
 
 export async function downloadMessage(options: {
 	message: WAMessage;

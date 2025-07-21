@@ -1,5 +1,5 @@
-import { formatRuntime } from "..";
-import type { CommandModule } from "src/Types";
+import { formatRuntime } from "../utils/constants.ts";
+import type { CommandModule } from "../../Types/index.ts";
 
 export default {
 	pattern: "runtime",

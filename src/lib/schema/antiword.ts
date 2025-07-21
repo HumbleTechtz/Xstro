@@ -1,55 +1,63 @@
-import { sqlite } from "src";
+import { DataTypes, Model } from "sequelize";
+import sqlite from "../../sqlite.ts";
 
-sqlite.exec(`
-  CREATE TABLE IF NOT EXISTS antiword (
-    jid TEXT PRIMARY KEY,
-    status INTEGER,
-    words TEXT
-  )
-`);
+class Antiword extends Model {
+	declare jid: string;
+	declare status: number;
+	declare words: string | null;
+}
+
+await Antiword.init(
+	{
+		jid: {
+			type: DataTypes.TEXT,
+			primaryKey: true,
+			allowNull: false,
+		},
+		status: {
+			type: DataTypes.INTEGER,
+			allowNull: true,
+		},
+		words: {
+			type: DataTypes.TEXT,
+			allowNull: true,
+		},
+	},
+	{
+		tableName: "antiword",
+		sequelize: sqlite,
+		timestamps: false,
+	}
+).sync();
 
 export default {
-	set: (jid: string, status: boolean, words: string[]) => {
+	set: async (jid: string, status: boolean, words: string[]) => {
 		const badWords = Array.from(new Set(words));
 		const mode = status ? 1 : 0;
-		const existing = sqlite
-			.query("SELECT 1 FROM antiword WHERE jid = ?")
-			.get(jid);
+		const existing = await Antiword.findByPk(jid);
 
 		if (existing) {
-			sqlite.run("UPDATE antiword SET status = ?, words = ? WHERE jid = ?", [
-				mode,
-				JSON.stringify(badWords),
-				jid,
-			]);
+			existing.status = mode;
+			existing.words = JSON.stringify(badWords);
+			await existing.save();
 		} else {
-			sqlite.run("INSERT INTO antiword (jid, status, words) VALUES (?, ?, ?)", [
+			await Antiword.create({
 				jid,
-				mode,
-				JSON.stringify(badWords),
-			]);
+				status: mode,
+				words: JSON.stringify(badWords),
+			});
 		}
 
 		return { enabled: true, words: badWords.length };
 	},
 
-	remove: (jid: string) => {
-		sqlite.run("DELETE FROM antiword WHERE jid = ?", [jid]);
-		const result = sqlite.query("SELECT changes() AS changes").get() as {
-			changes: number;
-		};
-		return result.changes > 0;
+	remove: async (jid: string) => {
+		const deleted = await Antiword.destroy({ where: { jid } });
+		return deleted > 0;
 	},
 
-	get: (jid: string) => {
-		const record = sqlite
-			.query("SELECT jid, status, words FROM antiword WHERE jid = ?")
-			.get(jid) as {
-			jid: string;
-			status: number | null;
-			words: string | null;
-		} | null;
-
+	get: async (jid: string) => {
+		const record = await Antiword.findByPk(jid);
 		if (!record) return null;
 
 		return {

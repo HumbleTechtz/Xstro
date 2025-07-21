@@ -1,5 +1,6 @@
-import { AutoMuteDb } from "..";
-import type { CommandModule } from "src/Types";
+import { AutoMuteDb } from "../schema/index.ts";
+import { en } from "../resources/index.ts";
+import type { CommandModule } from "../../Types/index.ts";
 
 export default [
 	{
@@ -9,19 +10,15 @@ export default [
 		desc: "Automatically mute at a specific time",
 		type: "muting",
 		handler: async (msg, args) => {
-			if (!args || args.length < 1) {
-				return await msg.send("Usage: amute 5:30pm");
-			}
+			if (!args?.trim()) return msg.send(en.plugin.automute.amute_usage);
 
 			const startTime = args.trim().toLowerCase();
 			if (!isValidTimeString(startTime)) {
-				return await msg.send(
-					"Invalid time format. Use format like `5:30pm` or `7:00am`."
-				);
+				return msg.send(en.plugin.automute.invalid_format);
 			}
 
-			AutoMuteDb.set(msg.chat, startTime);
-			return await msg.send(
+			await AutoMuteDb.set(msg.chat, startTime);
+			return msg.send(
 				`_Group will be auto-muted everyday at ${startTime.toUpperCase()}._`
 			);
 		},
@@ -33,22 +30,18 @@ export default [
 		desc: "Automatically unmute at a specific time",
 		type: "muting",
 		handler: async (msg, args) => {
-			if (!args || args.length < 1) {
-				return await msg.send("Usage: aunmute 6:30am");
-			}
+			if (!args?.trim()) return msg.send(en.plugin.automute.aunmute_usage);
 
 			const endTime = args.trim().toLowerCase();
 			if (!isValidTimeString(endTime)) {
-				return await msg.send(
-					"Invalid time format. Use format like `6:30am` or `8:00pm`."
-				);
+				return msg.send(en.plugin.automute.invalid_format);
 			}
 
-			const existing = AutoMuteDb.get(msg.chat);
+			const existing = await AutoMuteDb.get(msg.chat);
 			const startTime = existing?.startTime ?? null;
 
-			AutoMuteDb.set(msg.chat, startTime as string, endTime);
-			return await msg.send(
+			await AutoMuteDb.set(msg.chat, startTime as string, endTime);
+			return msg.send(
 				`_Group will be auto-unmuted everyday at ${endTime.toUpperCase()}._`
 			);
 		},
@@ -60,8 +53,8 @@ export default [
 		desc: "Delete automute setting for the group",
 		type: "muting",
 		handler: async msg => {
-			AutoMuteDb.remove(msg.chat);
-			return await msg.send("_Automute setting deleted for this group._");
+			await AutoMuteDb.remove(msg.chat);
+			return msg.send(en.plugin.automute.deleted);
 		},
 	},
 	{
@@ -71,13 +64,11 @@ export default [
 		desc: "Get current automute setting for the group",
 		type: "muting",
 		handler: async msg => {
-			const automute = AutoMuteDb.get(msg.chat);
-			if (!automute) {
-				return await msg.send("_No automute setting found for this group._");
-			}
+			const automute = await AutoMuteDb.get(msg.chat);
+			if (!automute) return msg.send(en.plugin.automute.not_found);
 
 			const { startTime, endTime } = automute;
-			return await msg.send(
+			return msg.send(
 				`_Automute is currently set${startTime ? ` from ${startTime}` : ""}${
 					endTime ? ` to ${endTime}` : ""
 				}._`
@@ -86,7 +77,7 @@ export default [
 	},
 ] satisfies CommandModule[];
 
-export function isValidTimeString(timeStr: string): boolean {
+function isValidTimeString(timeStr: string): boolean {
 	const match = timeStr
 		.trim()
 		.toLowerCase()

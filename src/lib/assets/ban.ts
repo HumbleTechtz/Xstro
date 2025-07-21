@@ -1,5 +1,6 @@
-import { en, BanDb } from "..";
-import type { CommandModule } from "src/Types";
+import { en } from "../resources/index.ts";
+import { BanDb } from "../schema/index.ts";
+import type { CommandModule } from "../../Types/index.ts";
 
 export default [
 	{
@@ -13,8 +14,8 @@ export default [
 			if (!user) return msg.send(en.warn.invaild_user);
 			const { id, jid, lid } = user;
 
-			if (BanDb.check(id)) return msg.send(en.plugin.ban.already);
-			BanDb.add(jid, lid);
+			if (await BanDb.check(id)) return msg.send(en.plugin.ban.already);
+			await BanDb.add(jid, lid);
 			return msg.send(en.plugin.ban.user_banned);
 		},
 	},
@@ -29,8 +30,8 @@ export default [
 			if (!user) return msg.send(en.warn.invaild_user);
 
 			const { id, jid } = user;
-			if (!BanDb.check(id)) return msg.send(en.plugin.ban.not_banned);
-			BanDb.remove(jid);
+			if (!(await BanDb.check(id))) return msg.send(en.plugin.ban.not_banned);
+			await BanDb.remove(jid);
 			return msg.send(en.plugin.ban.user_unbanned);
 		},
 	},
@@ -41,12 +42,12 @@ export default [
 		desc: "List banned users",
 		type: "misc",
 		handler: async msg => {
-			const banned = BanDb.list("jid");
+			const banned = await BanDb.list("jid");
 			if (!banned.length) return msg.send(en.plugin.ban.none);
 
 			const users = banned.map(user => `@${user.split("@")[0]}`).join("\n");
 			const mentions = banned.map(user => user);
-			return msg.send(users, { mentions, to: msg.chat });
+			return await msg.send(users, { mentions, to: msg.chat });
 		},
 	},
 ] satisfies CommandModule[];

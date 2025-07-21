@@ -1,5 +1,6 @@
-import { GroupDb } from "..";
-import type { CommandModule } from "src/Types";
+import { GroupDb } from "../schema/index.ts";
+import { en } from "../resources/index.ts";
+import type { CommandModule } from "../../Types/index.ts";
 
 export default {
 	pattern: "event",
@@ -11,22 +12,23 @@ export default {
 	handler: async (msg, args) => {
 		const groupJid = msg.chat;
 
-		if (!args) {
+		if (!args?.trim()) {
 			const state = GroupDb.get(groupJid) ? "on" : "off";
 			return msg.send(`Group events set: ${state}`);
 		}
 
-		const mode = args.toLowerCase();
+		const mode = args.trim().toLowerCase();
+
 		if (mode === "on") {
 			GroupDb.set(groupJid, true);
-			return msg.send("_Group event mode enabled_");
+			return msg.send(en.plugin.event.enabled);
 		}
 
 		if (mode === "off") {
 			GroupDb.remove(groupJid);
-			return msg.send("_Group event mode disabled_");
+			return msg.send(en.plugin.event.disabled);
 		}
 
-		return msg.send("_Usage: event <on|off>_");
+		return msg.send(en.plugin.event.usage);
 	},
 } satisfies CommandModule;

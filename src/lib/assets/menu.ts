@@ -1,6 +1,7 @@
-import config from "../../../config";
-import { commandMap, fancy } from "../utils";
-import type { CommandModule } from "src/Types";
+import config from "../../../config.ts";
+import { fancy } from "../utils/constants.ts";
+import { commandMap } from "../utils/plugin.ts";
+import type { CommandModule } from "../../Types/index.ts";
 
 export default {
 	pattern: "menu",

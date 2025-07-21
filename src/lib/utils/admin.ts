@@ -1,7 +1,7 @@
-import { groupMetadata } from "src";
+import { groupMetadata } from "../../group.ts";
 
-export function isAdmin(jid: string, participant: string) {
-	const metadata = groupMetadata(jid);
+export async function isAdmin(jid: string, participant: string) {
+	const metadata = await groupMetadata(jid);
 	if (!metadata) return false;
 	const allAdmins = metadata.participants
 		.filter(v => v.admin !== null)
@@ -9,8 +9,11 @@ export function isAdmin(jid: string, participant: string) {
 	return allAdmins.includes(participant);
 }
 
-export function isBotAdmin(owner: { jid: string; lid: string }, jid: string) {
-	const metadata = groupMetadata(jid);
+export async function isBotAdmin(
+	owner: { jid: string; lid: string },
+	jid: string
+) {
+	const metadata = await groupMetadata(jid);
 	if (!metadata) return false;
 	const allAdmins = metadata.participants
 		.filter(v => v.admin !== null)

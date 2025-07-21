@@ -3,7 +3,7 @@ import { log } from "node:console";
 import { exit } from "node:process";
 
 function start() {
-	const child = fork("src/socket");
+	const child = fork("src/socket.ts");
 
 	child.once("exit", code => {
 		if (code && code > 0) return start();
