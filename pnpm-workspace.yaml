@@ -1,2 +1,6 @@
 onlyBuiltDependencies:
+  - baileys
+  - esbuild
+  - protobufjs
+  - sharp
   - sqlite3

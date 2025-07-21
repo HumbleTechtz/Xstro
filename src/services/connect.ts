@@ -13,22 +13,22 @@ export default async (sock: WASocket, update: Partial<ConnectionState>) => {
 
 		const shouldRestart = [
 			DisconnectReason.connectionLost,
+			DisconnectReason.connectionClosed,
+			DisconnectReason.connectionReplaced,
 			DisconnectReason.restartRequired,
 			DisconnectReason.badSession,
 			DisconnectReason.loggedOut,
 		];
 
-		if (shouldRestart.includes(reason)) {
-			console.log("Restarting socket...");
-			startSock();
-		} else {
+		if (shouldRestart.includes(reason)) startSock();
+		else {
 			Red("Socket Error");
 			shutdown();
 		}
 	}
 
 	if (connection === "connecting") {
-		Yellow("Connecting to socket severs");
+		Yellow("starting services...");
 	}
 
 	if (connection === "open") {

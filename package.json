@@ -5,6 +5,7 @@
 	"description": "Simple WA Client.",
 	"author": "devastro0010@gmail.com",
 	"scripts": {
+		"postinstall": "node arp.js",
 		"start": "tsx entry.mts"
 	},
 	"dependencies": {
