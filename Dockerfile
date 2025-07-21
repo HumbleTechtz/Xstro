@@ -1,4 +1,4 @@
-FROM oven/bun:latest
+FROM node:latest
 
 RUN apt-get update && \
 	apt-get install -y \
@@ -10,6 +10,6 @@ RUN git clone https://github.com/AstroX11/whatsapp-bot /whatsapp-bot
 
 WORKDIR /whatsapp-bot
 
-RUN bun install
+RUN pnpm install
 
-CMD ["bun", "start"]
+CMD ["pnpm", "start"]

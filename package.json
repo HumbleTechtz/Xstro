@@ -1,20 +1,23 @@
 {
 	"name": "xstro",
 	"version": "25.0.0",
+	"type": "module",
 	"description": "Simple WA Client.",
 	"author": "devastro0010@gmail.com",
 	"scripts": {
-		"start": "bun entry.mts"
+		"start": "node entry.mts"
 	},
 	"dependencies": {
 		"audio-decode": "^2.2.3",
-		"baileys": "https://tinyurl.com/xstropack",
+		"baileys": "github:WhiskeySockets/Baileys",
 		"node-webpmux": "^3.2.1",
 		"pg": "^8.16.3",
 		"undici": "^7.11.0"
 	},
 	"devDependencies": {
-		"@types/bun": "latest",
 		"typescript": "latest"
+	},
+	"engines": {
+		"node": ">=23"
 	}
 }

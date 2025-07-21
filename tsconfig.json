@@ -1,16 +1,15 @@
 {
 	"compilerOptions": {
-		"target": "ESNext",
-		"module": "preserve",
+		"target": "esnext",
+		"module": "nodenext",
+		"moduleResolution": "nodenext",
 		"noEmit": true,
 		"strict": false,
 		"rootDir": ".",
-		"baseUrl": ".",
 		"skipLibCheck": true,
 		"noImplicitThis": true,
-		"paths": {
-			"@types/*": ["src/types/*"]
-		},
+		"rewriteRelativeImportExtensions": true,
+		"allowImportingTsExtensions": true,
 		"forceConsistentCasingInFileNames": true
 	}
 }
