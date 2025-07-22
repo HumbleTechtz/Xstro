@@ -1,0 +1,6 @@
+{
+  "name": "whatsapp-bot",
+  "build": {
+    "dockerfile": "../Dockerfile"
+  }
+}
