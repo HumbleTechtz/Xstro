@@ -1,22 +1,16 @@
-FROM node:current-slim
+FROM node:current-bullseye-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    git \
-    ffmpeg \
-    curl \
-    && corepack enable \
-    && npm install -g pnpm \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends git ffmpeg && \
+    corepack enable && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-WORKDIR /workspace
+WORKDIR /app
 
-RUN git clone https://github.com/Astrox11/whatsapp-bot.git && \
-    cd whatsapp-bot && \
+RUN git clone https://github.com/Astrox11/whatsapp-bot.git . && \
     pnpm install
 
-WORKDIR /workspace/whatsapp-bot
-
-CMD [ "pnpm", "start" ]
+CMD ["pnpm", "start"]
