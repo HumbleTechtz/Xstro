@@ -1,0 +1,33 @@
+name: PNPM Test
+
+on:
+  push:
+    branches: [stable]
+  pull_request:
+    branches: [stable]
+
+jobs:
+  test:
+    name: Install & Build with pnpm
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+
+      - name: Enable corepack and install pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build
+        run: pnpm build
