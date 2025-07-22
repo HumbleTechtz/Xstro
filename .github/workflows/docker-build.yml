@@ -1,21 +1,19 @@
-FROM node:current-slim
+name: Docker Build
 
-ENV DEBIAN_FRONTEND=noninteractive
+on:
+  push:
+    branches: [stable]
+  pull_request:
+    branches: [stable]
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    git \
-    ffmpeg \
-    curl \
- && corepack enable \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/*
+jobs:
+  build:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
 
-WORKDIR /workspace
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-RUN git clone https://github.com/Astrox11/whatsapp-bot.git && \
-    cd whatsapp-bot && \
-    pnpm install
-
-WORKDIR /workspace/whatsapp-bot
-
-CMD [ "pnpm", "start" ]
+      - name: Build Docker image
+        run: docker build -t whatsapp-bot-dev -f ./Dockerfile .
