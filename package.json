@@ -3,6 +3,7 @@
 	"main": "base.mjs",
 	"type": "module",
 	"scripts": {
+		"build": "tsc",
 		"prestart": "",
 		"start": "",
 		"postinstall": ""
