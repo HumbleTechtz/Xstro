@@ -4,6 +4,8 @@
 	"type": "module",
 	"scripts": {
 		"build": "tsc",
+		"lint": "eslint",
+		"lint:fix": "eslint --fix",
 		"prestart": "pnpm build",
 		"start": "node ./build/index.mjs",
 		"test": "tsx --inspect ./src/index.mts"

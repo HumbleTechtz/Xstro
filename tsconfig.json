@@ -3,14 +3,27 @@
 		"target": "esnext",
 		"module": "nodenext",
 		"moduleResolution": "nodenext",
-		"esModuleInterop": true,
-		"outDir": "build",
+		"lib": ["ESNext"],
+		"outDir": "./build",
 		"rootDir": "./src",
-		"allowImportingTsExtensions": true,
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
 		"rewriteRelativeImportExtensions": true,
+		"allowImportingTsExtensions": true,
+		"resolveJsonModule": true,
+		"isolatedModules": true,
 		"verbatimModuleSyntax": true,
-		"forceConsistentCasingInFileNames": true
+		"allowUnusedLabels": false,
+		"allowUnreachableCode": false,
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitOverride": true,
+		"noPropertyAccessFromIndexSignature": true,
+		"noUncheckedIndexedAccess": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true
 	},
-	"include": ["src/**/**/*"],
-	"exclude": ["build/**"]
+	"include": ["src/**/*"],
+	"exclude": ["node_modules", "build", "dist", "**/*.test.ts", "**/*.spec.ts"]
 }
