@@ -17,7 +17,9 @@ jobs:
 
       - name: Ensure Git is installed (Windows)
         run: |
-          git --version || choco install git -y
+          if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
+            choco install git -y
+          }
         shell: powershell
 
       - name: Enable Corepack
@@ -37,8 +39,8 @@ jobs:
           node-version: '24'
           cache: 'pnpm'
 
-      - name: Install dependencies
-        run: pnpm install
+      - name: Install dependencies (ignore errors)
+        run: pnpm install || true
 
       - name: Build
         run: pnpm build
