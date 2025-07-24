@@ -15,8 +15,8 @@ importers:
         specifier: ^2.2.3
         version: 2.2.3
       baileys:
-        specifier: github:WhiskeySockets/Baileys
-        version: https://codeload.github.com/WhiskeySockets/Baileys/tar.gz/b7876da2e5d8d4d4b391e215b48b668517b86f3e(audio-decode@2.2.3)(link-preview-js@3.1.0)(sharp@0.34.3)
+        specifier: github:AstroX11/Baileys
+        version: https://codeload.github.com/AstroX11/Baileys/tar.gz/88bcf9892dfddd6cffe66e5c8ecceaf8a1c3ed1d(audio-decode@2.2.3)(link-preview-js@3.1.0)(sharp@0.34.3)
       cheerio:
         specifier: ^1.1.2
         version: 1.1.2
@@ -719,8 +719,8 @@ packages:
   axios@1.11.0:
     resolution: {integrity: sha512-1Lx3WLFQWm3ooKDYZD1eXmoGO9fxYQjrycfHFC8P0sCfQVXyROp0p9PFWBehewBOdCwHc+f/b8I0fMto5eSfwA==}
 
-  baileys@https://codeload.github.com/WhiskeySockets/Baileys/tar.gz/b7876da2e5d8d4d4b391e215b48b668517b86f3e:
-    resolution: {tarball: https://codeload.github.com/WhiskeySockets/Baileys/tar.gz/b7876da2e5d8d4d4b391e215b48b668517b86f3e}
+  baileys@https://codeload.github.com/AstroX11/Baileys/tar.gz/88bcf9892dfddd6cffe66e5c8ecceaf8a1c3ed1d:
+    resolution: {tarball: https://codeload.github.com/AstroX11/Baileys/tar.gz/88bcf9892dfddd6cffe66e5c8ecceaf8a1c3ed1d}
     version: 6.7.18
     engines: {node: '>=20.0.0'}
     peerDependencies:
@@ -2555,7 +2555,7 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  baileys@https://codeload.github.com/WhiskeySockets/Baileys/tar.gz/b7876da2e5d8d4d4b391e215b48b668517b86f3e(audio-decode@2.2.3)(link-preview-js@3.1.0)(sharp@0.34.3):
+  baileys@https://codeload.github.com/AstroX11/Baileys/tar.gz/88bcf9892dfddd6cffe66e5c8ecceaf8a1c3ed1d(audio-decode@2.2.3)(link-preview-js@3.1.0)(sharp@0.34.3):
     dependencies:
       '@cacheable/node-cache': 1.6.1
       '@hapi/boom': 9.1.4
