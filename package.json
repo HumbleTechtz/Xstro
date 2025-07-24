@@ -30,6 +30,7 @@
 	"dependencies": {
 		"@hapi/boom": "^10.0.1",
 		"audio-decode": "^2.2.3",
+		"baileys": "github:WhiskeySockets/Baileys",
 		"cheerio": "^1.1.2",
 		"cron": "^4.3.2",
 		"date-fns": "^4.1.0",
