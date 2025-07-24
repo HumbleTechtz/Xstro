@@ -18,6 +18,12 @@ jobs:
       - name: Ensure Git is available (macOS)
         run: xcode-select --install || echo "Xcode CLI tools already installed"
 
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Activate Yarn 4
+        run: corepack prepare yarn@4.9.2 --activate
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
 

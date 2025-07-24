@@ -15,6 +15,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Ensure Git is installed (Windows)
+        run: |
+          git --version || choco install git -y
+        shell: powershell
+
+      - name: Enable Corepack
+        run: corepack enable
+        shell: bash
+
+      - name: Activate Yarn 4
+        run: corepack prepare yarn@4.9.2 --activate
+        shell: bash
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
 
@@ -23,11 +36,6 @@ jobs:
         with:
           node-version: '24'
           cache: 'pnpm'
-
-      - name: Ensure Git is installed (Windows)
-        run: |
-          git --version || choco install git -y
-        shell: powershell
 
       - name: Install dependencies
         run: pnpm install
