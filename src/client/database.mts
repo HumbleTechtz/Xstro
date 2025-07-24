@@ -17,12 +17,12 @@ export const database = new Sequelize({
 
 database.Sequelize.afterConnect(async (connection: any) => {
 	await connection.exec(`
-		PRAGMA journal_mode = WAL;             -- Better concurrent read/write
-		PRAGMA synchronous = NORMAL;           -- Balance between speed and safety
-		PRAGMA temp_store = MEMORY;            -- Use memory for temp tables
-		PRAGMA cache_size = -64000;            -- Approx. 64MB in-memory cache
-		PRAGMA foreign_keys = ON;              -- Enforce foreign key constraints
-		PRAGMA automatic_index = ON;           -- Let SQLite auto-create indexes
-		PRAGMA optimize;                       -- Run query planner analysis
+		PRAGMA journal_mode = WAL;
+		PRAGMA synchronous = NORMAL;
+		PRAGMA temp_store = MEMORY;
+		PRAGMA cache_size = -64000;
+		PRAGMA foreign_keys = ON;
+		PRAGMA automatic_index = ON;
+		PRAGMA optimize;
 	`);
 });
