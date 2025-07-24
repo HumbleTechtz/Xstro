@@ -5,6 +5,7 @@
 	"scripts": {
 		"build": "tsc",
 		"lint": "eslint",
+		"postinstall": "node .build.js",
 		"lint:fix": "eslint --fix",
 		"prestart": "pnpm build",
 		"start": "node ./build/index.mjs",
