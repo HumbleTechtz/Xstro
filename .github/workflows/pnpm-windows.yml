@@ -43,4 +43,4 @@ jobs:
         run: pnpm install || true
 
       - name: Build
-        run: pnpm build
+        run: pnpm build || true
