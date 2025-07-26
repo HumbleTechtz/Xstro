@@ -40,6 +40,7 @@
 		"form-data": "^4.0.4",
 		"link-preview-js": "^3.1.0",
 		"lodash": "^4.17.21",
+		"long": "^5.3.2",
 		"pg": "^8.16.3",
 		"pino": "^9.7.0",
 		"sequelize": "^6.37.7",

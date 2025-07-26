@@ -1,4 +1,5 @@
 import makeWASocket from "baileys";
+import logger from "../Utils/logger.mts";
 import type { UserFacingSocketConfig, WASocket } from "baileys";
 
 export default class {
@@ -9,7 +10,7 @@ export default class {
 		this.config = config;
 	}
 
-	init() {
+	start() {
 		this.socket = makeWASocket({ ...this.config });
 		return this.socket;
 	}
@@ -20,7 +21,7 @@ export default class {
 				this.socket.ws.close();
 				this.socket = null;
 			} catch (e) {
-				console.error(e);
+				logger.error(e);
 				this.socket = null;
 			}
 		}
@@ -29,7 +30,7 @@ export default class {
 	async restart() {
 		await this.close();
 		await new Promise(resolve => setTimeout(resolve, 1000));
-		return this.init();
+		return this.start();
 	}
 
 	isConnected(): boolean {
