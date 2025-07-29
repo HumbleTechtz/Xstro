@@ -6,6 +6,7 @@ import makeWASocket, {
 } from "baileys";
 import { Boom } from "@hapi/boom";
 import config from "../config.ts";
+import { Base, Message } from "./class/index.ts";
 
 const startSock = async () => {
 	const { state, saveCreds } = await useMultiFileAuthState("auth_info_baileys");
@@ -58,7 +59,8 @@ const startSock = async () => {
 	sock.ev.on("messages.upsert", async ({ messages, type }) => {
 		if (type !== "notify") return;
 		for (const messsage of messages) {
-			console.log(JSON.stringify(messsage, null, 2));
+			const msg = new Message(sock, JSON.parse(JSON.stringify(messsage)));
+			console.log(msg);
 		}
 	});
 
