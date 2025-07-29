@@ -5,7 +5,7 @@
 		"moduleResolution": "nodenext",
 		"lib": ["ESNext"],
 		"outDir": "./build",
-		"rootDir": "./src",
+		"rootDirs": ["./src", "./config"],
 		"strict": false,
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
@@ -16,6 +16,6 @@
 		"verbatimModuleSyntax": true,
 		"noFallthroughCasesInSwitch": true,
 	},
-	"include": ["src/**/*"],
+	"include": ["src/**/*", "config.ts"],
 	"exclude": ["node_modules", "build", "dist", "**/*.test.ts", "**/*.spec.ts"]
 }

@@ -1,15 +1,13 @@
 {
 	"name": "whatsapp-bot",
-	"main": "./build/index.mjs",
+	"main": "./build/client.js",
 	"type": "module",
 	"scripts": {
 		"build": "tsc",
-		"lint": "eslint",
-		"postinstall": "node .build.js",
-		"lint:fix": "eslint --fix",
+		"lint": "eslint --fix",
 		"prestart": "pnpm build",
-		"start": "node ./build/index.mjs",
-		"test": "tsx --inspect ./src/index.mts"
+		"start": "node ./build/client.js",
+		"test": "tsx --inspect ./src/client.ts"
 	},
 	"author": "AstroX11",
 	"license": "MIT",
@@ -32,7 +30,7 @@
 	"dependencies": {
 		"@hapi/boom": "^10.0.1",
 		"audio-decode": "^2.2.3",
-		"baileys": "github:AstroX11/Baileys",
+		"baileys": "github:WhiskeySockets/Baileys",
 		"cheerio": "^1.1.2",
 		"cron": "^4.3.2",
 		"date-fns": "^4.1.0",
