@@ -16,7 +16,7 @@ const startSock = async () => {
 	});
 
 	if (!sock.authState.creds.registered) {
-		await delay(3000);
+		await delay(5000);
 		const code = await sock.requestPairingCode(config.NUMBER, config.PAIR_CODE);
 		console.log(code);
 	}
