@@ -1,12 +1,12 @@
 {
 	"name": "whatsapp-bot",
-	"main": "./build/client.js",
+	"main": "./build/src/client.js",
 	"type": "module",
 	"scripts": {
 		"build": "tsc",
 		"lint": "eslint --fix",
 		"prestart": "pnpm build",
-		"start": "node ./build/client.js",
+		"start": "node ./build/src/client.js",
 		"test": "tsx --inspect ./src/client.ts"
 	},
 	"author": "AstroX11",

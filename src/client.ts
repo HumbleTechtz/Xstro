@@ -1,20 +1,18 @@
-import makeWASocket, {
-	delay,
-	DisconnectReason,
-	fetchLatestBaileysVersion,
-	useMultiFileAuthState,
-} from "baileys";
+import makeWASocket, { delay, DisconnectReason } from "baileys";
 import { Boom } from "@hapi/boom";
+import * as P from "pino";
 import config from "../config.ts";
-import { Base, Message } from "./class/index.ts";
+import { Message } from "./class/index.ts";
+import { useSqliteAuthState } from "./utils/auth.ts";
+
+const logger = P.pino({ level: "silent" });
 
 const startSock = async () => {
-	const { state, saveCreds } = await useMultiFileAuthState("auth_info_baileys");
-	const { version, isLatest } = await fetchLatestBaileysVersion();
-	console.log(version, isLatest);
+	const { state, saveCreds } = await useSqliteAuthState();
 
 	const sock = makeWASocket({
 		auth: state,
+		logger,
 	});
 
 	if (!sock.authState.creds.registered) {
@@ -60,7 +58,7 @@ const startSock = async () => {
 		if (type !== "notify") return;
 		for (const messsage of messages) {
 			const msg = new Message(sock, JSON.parse(JSON.stringify(messsage)));
-			console.log(msg);
+			console.log(`Normalized Message:`, msg);
 		}
 	});
 
