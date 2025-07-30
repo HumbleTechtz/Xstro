@@ -16,14 +16,14 @@ const startSock = async () => {
 	});
 
 	if (!sock.authState.creds.registered) {
-		await delay(5000);
+		await delay(3000);
 		const code = await sock.requestPairingCode(config.NUMBER, config.PAIR_CODE);
-		console.log(code);
+		console.log(`Connect with: ${code}`);
 	}
 
-	sock.ev.on("creds.update", async () => await saveCreds());
+	sock.ev.on("creds.update", () => saveCreds());
 
-	sock.ev.on("connection.update", async ({ connection, lastDisconnect, qr }) => {
+	sock.ev.on("connection.update", async ({ connection, lastDisconnect }) => {
 		switch (connection) {
 			case "open":
 				console.log("opened connection");
