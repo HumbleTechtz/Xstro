@@ -1,5 +1,4 @@
 import makeWASocket, { delay } from "baileys";
-import { Boom } from "@hapi/boom";
 import * as P from "pino";
 import config from "../config.ts";
 import { useSqliteAuthState } from "./utils/auth.ts";
