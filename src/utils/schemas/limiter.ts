@@ -33,7 +33,7 @@ await Limiter.sync();
 export const RateLimiter = {
   async canProceed(sender: string): Promise<boolean> {
     const d = today();
-    let r = await Limiter.findByPk(sender);
+    const r = await Limiter.findByPk(sender);
 
     if (!r) {
       await Limiter.create({ sender, request_count: 1, last_request_date: d });

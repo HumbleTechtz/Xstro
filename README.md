@@ -1,5 +1,23 @@
-**`still in progress`**
+### **`still in progress`**
 
-**what is this?**
+### **what is this?**
 
-simple automation tool, for sending, receiveing and managing wa events, it uses Baileys web api
+a simple automation tool for sending, receiving, and managing whatsapp events using the baileys web api.
+
+### **prerequisites**
+
+- node.js (latest lts recommended)
+- ffmpeg
+- git
+
+### **supported platforms**
+
+- windows
+- linux
+- macos
+
+### **installation**
+
+```bash
+git clone https://github.com/AstroX11/whatsapp-bot
+```

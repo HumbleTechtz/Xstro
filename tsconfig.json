@@ -1,21 +1,21 @@
 {
-	"compilerOptions": {
-		"target": "esnext",
-		"module": "nodenext",
-		"moduleResolution": "nodenext",
-		"lib": ["ESNext"],
-		"outDir": "./build",
-		"rootDirs": ["./src", "./config"],
-		"strict": false,
-		"skipLibCheck": true,
-		"forceConsistentCasingInFileNames": true,
-		"rewriteRelativeImportExtensions": true,
-		"allowImportingTsExtensions": true,
-		"resolveJsonModule": true,
-		"isolatedModules": true,
-		"verbatimModuleSyntax": true,
-		"noFallthroughCasesInSwitch": true,
-	},
-	"include": ["src/**/*", "config.ts"],
-	"exclude": ["node_modules", "build", "dist", "**/*.test.ts", "**/*.spec.ts"]
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "lib": ["ESNext"],
+    "outDir": "./build",
+    "rootDirs": ["./src", "./config"],
+    "strict": false,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "rewriteRelativeImportExtensions": true,
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["src/**/*", "config.ts"],
+  "exclude": ["node_modules", "build"]
 }
