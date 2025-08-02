@@ -1,6 +1,7 @@
 import { Boom } from "@hapi/boom";
 import { DisconnectReason, type BaileysEventMap } from "baileys";
 import { startSock } from "../client.ts";
+import { syncPlugins } from "../utils/cmd-handler.ts";
 
 export const ConnectionUpdate = async ({
   connection,
@@ -8,7 +9,8 @@ export const ConnectionUpdate = async ({
 }: BaileysEventMap["connection.update"]) => {
   switch (connection) {
     case "open":
-      console.log("opened connection");
+      console.log("Connected WhatsApp.");
+      await syncPlugins("../plugins", [".js", ".ts"]);
       break;
     case "close":
       const status = (lastDisconnect?.error as Boom)?.output?.statusCode;
