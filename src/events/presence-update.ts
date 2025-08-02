@@ -1,4 +1,4 @@
-export const handlePresenceUpdate = async ({
+export const PresenceUpdate = async ({
   id,
   presences,
 }: {

@@ -1,4 +1,4 @@
-export const handleGroupParticipantsUpdate = async ({
+export const GroupParticipantsUpdate = async ({
   id,
   author,
   participants,

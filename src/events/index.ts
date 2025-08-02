@@ -1,9 +1,9 @@
-export { handleConnectionUpdate } from "./connection-update.ts";
-export { handleMessagesUpsert } from "./messages-upsert.ts";
-export { handleMessagesUpdate } from "./messages-update.ts";
-export { handleMessagingHistorySet } from "./messaging-history-set.ts";
-export { handleGroupsUpdate } from "./groups-update.ts";
-export { handleGroupsUpsert } from "./groups-upsert.ts";
-export { handleGroupParticipantsUpdate } from "./group-participants-update.ts";
-export { handleCall } from "./call.ts";
-export { handlePresenceUpdate } from "./presence-update.ts";
+export * from "./connection-update.ts";
+export * from "./messages-upsert.ts";
+export * from "./messages-update.ts";
+export * from "./messaging-history-set.ts";
+export * from "./groups-update.ts";
+export * from "./groups-upsert.ts";
+export * from "./group-participants-update.ts";
+export * from "./call.ts";
+export * from "./presence-update.ts";

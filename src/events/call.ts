@@ -1,4 +1,4 @@
-export const handleCall = async ([{ chatId, status, from }]: {
+export const Call = async ([{ chatId, status, from }]: {
   chatId: string;
   status: string;
   from: string;

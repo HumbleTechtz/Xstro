@@ -1,11 +1,11 @@
 import type { Chat, Contact, WAMessage } from "baileys";
 
-export const handleMessagingHistorySet = async ({
-	chats,
-	contacts,
-	messages,
+export const MessagingHistorySet = async ({
+  chats,
+  contacts,
+  messages,
 }: {
-	chats: Chat[];
-	contacts: Contact[];
-	messages: WAMessage[];
+  chats: Chat[];
+  contacts: Contact[];
+  messages: WAMessage[];
 }) => {};

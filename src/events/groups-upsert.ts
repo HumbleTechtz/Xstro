@@ -1,3 +1,3 @@
 import type { GroupMetadata } from "baileys";
 
-export const handleGroupsUpsert = async (metadata: GroupMetadata[]) => {};
+export const GroupsUpsert = async (metadata: GroupMetadata[]) => {};

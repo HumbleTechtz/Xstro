@@ -1,5 +1,5 @@
 import type { WAMessageUpdate } from "baileys";
 
-export const handleMessagesUpdate = async ([
-	{ key, update },
+export const MessagesUpdate = async ([
+  { key, update },
 ]: WAMessageUpdate[]) => {};
