@@ -1,24 +1,9 @@
 import { join, extname, dirname } from "path";
 import { fileURLToPath, pathToFileURL } from "url";
 import { readdir } from "fs/promises";
-import type { Message } from "../class/index.ts";
+import type { CommandModule, InternalCommand } from "../types/Command.ts";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-
-export interface CommandModule {
-  pattern?: string;
-  aliases?: string[];
-  run: (instance: Message, argument?: string) => Promise<unknown>;
-  on?: string | boolean;
-  fromMe?: boolean;
-  isGroup?: boolean;
-  desc?: string;
-  type?: string;
-  dontAddCommandList?: boolean;
-}
-
-type InternalCommand = CommandModule & { patternRegex?: RegExp };
-
 export const commandMap = new Map<string, InternalCommand>();
 
 export function registerCommand(cmd: CommandModule) {

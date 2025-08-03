@@ -1,11 +1,12 @@
 import lang from "./language.ts";
-import { commandMap, type CommandModule } from "./cmd-handler.ts";
+import { commandMap } from "./cmd-handler.ts";
 import { Message } from "../class/index.ts";
 import { Sticker } from "./schemas/sticker.ts";
 import { RateLimiter } from "./schemas/limiter.ts";
+import type { CommandModule } from "../types/Command.ts";
 
 const exec = async (cmd: CommandModule, msg: Message, match?: string) =>
-  await cmd.run(msg, match).catch(console.error);
+  await cmd.execute(msg, match).catch(console.error);
 
 const verify = async (cmd: CommandModule, message: Message) => {
   if (message.mode && !message.sudo) return null;
@@ -53,13 +54,13 @@ const handleSticker = async (msg: Message) => {
     if (result !== "valid") continue;
 
     const match = cmdText.match(cmd.patternRegex);
-    if (match) return exec(cmd, msg, match[2]);
+    if (match) return await exec(cmd, msg, match[2]);
   }
 };
 
-const handleEvent = (msg: Message) => {
+const handleEvent = async (msg: Message) => {
   for (const [, cmd] of commandMap) {
-    if (cmd?.on) exec(cmd, msg);
+    if (cmd?.on) await exec(cmd, msg);
   }
 };
 

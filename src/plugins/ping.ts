@@ -1,4 +1,4 @@
-import type { CommandModule } from "../utils/cmd-handler.ts";
+import type { CommandModule } from "../types/Command.ts";
 
 export default {
   pattern: "ping",
@@ -6,7 +6,7 @@ export default {
   isGroup: false,
   desc: "Ping the bot",
   type: "system",
-  run: async (message) => {
+  execute: async (message) => {
     const start = Date.now();
     const msg = await message.reply("Pong!");
     const end = Date.now();

@@ -1,4 +1,4 @@
-import type { CommandModule } from "../utils/cmd-handler.ts";
+import type { CommandModule } from "../types/Command.ts";
 
 export default [
   {
@@ -7,6 +7,6 @@ export default [
     isGroup: false,
     desc: "Vox news",
     type: "news",
-    run: async () => {},
+    execute: async () => {},
   },
 ] satisfies CommandModule[];

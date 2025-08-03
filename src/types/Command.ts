@@ -1,18 +1,15 @@
-import type { WASocket } from "baileys";
 import type { Message } from "../class/index.ts";
 
-export interface Command {
-  name: string;
+export interface CommandModule {
+  pattern?: string;
   aliases?: string[];
-  description?: string;
+  execute: (instance: Message, argument?: string) => Promise<unknown>;
+  on?: string | boolean;
+  fromMe?: boolean;
+  isGroup?: boolean;
+  desc?: string;
   type?: string;
-  usage?: string;
-  hide?: boolean;
-  execute: (ctx: Message, args: string) => Promise<void> | void;
+  dontAddCommandList?: boolean;
 }
 
-export interface CommandContext {
-  message: Message;
-  args: string[];
-  client: WASocket;
-}
+export type InternalCommand = CommandModule & { patternRegex?: RegExp };
