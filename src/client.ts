@@ -39,7 +39,7 @@ export const startSock = async () => {
   if (!sock.authState.creds.registered) {
     await delay(3000);
     const code = await sock.requestPairingCode(config.NUMBER, config.PAIR_CODE);
-    console.log(`Connect with: ${code}`);
+    logger.info(`Connect with: ${code}`);
   }
 
   const handlers: {

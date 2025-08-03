@@ -2,6 +2,7 @@ import { join, extname, dirname } from "path";
 import { fileURLToPath, pathToFileURL } from "url";
 import { readdir } from "fs/promises";
 import type { CommandModule, InternalCommand } from "../types/Command.ts";
+import { logger } from "./logger.ts";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 export const commandMap = new Map<string, InternalCommand>();
@@ -45,7 +46,7 @@ export async function syncPlugins(dir: string, extensions: string[] = [""]) {
             registerCommand(loaded);
           }
         } catch (err) {
-          console.error(`Plugin ${entry.name} failed:`, (err as Error).message);
+          logger.error(`Plugin ${entry.name} failed:`, (err as Error).message);
         }
       }
     }

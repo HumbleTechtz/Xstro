@@ -18,6 +18,21 @@ const verify = async (cmd: CommandModule, message: Message) => {
   return "valid";
 };
 
+const findCommand = async (text: string, msg: Message) => {
+  for (const [pattern, cmd] of commandMap) {
+    if (!cmd.patternRegex) continue;
+
+    const result = await verify(cmd, msg);
+    if (result !== "valid") continue;
+
+    const match = text.match(cmd.patternRegex);
+    if (match) {
+      return { cmd, match: match[2] };
+    }
+  }
+  return null;
+};
+
 const handleText = async (msg: Message) => {
   if (!msg?.text) return;
 
@@ -25,15 +40,10 @@ const handleText = async (msg: Message) => {
   if (!prefix) return;
 
   const body = msg.text.slice(prefix.length);
+  const result = await findCommand(body, msg);
 
-  for (const [, cmd] of commandMap) {
-    if (!cmd.patternRegex) continue;
-
-    const result = await verify(cmd, msg);
-    if (result !== "valid") continue;
-
-    const match = body.match(cmd.patternRegex);
-    if (match) return exec(cmd, msg, match[2]);
+  if (result) {
+    return exec(result.cmd, msg, result.match);
   }
 };
 
@@ -48,14 +58,10 @@ const handleSticker = async (msg: Message) => {
   const cmdText = (await Sticker.get(hash)).cmdname;
   if (!cmdText) return;
 
-  for (const [, cmd] of commandMap) {
-    if (!cmd.patternRegex) continue;
+  const result = await findCommand(cmdText, msg);
 
-    const result = await verify(cmd, msg);
-    if (result !== "valid") continue;
-
-    const match = cmdText.match(cmd.patternRegex);
-    if (match) return await exec(cmd, msg, match[2]);
+  if (result) {
+    return exec(result.cmd, msg, result.match);
   }
 };
 

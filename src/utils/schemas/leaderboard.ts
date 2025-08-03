@@ -1,4 +1,5 @@
 import { Pool } from "pg";
+import { logger } from "../logger.ts";
 
 const pool = new Pool({
   connectionString:
@@ -18,35 +19,25 @@ async function PostgreDB() {
 	)`);
 }
 
-PostgreDB().catch(console.error);
+PostgreDB().catch(logger.error);
 
-export enum UserRank {
-  LEGEND = 1,
-  MASTER = 2,
-  DIAMOND = 3,
-  PLATINUM = 4,
-  GOLD = 5,
-  SILVER = 6,
-  BRONZE = 7,
-}
-
-export const SCORE_THRESHOLDS = {
-  LEGEND: 7000,
-  MASTER: 5400,
-  DIAMOND: 3200,
-  PLATINUM: 800,
-  GOLD: 600,
-  SILVER: 500,
-  BRONZE: 0,
+const SCORE_THRESHOLDS = {
+  legend: 7000,
+  master: 5400,
+  diamond: 3200,
+  platinum: 800,
+  gold: 600,
+  silver: 500,
+  bronze: 0,
 };
 
-export function determineRank(score: number): string {
-  if (score >= SCORE_THRESHOLDS.LEGEND) return "legend";
-  if (score >= SCORE_THRESHOLDS.MASTER) return "master";
-  if (score >= SCORE_THRESHOLDS.DIAMOND) return "diamond";
-  if (score >= SCORE_THRESHOLDS.PLATINUM) return "platinum";
-  if (score >= SCORE_THRESHOLDS.GOLD) return "gold";
-  if (score >= SCORE_THRESHOLDS.SILVER) return "silver";
+function determineRank(score: number): string {
+  if (score >= SCORE_THRESHOLDS.legend) return "legend";
+  if (score >= SCORE_THRESHOLDS.master) return "master";
+  if (score >= SCORE_THRESHOLDS.diamond) return "diamond";
+  if (score >= SCORE_THRESHOLDS.platinum) return "platinum";
+  if (score >= SCORE_THRESHOLDS.gold) return "gold";
+  if (score >= SCORE_THRESHOLDS.silver) return "silver";
   return "bronze";
 }
 
@@ -56,8 +47,10 @@ export async function updateLeaderboard(
   const { rows: currentLeaderboard } = await pool.query(
     "SELECT userid, score, rank FROM leaderboard",
   );
+
   const dbMap = new Map(currentLeaderboard.map((u) => [u.userid, u]));
 
+  // Get top 3 players by score
   const top3 = [...users]
     .sort((a, b) => b.score - a.score)
     .slice(0, 3)
@@ -65,27 +58,22 @@ export async function updateLeaderboard(
 
   for (const user of users) {
     const entry = dbMap.get(user.userId);
-    //@ts-ignore
-    const currentScore = typeof entry?.score === "number" ? entry.score : 0;
-    //@ts-ignore
+    const currentScore = entry?.score || 0;
     const currentRank = entry?.rank || "bronze";
 
-    let roundScore = user.score;
-
-    if (top3.includes(user.userId)) roundScore *= 1.02;
-
-    if (["legend", "master", "diamond"].includes(String(currentRank)))
-      roundScore *= 1.05;
-
     let finalScore;
+
+    // If player is in top 3: add 60 points
     if (top3.includes(user.userId)) {
-      finalScore = currentScore + Math.floor(roundScore);
+      finalScore = currentScore + user.score + 60;
     } else {
-      const isHighRank = ["legend", "master", "diamond"].includes(
-        String(currentRank),
-      );
-      const penaltyMultiplier = isHighRank ? 0.85 : 0.92;
-      finalScore = currentScore + Math.floor(roundScore * penaltyMultiplier);
+      // If player is legend/master/diamond but not in top 3: deduct 80 points
+      if (["legend", "master", "diamond"].includes(currentRank)) {
+        finalScore = currentScore + user.score - 80;
+      } else {
+        // Regular scoring for other ranks
+        finalScore = currentScore + user.score;
+      }
     }
 
     finalScore = Math.max(finalScore, 0);

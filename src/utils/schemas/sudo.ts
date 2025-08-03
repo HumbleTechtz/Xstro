@@ -1,4 +1,4 @@
-import { DataTypes } from "sequelize";
+import { DataTypes, Op } from "sequelize";
 import database from "../../database.ts";
 import { isJidUser, isLidUser } from "baileys";
 
@@ -42,7 +42,7 @@ export const SudoUser = {
     const records = await SudoUserModel.findAll({
       where: {
         [sudoType]: {
-          [database.Sequelize.Op.not]: null,
+          [Op.not]: null,
         },
       },
       attributes: [sudoType],

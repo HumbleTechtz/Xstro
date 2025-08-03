@@ -8,7 +8,13 @@ export default [
     isGroup: false,
     desc: "Get runtime",
     type: "system",
-    execute: async (msg) => {},
+    execute: async (msg) => {
+      const uptime = process.uptime();
+      const hours = Math.floor(uptime / 3600);
+      const minutes = Math.floor((uptime % 3600) / 60);
+      const seconds = Math.floor(uptime % 60);
+      return await msg.reply(`Runtime: ${hours}h ${minutes}m ${seconds}s`);
+    },
   },
   {
     pattern: "ping",
@@ -17,6 +23,7 @@ export default [
     desc: "Ping the bot",
     type: "system",
     execute: async (msg) => {
+      console.log("Ping command executed!"); // Debug log
       const start = Date.now();
       const m = await msg.reply("Pong!");
       const end = Date.now();
