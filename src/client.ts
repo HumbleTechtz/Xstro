@@ -1,5 +1,6 @@
-import makeWASocket, { delay } from "baileys";
+import makeWASocket, { delay, type CacheStore } from "baileys";
 import * as P from "pino";
+import Cache from "@cacheable/node-cache";
 import config from "../config.ts";
 import { useSqliteAuthState } from "./utils/auth.ts";
 import {
@@ -13,7 +14,10 @@ import {
   Call,
   PresenceUpdate,
 } from "./events/index.ts";
+import { GroupCache } from "./utils/schemas/metadata.ts";
+import { makeSocketCache } from "./events/hooks/caches.ts";
 
+const msgRetryCounterCache = new Cache() as CacheStore;
 const logger = P.pino({ level: "silent" });
 
 export const startSock = async () => {
@@ -22,6 +26,10 @@ export const startSock = async () => {
   const sock = makeWASocket({
     auth: state,
     logger,
+    msgRetryCounterCache,
+    cachedGroupMetadata: async (jid) => {
+      return await GroupCache.get.one(jid);
+    },
   });
 
   if (!sock.authState.creds.registered) {
@@ -41,6 +49,7 @@ export const startSock = async () => {
   sock.ev.on("call", Call);
   sock.ev.on("presence.update", PresenceUpdate);
 
+  makeSocketCache(sock);
   return sock;
 };
 

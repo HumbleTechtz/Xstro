@@ -2,7 +2,6 @@ import type { BaileysEventMap, WASocket } from "baileys";
 import { Message } from "../class/index.ts";
 import { Store } from "../utils/store.ts";
 import { runCommands } from "../utils/cmd-runner.ts";
-import { logger } from "../utils/logger.ts";
 
 export const MessagesUpsert = (sock: WASocket) => {
   return async ({ messages, type }: BaileysEventMap["messages.upsert"]) => {
@@ -19,10 +18,6 @@ export const MessagesUpsert = (sock: WASocket) => {
       prefix,
       mode,
     });
-    await Promise.allSettled([
-      Store.save(message),
-      runCommands(msg),
-      logger(msg),
-    ]);
+    await Promise.allSettled([Store.save(message), runCommands(msg)]);
   };
 };

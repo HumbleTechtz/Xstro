@@ -3,10 +3,11 @@ import { commandMap } from "./cmd-handler.ts";
 import { Message } from "../class/index.ts";
 import { Sticker } from "./schemas/sticker.ts";
 import { RateLimiter } from "./schemas/limiter.ts";
+import { logger } from "./logger.ts";
 import type { CommandModule } from "../types/Command.ts";
 
 const exec = async (cmd: CommandModule, msg: Message, match?: string) =>
-  await cmd.execute(msg, match).catch(console.error);
+  await cmd.execute(msg, match).catch(logger.error);
 
 const verify = async (cmd: CommandModule, message: Message) => {
   if (message.mode && !message.sudo) return null;

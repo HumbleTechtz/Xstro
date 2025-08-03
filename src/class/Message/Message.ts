@@ -21,6 +21,7 @@ export default class Message {
   pushName: string;
   prefix: string[];
   message: WAMessageContent;
+  messageTimestamp: number | Long.Long;
   text: string | null | undefined;
   mode: boolean;
   mtype: keyof WAMessageContent | undefined;
@@ -31,7 +32,7 @@ export default class Message {
   sticker: boolean;
   viewonce: boolean;
   quoted: ReplyMessage | undefined;
-  protected client: WASocket;
+  client: WASocket;
 
   constructor(
     client: WASocket,
@@ -57,6 +58,7 @@ export default class Message {
     this.message = normalizeMessageContent(message.message);
     this.text = extractTextFromWebMessage(message.message);
     this.mtype = getContentType(this.message);
+    this.messageTimestamp = message.messageTimestamp;
     this.image = this.mtype === "imageMessage";
     this.video = this.mtype === "videoMessage";
     this.audio = this.mtype === "audioMessage";
