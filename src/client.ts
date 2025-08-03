@@ -8,6 +8,7 @@ import Cache from "@cacheable/node-cache";
 import config from "../config.ts";
 import { useSqliteAuthState } from "./utils/auth.ts";
 import {
+  Call,
   ConnectionUpdate,
   MessagesUpsert,
   MessagesUpdate,
@@ -15,7 +16,6 @@ import {
   GroupsUpdate,
   GroupsUpsert,
   GroupParticipantsUpdate,
-  Call,
   PresenceUpdate,
 } from "./events/index.ts";
 import { GroupCache } from "./utils/schemas/metadata.ts";
@@ -45,6 +45,7 @@ export const startSock = async () => {
   const handlers: {
     [K in keyof BaileysEventMap]?: (arg: BaileysEventMap[K]) => any;
   } = {
+    call: Call,
     "connection.update": ConnectionUpdate,
     "creds.update": () => saveCreds(),
     "messages.upsert": MessagesUpsert(sock),
@@ -53,7 +54,6 @@ export const startSock = async () => {
     "groups.update": GroupsUpdate,
     "groups.upsert": GroupsUpsert,
     "group-participants.update": GroupParticipantsUpdate,
-    call: Call,
     "presence.update": PresenceUpdate,
   };
 

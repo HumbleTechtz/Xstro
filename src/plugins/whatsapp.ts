@@ -152,4 +152,31 @@ export default [
       );
     },
   },
+  {
+    pattern: "pp",
+    fromMe: true,
+    isGroup: false,
+    desc: "Set a new profile photo",
+    type: "whatsapp",
+    execute: async (msg) => {
+      if (!msg.quoted?.image) return await msg.reply("Reply an Image");
+      const image = await msg.quoted.download();
+      return await msg.client.updateProfilePicture(msg.client.user.id, image);
+    },
+  },
+  {
+    pattern: "fullpp",
+    fromMe: true,
+    isGroup: false,
+    desc: "Set high resolution profile photo",
+    type: "whatsapp",
+    execute: async (msg) => {
+      if (!msg.quoted?.image) return await msg.reply("Reply an Image");
+      const image = await msg.quoted.download();
+      return await msg.client.updateProfilePicture(msg.client.user.id, image, {
+        width: 324,
+        height: 720,
+      });
+    },
+  },
 ] satisfies CommandModule[];
