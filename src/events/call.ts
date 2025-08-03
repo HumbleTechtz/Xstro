@@ -1,5 +1,5 @@
-export const Call = async ([{ chatId, status, from }]: {
-  chatId: string;
-  status: string;
-  from: string;
-}[]) => {};
+import type { BaileysEventMap } from "baileys";
+
+export const Call = async ([
+  { chatId, status, from },
+]: BaileysEventMap["call"]) => {};

@@ -19,7 +19,7 @@ import {
   PresenceUpdate,
 } from "./events/index.ts";
 import { GroupCache } from "./utils/schemas/metadata.ts";
-import { makeSocketCache } from "./events/hooks/caches.ts";
+import { makeSocketCache } from "./events/hooks/socket.ts";
 
 const msgRetryCounterCache = new Cache() as CacheStore;
 const logger = pino({ level: "silent" });

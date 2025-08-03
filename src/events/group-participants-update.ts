@@ -1,11 +1,8 @@
+import type { BaileysEventMap } from "baileys";
+
 export const GroupParticipantsUpdate = async ({
   id,
   author,
   participants,
   action,
-}: {
-  id: string;
-  author: string;
-  participants: string[];
-  action: string;
-}) => {};
+}: BaileysEventMap["group-participants.update"]) => {};
