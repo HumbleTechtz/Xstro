@@ -48,6 +48,7 @@ export async function postJson<T = JsonObject>(
     headers: finalHeaders,
     body: JSON.stringify(data),
     dispatcher: agent,
+    //@ts-ignore
     maxRedirections: 5,
   });
 
@@ -78,6 +79,7 @@ export async function getJson<T = JsonObject>(
     method: "GET",
     headers: finalHeaders,
     dispatcher: agent,
+    //@ts-ignore
     maxRedirections: 5,
   });
 
@@ -105,6 +107,7 @@ export async function getBuffer(
     method: "GET",
     headers: finalHeaders,
     dispatcher: agent,
+    //@ts-ignore
     maxRedirections: 5,
   });
 
