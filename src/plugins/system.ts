@@ -23,7 +23,6 @@ export default [
     desc: "Ping the bot",
     type: "system",
     execute: async (msg) => {
-      console.log("Ping command executed!"); // Debug log
       const start = Date.now();
       const m = await msg.reply("Pong!");
       const end = Date.now();

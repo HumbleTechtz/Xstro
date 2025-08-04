@@ -10,6 +10,7 @@ import {
   type WAMessageKey,
   type WASocket,
 } from "baileys";
+import { extractTextFromWebMessage } from "../../utils/txtextract.ts";
 
 export default class {
   private quoted: WAContextInfo;
@@ -23,6 +24,7 @@ export default class {
   audio: boolean;
   document: boolean;
   sticker: boolean;
+  text: string | null | undefined;
   viewonce: boolean;
   constructor(client: WASocket, message: WAMessage) {
     this.quoted =
@@ -49,6 +51,7 @@ export default class {
     this.audio = this.mtype === "audioMessage";
     this.document = this.mtype === "documentMessage";
     this.sticker = this.mtype === "stickerMessage";
+    this.text = extractTextFromWebMessage(this.message);
     //@ts-ignore
     this.viewonce = this.message?.[this.mtype]?.viewOnce;
     Object.defineProperty(this, "quoted", {
