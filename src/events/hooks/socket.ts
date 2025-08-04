@@ -11,8 +11,6 @@ export const makeSocketCache = async (client: WASocket) => {
       for (const [jid, metadata] of Object.entries(groups)) {
         await GroupCache.set.update(jid, metadata);
       }
-
-      logger.info("[GroupCache] Updated metadata for all groups");
     } catch (err) {
       logger.error("[GroupCache] Error updating metadata:", err);
     }
